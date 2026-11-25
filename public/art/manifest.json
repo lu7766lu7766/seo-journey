@@ -14,5 +14,15 @@
   "bg/council": "/art/bg/council.webp",
   "bg/home": "/art/bg/home.webp",
   "bg/street": "/art/bg/street.webp",
-  "bg/rain": "/art/bg/rain.webp"
+  "bg/rain": "/art/bg/rain.webp",
+  "bg/beach": "/art/bg/beach.webp",
+  "bg/festival": "/art/bg/festival.webp",
+  "bg/planetarium": "/art/bg/planetarium.webp",
+  "bg/infirmary": "/art/bg/infirmary.webp",
+  "cg/date-rin-3": "/art/cg/date-rin-3.webp",
+  "cg/date-hare-3": "/art/cg/date-hare-3.webp",
+  "cg/date-mirai-3": "/art/cg/date-mirai-3.webp",
+  "cg/end-true": "/art/cg/end-true.webp",
+  "cg/end-rin": "/art/cg/end-rin.webp",
+  "cg/end-normal": "/art/cg/end-normal.webp"
 }

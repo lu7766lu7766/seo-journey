@@ -698,7 +698,7 @@ npm run art -- D:/seo-art-src/sources.json    # 或指定其他來源對照檔
 | 27 | `kuro/sad` | `public/art/kuro/sad.webp` | ☐ |
 | 28 | `bg/street` | `public/art/bg/street.webp` | ✅ |
 | 29 | `bg/planetarium` | `public/art/bg/planetarium.webp` | ☐ |
-| 30 | `bg/beach` | `public/art/bg/beach.webp` | ☐ |
+| 30 | `bg/beach` | `public/art/bg/beach.webp` | ✅ |
 | 31 | `bg/festival` | `public/art/bg/festival.webp` | ☐ |
 | 32 | `bg/rain` | `public/art/bg/rain.webp` | ✅ |
 | 33 | `bg/infirmary` | `public/art/bg/infirmary.webp` | ☐ |
