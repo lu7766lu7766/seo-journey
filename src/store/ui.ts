@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type Overlay = null | 'menu' | 'backlog' | 'save' | 'load' | 'settings'
+export type Overlay = null | 'menu' | 'backlog' | 'save' | 'load' | 'settings' | 'status'
 
 interface UIStore {
   screen: 'title' | 'game'

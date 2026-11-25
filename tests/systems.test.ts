@@ -1,0 +1,58 @@
+import { describe, expect, it } from 'vitest'
+import { initialCore } from '@/engine/effects'
+import { determineEnding, pickDateScene } from '@/systems/ending'
+import { availableQuests, questDoneFlag } from '@/systems/quests'
+import { runWeekSchedule } from '@/systems/schedule'
+
+describe('schedule & quests & ending systems', () => {
+  it('applies week theme x1.5 bonus and cancels remaining slots on stamina=0', () => {
+    const s = { ...initialCore(), stamina: 20, stress: 10 }
+    // Week 1 theme bonus is techcheck (tec+6 -> round(6*1.5)=9).
+    // Slot 0: 20 -> 5 stamina (not tired yet at start). Slot 1: 5 -> 0 (halfTired -> 4, triggers infirmary!).
+    const res = runWeekSchedule(s, 1, ['techcheck', 'techcheck', 'write', 'authors'], () => 0.99)
+    expect(res.infirmaryTriggered).toBe(true)
+    expect(res.outcomes[0].statDelta.tec).toBe(9)
+    expect(res.outcomes[1].status).toBe('infirmary')
+    expect(res.outcomes[1].halfTired).toBe(true)
+    expect(res.outcomes[1].statDelta.tec).toBe(4)
+    expect(res.outcomes[2].status).toBe('skipped')
+    expect(res.outcomes[3].status).toBe('skipped')
+  })
+
+  it('unlocks side quest chains in order and respects week ranges', () => {
+    const w1 = availableQuests(1, {}).map((q) => q.id)
+    expect(w1).toEqual(['sq-r1', 'sq-h1'])
+
+    const w2Done = availableQuests(2, { [questDoneFlag('sq-r1')]: true }).map((q) => q.id)
+    expect(w2Done).toContain('sq-r2')
+    expect(w2Done).not.toContain('sq-r1')
+    expect(w2Done).not.toContain('sq-h2')
+  })
+
+  it('enforces >= 55 threshold for stage 3 date and ending tie-breakers', () => {
+    const low = { ...initialCore(), flags: { 'dateCount.rin': 2 } }
+    expect(pickDateScene('rin', low).sceneId).toBe('date-rin-casual')
+
+    const high = {
+      ...initialCore(),
+      stats: { con: 60, tec: 60, str: 60, ans: 60, tru: 60 },
+      flags: { 'dateCount.rin': 2 },
+    }
+    expect(pickDateScene('rin', high).sceneId).toBe('date-rin-3')
+
+    // Tie-breaker: equal scores -> higher bond wins; equal bond -> rin > hare > mirai
+    const tied = {
+      ...initialCore(),
+      stats: { con: 65, tec: 65, str: 65, ans: 65, tru: 65 },
+      bond: { rin: 0, hare: 0, mirai: 0 },
+    }
+    expect(determineEnding(tied)).toBe('end-true')
+
+    const tiedSingle = {
+      ...initialCore(),
+      stats: { con: 62, tec: 62, str: 62, ans: 62, tru: 62 },
+      bond: { rin: 0, hare: 0, mirai: 0 },
+    }
+    expect(determineEnding(tiedSingle)).toBe('end-rin')
+  })
+})

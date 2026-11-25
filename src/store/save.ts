@@ -1,14 +1,14 @@
 import { initialCore } from '@/engine/effects'
 import { initialStage } from '@/engine/stage'
-import type { Flags, RunnerSnapshot, StageState, Bonds, Stats } from '@/engine/types'
+import type { Bonds, Flags, HeroineId, RunnerSnapshot, StageState, Stats } from '@/engine/types'
 import { safeGetJSON, safeRemove, safeSetJSON } from './storage'
 
-export const SAVE_VERSION = 1
+export const SAVE_VERSION = 2
 export type SlotId = 'auto' | 1 | 2 | 3
 export const SLOTS: SlotId[] = ['auto', 1, 2, 3]
 const key = (slot: SlotId) => `seo-journey:save:${slot}`
 
-export type Phase = 'story' | 'schedule' | 'weekend' | 'report' | 'ending'
+export type Phase = 'story' | 'schedule' | 'board' | 'weekend' | 'report' | 'ending'
 
 export interface BacklogEntry {
   lineId: string
@@ -33,6 +33,11 @@ export interface PersistedGame {
   scene: RunnerSnapshot | null
   stage: StageState
   backlog: BacklogEntry[]
+  /** P2 simulation fields */
+  questsDoneThisWeek: number
+  prevScores: Record<HeroineId, number>
+  activeQuestId: string | null
+  activeDateHeroine: { who: HeroineId; increment: boolean } | null
 }
 
 export interface SaveEnvelope {
@@ -54,8 +59,14 @@ export function defaultPersisted(playerName = '葉 搜一'): PersistedGame {
     scene: null,
     stage: initialStage(),
     backlog: [],
+    questsDoneThisWeek: 0,
+    prevScores: { rin: 10, hare: 10, mirai: 10 },
+    activeQuestId: null,
+    activeDateHeroine: null,
   }
 }
+
+const VALID_PHASES: readonly Phase[] = ['story', 'schedule', 'board', 'weekend', 'report', 'ending']
 
 /** Fill any missing/invalid fields with defaults so old or hand-edited saves never crash. */
 export function normalizeData(raw: unknown): PersistedGame {
@@ -66,10 +77,11 @@ export function normalizeData(raw: unknown): PersistedGame {
   const arr = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x) => typeof x === 'string') : [])
   const obj = <T extends object>(v: unknown, f: T): T => ({ ...f, ...(v && typeof v === 'object' ? (v as T) : {}) })
   const scene = r.scene as RunnerSnapshot | null | undefined
+  const activeDate = r.activeDateHeroine as { who?: unknown; increment?: unknown } | null | undefined
   return {
     playerName: typeof r.playerName === 'string' && r.playerName ? r.playerName : d.playerName,
     week: num(r.week, d.week),
-    phase: (['story', 'schedule', 'weekend', 'report', 'ending'] as const).includes(r.phase as Phase) ? (r.phase as Phase) : 'story',
+    phase: VALID_PHASES.includes(r.phase as Phase) ? (r.phase as Phase) : 'story',
     stats: obj(r.stats, d.stats),
     bond: obj(r.bond, d.bond),
     stamina: num(r.stamina, d.stamina),
@@ -81,19 +93,39 @@ export function normalizeData(raw: unknown): PersistedGame {
     scene: scene && typeof scene.sceneId === 'string' && Array.isArray(scene.pc) ? { sceneId: scene.sceneId, pc: scene.pc.map(Number) } : null,
     stage: obj(r.stage, d.stage),
     backlog: Array.isArray(r.backlog) ? (r.backlog as BacklogEntry[]).filter((b) => b && typeof b.text === 'string') : [],
+    questsDoneThisWeek: num(r.questsDoneThisWeek, 0),
+    prevScores: obj(r.prevScores, d.prevScores),
+    activeQuestId: typeof r.activeQuestId === 'string' ? r.activeQuestId : null,
+    activeDateHeroine:
+      activeDate && (activeDate.who === 'rin' || activeDate.who === 'hare' || activeDate.who === 'mirai')
+        ? { who: activeDate.who, increment: Boolean(activeDate.increment) }
+        : null,
   }
 }
 
 type Migration = (env: Record<string, unknown>) => Record<string, unknown>
 /** migrations[n] upgrades an envelope from version n to n+1 */
 export const migrations: Record<number, Migration> = {
-  // v0 (pre-release prototype): `{ version: 0, name, state: {...} }` -> `{ version: 1, data: { playerName, ... } }`
   0: (env) => {
     const state = (env.state ?? env.data ?? {}) as Record<string, unknown>
     return {
       ...env,
       version: 1,
       data: { ...state, playerName: state.playerName ?? env.name },
+    }
+  },
+  1: (env) => {
+    const data = (env.data ?? {}) as Record<string, unknown>
+    return {
+      ...env,
+      version: 2,
+      data: {
+        questsDoneThisWeek: 0,
+        prevScores: { rin: 10, hare: 10, mirai: 10 },
+        activeQuestId: null,
+        activeDateHeroine: null,
+        ...data,
+      },
     }
   },
 }
@@ -119,7 +151,7 @@ export function migrate(raw: unknown): SaveEnvelope | null {
 }
 
 export function makeLabel(d: PersistedGame): string {
-  const where = d.week > 0 ? `第 ${d.week} 週` : d.scene?.sceneId ?? '序章'
+  const where = d.week >= 7 ? '搜尋祭' : d.week > 0 ? `第 ${d.week} 週` : d.scene?.sceneId ?? '序章'
   return `${d.playerName} · ${where}`
 }
 

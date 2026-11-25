@@ -9,6 +9,11 @@ import { useUI } from '@/store/ui'
 import { ChoiceMenu } from './ChoiceMenu'
 import { CharacterLayer } from './CharacterLayer'
 import { DialogueBox } from './DialogueBox'
+import { EndingScreen } from './sim/EndingScreen'
+import { NoticeBoard } from './sim/NoticeBoard'
+import { ScheduleScreen } from './sim/ScheduleScreen'
+import { WeekendMenu } from './sim/WeekendMenu'
+import { WeeklyReport } from './sim/WeeklyReport'
 import { requestAdvance, useVNInput } from './useVNInput'
 
 function QuickBar() {
@@ -21,6 +26,7 @@ function QuickBar() {
   }
   return (
     <div className="absolute right-6 top-4 z-30 flex gap-2 text-sm">
+      <button className="btn-pastel" onClick={stop(() => setOverlay('status'))}>狀態</button>
       <button className="btn-pastel" aria-pressed={auto} onClick={stop(() => set({ auto: !auto }))}>自動 (A){auto ? ' ●' : ''}</button>
       <button className="btn-pastel" aria-pressed={skipping} onMouseDown={stop(() => set({ skipping: true }))} onMouseUp={stop(() => set({ skipping: false }))} onMouseLeave={() => set({ skipping: false })}>快轉 (Ctrl)</button>
       <button className="btn-pastel" onClick={stop(() => setOverlay('backlog'))}>紀錄 (L)</button>
@@ -33,6 +39,8 @@ function QuickBar() {
 export function VNStage() {
   const stage = useGame((s) => s.stage)
   const pause = useGame((s) => s.pause)
+  const phase = useGame((s) => s.phase)
+  const scene = useGame((s) => s.scene)
   const toast = useGame((s) => s.toast)
   const hidden = useUI((s) => s.hidden)
   useVNInput()
@@ -42,6 +50,21 @@ export function VNStage() {
     const t = setTimeout(() => useGame.setState({ toast: null }), 2600)
     return () => clearTimeout(t)
   }, [toast])
+
+  // Auto-advance weekly flow when a VN scene reaches its end
+  useEffect(() => {
+    if (!scene || pause.kind !== 'end') return
+    void useGame.getState().completeCurrentScene()
+  }, [scene, pause.kind])
+
+  // Simulation screens when between VN scenes
+  if (!scene || pause.kind === 'end') {
+    if (phase === 'schedule') return <ScheduleScreen />
+    if (phase === 'board') return <NoticeBoard />
+    if (phase === 'weekend') return <WeekendMenu />
+    if (phase === 'report') return <WeeklyReport />
+    if (phase === 'ending') return <EndingScreen />
+  }
 
   return (
     <div className="absolute inset-0" onClick={requestAdvance} data-testid="vnstage">
@@ -65,23 +88,6 @@ export function VNStage() {
           {pause.kind === 'say' && <DialogueBox line={pause} />}
           {pause.kind === 'choice' && <ChoiceMenu pause={pause} />}
           {pause.kind === 'minigame' && <MinigameHost key={pause.lineId} id={pause.id} onResolve={(w) => useGame.getState().resolveMinigame(w)} />}
-          {pause.kind === 'end' && (
-            <div className="absolute inset-0 z-30 flex items-center justify-center bg-ink/40" data-testid="scene-end">
-              <div className="glass rounded-3xl p-10 text-center">
-                <h2 className="mb-4 font-title text-3xl font-bold">場景結束</h2>
-                <button
-                  className="btn-pastel text-xl"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    useGame.getState().quitToTitle()
-                    useUI.getState().setScreen('title')
-                  }}
-                >
-                  回到標題
-                </button>
-              </div>
-            </div>
-          )}
         </>
       )}
       <AnimatePresence>

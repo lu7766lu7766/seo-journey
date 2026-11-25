@@ -29,14 +29,23 @@ describe('save/load', () => {
     writeSave('auto', defaultPersisted('b'), 99)
     expect(latestSave()!.slot).toBe('auto')
   })
-  it('migrates v0 and fills defaults', () => {
-    const env = migrate({ version: 0, name: '舊玩家', savedAt: 5, state: { week: 2, stats: { con: 33 }, bond: { rin: 4 } } })!
-    expect(env.version).toBe(SAVE_VERSION)
-    expect(env.data.playerName).toBe('舊玩家')
-    expect(env.data.week).toBe(2)
-    expect(env.data.stats).toMatchObject({ con: 33, tec: 10 })
-    expect(env.data.bond).toMatchObject({ rin: 4, hare: 0 })
-    expect(env.data.backlog).toEqual([])
+  it('migrates v0 and v1 and fills defaults', () => {
+    const env0 = migrate({ version: 0, name: '舊玩家', savedAt: 5, state: { week: 2, stats: { con: 33 }, bond: { rin: 4 } } })!
+    expect(env0.version).toBe(SAVE_VERSION)
+    expect(env0.data.playerName).toBe('舊玩家')
+    expect(env0.data.week).toBe(2)
+    expect(env0.data.stats).toMatchObject({ con: 33, tec: 10 })
+    expect(env0.data.bond).toMatchObject({ rin: 4, hare: 0 })
+    expect(env0.data.backlog).toEqual([])
+    expect(env0.data.questsDoneThisWeek).toBe(0)
+    expect(env0.data.prevScores).toEqual({ rin: 10, hare: 10, mirai: 10 })
+
+    const env1 = migrate({ version: 1, savedAt: 99, label: 'v1', data: { playerName: '測試者', week: 4 } })!
+    expect(env1.version).toBe(SAVE_VERSION)
+    expect(env1.data.playerName).toBe('測試者')
+    expect(env1.data.week).toBe(4)
+    expect(env1.data.activeQuestId).toBeNull()
+    expect(env1.data.activeDateHeroine).toBeNull()
   })
   it('rejects garbage and future versions without throwing', () => {
     expect(migrate(null)).toBeNull()

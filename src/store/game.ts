@@ -3,9 +3,12 @@ import { audio } from '@/audio'
 import { applyEffects as applyCore } from '@/engine/effects'
 import { SceneRunner, type RunnerHost } from '@/engine/runner'
 import { initialStage, reduceStage } from '@/engine/stage'
-import type { Effects, MinigameId, Pause } from '@/engine/types'
-import { loadScene } from '@/content/scenes'
+import type { CoreState, Effects, HeroineId, MinigameId, Pause } from '@/engine/types'
+import { loadScene, SCENE_IDS } from '@/content/scenes'
 import { KNOWLEDGE } from '@/content/knowledge'
+import { dateCountFlag, determineEnding, pickDateScene } from '@/systems/ending'
+import { questDoneFlag } from '@/systems/quests'
+import { scores } from '@/systems/score'
 import { useGlobal } from './global'
 import { defaultPersisted, normalizeData, writeSave, type PersistedGame, type Phase } from './save'
 
@@ -26,6 +29,16 @@ export interface GameStore extends PersistedGame {
   unlockCard: (id: string) => void
   reachEnding: (id: string) => void
   setPhase: (phase: Phase, week?: number) => void
+
+  /** P2 weekly simulation flow actions */
+  completeCurrentScene: () => Promise<void>
+  commitScheduleResult: (nextCore: CoreState) => void
+  startSideQuest: (id: string) => Promise<void>
+  skipBoardToWeekend: () => void
+  startWeekendDate: (who: HeroineId) => Promise<void>
+  startWeekendRest: () => Promise<void>
+  finishWeeklyReport: () => Promise<void>
+
   toPersisted: () => PersistedGame
   loadPersisted: (data: PersistedGame) => Promise<void>
   quitToTitle: () => void
@@ -64,6 +77,11 @@ export const useGame = create<GameStore>((set, get) => {
     })
     clearTimeout(autosaveTimer)
     autosaveTimer = setTimeout(() => get().active && writeSave('auto', get().toPersisted()), 400)
+  }
+
+  const autosaveNow = () => {
+    clearTimeout(autosaveTimer)
+    if (get().active) writeSave('auto', get().toPersisted())
   }
 
   return {
@@ -114,12 +132,135 @@ export const useGame = create<GameStore>((set, get) => {
     },
     setPhase: (phase, week) => set((s) => ({ phase, week: week ?? s.week })),
 
+    completeCurrentScene: async () => {
+      const s = get()
+      runner = null
+      if (s.phase === 'story') {
+        if (s.week === 0) {
+          // Prologue (or demo) finished -> enter Week 1
+          const snap = scores(s.stats, s.bond)
+          set({ week: 1, phase: 'story', scene: null, prevScores: snap, questsDoneThisWeek: 0 })
+          if (SCENE_IDS.includes('w1')) {
+            await get().startScene('w1')
+          } else {
+            set({ phase: 'schedule' })
+            autosaveNow()
+          }
+          return
+        }
+        if (s.week >= 1 && s.week <= 6) {
+          set({ phase: 'schedule', scene: null })
+          autosaveNow()
+          return
+        }
+        if (s.week >= 7) {
+          const eid = determineEnding(s)
+          get().reachEnding(eid)
+          set({ phase: 'ending', scene: null })
+          if (SCENE_IDS.includes(eid)) {
+            await get().startScene(eid)
+          } else {
+            autosaveNow()
+          }
+          return
+        }
+      } else if (s.phase === 'board') {
+        const qid = s.activeQuestId
+        const nextFlags = qid ? { ...s.flags, [questDoneFlag(qid)]: true } : s.flags
+        set({
+          flags: nextFlags,
+          questsDoneThisWeek: s.questsDoneThisWeek + (qid ? 1 : 0),
+          activeQuestId: null,
+          scene: null,
+        })
+        autosaveNow()
+        return
+      } else if (s.phase === 'weekend') {
+        const info = s.activeDateHeroine
+        const nextFlags = { ...s.flags }
+        if (info?.increment) {
+          const fk = dateCountFlag(info.who)
+          const cur = typeof nextFlags[fk] === 'number' ? (nextFlags[fk] as number) : 0
+          nextFlags[fk] = cur + 1
+        }
+        set({ flags: nextFlags, activeDateHeroine: null, scene: null, phase: 'report' })
+        autosaveNow()
+        return
+      } else if (s.phase === 'ending') {
+        set({ scene: null })
+        autosaveNow()
+      }
+    },
+
+    commitScheduleResult: (nextCore) => {
+      set({
+        stats: nextCore.stats,
+        bond: nextCore.bond,
+        stamina: nextCore.stamina,
+        stress: nextCore.stress,
+        flags: nextCore.flags,
+        phase: 'board',
+        scene: null,
+      })
+      autosaveNow()
+    },
+
+    startSideQuest: async (id) => {
+      set({ activeQuestId: id })
+      await get().startScene(id)
+    },
+
+    skipBoardToWeekend: () => {
+      set({ phase: 'weekend', scene: null })
+      autosaveNow()
+    },
+
+    startWeekendDate: async (who) => {
+      const s = get()
+      const pick = pickDateScene(who, s)
+      set({ activeDateHeroine: { who, increment: pick.increment } })
+      await get().startScene(pick.sceneId)
+    },
+
+    startWeekendRest: async () => {
+      get().applyEffects({ stamina: 25, stress: -15 })
+      set({ activeDateHeroine: null })
+      await get().startScene('weekend-rest')
+    },
+
+    finishWeeklyReport: async () => {
+      const s = get()
+      const snap = scores(s.stats, s.bond)
+      const nextWeek = s.week + 1
+      set({ prevScores: snap, questsDoneThisWeek: 0, week: nextWeek, phase: 'story', scene: null })
+      if (nextWeek <= 6) {
+        const sceneId = `w${nextWeek}`
+        if (SCENE_IDS.includes(sceneId)) {
+          await get().startScene(sceneId)
+        } else {
+          set({ phase: 'schedule' })
+          autosaveNow()
+        }
+      } else {
+        if (SCENE_IDS.includes('festival')) {
+          await get().startScene('festival')
+        } else {
+          const eid = determineEnding(get())
+          get().reachEnding(eid)
+          set({ phase: 'ending' })
+          autosaveNow()
+        }
+      }
+    },
+
     toPersisted: () => {
       const s = get()
       return {
         playerName: s.playerName, week: s.week, phase: s.phase, stats: s.stats, bond: s.bond, stamina: s.stamina,
         stress: s.stress, flags: s.flags, seenScenes: s.seenScenes, unlockedCards: s.unlockedCards,
         endingsReached: s.endingsReached, scene: s.scene, stage: s.stage, backlog: s.backlog,
+        questsDoneThisWeek: s.questsDoneThisWeek, prevScores: s.prevScores, activeQuestId: s.activeQuestId,
+        activeDateHeroine: s.activeDateHeroine,
       }
     },
 
@@ -131,7 +272,6 @@ export const useGame = create<GameStore>((set, get) => {
         const scene = await loadScene(data.scene.sceneId)
         runner = new SceneRunner(scene, host, data.scene)
         sync(runner.start())
-        // start() re-emits the paused `say` stage update only; stage from the save stays authoritative otherwise
       }
     },
 
