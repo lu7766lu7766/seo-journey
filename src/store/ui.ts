@@ -1,10 +1,12 @@
 import { create } from 'zustand'
 
-export type Overlay = null | 'menu' | 'backlog' | 'save' | 'load' | 'settings' | 'status'
+export type Overlay = null | 'menu' | 'backlog' | 'save' | 'load' | 'settings' | 'status' | 'gallery'
+export type GalleryTab = 'cards' | 'cg' | 'endings' | 'practice'
 
 interface UIStore {
   screen: 'title' | 'game'
   overlay: Overlay
+  galleryTab: GalleryTab
   hidden: boolean
   auto: boolean
   skipping: boolean
@@ -14,12 +16,14 @@ interface UIStore {
   finishSignal: number
   setScreen: (s: 'title' | 'game') => void
   setOverlay: (o: Overlay) => void
+  openGallery: (tab?: GalleryTab) => void
   set: (p: Partial<Omit<UIStore, 'set'>>) => void
 }
 
 export const useUI = create<UIStore>((set) => ({
   screen: 'title',
   overlay: null,
+  galleryTab: 'cards',
   hidden: false,
   auto: false,
   skipping: false,
@@ -27,5 +31,6 @@ export const useUI = create<UIStore>((set) => ({
   finishSignal: 0,
   setScreen: (screen) => set({ screen, overlay: null, hidden: false, auto: false }),
   setOverlay: (overlay) => set({ overlay }),
+  openGallery: (tab = 'cards') => set({ overlay: 'gallery', galleryTab: tab }),
   set: (p) => set(p),
 }))

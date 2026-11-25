@@ -55,11 +55,12 @@ export function TitleScreen() {
         </p>
 
         {step === 'menu' ? (
-          <div className="flex w-72 flex-col gap-3.5">
-            <button className="btn-pastel py-3 text-2xl" onClick={() => setStep('name')}>開始遊戲</button>
-            <button className="btn-pastel py-3 text-2xl disabled:opacity-40" disabled={!latest} onClick={() => latest && loadSlot(latest.slot)}>繼續</button>
-            <button className="btn-pastel py-3 text-2xl" onClick={() => useUI.getState().setOverlay('load')}>讀檔</button>
-            <button className="btn-pastel py-3 text-2xl" onClick={() => useUI.getState().setOverlay('settings')}>設定</button>
+          <div className="flex w-72 flex-col gap-3">
+            <button className="btn-pastel py-2.5 text-2xl" onClick={() => setStep('name')}>開始遊戲</button>
+            <button className="btn-pastel py-2.5 text-2xl disabled:opacity-40" disabled={!latest} onClick={() => latest && loadSlot(latest.slot)}>繼續</button>
+            <button className="btn-pastel py-2.5 text-2xl" onClick={() => useUI.getState().setOverlay('load')}>讀檔</button>
+            <button className="btn-pastel py-2.5 text-2xl" data-testid="title-gallery" onClick={() => useUI.getState().openGallery('cards')}>圖鑑・相簿</button>
+            <button className="btn-pastel py-2.5 text-2xl" onClick={() => useUI.getState().setOverlay('settings')}>設定</button>
           </div>
         ) : (
           <form className="glass flex w-96 flex-col gap-4 rounded-3xl p-6" onSubmit={(e) => { e.preventDefault(); void start() }}>

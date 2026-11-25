@@ -8,6 +8,7 @@ export function GameMenu() {
     ['繼續遊戲', () => ui.setOverlay(null)],
     ['存檔', () => ui.setOverlay('save')],
     ['讀檔', () => ui.setOverlay('load')],
+    ['圖鑑・相簿', () => ui.openGallery('cards')],
     ['設定', () => ui.setOverlay('settings')],
     ['回到標題', () => {
       useGame.getState().quitToTitle()
