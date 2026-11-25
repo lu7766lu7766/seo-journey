@@ -12,5 +12,7 @@
   "bg/library": "/art/bg/library.webp",
   "bg/broadcast": "/art/bg/broadcast.webp",
   "bg/council": "/art/bg/council.webp",
-  "bg/home": "/art/bg/home.webp"
+  "bg/home": "/art/bg/home.webp",
+  "bg/street": "/art/bg/street.webp",
+  "bg/rain": "/art/bg/rain.webp"
 }

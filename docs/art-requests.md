@@ -696,11 +696,11 @@ npm run art -- D:/seo-art-src/sources.json    # 或指定其他來源對照檔
 | 25 | `kuro/smug` | `public/art/kuro/smug.webp` | ☐ |
 | 26 | `kuro/shock` | `public/art/kuro/shock.webp` | ☐ |
 | 27 | `kuro/sad` | `public/art/kuro/sad.webp` | ☐ |
-| 28 | `bg/street` | `public/art/bg/street.webp` | ☐ |
+| 28 | `bg/street` | `public/art/bg/street.webp` | ✅ |
 | 29 | `bg/planetarium` | `public/art/bg/planetarium.webp` | ☐ |
 | 30 | `bg/beach` | `public/art/bg/beach.webp` | ☐ |
 | 31 | `bg/festival` | `public/art/bg/festival.webp` | ☐ |
-| 32 | `bg/rain` | `public/art/bg/rain.webp` | ☐ |
+| 32 | `bg/rain` | `public/art/bg/rain.webp` | ✅ |
 | 33 | `bg/infirmary` | `public/art/bg/infirmary.webp` | ☐ |
 | 34 | `cg/date-rin-3` | `public/art/cg/date-rin-3.webp` | ☐ |
 | 35 | `cg/date-hare-3` | `public/art/cg/date-hare-3.webp` | ☐ |
