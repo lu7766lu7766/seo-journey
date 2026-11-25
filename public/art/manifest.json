@@ -1,1 +1,16 @@
-{}
+{
+  "rin/normal": "/art/rin/normal.webp",
+  "hare/normal": "/art/hare/normal.webp",
+  "mirai/normal": "/art/mirai/normal.webp",
+  "sensei/normal": "/art/sensei/normal.webp",
+  "kuro/normal": "/art/kuro/normal.webp",
+  "bg/gate": "/art/bg/gate.webp",
+  "bg/classroom": "/art/bg/classroom.webp",
+  "bg/clubroom": "/art/bg/clubroom.webp",
+  "bg/corridor": "/art/bg/corridor.webp",
+  "bg/rooftop": "/art/bg/rooftop.webp",
+  "bg/library": "/art/bg/library.webp",
+  "bg/broadcast": "/art/bg/broadcast.webp",
+  "bg/council": "/art/bg/council.webp",
+  "bg/home": "/art/bg/home.webp"
+}

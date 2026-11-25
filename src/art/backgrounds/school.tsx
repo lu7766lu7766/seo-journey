@@ -219,17 +219,29 @@ export function SchoolBackground({ id, night }: { id: string; night: boolean }) 
       // infirmary
       return (
         <g>
-          <rect width="1280" height="720" fill="#edf6f4" />
-          <rect x="0" y="555" width="1280" height="165" fill="#d4e6e0" />
-          {/* Curtain rail & privacy curtain */}
-          <rect x="90" y="95" width="380" height="450" fill="#e0f0ec" stroke="#99bfb5" strokeWidth="3" />
-          {/* Bed */}
-          <rect x="130" y="430" width="440" height="110" rx="12" fill="#ffffff" stroke="#85a69f" strokeWidth="4" />
-          <rect x="145" y="400" width="110" height="45" rx="14" fill="#f7fbfa" stroke="#85a69f" strokeWidth="3" />
-          <rect x="260" y="435" width="310" height="90" rx="8" fill="#b5ead7" opacity="0.7" />
+          <defs>
+            <linearGradient id="inf-wall" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#f4fbf9" />
+              <stop offset="1" stopColor="#dfefea" />
+            </linearGradient>
+            <linearGradient id="inf-floor" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#d4e6e0" />
+              <stop offset="1" stopColor="#b8d1c8" />
+            </linearGradient>
+          </defs>
+          <rect width="1280" height="720" fill="url(#inf-wall)" />
+          <rect x="0" y="555" width="1280" height="165" fill="url(#inf-floor)" />
+          {/* Sunlit window */}
+          <rect x="490" y="85" width="240" height="310" fill={night ? '#203052' : '#cbeeff'} stroke="#87a69f" strokeWidth="5" />
+          <polygon points="490,395 730,395 920,720 350,720" fill="rgba(255,255,245,0.22)" />
+          {/* Curtain & Hospital bed */}
+          <rect x="75" y="95" width="385" height="450" fill="#e5f5f0" stroke="#99bfb5" strokeWidth="3" />
+          <rect x="120" y="425" width="445" height="118" rx="12" fill="#ffffff" stroke="#7ea199" strokeWidth="4" />
+          <rect x="135" y="395" width="115" height="46" rx="14" fill="#f7fbfa" stroke="#7ea199" strokeWidth="3" />
+          <rect x="255" y="430" width="310" height="94" rx="8" fill="#a8e2cf" opacity="0.82" />
           {/* Medicine cabinet */}
-          <rect x="780" y="140" width="320" height="360" rx="8" fill="#ffffff" stroke="#85a69f" strokeWidth="4" />
-          <path d="M940 205 V255 M915 230 H965" stroke="#e06674" strokeWidth="14" strokeLinecap="round" />
+          <rect x="810" y="135" width="320" height="365" rx="8" fill="#ffffff" stroke="#7ea199" strokeWidth="4" />
+          <path d="M970 205 V255 M945 230 H995" stroke="#e06674" strokeWidth="14" strokeLinecap="round" />
         </g>
       )
   }

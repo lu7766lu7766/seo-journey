@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { motion } from 'motion/react'
+import { Background } from '@/art/backgrounds'
 import { audio } from '@/audio'
 import { CHARACTERS } from '@/content/characters'
 import { WEEKLY_COMMENTS } from '@/content/flavor'
@@ -22,8 +23,10 @@ export function WeeklyReport() {
   }, [])
 
   return (
-    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cream via-sakura/20 to-sky/30 p-8" data-testid="weekly-report">
-      <div className="glass flex w-[880px] flex-col gap-6 rounded-3xl p-8">
+    <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-8" data-testid="weekly-report">
+      <Background id="council" time="dusk" />
+      <div className="pointer-events-none absolute inset-0 bg-[#0b1024]/55 backdrop-blur-[2px]" />
+      <div className="glass relative z-10 flex w-[880px] flex-col gap-6 rounded-3xl p-8">
         <div className="text-center">
           <h2 className="font-title text-4xl font-bold">第 {s.week} 週 · 週日評測報告</h2>
           <p className="mt-1 text-base text-ink/75">三位評審檢視了網站研究社本週的成果</p>

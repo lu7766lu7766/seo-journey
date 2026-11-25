@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Background } from '@/art/backgrounds'
 import { CharacterSprite } from '@/art/characters'
 import { CHARACTERS } from '@/content/characters'
 import { HEROINES } from '@/engine/types'
@@ -31,18 +32,20 @@ export function WeekendMenu() {
   }
 
   return (
-    <div className="flex h-full w-full flex-col justify-between bg-gradient-to-br from-sakura/25 via-cream to-sky/30 p-8" data-testid="weekend-menu">
-      <div className="flex items-center justify-between">
+    <div className="relative flex h-full w-full flex-col justify-between overflow-hidden p-8" data-testid="weekend-menu">
+      <Background id="street" time="day" />
+      <div className="pointer-events-none absolute inset-0 bg-[#0d1430]/45 backdrop-blur-[2px]" />
+      <div className="vn-box relative z-10 flex items-center justify-between rounded-2xl px-6 py-4 text-white">
         <div>
-          <h2 className="font-title text-3xl font-bold">第 {s.week} 週 · 週末自由行動</h2>
-          <p className="text-base text-ink/75">邀請一位夥伴出門，或留在家裡好好休息（體力 +25、壓力 -15）</p>
+          <h2 className="font-title text-3xl font-bold text-white">第 {s.week} 週 · 週末自由行動</h2>
+          <p className="text-base text-[#d5e3ff]">邀請一位夥伴出門，或留在家裡好好休息（體力 +25、壓力 -15）</p>
         </div>
         <button disabled={busy} className="btn-pastel px-6 py-2.5 text-lg disabled:opacity-50" data-testid="weekend-rest" onClick={() => void pickRest()}>
           在家休息
         </button>
       </div>
 
-      <div className="grid flex-1 grid-cols-3 gap-6 py-6">
+      <div className="relative z-10 grid flex-1 grid-cols-3 gap-6 py-6">
         {HEROINES.map((h) => {
           const c = CHARACTERS[h]
           const count = getDateCount(h, s)

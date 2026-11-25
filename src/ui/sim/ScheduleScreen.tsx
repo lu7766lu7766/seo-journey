@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
+import { Background } from '@/art/backgrounds'
 import { audio } from '@/audio'
 import { ACTIVITIES, ACTIVITY_LIST, WEEK_THEMES } from '@/content/activities'
 import type { ActivityId } from '@/content/activityIds'
@@ -63,12 +64,14 @@ export function ScheduleScreen() {
     const def = ACTIVITIES[out.activityId]
     const isLast = stepIdx >= result.outcomes.length - 1
     return (
-      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cream via-sky/25 to-sakura/30 p-8" data-testid="schedule-playback">
+      <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-8" data-testid="schedule-playback">
+        <Background id="clubroom" time="day" />
+        <div className="pointer-events-none absolute inset-0 bg-[#0c1228]/50 backdrop-blur-[2px]" />
         <motion.div
           key={stepIdx}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass flex w-[760px] flex-col gap-5 rounded-3xl p-8"
+          className="glass relative z-10 flex w-[760px] flex-col gap-5 rounded-3xl p-8"
         >
           <div className="flex items-center justify-between">
             <span className="rounded-full bg-ink px-4 py-1 text-sm font-bold text-white">
@@ -133,9 +136,11 @@ export function ScheduleScreen() {
   }
 
   return (
-    <div className="flex h-full w-full gap-5 bg-gradient-to-br from-cream via-sky/20 to-sakura/25 p-6" data-testid="schedule-screen">
+    <div className="relative flex h-full w-full gap-5 overflow-hidden p-6" data-testid="schedule-screen">
+      <Background id="clubroom" time="day" />
+      <div className="pointer-events-none absolute inset-0 bg-[#0c1228]/45 backdrop-blur-[2px]" />
       {/* Left: Activity picker & 4 slots */}
-      <div className="flex flex-1 flex-col gap-4">
+      <div className="relative z-10 flex flex-1 flex-col gap-4">
         <div className="glass flex items-center justify-between rounded-2xl px-5 py-3">
           <div>
             <h2 className="font-title text-2xl font-bold">第 {s.week} 週 · 平日排程</h2>
@@ -224,10 +229,10 @@ export function ScheduleScreen() {
       </div>
 
       {/* Right: Status & Live Preview */}
-      <div className="glass flex w-[410px] flex-col justify-between rounded-3xl p-5">
+      <div className="glass relative z-10 flex w-[410px] flex-col justify-between rounded-3xl p-4">
         <StatusSummary compact />
 
-        <div className="mt-3 space-y-2 rounded-2xl bg-white/75 p-3 text-sm">
+        <div className="mt-2 space-y-1.5 rounded-2xl bg-white/75 p-2.5 text-sm">
           <div className="font-bold">預期變化：</div>
           <div className="flex flex-wrap gap-1.5">
             {STAT_KEYS.map((k) =>

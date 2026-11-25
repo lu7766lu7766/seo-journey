@@ -27,12 +27,12 @@ function QuickBar() {
   }
   return (
     <div className="absolute right-6 top-4 z-30 flex gap-2 text-sm">
-      <button className="btn-pastel" onClick={stop(() => setOverlay('status'))}>狀態</button>
-      <button className="btn-pastel" aria-pressed={auto} onClick={stop(() => set({ auto: !auto }))}>自動 (A){auto ? ' ●' : ''}</button>
-      <button className="btn-pastel" aria-pressed={skipping} onMouseDown={stop(() => set({ skipping: true }))} onMouseUp={stop(() => set({ skipping: false }))} onMouseLeave={() => set({ skipping: false })}>快轉 (Ctrl)</button>
-      <button className="btn-pastel" onClick={stop(() => setOverlay('backlog'))}>紀錄 (L)</button>
-      <button className="btn-pastel" onClick={stop(() => set({ hidden: true }))}>隱藏 (H)</button>
-      <button className="btn-pastel" onClick={stop(() => setOverlay('menu'))}>選單 (Esc)</button>
+      <button className="hud-pill" onClick={stop(() => setOverlay('status'))}>狀態</button>
+      <button className="hud-pill" aria-pressed={auto} onClick={stop(() => set({ auto: !auto }))}>自動 (A){auto ? ' ●' : ''}</button>
+      <button className="hud-pill" aria-pressed={skipping} onMouseDown={stop(() => set({ skipping: true }))} onMouseUp={stop(() => set({ skipping: false }))} onMouseLeave={() => set({ skipping: false })}>快轉 (Ctrl)</button>
+      <button className="hud-pill" onClick={stop(() => setOverlay('backlog'))}>紀錄 (L)</button>
+      <button className="hud-pill" onClick={stop(() => set({ hidden: true }))}>隱藏 (H)</button>
+      <button className="hud-pill" onClick={stop(() => setOverlay('menu'))}>選單 (Esc)</button>
     </div>
   )
 }
@@ -99,8 +99,15 @@ export function VNStage() {
       )}
       <AnimatePresence>
         {toast && (
-          <motion.div key={toast.n} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="glass absolute left-1/2 top-6 z-40 -translate-x-1/2 rounded-full px-6 py-2 font-title text-xl" data-testid="card-toast">
-            獲得知識卡「{toast.title}」
+          <motion.div
+            key={toast.n}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="vn-box absolute left-1/2 top-4 z-50 -translate-x-1/2 rounded-full px-6 py-2 font-title text-lg font-bold text-[#ffe599]"
+            data-testid="card-toast"
+          >
+            ✦ 獲得知識卡「{toast.title}」
           </motion.div>
         )}
       </AnimatePresence>

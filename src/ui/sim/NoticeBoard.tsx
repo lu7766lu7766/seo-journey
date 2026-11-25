@@ -1,3 +1,4 @@
+import { Background } from '@/art/backgrounds'
 import { QUEST_BLURBS } from '@/content/flavor'
 import { SCENE_IDS } from '@/content/scenes'
 import { useGame } from '@/store/game'
@@ -9,8 +10,10 @@ export function NoticeBoard() {
   const remaining = Math.max(0, MAX_QUESTS_PER_WEEK - questsDoneThisWeek)
 
   return (
-    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cream via-mint/20 to-sky/25 p-8" data-testid="notice-board">
-      <div className="glass flex max-h-[640px] w-[900px] flex-col gap-5 rounded-3xl p-8">
+    <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-8" data-testid="notice-board">
+      <Background id="corridor" time="dusk" />
+      <div className="pointer-events-none absolute inset-0 bg-[#0c1228]/50 backdrop-blur-[2px]" />
+      <div className="glass relative z-10 flex max-h-[640px] w-[900px] flex-col gap-5 rounded-3xl p-8">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-title text-3xl font-bold">放學後 · 委託公佈欄</h2>

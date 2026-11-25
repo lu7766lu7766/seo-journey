@@ -19,7 +19,7 @@ const HEROINE_HINT: Record<HeroineId, { domain: string; focus: string }> = {
   mirai: { domain: 'GEO', focus: '信任力・內容力' },
 }
 
-export function RadarChart({ stats }: { stats: Record<StatKey, number> }) {
+export function RadarChart({ stats, compact = false }: { stats: Record<StatKey, number>; compact?: boolean }) {
   const cx = 135
   const cy = 130
   const maxR = 88
@@ -32,7 +32,7 @@ export function RadarChart({ stats }: { stats: Record<StatKey, number> }) {
   const dataPoly = STAT_KEYS.map((k, i) => pt(maxR * (Math.max(5, stats[k]) / 100), i).map((n) => n.toFixed(1)).join(',')).join(' ')
 
   return (
-    <svg viewBox="0 0 270 260" className="h-[230px] w-[240px]" aria-label="網站屬性雷達圖">
+    <svg viewBox="0 0 270 260" className={compact ? 'h-[175px] w-[195px]' : 'h-[230px] w-[240px]'} aria-label="網站屬性雷達圖">
       {[0.25, 0.5, 0.75, 1].map((r) => (
         <polygon key={r} points={poly(r)} fill="none" stroke="rgba(59,53,80,0.18)" strokeWidth="1.5" />
       ))}
@@ -72,13 +72,13 @@ export function StatusSummary({ compact = false }: { compact?: boolean }) {
         {theme && <span className="rounded-full bg-sakura/40 px-3 py-0.5 text-xs font-bold">主題：{theme.topic}</span>}
       </div>
 
-      <div className={`grid ${compact ? 'grid-cols-1' : 'grid-cols-[240px_1fr]'} items-center gap-4`}>
-        <div className="flex justify-center rounded-2xl bg-white/65 p-2">
-          <RadarChart stats={stats} />
+      <div className={`grid ${compact ? 'grid-cols-1 gap-2' : 'grid-cols-[240px_1fr] gap-4'} items-center`}>
+        <div className={`flex justify-center rounded-2xl bg-white/65 ${compact ? 'p-1' : 'p-2'}`}>
+          <RadarChart stats={stats} compact={compact} />
         </div>
-        <div className="space-y-3">
+        <div className={compact ? 'space-y-2' : 'space-y-3'}>
           {/* Stamina & Stress */}
-          <div className="space-y-2 rounded-2xl bg-white/65 p-3">
+          <div className={`rounded-2xl bg-white/65 ${compact ? 'space-y-1.5 p-2.5' : 'space-y-2 p-3'}`}>
             <div>
               <div className="mb-1 flex justify-between text-sm font-bold">
                 <span>體力</span>
