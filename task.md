@@ -109,11 +109,11 @@
 - [x] 總監簽核
 
 ## P6 部署
-- [ ] README（玩法、開發指令、部署方式）
-- [ ] 最終 QA：`vite preview` 完整通關
-- [ ] 推送分支
-- [ ] Vercel 部署（使用者匯入 repo，或提供 token 由 CLI 部署）
-- [ ] 線上版煙霧測試
+- [x] README（玩法、開發指令、部署方式）
+- [x] 最終 QA：`vite preview` 完整通關
+- [x] 推送分支
+- [ ] Vercel 部署（待使用者於 Vercel 匯入 `lu7766lu7766/seo-journey` 或提供 token 由 CLI 部署）
+- [ ] 線上版煙霧測試（部署後驗證）
 
 ---
 
@@ -128,3 +128,4 @@
 - 2026-11-25：P3 完成：序章、W1–W6 主線、搜尋祭、7 結局與 10 支線（全數自動 code-split）；劇本 lint、字數上限、時長估算（主線 ≤ 30m／全收集 60–90m）與 31 張知識卡／14 小遊戲／7 CG 覆蓋檢查全過；typecheck／test(41)／build 全過（主包 162.4KB gzip）。
 - 2026-11-25：P4 完成：quiz／spot／serp 小遊戲引擎與 15 組題庫資料、純函式計分單元測試、以及延遲載入的圖鑑頁（知識卡 31 張／回憶相簿 10 CG／結局列表 7 種／練習模式 14 題）；typecheck／test(49)／build 全過（主包 179.9KB gzip）。
 - 2026-11-25：P5 完成：Web Audio 8 種音效與 3 首循環 BGM、MinigameHost 延遲載入（主包 163.6KB gzip < 250KB）、1280×720／1920×1080／<1024px 桌機檢查與 Playwright 全自動通關＋存讀檔＋圖鑑 E2E（0 console/page/HTTP errors），並完成截圖審查與名牌層級／防連點修正。
+- 2026-11-25：P6 完成：撰寫 README.md（玩法、熱鍵、開發指令、Vercel 部署步驟）、完成 `vite preview` 正式建置全程通關 QA；待使用者於 Vercel 匯入 repo 即可上線。
