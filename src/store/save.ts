@@ -178,3 +178,30 @@ export function latestSave(): { slot: SlotId; env: SaveEnvelope } | null {
   for (const { slot, env } of listSaves()) if (env && (!best || env.savedAt > best.env.savedAt)) best = { slot, env }
   return best
 }
+
+const CODE_PREFIX = 'SEOJ1:'
+
+/** Encode persisted progress into a portable UTF-8 Base64 save code for classroom use. */
+export function exportSaveCode(data: PersistedGame, now = Date.now()): string {
+  const env: SaveEnvelope = { version: SAVE_VERSION, savedAt: now, label: makeLabel(data), data }
+  const bytes = new TextEncoder().encode(JSON.stringify(env))
+  let bin = ''
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i])
+  return CODE_PREFIX + btoa(bin)
+}
+
+/** Decode and migrate a classroom save code string. Returns null if malformed. */
+export function importSaveCode(raw: string): SaveEnvelope | null {
+  try {
+    const trimmed = raw.trim()
+    if (!trimmed) return null
+    const body = trimmed.startsWith(CODE_PREFIX) ? trimmed.slice(CODE_PREFIX.length) : trimmed
+    const bin = atob(body)
+    const bytes = new Uint8Array(bin.length)
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
+    const parsed = JSON.parse(new TextDecoder().decode(bytes)) as unknown
+    return migrate(parsed)
+  } catch {
+    return null
+  }
+}

@@ -11,9 +11,15 @@ export default scene('w3', [
   say('mirai', 'normal', '對機器而言，這可能被當成三個不同的實體。'),
   card('entity-consistency'),
 
-  say('mirai', 'normal', '請使用 JSON-LD 結構化資料，用機器讀得懂的格式自我介紹。'),
-  say('mirai', 'think', '但注意：標記內容必須和頁面上看得到的完全一致，而且不保證出現複合結果。'),
+  say('mirai', 'normal', '接下來要用 JSON-LD 結構化資料，填一張給機器看的電子名片。'),
+  say('me', undefined, '電子名片？看起來都是大括號跟英文，我有點怕看不懂……'),
+  show('sensei', 'left', 'smile'),
+  say('sensei', 'smile', '別緊張！就像填表單一樣，檢查三件事：身分對不對、名字一樣嗎。'),
+  say('sensei', 'normal', '還有每一行結尾的逗號有沒有漏掉。先試著找出三處錯誤吧！'),
+  hide('sensei'),
   minigame('w3-jsonld', { stats: { str: 4, tru: 2 }, bond: { mirai: 2 } }, { stats: { str: 1 } }),
+  show('mirai', 'center', 'think'),
+  say('mirai', 'think', '補充規範：標記必須和頁面可見內容一致，也不保證出現特殊樣式。'),
   card('json-ld'),
   card('schema-visible-match'),
 

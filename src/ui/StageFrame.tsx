@@ -18,10 +18,19 @@ function useViewport() {
 /** 16:9 stage scaled to fit the window with black letterbox. Narrow windows show a desktop-only notice. */
 export function StageFrame({ children }: { children: ReactNode }) {
   const { w, h } = useViewport()
-  if (w < MIN_DESKTOP_WIDTH) {
+  const [bypass, setBypass] = useState(false)
+  if (w < MIN_DESKTOP_WIDTH && !bypass) {
     return (
-      <div className="flex h-full items-center justify-center bg-cream p-8 text-center font-title text-3xl text-ink" data-testid="desktop-gate">
-        請使用電腦遊玩
+      <div className="flex h-full flex-col items-center justify-center gap-3 bg-cream p-8 text-center text-ink" data-testid="desktop-gate">
+        <p className="font-title text-3xl font-bold">請使用電腦遊玩</p>
+        <p className="max-w-md text-sm text-ink/75">本遊戲舞台為 16:9 電腦版面；若您正使用電腦但因螢幕系統縮放被阻擋，可點擊下方按鈕繼續。</p>
+        <button
+          type="button"
+          onClick={() => setBypass(true)}
+          className="btn-pastel mt-2 px-5 py-2 text-sm"
+        >
+          仍以目前視窗繼續遊玩
+        </button>
       </div>
     )
   }

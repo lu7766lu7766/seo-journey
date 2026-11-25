@@ -22,6 +22,7 @@ export interface SpotGame {
   kind: 'spot'
   title: string
   intro: string
+  hint?: string
   filename?: string
   lines: SpotLine[]
   targets: number[]

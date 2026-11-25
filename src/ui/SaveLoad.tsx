@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useGame } from '@/store/game'
-import { listSaves, writeSave, type SlotId } from '@/store/save'
+import { exportSaveCode, importSaveCode, listSaves, writeSave, type SlotId } from '@/store/save'
 import { useUI } from '@/store/ui'
 import { Panel } from './Panel'
 
@@ -15,6 +15,7 @@ export async function loadSlot(slot: SlotId): Promise<boolean> {
 export function SaveLoad({ mode }: { mode: 'save' | 'load' }) {
   const [saves, setSaves] = useState(listSaves)
   const [msg, setMsg] = useState('')
+  const [codeText, setCodeText] = useState('')
   const inGame = useUI((s) => s.screen) === 'game'
   const back = () => useUI.getState().setOverlay(inGame ? 'menu' : null)
 
@@ -24,6 +25,28 @@ export function SaveLoad({ mode }: { mode: 'save' | 'load' }) {
       setMsg(ok ? `已存入欄位 ${slot}` : '存檔失敗')
       setSaves(listSaves())
     } else if (!(await loadSlot(slot))) setMsg('這個欄位沒有存檔')
+  }
+
+  const copyCode = async () => {
+    const code = exportSaveCode(useGame.getState().toPersisted())
+    setCodeText(code)
+    try {
+      await navigator.clipboard.writeText(code)
+      setMsg('已複製存檔碼！換電腦或下次上課可貼上還原')
+    } catch {
+      setMsg('已產生存檔碼，請從下方輸入框全選複製')
+    }
+  }
+
+  const applyCode = async () => {
+    const env = importSaveCode(codeText)
+    if (!env) {
+      setMsg('存檔碼格式不正確，請確認有完整複製')
+      return
+    }
+    await useGame.getState().loadPersisted(env.data)
+    useUI.getState().setScreen('game')
+    useUI.getState().setOverlay(null)
   }
 
   return (
@@ -45,6 +68,50 @@ export function SaveLoad({ mode }: { mode: 'save' | 'load' }) {
           )
         })}
       </div>
+
+      <div className="mt-4 rounded-2xl border border-ink/15 bg-white/75 p-3.5 text-sm">
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-bold text-ink">電腦教室存檔碼（跨機／防還原用）</span>
+          {mode === 'save' && (
+            <button
+              type="button"
+              data-testid="save-code-copy"
+              onClick={() => void copyCode()}
+              className="btn-pastel px-3.5 py-1 text-xs"
+            >
+              複製目前進度存檔碼
+            </button>
+          )}
+        </div>
+        {mode === 'save' && codeText && (
+          <input
+            readOnly
+            value={codeText}
+            onFocus={(e) => e.target.select()}
+            className="mt-2 w-full rounded-xl border border-ink/20 bg-white px-3 py-1.5 font-mono text-xs text-ink"
+          />
+        )}
+        {mode === 'load' && (
+          <div className="mt-2 flex gap-2">
+            <input
+              type="text"
+              value={codeText}
+              onChange={(e) => setCodeText(e.target.value)}
+              placeholder="在此貼上 SEOJ1:... 存檔碼"
+              className="flex-1 rounded-xl border border-ink/25 bg-white px-3 py-1.5 font-mono text-xs text-ink"
+            />
+            <button
+              type="button"
+              data-testid="load-code-apply"
+              onClick={() => void applyCode()}
+              className="btn-pastel shrink-0 px-4 py-1 text-xs"
+            >
+              以存檔碼還原
+            </button>
+          </div>
+        )}
+      </div>
+
       <p className="mt-3 h-6 text-center text-base" data-testid="saveload-msg">{msg}</p>
     </Panel>
   )

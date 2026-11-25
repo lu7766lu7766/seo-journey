@@ -269,11 +269,14 @@ export function ScheduleScreen() {
                   themed ? 'ring-2 ring-[#d6334a]/70' : ''
                 }`}
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-title text-lg font-bold">
-                    {themed && <span className="mr-1 text-[#d6334a]">★</span>}
-                    {a.name}
-                  </span>
+                <div className="min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-title text-base font-bold leading-tight">
+                      {themed && <span className="mr-1 text-[#d6334a]">★</span>}
+                      {a.name}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 truncate text-[11px] text-ink/70" title={a.desc}>{a.desc}</p>
                 </div>
                 <div className="mt-1.5 flex flex-wrap gap-1.5 text-xs font-bold">
                   {STAT_KEYS.map((k) =>

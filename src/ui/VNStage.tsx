@@ -48,7 +48,7 @@ export function VNStage() {
 
   useEffect(() => {
     if (!toast) return
-    const t = setTimeout(() => useGame.setState({ toast: null }), 2600)
+    const t = setTimeout(() => useGame.setState({ toast: null }), 4200)
     return () => clearTimeout(t)
   }, [toast])
 
@@ -99,16 +99,22 @@ export function VNStage() {
       )}
       <AnimatePresence>
         {toast && (
-          <motion.div
+          <motion.button
             key={toast.n}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              useGame.setState({ toast: null })
+            }}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="vn-box absolute left-1/2 top-4 z-50 -translate-x-1/2 rounded-full px-6 py-2 font-title text-lg font-bold text-[#ffe599]"
+            className="vn-box absolute left-6 top-4 z-50 max-w-[540px] rounded-2xl px-5 py-2.5 text-left"
             data-testid="card-toast"
           >
-            ✦ 獲得知識卡「{toast.title}」
-          </motion.div>
+            <div className="font-title text-base font-bold text-[#ffe599]">✦ 獲得知識卡「{toast.title}」</div>
+            {toast.summary && <p className="mt-0.5 text-xs leading-snug text-[#d5e3ff]">{toast.summary}</p>}
+          </motion.button>
         )}
       </AnimatePresence>
     </div>

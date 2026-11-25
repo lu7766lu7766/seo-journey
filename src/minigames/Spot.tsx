@@ -8,6 +8,7 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
   const [wrongLines, setWrongLines] = useState<number[]>([])
   const [mistakes, setMistakes] = useState(0)
   const [feedback, setFeedback] = useState<{ kind: 'hit' | 'miss' | 'info'; text: string } | null>(null)
+  const [showHint, setShowHint] = useState(false)
   const [showResult, setShowResult] = useState(false)
   const resolvedRef = useRef(false)
 
@@ -116,7 +117,18 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
           </span>
           <h2 className="mt-1 font-title text-2xl font-bold">{game.title}</h2>
         </div>
-        <div className="flex items-center gap-3 text-sm font-bold">
+        <div className="flex items-center gap-2.5 text-sm font-bold">
+          <button
+            type="button"
+            onClick={() => {
+              audio.sfx('click')
+              setShowHint((v) => !v)
+            }}
+            data-testid="spot-hint-btn"
+            className="rounded-full border border-amber-400 bg-amber-100 px-3 py-1 text-xs font-bold text-amber-950 transition hover:brightness-95"
+          >
+            💡 {showHint ? '收起提示' : '索老師小提示'}
+          </button>
           <span className="rounded-full bg-emerald-100 px-3 py-1 text-emerald-900">
             進度 {foundLines.length} / {game.targets.length}
           </span>
@@ -130,7 +142,16 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
         </div>
       </div>
 
-      <p className="mb-3 text-sm leading-relaxed text-ink/85">{game.intro}</p>
+      <p className="mb-2.5 text-sm leading-relaxed text-ink/85">{game.intro}</p>
+
+      {showHint && (
+        <div
+          data-testid="spot-hint-box"
+          className="mb-2.5 rounded-xl border border-amber-300 bg-amber-50/95 px-4 py-2 text-xs leading-relaxed font-semibold text-amber-950"
+        >
+          {game.hint ?? '索老師提示：仔細比對題目描述的規則，點選出有違反規範或語法漏字的程式碼行（不會扣分）。'}
+        </div>
+      )}
 
       <div className="min-h-0 flex-1 overflow-y-auto pr-1">
         <div className="overflow-hidden rounded-2xl border border-ink/20 bg-[#1e1b2e] shadow-inner">

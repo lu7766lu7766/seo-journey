@@ -110,6 +110,22 @@ export function CgArt({ id }: { id: CgId }) {
         <>
           <Background id={cfg.bg} time={cfg.time} />
           <div className="pointer-events-none absolute inset-0" style={{ background: cfg.overlay }} />
+          {/* Cinematic anime bokeh particles & vignette */}
+          <svg viewBox="0 0 1280 720" className="pointer-events-none absolute inset-0 h-full w-full opacity-75">
+            {[
+              [160, 180, 26, '#ffffff', 0.14],
+              [280, 310, 14, '#ffd6e2', 0.2],
+              [1090, 240, 32, '#9fd3f0', 0.14],
+              [980, 420, 18, '#ffe599', 0.18],
+              [520, 120, 12, '#ffffff', 0.18],
+            ].map(([bx, by, br, col, op], idx) => (
+              <circle key={idx} cx={Number(bx)} cy={Number(by)} r={Number(br)} fill={String(col)} opacity={Number(op)} />
+            ))}
+          </svg>
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{ background: 'radial-gradient(circle at 50% 45%, transparent 55%, rgba(8, 12, 30, 0.42) 100%)' }}
+          />
 
           {(id === 'date-rin-3' || id === 'end-true') && (
             <svg viewBox="0 0 1280 720" className="pointer-events-none absolute inset-0 h-full w-full">

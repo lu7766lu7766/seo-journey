@@ -16,7 +16,7 @@ export interface GameStore extends PersistedGame {
   active: boolean
   pause: Pause
   /** last unlocked card, for a toast */
-  toast: { id: string; title: string; n: number } | null
+  toast: { id: string; title: string; summary: string; n: number } | null
 
   /** reset to a fresh game (does not start a scene) */
   newGame: (playerName: string) => void
@@ -114,7 +114,19 @@ export const useGame = create<GameStore>((set, get) => {
       sync(runner.choose(i))
     },
     resolveMinigame: (won) => {
-      if (runner) sync(runner.resolveMinigame(won))
+      if (!runner) return
+      set((s) => {
+        const played = typeof s.flags['mg.played'] === 'number' ? s.flags['mg.played'] : 0
+        const wonCnt = typeof s.flags['mg.won'] === 'number' ? s.flags['mg.won'] : 0
+        return {
+          flags: {
+            ...s.flags,
+            'mg.played': played + 1,
+            'mg.won': wonCnt + (won ? 1 : 0),
+          },
+        }
+      })
+      sync(runner.resolveMinigame(won))
     },
 
     applyEffects: (e) => set((s) => applyCore(s, e)),
@@ -122,9 +134,11 @@ export const useGame = create<GameStore>((set, get) => {
     unlockCard: (id) => {
       useGlobal.getState().unlockCard(id)
       set((s) => (s.unlockedCards.includes(id) ? s : { unlockedCards: [...s.unlockedCards, id] }))
-      const title = (KNOWLEDGE as Record<string, { title: string }>)[id]?.title ?? id
+      const card = (KNOWLEDGE as Record<string, { title: string; summary?: string }>)[id]
+      const title = card?.title ?? id
+      const summary = card?.summary ?? ''
       audio.sfx('card')
-      set({ toast: { id, title, n: ++toastN } })
+      set({ toast: { id, title, summary, n: ++toastN } })
     },
     reachEnding: (id) => {
       useGlobal.getState().unlockEnding(id)

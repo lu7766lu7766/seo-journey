@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { clearMemoryStorage, safeGet, setStorage } from '@/store/storage'
-import { defaultPersisted, latestSave, listSaves, migrate, readSave, SAVE_VERSION, writeSave } from '@/store/save'
+import { defaultPersisted, exportSaveCode, importSaveCode, latestSave, listSaves, migrate, readSave, SAVE_VERSION, writeSave } from '@/store/save'
 
 beforeEach(() => {
   setStorage(null)
@@ -64,5 +64,23 @@ describe('save/load', () => {
     expect(readSave(1)).toBeNull()
     expect(writeSave(1, defaultPersisted())).toBe(false)
     expect(safeGet('x')).toBeNull()
+  })
+  it('exports and imports portable save codes with Unicode names safely', () => {
+    const d = defaultPersisted('青葉新生')
+    d.week = 4
+    d.stats.tec = 42
+    d.flags = { 'mg.played': 3, 'mg.won': 2 }
+    d.unlockedCards = ['what-is-seo-aeo-geo', 'json-ld']
+    const code = exportSaveCode(d, 5555)
+    expect(code.startsWith('SEOJ1:')).toBe(true)
+    const restored = importSaveCode(`  ${code}  `)!
+    expect(restored.version).toBe(SAVE_VERSION)
+    expect(restored.savedAt).toBe(5555)
+    expect(restored.data.playerName).toBe('青葉新生')
+    expect(restored.data.stats.tec).toBe(42)
+    expect(restored.data.flags).toEqual({ 'mg.played': 3, 'mg.won': 2 })
+    expect(restored.data.unlockedCards).toEqual(['what-is-seo-aeo-geo', 'json-ld'])
+    expect(importSaveCode('')).toBeNull()
+    expect(importSaveCode('SEOJ1:!!!not-base64!!!')).toBeNull()
   })
 })
