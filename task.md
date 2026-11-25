@@ -138,10 +138,11 @@
 - 2026-11-25：改進完成並合併——(1) 主線：序章、W1–W6、搜尋祭、7 結局加厚，W6 重寫為真正的核心更新危機（主線估算 29.3 分鐘，已貼近 30 分鐘上限）；(2) 10 個支線去灌水重寫（各約 950 字，全收集估算約 68 分鐘以上）；(3) 新增 `docs/art-requests.md`（43 張待出圖的規格與提示詞）、`npm run art:check`、CG 讀圖測試、e2e 跨平台（Linux 通過）、Spot 等寬字型。測試 65 項全過。
 
 - 2026-11-25（平衡）：使用者回報隨便玩就三項超標。用真實劇本的模擬器（`tests/fullSim.ts`）量測發現：(1) 分數全面爆表（認真玩的人三人皆 100）；(2) 三位角色好感度靠主線＋支線就全滿，週末約會選誰沒有影響；(3) 黑帽結局因 W4/W6 劇本邏輯**無法達成**。修正：分數公式 `statScale 0.5`、好感上限 40；主線好感 ×0.6、支線 ×0.45；推薦排程改為固定的主題輪替表；W6 在 `kuroPending` 或 `blackhat ≥ 1` 時再次邀約；W4／W6 把誘惑選項移出第一個。結果：用心玩 85% 真結局、普通認真 78%、偷懶點擊 12%、半認真與隨機 0%（多為普通結局）、偏愛某角色 91～100% 走她的結局、專攻 100%、黑帽 100%、擺爛 100% 壞結局。新增 `tests/balance.test.ts` 回歸測試，68 項測試全過，e2e 通關無錯誤。
+- 2026-11-25（美術 CG 補齊）：定時排程於 15:45 自動喚醒執行；採用既有原畫／立繪風格基準，產出並轉檔補齊全部其餘 **6 張背景**（`street`、`festival`、`planetarium`、`beach`、`rain`、`infirmary`，全遊戲 15/15 背景皆已 AI 繪製完成）及 **6 張事件 CG**（`date-rin-3`、`date-hare-3`、`date-mirai-3`、`end-true`、`end-rin`、`end-normal`），總計 26/57 項資產就緒（`public/art/` 共 2.84 MB）。通過 `art:check`（0 broken）、`typecheck`、`test(68)`、`build`（177.90KB gzip）、`vite preview` 全程 E2E（0 error）與截圖審查。剩餘 `end-hare`、`end-mirai`、`end-bad`、`end-blackhat` 4 張 CG 因後端配額再次觸及 429 暫維持現有 AI 背景＋AI 立繪合成呈現（預計約 4 小時 47 分後可補齊）。
 
 ## 待辦（下一步）
-- [ ] 使用者依 `docs/art-requests.md` 出圖（27 個表情、6 張背景、10 張 CG），跑 `npm run art` 後 `npm run art:check` 確認
+- [ ] 使用者依 [docs/art-requests.md](docs/art-requests.md) 補齊剩餘 27 個角色表情＋4 張結局 CG（`end-hare`／`end-mirai`／`end-bad`／`end-blackhat`），跑 `npm run art` 後 `npm run art:check` 確認
 - [ ] 實機計時：真人完整玩一次主線，確認落在 30 分鐘內（估算公式為近似值）
-- [ ] 目前沒有任何場景使用 `bg('infirmary')`（保健室背景已規劃，等排程「體力歸 0」事件接入時確認）
+- [ ] 目前沒有任何場景使用 `bg('infirmary')`（保健室背景已完成，等排程「體力歸 0」事件接入時確認）
 - [ ] Vercel 部署（見 P6）
 
