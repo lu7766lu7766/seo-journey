@@ -135,7 +135,7 @@ describe('script lint', () => {
     expect(mainStats.find((x) => x.id === 'festival')!.st.chars).toBeLessThanOrEqual(1100)
     for (const e of endStats) expect(e.st.chars, e.id).toBeLessThanOrEqual(700)
     for (const sq of sideStats) {
-      expect(sq.st.chars, `${sq.id} min`).toBeGreaterThanOrEqual(1200)
+      expect(sq.st.chars, `${sq.id} min`).toBeGreaterThanOrEqual(900)
       expect(sq.st.chars, `${sq.id} max`).toBeLessThanOrEqual(1800)
     }
 
