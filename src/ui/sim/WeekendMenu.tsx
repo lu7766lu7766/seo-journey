@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { CharacterSprite } from '@/art/characters'
 import { CHARACTERS } from '@/content/characters'
 import { HEROINES } from '@/engine/types'
@@ -7,6 +8,27 @@ import { score } from '@/systems/score'
 
 export function WeekendMenu() {
   const s = useGame()
+  const [busy, setBusy] = useState(false)
+
+  const pickDate = async (h: (typeof HEROINES)[number]) => {
+    if (busy) return
+    setBusy(true)
+    try {
+      await s.startWeekendDate(h)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const pickRest = async () => {
+    if (busy) return
+    setBusy(true)
+    try {
+      await s.startWeekendRest()
+    } finally {
+      setBusy(false)
+    }
+  }
 
   return (
     <div className="flex h-full w-full flex-col justify-between bg-gradient-to-br from-sakura/25 via-cream to-sky/30 p-8" data-testid="weekend-menu">
@@ -15,7 +37,7 @@ export function WeekendMenu() {
           <h2 className="font-title text-3xl font-bold">第 {s.week} 週 · 週末自由行動</h2>
           <p className="text-base text-ink/75">邀請一位夥伴出門，或留在家裡好好休息（體力 +25、壓力 -15）</p>
         </div>
-        <button className="btn-pastel px-6 py-2.5 text-lg" data-testid="weekend-rest" onClick={() => void s.startWeekendRest()}>
+        <button disabled={busy} className="btn-pastel px-6 py-2.5 text-lg disabled:opacity-50" data-testid="weekend-rest" onClick={() => void pickRest()}>
           在家休息
         </button>
       </div>
@@ -30,9 +52,10 @@ export function WeekendMenu() {
           return (
             <button
               key={h}
+              disabled={busy}
               data-testid={`date-${h}`}
-              onClick={() => void s.startWeekendDate(h)}
-              className="glass group relative flex flex-col items-center justify-end overflow-hidden rounded-3xl p-5 text-center transition hover:scale-[1.02]"
+              onClick={() => void pickDate(h)}
+              className="glass group relative flex flex-col items-center justify-end overflow-hidden rounded-3xl p-5 text-center transition hover:ring-2 hover:ring-sakura disabled:opacity-60"
             >
               <div className="pointer-events-none absolute inset-x-0 top-2 flex h-[340px] justify-center opacity-95 transition group-hover:scale-105">
                 <CharacterSprite id={h} face="smile" />

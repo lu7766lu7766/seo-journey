@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
+import { audio } from '@/audio'
 import { ACTIVITIES, ACTIVITY_LIST, WEEK_THEMES } from '@/content/activities'
 import type { ActivityId } from '@/content/activityIds'
 import { CHARACTERS } from '@/content/characters'
@@ -47,6 +48,15 @@ export function ScheduleScreen() {
     setResult(res)
     setStepIdx(0)
   }
+
+  useEffect(() => {
+    if (!result) return
+    const out = result.outcomes[stepIdx]
+    if (!out) return
+    if (out.status === 'fail' || out.status === 'infirmary') audio.sfx('fail')
+    else if (out.chatter) audio.sfx('bond')
+    else if (out.status === 'ok') audio.sfx('grow')
+  }, [result, stepIdx])
 
   if (result) {
     const out = result.outcomes[stepIdx]

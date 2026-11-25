@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { motion } from 'motion/react'
+import { audio } from '@/audio'
 import { CHARACTERS } from '@/content/characters'
 import { WEEKLY_COMMENTS } from '@/content/flavor'
 import { HEROINES, type HeroineId } from '@/engine/types'
@@ -14,6 +16,10 @@ function tierFor(v: number): 'low' | 'mid' | 'high' {
 export function WeeklyReport() {
   const s = useGame()
   const cur = scores(s.stats, s.bond)
+
+  useEffect(() => {
+    audio.sfx('bond')
+  }, [])
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cream via-sakura/20 to-sky/30 p-8" data-testid="weekly-report">

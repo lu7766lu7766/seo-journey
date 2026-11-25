@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Background } from '@/art/backgrounds'
 import { CgArt } from '@/art/cg'
 import type { CgId } from '@/content/cgs'
-import { MinigameHost } from '@/minigames'
 import { useGame } from '@/store/game'
+
+const MinigameHost = lazy(() => import('@/minigames').then((m) => ({ default: m.MinigameHost })))
 import { useUI } from '@/store/ui'
 import { ChoiceMenu } from './ChoiceMenu'
 import { CharacterLayer } from './CharacterLayer'
@@ -75,11 +76,13 @@ export function VNStage() {
       </AnimatePresence>
       {stage.rain && <div className="rain-layer pointer-events-none absolute inset-0 z-[5]" />}
       <CharacterLayer chars={stage.chars} speaker={pause.kind === 'say' ? pause.who : undefined} />
-      {stage.cg && (
-        <div className="absolute inset-0 z-[15]">
-          <CgArt id={stage.cg as CgId} />
-        </div>
-      )}
+      <AnimatePresence>
+        {stage.cg && (
+          <motion.div key={stage.cg} className="absolute inset-0 z-[15]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.45 }}>
+            <CgArt id={stage.cg as CgId} />
+          </motion.div>
+        )}
+      </AnimatePresence>
       {stage.flash > 0 && <motion.div key={stage.flash} className="pointer-events-none absolute inset-0 z-50 bg-white" initial={{ opacity: 0.9 }} animate={{ opacity: 0 }} transition={{ duration: 0.6 }} />}
 
       {!hidden && (
@@ -87,7 +90,11 @@ export function VNStage() {
           <QuickBar />
           {pause.kind === 'say' && <DialogueBox line={pause} />}
           {pause.kind === 'choice' && <ChoiceMenu pause={pause} />}
-          {pause.kind === 'minigame' && <MinigameHost key={pause.lineId} id={pause.id} onResolve={(w) => useGame.getState().resolveMinigame(w)} />}
+          {pause.kind === 'minigame' && (
+            <Suspense fallback={null}>
+              <MinigameHost key={pause.lineId} id={pause.id} onResolve={(w) => useGame.getState().resolveMinigame(w)} />
+            </Suspense>
+          )}
         </>
       )}
       <AnimatePresence>
