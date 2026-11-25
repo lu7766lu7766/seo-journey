@@ -1,14 +1,7 @@
 import { execSync, spawn } from 'node:child_process'
-import { existsSync, mkdirSync } from 'node:fs'
+import { mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { chromium } from 'playwright-core'
-
-const CHROME_PATHS = [
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
-]
-const executablePath = CHROME_PATHS.find((p) => existsSync(p))
-if (!executablePath) throw new Error('No Chrome/Edge executable found on this system.')
+import { launchBrowser } from '../scripts/lib/browser.mjs'
 
 const args = process.argv.slice(2)
 const usePreview = args.includes('--preview')
@@ -39,7 +32,9 @@ async function waitForServer(url, timeoutMs = 20000) {
 function startViteServer(preview) {
   const port = 4177
   const cmdArgs = preview ? ['vite', 'preview', '--port', String(port), '--strictPort'] : ['vite', '--port', String(port), '--strictPort']
-  const child = spawn('npx.cmd', cmdArgs, { stdio: 'ignore', shell: true })
+  const isWin = process.platform === 'win32'
+  // detached on POSIX => own process group, so npx + vite can be stopped together.
+  const child = spawn(isWin ? 'npx.cmd' : 'npx', cmdArgs, { stdio: 'ignore', shell: isWin, detached: !isWin })
   return { child, url: `http://localhost:${port}` }
 }
 
@@ -49,7 +44,7 @@ function stopViteServer(child) {
     if (process.platform === 'win32') {
       execSync(`taskkill /pid ${child.pid} /T /F`, { stdio: 'ignore' })
     } else {
-      child.kill('SIGTERM')
+      process.kill(-child.pid, 'SIGTERM')
     }
   } catch {
     /* ignore */
@@ -129,7 +124,7 @@ async function main() {
     await waitForServer(targetUrl)
   }
 
-  const browser = await chromium.launch({ executablePath, headless: true })
+  const browser = await launchBrowser()
   const consoleErrors = []
   const pageErrors = []
   const badResponses = []

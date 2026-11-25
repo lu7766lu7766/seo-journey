@@ -1,6 +1,7 @@
 import type { BgId } from '@/content/backgrounds'
 import type { TimeOfDay } from '@/engine/types'
 import { useArtManifest } from '../manifest'
+import { resolveBgSrc } from '../resolve'
 import { OutingBackground } from './outing'
 import { SakuraParticles, StarParticles } from './Particles'
 import { SchoolBackground } from './school'
@@ -34,8 +35,7 @@ export interface BackgroundProps {
  */
 export function Background({ id, time = 'day' }: BackgroundProps) {
   const manifest = useArtManifest()
-  const entry = manifest[`bg/${id}`]
-  const imgSrc = typeof entry === 'string' ? entry : entry ? `/art/bg/${id}.png` : null
+  const imgSrc = resolveBgSrc(manifest, id)
 
   if (imgSrc) {
     return (

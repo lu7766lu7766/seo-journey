@@ -1,9 +1,10 @@
 import { useSyncExternalStore } from 'react'
 
 /**
- * `public/art/manifest.json` lists which PNG overrides exist (so we never probe with 404 requests).
- * Keys: `<charId>/<face>` for sprites -> /art/<charId>/<face>.png ; `bg/<bgId>` for backgrounds -> /art/bg/<bgId>.png.
- * Values: `true` (or any truthy). Default `{}`.
+ * `public/art/manifest.json` lists which image overrides exist (so we never probe with 404 requests).
+ * Keys: `<charId>/<face>` (sprite), `bg/<bgId>` (background), `cg/<cgId>` (event CG).
+ * Values: the URL string written by scripts/process-art.mjs (e.g. "/art/rin/blush.webp"); a bare `true`
+ * is still accepted and means `/art/<key>.png`. Default `{}`. See src/art/resolve.ts and docs/art-requests.md.
  */
 export type ArtManifest = Record<string, unknown>
 

@@ -1,5 +1,6 @@
 import type { CharId, Face } from '@/content/characters'
 import { useArtManifest } from '../manifest'
+import { resolveSpriteSrc } from '../resolve'
 import { HareSprite } from './Hare'
 import { KuroSprite } from './Kuro'
 import { MiraiSprite } from './Mirai'
@@ -10,29 +11,6 @@ export interface CharacterSpriteProps {
   id: CharId
   face: Face
   speaking?: boolean
-}
-
-const FACE_FALLBACK: Partial<Record<CharId, Partial<Record<Face, Face>>>> = {
-  sensei: { happy: 'smile', blush: 'smile', surprised: 'normal', angry: 'think', smug: 'smile', shock: 'normal' },
-  kuro: { smile: 'smug', happy: 'smug', blush: 'normal', surprised: 'shock', angry: 'normal', think: 'normal' },
-}
-
-function resolveSpriteSrc(manifest: Record<string, unknown>, id: CharId, face: Face): { src: string; exact: boolean } | null {
-  const exactVal = manifest[`${id}/${face}`]
-  if (typeof exactVal === 'string') return { src: exactVal, exact: true }
-  if (exactVal) return { src: `/art/${id}/${face}.png`, exact: true }
-
-  const candidates: Face[] = []
-  const fb = FACE_FALLBACK[id]?.[face]
-  if (fb) candidates.push(fb)
-  if (face !== 'normal') candidates.push('normal')
-
-  for (const f of candidates) {
-    const val = manifest[`${id}/${f}`]
-    if (typeof val === 'string') return { src: val, exact: false }
-    if (val) return { src: `/art/${id}/${f}.png`, exact: false }
-  }
-  return null
 }
 
 const MOOD_FILTER: Partial<Record<Face, string>> = {

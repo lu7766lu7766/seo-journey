@@ -2,6 +2,7 @@ import type { CgId } from '@/content/cgs'
 import { Background } from '../backgrounds'
 import { CharacterSprite } from '../characters'
 import { useArtManifest } from '../manifest'
+import { resolveCgSrc } from '../resolve'
 
 const CG_CONFIG: Record<
   CgId,
@@ -99,8 +100,7 @@ const CG_CONFIG: Record<
 export function CgArt({ id }: { id: CgId }) {
   const cfg = CG_CONFIG[id]
   const manifest = useArtManifest()
-  const entry = manifest[`cg/${id}`]
-  const cgSrc = typeof entry === 'string' ? entry : entry ? `/art/cg/${id}.png` : null
+  const cgSrc = resolveCgSrc(manifest, id)
 
   return (
     <div className="relative h-full w-full overflow-hidden" data-testid={`cg-${id}`}>
