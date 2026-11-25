@@ -199,11 +199,16 @@ async function main() {
       }
 
       if (await page.locator('[data-testid="schedule-screen"]').isVisible().catch(() => false)) {
+        const snapFilled = !captured.schedule
         if (!captured.schedule) {
           await shot(page, 'schedule-ui.png')
           captured.schedule = true
         }
         await page.getByRole('button', { name: '推薦排程' }).click()
+        if (snapFilled) {
+          await page.waitForTimeout(100)
+          await shot(page, 'schedule-filled.png')
+        }
         await page.locator('[data-testid="schedule-go"]').click()
         await page.locator('[data-testid="schedule-playback"]').waitFor({ state: 'visible', timeout: 3000 })
         while (await page.locator('[data-testid="schedule-playback"]').isVisible().catch(() => false)) {

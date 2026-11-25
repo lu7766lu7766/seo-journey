@@ -32,7 +32,7 @@ export function RadarChart({ stats, compact = false }: { stats: Record<StatKey, 
   const dataPoly = STAT_KEYS.map((k, i) => pt(maxR * (Math.max(5, stats[k]) / 100), i).map((n) => n.toFixed(1)).join(',')).join(' ')
 
   return (
-    <svg viewBox="0 0 270 260" className={compact ? 'h-[175px] w-[195px]' : 'h-[230px] w-[240px]'} aria-label="網站屬性雷達圖">
+    <svg viewBox="0 0 270 260" className={compact ? 'h-[154px] w-[178px]' : 'h-[230px] w-[240px]'} aria-label="網站屬性雷達圖">
       {[0.25, 0.5, 0.75, 1].map((r) => (
         <polygon key={r} points={poly(r)} fill="none" stroke="rgba(59,53,80,0.18)" strokeWidth="1.5" />
       ))}
@@ -63,57 +63,57 @@ export function StatusSummary({ compact = false }: { compact?: boolean }) {
   const theme = WEEK_THEMES[week]
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between rounded-2xl bg-white/70 px-4 py-2">
-        <span className="font-title text-lg font-bold">
+    <div className={`flex flex-col ${compact ? 'gap-2' : 'gap-3'}`}>
+      <div className={`flex items-center justify-between rounded-2xl bg-white/70 ${compact ? 'px-3.5 py-1.5' : 'px-4 py-2'}`}>
+        <span className={`font-title font-bold ${compact ? 'text-base' : 'text-lg'}`}>
           {week === 0 ? '序章' : week >= 7 ? '期末搜尋祭' : `第 ${week} 週`}
           {theme ? ` · ${theme.title}` : ''}
         </span>
-        {theme && <span className="rounded-full bg-sakura/40 px-3 py-0.5 text-xs font-bold">主題：{theme.topic}</span>}
+        {theme && <span className="rounded-full bg-sakura/40 px-2.5 py-0.5 text-xs font-bold">主題：{theme.topic}</span>}
       </div>
 
       <div className={`grid ${compact ? 'grid-cols-1 gap-2' : 'grid-cols-[240px_1fr] gap-4'} items-center`}>
-        <div className={`flex justify-center rounded-2xl bg-white/65 ${compact ? 'p-1' : 'p-2'}`}>
+        <div className={`flex justify-center rounded-2xl bg-white/65 ${compact ? 'py-0.5' : 'p-2'}`}>
           <RadarChart stats={stats} compact={compact} />
         </div>
         <div className={compact ? 'space-y-2' : 'space-y-3'}>
           {/* Stamina & Stress */}
-          <div className={`rounded-2xl bg-white/65 ${compact ? 'space-y-1.5 p-2.5' : 'space-y-2 p-3'}`}>
+          <div className={`rounded-2xl bg-white/65 ${compact ? 'grid grid-cols-2 gap-2.5 p-2.5' : 'space-y-2 p-3'}`}>
             <div>
-              <div className="mb-1 flex justify-between text-sm font-bold">
+              <div className="mb-1 flex justify-between text-xs font-bold">
                 <span>體力</span>
                 <span className={stamina < 20 ? 'text-[#d6334a]' : ''}>{stamina} / 100</span>
               </div>
-              <div className="h-3 overflow-hidden rounded-full bg-ink/10">
+              <div className="h-2.5 overflow-hidden rounded-full bg-ink/10">
                 <div className="h-full rounded-full bg-gradient-to-r from-[#58c49b] to-[#8ee3be]" style={{ width: `${stamina}%` }} />
               </div>
             </div>
             <div>
-              <div className="mb-1 flex justify-between text-sm font-bold">
+              <div className="mb-1 flex justify-between text-xs font-bold">
                 <span>壓力</span>
                 <span className={stress >= 80 ? 'text-[#d6334a]' : ''}>{stress} / 100</span>
               </div>
-              <div className="h-3 overflow-hidden rounded-full bg-ink/10">
+              <div className="h-2.5 overflow-hidden rounded-full bg-ink/10">
                 <div className="h-full rounded-full bg-gradient-to-r from-[#f7b267] to-[#e05263]" style={{ width: `${stress}%` }} />
               </div>
             </div>
           </div>
 
           {/* Heroines */}
-          <div className="space-y-2 rounded-2xl bg-white/65 p-3">
+          <div className={`rounded-2xl bg-white/65 ${compact ? 'space-y-1.5 p-2.5' : 'space-y-2 p-3'}`}>
             {HEROINES.map((h) => {
               const c = CHARACTERS[h]
               const val = Math.round(sc[h])
               const hint = HEROINE_HINT[h]
               return (
-                <div key={h} className="space-y-1">
-                  <div className="flex items-center justify-between text-sm">
+                <div key={h} className="space-y-0.5">
+                  <div className="flex items-center justify-between text-xs">
                     <span className="font-bold" style={{ color: c.color }}>
                       {c.name}（{hint.domain} ♥ {val}）
                     </span>
-                    <span className="text-xs text-ink/70">在意：{hint.focus}</span>
+                    <span className="text-[11px] text-ink/70">在意：{hint.focus}</span>
                   </div>
-                  <div className="h-2.5 overflow-hidden rounded-full bg-ink/10">
+                  <div className="h-2 overflow-hidden rounded-full bg-ink/10">
                     <div className="h-full rounded-full transition-all" style={{ width: `${val}%`, background: c.color }} />
                   </div>
                 </div>

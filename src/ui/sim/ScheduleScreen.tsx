@@ -228,35 +228,69 @@ export function ScheduleScreen() {
         </div>
       </div>
 
-      {/* Right: Status & Live Preview */}
-      <div className="glass relative z-10 flex w-[410px] flex-col justify-between rounded-3xl p-4">
-        <StatusSummary compact />
-
-        <div className="mt-2 space-y-1.5 rounded-2xl bg-white/75 p-2.5 text-sm">
-          <div className="font-bold">預期變化：</div>
-          <div className="flex flex-wrap gap-1.5">
-            {STAT_KEYS.map((k) =>
-              preview.stats[k] > 0 ? (
-                <span key={k} className="rounded-full bg-mint/60 px-2.5 py-0.5 font-bold">
-                  {STAT_SHORT[k]} +{preview.stats[k]}
-                </span>
-              ) : null,
-            )}
-            <span>預估體力 {preview.stamina}</span>
-            <span>· 預估壓力 {preview.stress}</span>
-          </div>
-          {preview.infirmaryRisk && <p className="font-bold text-[#d6334a]">⚠ 體力將歸零，可能進保健室！</p>}
-          {preview.failRisk && <p className="font-bold text-[#d6334a]">⚠ 壓力 ≥ 80，有機率失誤！</p>}
+      {/* Right: Status & Pinned Live Preview + Submit CTA */}
+      <div className="glass relative z-10 flex h-full min-h-0 w-[420px] flex-col rounded-3xl p-4">
+        <div className="min-h-0 flex-1 overflow-y-auto pr-0.5">
+          <StatusSummary compact />
         </div>
 
-        <button
-          disabled={filledSlots.length < 4}
-          onClick={execute}
-          data-testid="schedule-go"
-          className="btn-pastel mt-3 py-3 text-xl disabled:opacity-40"
-        >
-          開始執行本週排程（{filledSlots.length}/4）
-        </button>
+        <div className="mt-2.5 shrink-0 space-y-2.5 border-t border-ink/10 pt-2.5">
+          <div className="rounded-2xl border border-ink/10 bg-white/85 p-3 text-sm shadow-sm">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-bold text-ink">預期變化</span>
+              <div className="flex items-center gap-2 text-xs font-bold">
+                <span className={`rounded-full px-2.5 py-0.5 ${preview.stamina < 20 ? 'bg-rose-100 text-[#d6334a]' : 'bg-emerald-50 text-emerald-800'}`}>
+                  體力 → {preview.stamina}
+                </span>
+                <span className={`rounded-full px-2.5 py-0.5 ${preview.stress >= 80 ? 'bg-rose-100 text-[#d6334a]' : 'bg-amber-50 text-amber-900'}`}>
+                  壓力 → {preview.stress}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-2 flex min-h-[26px] flex-wrap items-center gap-1.5">
+              {STAT_KEYS.some((k) => preview.stats[k] > 0) ? (
+                STAT_KEYS.map((k) =>
+                  preview.stats[k] > 0 ? (
+                    <span key={k} className="rounded-full bg-mint/70 px-2.5 py-0.5 text-xs font-bold text-ink">
+                      {STAT_SHORT[k]} +{preview.stats[k]}
+                    </span>
+                  ) : null,
+                )
+              ) : (
+                <span className="text-xs text-ink/55">點選左側活動或「推薦排程」填滿 4 格</span>
+              )}
+            </div>
+
+            {(preview.infirmaryRisk || preview.failRisk) && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {preview.infirmaryRisk && (
+                  <span className="rounded-lg bg-rose-100 px-2.5 py-1 text-xs font-bold text-[#d6334a]">
+                    ⚠ 體力將歸零，可能進保健室！
+                  </span>
+                )}
+                {preview.failRisk && (
+                  <span className="rounded-lg bg-rose-100 px-2.5 py-1 text-xs font-bold text-[#d6334a]">
+                    ⚠ 壓力 ≥ 80，有機率失誤！
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          <button
+            disabled={filledSlots.length < 4}
+            onClick={execute}
+            data-testid="schedule-go"
+            className={`w-full rounded-full py-3 text-lg font-bold transition ${
+              filledSlots.length === 4
+                ? 'bg-gradient-to-r from-[#d6334a] to-[#f07b3f] text-white shadow-lg hover:brightness-110'
+                : 'border-2 border-ink/20 bg-white/70 text-ink/50 cursor-not-allowed'
+            }`}
+          >
+            {filledSlots.length === 4 ? '▶ 開始執行本週排程（4/4）' : `請先排滿 4 個時段（${filledSlots.length}/4）`}
+          </button>
+        </div>
       </div>
     </div>
   )

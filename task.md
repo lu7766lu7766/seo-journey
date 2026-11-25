@@ -130,3 +130,4 @@
 - 2026-11-25：P5 完成：Web Audio 8 種音效與 3 首循環 BGM、MinigameHost 延遲載入（主包 163.6KB gzip < 250KB）、1280×720／1920×1080／<1024px 桌機檢查與 Playwright 全自動通關＋存讀檔＋圖鑑 E2E（0 console/page/HTTP errors），並完成截圖審查與名牌層級／防連點修正。
 - 2026-11-25：P6 完成：撰寫 README.md（玩法、熱鍵、開發指令、Vercel 部署步驟）、完成 `vite preview` 正式建置全程通關 QA；待使用者於 Vercel 匯入 repo 即可上線。
 - 2026-11-25：視覺大升級完成：採用日式青春校園動漫×韓漫風格 AI 繪製 5 位主角立繪（含去背透明 WebP 與情緒微表情疊層）與 9 張核心校園/居家背景，其餘 6 張背景與 UI（深藍夜色發光對話框／菱形選項條／標題／養成背景）全面同步翻新；`public/art/` 共 1.44 MB，typecheck／test(49)／build（主包 166.5KB gzip）／`vite preview` E2E 全數通過並完成截圖審查。
+- 2026-11-25：優化平日排程版面：精簡右側狀態面板並固定底部「預期變化」卡片與高對比送出按鈕，確保 4 格填滿與風險提示時亦不跑版或裁切；通過 `typecheck`／`test(49)`／`build`／`vite preview` E2E 與截圖檢查。
