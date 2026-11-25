@@ -3,7 +3,7 @@
 > 規格以 [plan.md](./plan.md) 為準，本檔只記錄任務拆解與進度。
 > **完成一項就立刻打勾 `[x]`**，並在「進度紀錄」寫一行。接手的 AI 請先讀 plan.md → 本檔 → `CONTRIBUTING.md`（P0 完成後才會有）。
 >
-> - 開發分支：`claude/wonderful-thompson-av0l1r`
+> - 開發分支：`main`（直接提交到 main）
 > - **每個階段完成都必須先 commit + push，才能開始下一階段**（commit 訊息格式：`P<n>: <摘要>`）；平行進行的階段各自完成後分別 commit
 > - 標記說明：`[ ]` 未開始｜`[~]` 進行中｜`[x]` 完成｜`[!]` 卡住（寫原因）
 
@@ -12,26 +12,26 @@
 ## P0 骨架與引擎
 - [x] 撰寫 plan.md
 - [x] 撰寫 task.md
-- [~] Vite + React 19 + TS strict 專案，scripts：dev／build／preview／typecheck／test，alias `@/`
-- [ ] Tailwind 4 主題 token（粉彩色、字型 Noto Sans TC／LXGW WenKai TC）
-- [ ] `src/engine/types.ts`：Cmd、ChoiceOpt、Effects、Cond、Scene 型別
+- [x] Vite + React 19 + TS strict 專案，scripts：dev／build／preview／typecheck／test，alias `@/`
+- [x] Tailwind 4 主題 token（粉彩色、字型 Noto Sans TC／LXGW WenKai TC）
+- [x] `src/engine/types.ts`：Cmd、ChoiceOpt、Effects、Cond、Scene 型別
 - [x] DSL helper：scene／bg／show／hide／say／choice／opt／effect／when／minigame／card／bgm／sfx／cg／wait
 - [x] Scene runner（純 TS）：PC 堆疊、巢狀區塊、效果套用、穩定的行 id、`{name}` 替換
 - [x] 註冊表：characters.ts（角色、表情、主色）、BgId、knowledge.ts（ID＋標題＋空白內文）、minigame ID
 - [x] Scene 註冊表＋動態 import（code split）＋ demo 劇本
 - [x] Zustand store：遊戲狀態、設定、已讀紀錄
 - [x] 存讀檔：自動存檔＋3 欄位、版本號＋migrate、try/catch；跨存檔的全域資料（圖鑑、結局、已讀）
-- [ ] `src/systems/score.ts` 好感度公式＋測試
-- [ ] `src/systems/estimate.ts` 時長估算＋測試
-- [ ] 16:9 舞台縮放＋黑邊、桌機檢查（< 1024px 顯示「請使用電腦遊玩」）
-- [ ] VNStage：背景層、角色層（左中右、進退場、表情切換）
-- [ ] DialogueBox：毛玻璃、名牌顏色、打字機效果、點擊推進
-- [ ] ChoiceMenu、Backlog（L）、隱藏 UI（H）、自動播放（A）、已讀快轉（Ctrl）、Esc 選單
-- [ ] TitleScreen（開始 → 輸入名字、繼續、讀檔、設定）
-- [ ] 美術佔位元件 `<CharacterSprite>`／`<Background>`＋PNG 覆蓋機制（`public/art/manifest.json`）
-- [ ] audio stub API
-- [ ] 測試：runner、cond、存讀檔、score；`tests/scriptLint.test.ts` 骨架
-- [ ] `vercel.json`、`.gitignore`、`CONTRIBUTING.md`（目錄分工規則）
+- [x] `src/systems/score.ts` 好感度公式＋測試
+- [x] `src/systems/estimate.ts` 時長估算＋測試
+- [x] 16:9 舞台縮放＋黑邊、桌機檢查（< 1024px 顯示「請使用電腦遊玩」）
+- [x] VNStage：背景層、角色層（左中右、進退場、表情切換）
+- [x] DialogueBox：毛玻璃、名牌顏色、打字機效果、點擊推進
+- [x] ChoiceMenu、Backlog（L）、隱藏 UI（H）、自動播放（A）、已讀快轉（Ctrl）、Esc 選單
+- [x] TitleScreen（開始 → 輸入名字、繼續、讀檔、設定）
+- [x] 美術佔位元件 `<CharacterSprite>`／`<Background>`＋PNG 覆蓋機制（`public/art/manifest.json`）
+- [x] audio stub API
+- [x] 測試：runner、cond、存讀檔、score；`tests/scriptLint.test.ts` 骨架
+- [x] `vercel.json`、`.gitignore`、`CONTRIBUTING.md`（目錄分工規則）
 - [ ] 驗收：typecheck／test／build 全過、Playwright 煙霧測試＋截圖審查
 - [ ] 總監簽核＋commit
 

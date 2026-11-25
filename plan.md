@@ -351,7 +351,7 @@ export const week1: Scene = scene('w1', [
 
 ## 6. 開發階段與分工
 
-**分工**：總監（Opus）負責規劃、審查、驗收簽核；**Sonnet 子代理**負責實作與各階段的自我驗收。每階段結束時 commit 並 push 到 `claude/wonderful-thompson-av0l1r`。
+**分工**：總監（Opus）負責規劃、審查、驗收簽核；**Sonnet 子代理**負責實作與各階段的自我驗收。每階段結束時 commit 並 push 到 `main`。
 
 | 階段 | 內容 | 驗收標準 |
 |---|---|---|
