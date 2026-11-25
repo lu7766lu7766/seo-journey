@@ -121,3 +121,4 @@
 - 2026-11-25：完成 plan.md 與 task.md；P0 開始（Sonnet 執行中）。
 - 2026-11-25：P0 完成（Sonnet）：typecheck／test(25)／build 通過，主 chunk 129KB gzip；Playwright 煙霧測試（標題→名字→demo→選項→backlog→存/讀檔→重載）無 console error，截圖在 scratchpad；待總監簽核＋commit。
 - 2026-11-25：P0 總監簽核。劇本註冊改為 import.meta.glob 自動註冊（檔名＝scene id）。待改進：選項按鈕對比偏低（交給 P1 處理）。接著平行展開 P1／P2／P3／P4。
+- 2026-11-25：平行派出 6 個 Sonnet（各自在 git worktree）：P1 美術（凜打樣＋背景＋標題＋UI）、P2 養成系統、P3a 主線與結局、P3b 約會＋flavor＋知識卡、P3c 10 個支線、P4 小遊戲與收集。完成後由總監審查並合併到 main。
