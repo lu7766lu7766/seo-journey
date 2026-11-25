@@ -1,13 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { chromium } from 'playwright-core'
-
-const CHROME_PATHS = [
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
-]
-const executablePath = CHROME_PATHS.find((p) => existsSync(p))
-if (!executablePath) throw new Error('Chrome/Edge executable not found.')
+import { launchBrowser } from './lib/browser.mjs'
 
 const ROOT = process.cwd()
 const SOURCES_PATH = process.argv[2] ?? join(ROOT, 'scripts', 'art-sources.json')
@@ -16,7 +9,7 @@ const MANIFEST_PATH = join(OUT_DIR, 'manifest.json')
 
 const sources = JSON.parse(readFileSync(SOURCES_PATH, 'utf8'))
 
-const browser = await chromium.launch({ executablePath, headless: true })
+const browser = await launchBrowser()
 const page = await browser.newPage()
 
 const manifest = existsSync(MANIFEST_PATH) ? JSON.parse(readFileSync(MANIFEST_PATH, 'utf8')) : {}

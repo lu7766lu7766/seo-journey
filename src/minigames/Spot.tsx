@@ -3,6 +3,16 @@ import { audio } from '@/audio'
 import { evaluateSpotClick } from '@/content/minigames/scoring'
 import type { SpotGame } from '@/content/minigames/types'
 
+/**
+ * Monospace stack for code blocks. Applied inline because the global `button { font-family: inherit }`
+ * rule in index.css is unlayered and would otherwise beat Tailwind's `font-mono` utility on code rows.
+ * Latin glyphs come from a monospace face; Traditional-Chinese text falls through to TC-capable fonts.
+ */
+const CODE_FONT_STACK =
+  "ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Noto Sans Mono', 'DejaVu Sans Mono', 'Liberation Mono', " +
+  "'Noto Sans Mono CJK TC', 'Source Han Mono TC', 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', monospace"
+const CODE_STYLE = { fontFamily: CODE_FONT_STACK, fontVariantLigatures: 'none' } as const
+
 export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boolean) => void }) {
   const [foundLines, setFoundLines] = useState<number[]>([])
   const [wrongLines, setWrongLines] = useState<number[]>([])
@@ -80,7 +90,7 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <code className="font-mono text-xs font-bold text-ink">
+                    <code className="text-xs font-bold text-ink" style={CODE_STYLE}>
                       第 {targetIdx + 1} 行：{line?.code.trim()}
                     </code>
                     <span className={`shrink-0 text-xs font-bold ${found ? 'text-emerald-700' : 'text-amber-800'}`}>
@@ -156,7 +166,10 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
       <div className="min-h-0 flex-1 overflow-y-auto pr-1">
         <div className="overflow-hidden rounded-2xl border border-ink/20 bg-[#1e1b2e] shadow-inner">
           {game.filename && (
-            <div className="flex items-center justify-between border-b border-white/10 bg-[#161324] px-4 py-1.5 text-xs font-mono text-slate-300">
+            <div
+              className="flex items-center justify-between border-b border-white/10 bg-[#161324] px-4 py-1.5 text-xs text-slate-300"
+              style={CODE_STYLE}
+            >
               <span>{game.filename}</span>
               <span>點擊有問題的程式碼行</span>
             </div>
@@ -183,7 +196,8 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
                   disabled={gameEnded}
                   data-testid={`spot-line-${i}`}
                   onClick={() => handleLineClick(i)}
-                  className={`flex w-full items-center gap-3 px-4 py-2 text-left font-mono text-sm transition ${rowCls}`}
+                  style={CODE_STYLE}
+                  className={`flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition ${rowCls}`}
                 >
                   <span className="w-6 shrink-0 select-none text-right text-xs text-slate-400">
                     {String(i + 1).padStart(2, '0')}

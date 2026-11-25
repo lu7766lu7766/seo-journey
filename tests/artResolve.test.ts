@@ -1,0 +1,58 @@
+import { readFileSync } from 'node:fs'
+import { describe, expect, it } from 'vitest'
+import { resolveBgSrc, resolveCgSrc, resolveSpriteSrc } from '../src/art/resolve'
+import { BG_IDS } from '../src/content/backgrounds'
+import { SPRITE_IDS, FACES } from '../src/content/characters'
+import { CG_IDS } from '../src/content/cgs'
+
+describe('art manifest resolution', () => {
+  it('returns null (SVG fallback) when the manifest is empty', () => {
+    expect(resolveSpriteSrc({}, 'rin', 'blush')).toBeNull()
+    expect(resolveBgSrc({}, 'street')).toBeNull()
+    expect(resolveCgSrc({}, 'end-true')).toBeNull()
+  })
+
+  it('uses an exact per-face image without the emoji overlay', () => {
+    const m = { 'rin/normal': '/art/rin/normal.webp', 'rin/blush': '/art/rin/blush.webp' }
+    expect(resolveSpriteSrc(m, 'rin', 'blush')).toEqual({ src: '/art/rin/blush.webp', exact: true })
+  })
+
+  it('falls back to normal (with overlay) when the face image is missing', () => {
+    const m = { 'rin/normal': '/art/rin/normal.webp' }
+    expect(resolveSpriteSrc(m, 'rin', 'angry')).toEqual({ src: '/art/rin/normal.webp', exact: false })
+    expect(resolveSpriteSrc(m, 'rin', 'normal')).toEqual({ src: '/art/rin/normal.webp', exact: true })
+  })
+
+  it('honours the sensei / kuro face fallbacks before normal', () => {
+    const m = { 'sensei/normal': '/s/n.webp', 'sensei/smile': '/s/smile.webp', 'kuro/normal': '/k/n.webp', 'kuro/smug': '/k/smug.webp' }
+    expect(resolveSpriteSrc(m, 'sensei', 'happy')).toEqual({ src: '/s/smile.webp', exact: false })
+    expect(resolveSpriteSrc(m, 'kuro', 'happy')).toEqual({ src: '/k/smug.webp', exact: false })
+  })
+
+  it('accepts legacy boolean entries as .png paths', () => {
+    expect(resolveSpriteSrc({ 'hare/smile': true }, 'hare', 'smile')).toEqual({ src: '/art/hare/smile.png', exact: true })
+    expect(resolveBgSrc({ 'bg/beach': true }, 'beach')).toBe('/art/bg/beach.png')
+    expect(resolveCgSrc({ 'cg/end-rin': true }, 'end-rin')).toBe('/art/cg/end-rin.png')
+  })
+
+  it('resolves background and CG manifest keys (`bg/<id>`, `cg/<id>`)', () => {
+    const m = { 'bg/street': '/art/bg/street.webp', 'cg/date-hare-3': '/art/cg/date-hare-3.webp' }
+    expect(resolveBgSrc(m, 'street')).toBe('/art/bg/street.webp')
+    expect(resolveBgSrc(m, 'beach')).toBeNull()
+    expect(resolveCgSrc(m, 'date-hare-3')).toBe('/art/cg/date-hare-3.webp')
+    expect(resolveCgSrc(m, 'end-bad')).toBeNull()
+  })
+
+  it('every key shipped in public/art/manifest.json maps to a known id', () => {
+    const manifest = JSON.parse(readFileSync('public/art/manifest.json', 'utf8')) as Record<string, string>
+    for (const key of Object.keys(manifest)) {
+      const [head, tail] = key.split('/')
+      if (head === 'bg') expect(BG_IDS as readonly string[]).toContain(tail)
+      else if (head === 'cg') expect(CG_IDS as readonly string[]).toContain(tail)
+      else {
+        expect(SPRITE_IDS as readonly string[]).toContain(head)
+        expect(FACES as readonly string[]).toContain(tail)
+      }
+    }
+  })
+})
