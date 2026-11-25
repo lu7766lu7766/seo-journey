@@ -51,3 +51,10 @@
 - 活動 ID：`src/content/activityIds.ts`；活動數值：`src/content/activities.ts`（P2）
 - CG ID：`src/content/cgs.ts`（P1 繪製 `src/art/cg/`，P3 以 `cg(id)` 呼叫）
 - 背景另有 `home`（主角房間）、`infirmary`（保健室）
+
+## 平衡（改任何好感／能力數字、門檻、權重前必讀）
+- `tests/fullSim.ts` 會用**真實劇本**＋真實排程／支線／約會／結局邏輯，搭配多種「玩家行為」策略（偷懶點擊、隨機亂玩、用心均衡、偏愛某角色、專攻、被黑川誘惑、擺爛…）模擬通關。
+- `tests/balance.test.ts` 是回歸測試：用心玩可拿真結局但按鈕狂點不行、專情於一人必走她的結局、7 個結局都能達成。改數值後跑 `npm test`；想看完整分布表：`BALANCE_REPORT=1 npx vitest run tests/balance.test.ts`。
+- 全域旋鈕在 `src/systems/score.ts` 的 `TUNING`（`statScale`、`bondMax`）；推薦排程在 `src/content/activities.ts` 的 `RECOMMENDED_SCHEDULE`。
+- 黑帽結局需要 `blackhat ≥ 2`：第 4 週接受＋第 6 週再接受（第 6 週的再次邀約在 `kuroPending` 或 `blackhat ≥ 1` 時出現）。
+

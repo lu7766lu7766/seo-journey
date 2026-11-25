@@ -40,11 +40,11 @@ export default scene('sq-h1', [
   show('hare', 'center', 'happy'),
   say('hare', 'happy', '找碴時間！三個破綻，一個都不放過！'),
   say('narr', undefined, '「料理社社長：『限時三分鐘。麵團，不等人。』」'),
-  minigame('sq-h1', { stats: { str: 6, ans: 4 }, bond: { hare: 5 } }, { stats: { str: 3, ans: 2 }, bond: { hare: 5 } }),
+  minigame('sq-h1', { stats: { str: 6, ans: 4 }, bond: { hare: 2 } }, { stats: { str: 3, ans: 2 }, bond: { hare: 2 } }),
 
   say('narr', undefined, '「料理社社長：『頁面邊緣有一圈麵粉花紋，純裝飾。alt 要寫嗎？』」'),
   choice([
-    opt('純裝飾，alt 留空就好', { bond: { hare: 2 }, stats: { ans: 1 } }, [
+    opt('純裝飾，alt 留空就好', { bond: { hare: 1 }, stats: { ans: 1 } }, [
       show('hare', 'center', 'happy'),
       say('hare', 'happy', '結論先說：對！不必吵到聽眾！'),
     ]),

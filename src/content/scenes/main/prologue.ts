@@ -45,10 +45,10 @@ export default scene('prologue', [
   say('rin', 'normal', '打擾了。確認「404 號社辦」的新社員名單。……只有一人。'),
   say('rin', 'think', '六週後做不到達標，請把鑰匙交回學生會。'),
   choice([
-    opt('一定會做到！', { bond: { rin: 2 } }, [
+    opt('一定會做到！', { bond: { rin: 1 } }, [
       say('rin', 'normal', '很有精神。但搜尋引擎看的是成果，不是口號。'),
     ]),
-    opt('規則能讓我先看一下嗎？', { bond: { rin: 4 } }, [
+    opt('規則能讓我先看一下嗎？', { bond: { rin: 2 } }, [
       show('rin', 'right', 'surprised'),
       say('rin', 'surprised', '……你第一個問的是規則？'),
       show('rin', 'right', 'smile'),

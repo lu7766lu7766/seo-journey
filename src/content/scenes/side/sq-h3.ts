@@ -54,7 +54,7 @@ export default scene('sq-h3', [
   show('hare', 'center', 'happy'),
   say('hare', 'happy', '懂了！來練習：社團經費怎麼申請！'),
   say('narr', undefined, '她戴上耳機，我把節目稿，拆成一道道問答。'),
-  minigame('sq-h3', { stats: { ans: 8 }, bond: { hare: 8 } }, { stats: { ans: 4 }, bond: { hare: 8 } }),
+  minigame('sq-h3', { stats: { ans: 8 }, bond: { hare: 4 } }, { stats: { ans: 4 }, bond: { hare: 4 } }),
 
   show('hare', 'center', 'normal'),
   say('narr', undefined, '三十秒的插播時段。她按下碼表，唸完四十五字的答案。'),
@@ -62,7 +62,7 @@ export default scene('sq-h3', [
   say('hare', 'surprised', '十一秒！我居然……沒有一句廢話！'),
   say('hare', 'normal', '可是重點講完，還剩二十秒。要不要補點閒聊？'),
   choice([
-    opt('講完就交還時間，有興趣的人會點下一則', { bond: { hare: 2 }, stats: { ans: 1 } }, [
+    opt('講完就交還時間，有興趣的人會點下一則', { bond: { hare: 1 }, stats: { ans: 1 } }, [
       show('hare', 'center', 'happy'),
       say('hare', 'happy', '好！我把二十秒，還給午休！'),
     ]),

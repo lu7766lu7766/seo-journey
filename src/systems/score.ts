@@ -7,8 +7,18 @@ export const WEIGHTS: Record<HeroineId, Record<(typeof STAT_KEYS)[number], numbe
   mirai: { con: 0.3, tec: 0.05, str: 0.1, ans: 0.15, tru: 0.4 },
 }
 
+/**
+ * Global balance knobs, tuned with the full-content simulator (tests/fullSim.ts, tests/balance.test.ts).
+ * statScale: how much of the weighted stat sum counts toward a heroine's score (the stats themselves stay raw).
+ *             0.5 means a site with all stats at 60 is worth 30 hearts from the stat side; the rest must come
+ *             from the relationship (bond). Before tuning, scores saturated at 100 for anyone who played.
+ * bondMax:   cap of a single heroine's bond. Bond income was also rebalanced (main story x0.6, side quests x0.45,
+ *            dates unchanged) so that doing everything gives ~35 per heroine while courting one heroine reaches the cap.
+ * Mutable only so the simulator can sweep them.
+ */
+export const TUNING = { statScale: 0.5, bondScale: 1, bondMax: 40 }
+
 export const BOND_MIN = -20
-export const BOND_MAX = 40
 
 export const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 
@@ -16,7 +26,7 @@ export const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.ma
 export function score(who: HeroineId, stats: Stats, bond: Bonds): number {
   let sum = 0
   for (const s of STAT_KEYS) sum += WEIGHTS[who][s] * stats[s]
-  return clamp(sum + bond[who], 0, 100)
+  return clamp(sum * TUNING.statScale + bond[who] * TUNING.bondScale, 0, 100)
 }
 
 export function scores(stats: Stats, bond: Bonds): Record<HeroineId, number> {

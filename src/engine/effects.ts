@@ -1,4 +1,4 @@
-import { clamp, BOND_MAX, BOND_MIN } from '@/systems/score'
+import { clamp, BOND_MIN, TUNING } from '@/systems/score'
 import { HEROINES, STAT_KEYS, type CoreState, type Effects } from './types'
 
 export function initialCore(): CoreState {
@@ -20,7 +20,7 @@ export function applyEffects<T extends CoreState>(state: T, e: Effects): T {
     flags: { ...state.flags },
   }
   if (e.stats) for (const k of STAT_KEYS) if (e.stats[k] !== undefined) next.stats[k] = clamp(next.stats[k] + e.stats[k]!, 0, 100)
-  if (e.bond) for (const h of HEROINES) if (e.bond[h] !== undefined) next.bond[h] = clamp(next.bond[h] + e.bond[h]!, BOND_MIN, BOND_MAX)
+  if (e.bond) for (const h of HEROINES) if (e.bond[h] !== undefined) next.bond[h] = clamp(next.bond[h] + e.bond[h]!, BOND_MIN, TUNING.bondMax)
   if (e.stamina) next.stamina = clamp(next.stamina + e.stamina, 0, 100)
   if (e.stress) next.stress = clamp(next.stress + e.stress, 0, 100)
   if (e.flags) Object.assign(next.flags, e.flags)

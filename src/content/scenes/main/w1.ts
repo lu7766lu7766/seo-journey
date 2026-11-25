@@ -16,7 +16,7 @@ export default scene('w1', [
   say('me', undefined, '一個管能不能進門，一個管進門後能不能登記？'),
   show('rin', 'center', 'smile'),
   say('rin', 'smile', '理解速度，合格。去找出我們網站上的那兩個問題。'),
-  minigame('w1-robots', { stats: { tec: 4 }, bond: { rin: 2 } }, { stats: { tec: 1 } }),
+  minigame('w1-robots', { stats: { tec: 4 }, bond: { rin: 1 } }, { stats: { tec: 1 } }),
 
   show('rin', 'center', 'think'),
   say('rin', 'think', '根目錄 Disallow: /，頁面還掛著 noindex。'),
@@ -35,7 +35,7 @@ export default scene('w1', [
       show('rin', 'center', 'angry'),
       say('rin', 'angry', '太草率了。連測試頁和私人檔案也要公開嗎？'),
     ]),
-    opt('先列出哪些頁該被收錄', { bond: { rin: 5 }, stats: { tec: 3 } }, [
+    opt('先列出哪些頁該被收錄', { bond: { rin: 3 }, stats: { tec: 3 } }, [
       show('rin', 'center', 'smile'),
       say('rin', 'smile', '判斷正確。該露面的整理好，不該露面的妥善隔離。'),
     ]),

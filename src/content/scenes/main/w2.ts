@@ -19,7 +19,7 @@ export default scene('w2', [
   say('hare', 'happy', '所以要先說需求！聽的人想找什麼，就是搜尋意圖！'),
   card('search-intent'),
   say('hare', 'normal', '好，這週先把社團首頁的標題和描述改成倒金字塔！'),
-  minigame('w2-serp', { stats: { ans: 4, str: 2 }, bond: { hare: 2 } }, { stats: { ans: 1 } }),
+  minigame('w2-serp', { stats: { ans: 4, str: 2 }, bond: { hare: 1 } }, { stats: { ans: 1 } }),
 
   show('hare', 'center', 'smile'),
   say('hare', 'smile', '標題先放最重要的資訊，描述再補細節，前段別被截斷！'),
@@ -41,7 +41,7 @@ export default scene('w2', [
   show('hare', 'center', 'sad'),
   say('hare', 'sad', '那個……{name}。我是不是真的很吵啊？'),
   choice([
-    opt('妳的熱情是優點，只是要先講結論', { bond: { hare: 6 } }, [
+    opt('妳的熱情是優點，只是要先講結論', { bond: { hare: 4 } }, [
       show('hare', 'center', 'happy'),
       say('hare', 'happy', '真的嗎？！好，結論先說：謝謝你，我超開心的！'),
     ]),
@@ -49,7 +49,7 @@ export default scene('w2', [
       show('hare', 'center', 'sad'),
       say('hare', 'sad', '唔……雖然有點刺耳，我會試著安靜一點的……'),
     ]),
-    opt('我喜歡聽妳講話', { bond: { hare: 4 } }, [
+    opt('我喜歡聽妳講話', { bond: { hare: 2 } }, [
       show('hare', 'center', 'blush'),
       say('hare', 'blush', '咦、咦咦？！突然講這種話太犯規了吧！！'),
     ]),

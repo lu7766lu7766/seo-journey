@@ -39,7 +39,7 @@ export default scene('sq-m3', [
   say('mirai', 'think', '圖書館員阿姨說，她手抄校史時，錯了一個字。'),
   say('mirai', 'think', '我引用時，也可能抄錯。那我，是不是就更像複製？'),
   choice([
-    opt('引用不是複製：標出處，再加上妳自己的觀察', { bond: { mirai: 2 }, stats: { con: 1 } }, [
+    opt('引用不是複製：標出處，再加上妳自己的觀察', { bond: { mirai: 1 }, stats: { con: 1 } }, [
       show('mirai', 'center', 'surprised'),
       say('mirai', 'surprised', '……這個定義，我沒讀過。很新。'),
       say('mirai', 'smile', '標出處，是對來源的尊重，也讓別人能核對我。'),
@@ -59,13 +59,13 @@ export default scene('sq-m3', [
   say('mirai', 'normal', '有料，才有機會。沒有保證。'),
   say('narr', undefined, '她抱緊平板，抬頭看圓頂的星空。'),
   say('mirai', 'normal', '請出題。我想知道，自己能不能被引用。'),
-  minigame('sq-m3', { stats: { con: 6, tru: 4 }, bond: { mirai: 8 } }, { stats: { con: 3, tru: 2 }, bond: { mirai: 8 } }),
+  minigame('sq-m3', { stats: { con: 6, tru: 4 }, bond: { mirai: 4 } }, { stats: { con: 3, tru: 2 }, bond: { mirai: 4 } }),
 
   show('mirai', 'center', 'think'),
   say('mirai', 'think', '我想補一段：和{name}在天台，實測的一夜。'),
   say('mirai', 'think', '署名……要用「星野未來」嗎？'),
   choice([
-    opt('當然，那是妳寫的', { bond: { mirai: 3 } }, [
+    opt('當然，那是妳寫的', { bond: { mirai: 1 } }, [
       show('mirai', 'center', 'blush'),
       say('mirai', 'blush', '署名，等於負責。……我願意。'),
     ]),

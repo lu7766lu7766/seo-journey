@@ -38,7 +38,7 @@ export default scene('sq-x1', [
   say('kuro', 'shock', '呃，我是說，全是它「提醒」的。'),
   say('me', undefined, '你剛剛，自己承認了。'),
   say('kuro', 'smug', '那是口誤！擂台賽，開打！'),
-  minigame('sq-x1', { stats: { tru: 6 }, bond: { rin: 2, hare: 2, mirai: 2 } }, { stats: { tru: 3 }, bond: { rin: 2, hare: 2, mirai: 2 } }),
+  minigame('sq-x1', { stats: { tru: 6 }, bond: { rin: 1, hare: 1, mirai: 1 } }, { stats: { tru: 3 }, bond: { rin: 1, hare: 1, mirai: 1 } }),
 
   show('kuro', 'center', 'shock'),
   say('kuro', 'shock', '……可惡。連網站聲譽濫用，都被你看穿了？'),

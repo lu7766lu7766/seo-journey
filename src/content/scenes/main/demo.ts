@@ -12,8 +12,8 @@ export default scene('demo', [
   show('rin', 'left', 'normal'),
   say('rin', 'normal', '六週。做不到就請把鑰匙交回學生會。'),
   choice([
-    opt('一定會做到！', { bond: { rin: 2 } }, [say('rin', 'normal', '……口號誰都會喊。')]),
-    opt('規則能讓我先看一下嗎？', { bond: { rin: 4 }, flags: { askedRules: true } }, [
+    opt('一定會做到！', { bond: { rin: 1 } }, [say('rin', 'normal', '……口號誰都會喊。')]),
+    opt('規則能讓我先看一下嗎？', { bond: { rin: 2 }, flags: { askedRules: true } }, [
       say('rin', 'surprised', '……！'),
       say('rin', 'blush', '規則，是為了讓好東西被看見。……跟我來。'),
       choice([

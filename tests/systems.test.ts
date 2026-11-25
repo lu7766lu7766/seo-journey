@@ -36,6 +36,7 @@ describe('schedule & quests & ending systems', () => {
     const high = {
       ...initialCore(),
       stats: { con: 60, tec: 60, str: 60, ans: 60, tru: 60 },
+      bond: { rin: 30, hare: 0, mirai: 0 },
       flags: { 'dateCount.rin': 2 },
     }
     expect(pickDateScene('rin', high).sceneId).toBe('date-rin-3')
@@ -43,15 +44,15 @@ describe('schedule & quests & ending systems', () => {
     // Tie-breaker: equal scores -> higher bond wins; equal bond -> rin > hare > mirai
     const tied = {
       ...initialCore(),
-      stats: { con: 65, tec: 65, str: 65, ans: 65, tru: 65 },
-      bond: { rin: 0, hare: 0, mirai: 0 },
+      stats: { con: 100, tec: 100, str: 100, ans: 100, tru: 100 },
+      bond: { rin: 20, hare: 20, mirai: 20 },
     }
     expect(determineEnding(tied)).toBe('end-true')
 
     const tiedSingle = {
       ...initialCore(),
-      stats: { con: 62, tec: 62, str: 62, ans: 62, tru: 62 },
-      bond: { rin: 0, hare: 0, mirai: 0 },
+      stats: { con: 100, tec: 100, str: 100, ans: 100, tru: 100 },
+      bond: { rin: 12, hare: 12, mirai: 12 },
     }
     expect(determineEnding(tiedSingle)).toBe('end-rin')
   })

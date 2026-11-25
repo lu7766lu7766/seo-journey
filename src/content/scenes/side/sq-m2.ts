@@ -42,11 +42,11 @@ export default scene('sq-m2', [
   say('narr', undefined, '她說完停了一秒。指尖，輕輕碰了一下星形髮夾。'),
   show('mirai', 'center', 'normal'),
   say('mirai', 'normal', '請審查天文社的 robots.txt 草案。'),
-  minigame('sq-m2', { stats: { tec: 4, tru: 4 }, bond: { mirai: 5 } }, { stats: { tec: 2, tru: 2 }, bond: { mirai: 5 } }),
+  minigame('sq-m2', { stats: { tec: 4, tru: 4 }, bond: { mirai: 2 } }, { stats: { tec: 2, tru: 2 }, bond: { mirai: 2 } }),
 
   say('narr', undefined, '「天文社社長：『結論！筆記要被引用，照片集別被拿去訓練！』」'),
   choice([
-    opt('擋訓練用爬蟲，放行搜尋用爬蟲', { bond: { mirai: 2 }, stats: { tru: 1 } }, [
+    opt('擋訓練用爬蟲，放行搜尋用爬蟲', { bond: { mirai: 1 }, stats: { tru: 1 } }, [
       show('mirai', 'center', 'happy'),
       say('mirai', 'happy', '精準。尊重社團意願，也保留被引用的機會。'),
     ]),

@@ -22,7 +22,7 @@ export default scene('w3', [
   show('sensei', 'left', 'smile'),
   say('sensei', 'smile', '當成填表單就好：身分選對沒、名字一不一致、每行逗號有沒有漏。'),
   hide('sensei'),
-  minigame('w3-jsonld', { stats: { str: 4, tru: 2 }, bond: { mirai: 2 } }, { stats: { str: 1 } }),
+  minigame('w3-jsonld', { stats: { str: 4, tru: 2 }, bond: { mirai: 1 } }, { stats: { str: 1 } }),
 
   say('me', undefined, '大括號不可怕，可怕的是漏掉的那顆逗號。'),
   show('mirai', 'center', 'think'),
@@ -34,7 +34,7 @@ export default scene('w3', [
 
   say('mirai', 'think', '疑問。AI 一鍵就能產生一百頁文章，為什麼不用？'),
   choice([
-    opt('因為我想寫只有我們寫得出來的東西', { bond: { mirai: 6 } }, [
+    opt('因為我想寫只有我們寫得出來的東西', { bond: { mirai: 4 } }, [
       show('mirai', 'center', 'surprised'),
       say('mirai', 'surprised', '……資料庫中，沒有這個答案。'),
       show('mirai', 'center', 'blush'),

@@ -1,5 +1,5 @@
 import { bg, bgm, card, choice, effect, hide, opt, say, scene, sfx, show, when } from '@/engine'
-import { flag } from '@/engine/cond'
+import { flag, or } from '@/engine/cond'
 
 export default scene('w6', [
   bgm('daily'),
@@ -54,14 +54,14 @@ export default scene('w6', [
   say('narr', undefined, '放學時雨還在下，校門口的路燈下蹲著一個全身濕透的人影。'),
   show('kuro', 'center', 'sad'),
   say('kuro', 'sad', '哈……我的網站全軍覆沒。人工處罰，整個從搜尋消失。'),
-  when(flag('kuroPending'), [
+  when(or(flag('kuroPending'), flag('blackhat', 'gte', 1)), [
     say('kuro', 'normal', '最後問一次，我還有備用網域，要不要一起衝？'),
     choice([
-      opt('好，趁最後賭一把', { inc: { blackhat: 1 }, stats: { con: -10, tru: -10 } }, [
-        say('kuro', 'sad', '……你竟然還敢跟著我跳火坑啊。'),
-      ]),
       opt('不要，我們一起堂堂正正重來吧', { bond: { rin: 1, hare: 1, mirai: 1 } }, [
         say('kuro', 'shock', '重來嗎……原來，流量並不是正義啊。'),
+      ]),
+      opt('好，趁最後賭一把', { inc: { blackhat: 1 }, stats: { con: -10, tru: -10 } }, [
+        say('kuro', 'sad', '……你竟然還敢跟著我跳火坑啊。'),
       ]),
     ]),
   ]),
@@ -71,7 +71,7 @@ export default scene('w6', [
   bg('rain', 'night', 'rain'),
   say('narr', undefined, '夜裡的雨還沒停。離搜尋祭只剩幾天，我撐著傘，想去見一個人。'),
   choice([
-    opt('去學生會室找凜', { flags: { w6Choice: 1 }, bond: { rin: 8 } }, [
+    opt('去學生會室找凜', { flags: { w6Choice: 1 }, bond: { rin: 5 } }, [
       bg('council', 'night', 'fade'),
       say('narr', undefined, '學生會室的燈還亮著，凜獨自對著堆成小山的文件。'),
       show('rin', 'center', 'think'),
@@ -85,7 +85,7 @@ export default scene('w6', [
       show('rin', 'center', 'smile'),
       say('rin', 'smile', '搜尋祭那天，我在評審席等你的簡報。'),
     ]),
-    opt('去廣播室找晴', { flags: { w6Choice: 2 }, bond: { hare: 8 } }, [
+    opt('去廣播室找晴', { flags: { w6Choice: 2 }, bond: { hare: 5 } }, [
       bg('broadcast', 'night', 'fade'),
       say('narr', undefined, '廣播室只亮著 ON AIR 的紅燈，晴抱著膝蓋坐在調音台前。'),
       show('hare', 'center', 'normal'),
@@ -99,7 +99,7 @@ export default scene('w6', [
       show('hare', 'center', 'happy'),
       say('hare', 'happy', '所以結論先說：搜尋祭那天，我要用一句話讓全場聽見我們！'),
     ]),
-    opt('去天台找未來', { flags: { w6Choice: 3 }, bond: { mirai: 8 } }, [
+    opt('去天台找未來', { flags: { w6Choice: 3 }, bond: { mirai: 5 } }, [
       bg('rooftop', 'night', 'rain'),
       say('narr', undefined, '天台上沒有別人，只有雨聲，和一點微微發亮的青色。'),
       show('mirai', 'center', 'normal'),

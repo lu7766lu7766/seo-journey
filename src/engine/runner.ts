@@ -39,6 +39,11 @@ export class SceneRunner {
     return { sceneId: this.scene.id, pc: [...this.pc] }
   }
 
+  /** The command the runner is currently paused on (for tools and tests). */
+  peek(): Cmd | undefined {
+    return this.cur()
+  }
+
   /** Run until the first pause. Call once after construction / resume. */
   start(): Pause {
     return this.settle()

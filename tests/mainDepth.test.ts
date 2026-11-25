@@ -88,7 +88,7 @@ describe('main story depth', () => {
     for (const id of MAIN) expect(maxCardRun((await loadScene(id)).cmds), id).toBeLessThanOrEqual(2)
   })
 
-  it('week 6 keeps its contract: route flags, bond +8, 150-200 char rain scenes', async () => {
+  it('week 6 keeps its contract: route flags, bond +5, 150-200 char rain scenes', async () => {
     const w6 = await loadScene('w6')
     const routes = [...walk(w6.cmds)].filter((c) => c.k === 'choice' && c.options.some((o) => o.effects?.flags?.w6Choice))
     expect(routes).toHaveLength(1)
@@ -97,7 +97,7 @@ describe('main story depth', () => {
     const who = ['rin', 'hare', 'mirai'] as const
     route.options.forEach((o, i) => {
       expect(o.effects?.flags?.w6Choice).toBe(i + 1)
-      expect(o.effects?.bond?.[who[i]]).toBe(8)
+      expect(o.effects?.bond?.[who[i]]).toBe(5)
       const { chars } = countCmds(o.then ?? [])
       expect(chars, `route ${i + 1}`).toBeGreaterThanOrEqual(150)
       expect(chars, `route ${i + 1}`).toBeLessThanOrEqual(200)

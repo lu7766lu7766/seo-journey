@@ -4,7 +4,7 @@ import { Background } from '@/art/backgrounds'
 import { CharacterAvatar } from '@/art/characters/Avatar'
 import { ActivityChibi } from '@/art/chibi/ActivityChibi'
 import { audio } from '@/audio'
-import { ACTIVITIES, ACTIVITY_LIST, WEEK_THEMES } from '@/content/activities'
+import { ACTIVITIES, ACTIVITY_LIST, RECOMMENDED_SCHEDULE } from '@/content/activities'
 import type { ActivityId } from '@/content/activityIds'
 import { CHARACTERS, type CharId } from '@/content/characters'
 import { STAT_KEYS, type StatKey } from '@/engine/types'
@@ -26,7 +26,6 @@ export function ScheduleScreen() {
   const [result, setResult] = useState<WeekScheduleResult | null>(null)
   const [stepIdx, setStepIdx] = useState(0)
 
-  const theme = WEEK_THEMES[s.week]
   const filledSlots = slots.filter((x): x is ActivityId => x !== null)
   const preview = previewSchedule(s, s.week, filledSlots)
 
@@ -41,8 +40,7 @@ export function ScheduleScreen() {
   }
 
   const autoFill = () => {
-    const bonus = theme?.bonusActivities[0] ?? 'write'
-    setSlots([bonus, 'research', 'authors', 'rest'])
+    setSlots([...(RECOMMENDED_SCHEDULE[s.week] ?? ['write', 'research', 'authors', 'rest'])])
   }
 
   const execute = () => {

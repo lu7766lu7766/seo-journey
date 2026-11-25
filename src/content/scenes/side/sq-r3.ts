@@ -46,12 +46,12 @@ export default scene('sq-r3', [
   say('rin', 'normal', '……好。我不敢看自己的原始碼。你陪我。'),
   card('image-optimization'),
   say('narr', undefined, '她把手機收進口袋，在我旁邊蹲下。蛋塔也湊過來看螢幕。'),
-  minigame('sq-r3', { stats: { tec: 6, con: 4 }, bond: { rin: 8 } }, { stats: { tec: 3, con: 2 }, bond: { rin: 8 } }),
+  minigame('sq-r3', { stats: { tec: 6, con: 4 }, bond: { rin: 4 } }, { stats: { tec: 3, con: 2 }, bond: { rin: 4 } }),
 
   show('rin', 'center', 'think'),
   say('rin', 'think', '相簿區有二十張貓照。這些該怎麼辦？'),
   choice([
-    opt('延遲載入，並且每張都預留寬高', { bond: { rin: 2 }, stats: { tec: 1 } }, [
+    opt('延遲載入，並且每張都預留寬高', { bond: { rin: 1 }, stats: { tec: 1 } }, [
       show('rin', 'center', 'smile'),
       say('rin', 'smile', '配角排隊上台。主角，才不會被擠到旁邊。'),
     ]),
@@ -68,7 +68,7 @@ export default scene('sq-r3', [
   show('rin', 'center', 'blush'),
   say('rin', 'blush', '……你覺得，會長寫貓咪日記，很奇怪嗎？'),
   choice([
-    opt('很可愛。我想當第九位讀者', { bond: { rin: 3 } }, [
+    opt('很可愛。我想當第九位讀者', { bond: { rin: 1 } }, [
       say('rin', 'blush', '……歡迎。編號九，不能退訂。'),
       say('rin', 'smile', '讀者特權：可以摸蛋塔三十秒。'),
       say('narr', undefined, '蛋塔舔了舔我的手指。三十秒，瞬間變成三分鐘。'),

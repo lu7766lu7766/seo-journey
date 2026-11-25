@@ -37,11 +37,11 @@ export default scene('sq-m1', [
   say('me', undefined, '三張索引卡，要合成一張。'),
   say('mirai', 'normal', '合併。並保留一份「標準資料」，其餘都引用它。'),
   say('mirai', 'think', '請從官網原始碼，找出與紀錄不一致的三行。'),
-  minigame('sq-m1', { stats: { tru: 8 }, bond: { mirai: 5 } }, { stats: { tru: 4 }, bond: { mirai: 5 } }),
+  minigame('sq-m1', { stats: { tru: 8 }, bond: { mirai: 2 } }, { stats: { tru: 4 }, bond: { mirai: 2 } }),
 
   say('narr', undefined, '「圖書館員：『那些寫錯的舊頁……全部下架，行嗎？』」'),
   choice([
-    opt('不用藏。建立一份標準資料，官網和簡介都引用它', { bond: { mirai: 2 }, stats: { tru: 1 } }, [
+    opt('不用藏。建立一份標準資料，官網和簡介都引用它', { bond: { mirai: 1 }, stats: { tru: 1 } }, [
       show('mirai', 'center', 'smile'),
       say('mirai', 'smile', '單一事實來源。推論：正確。'),
       say('narr', undefined, '「圖書館員：『哎呀，連校友會，也想照這份改呢。』」'),

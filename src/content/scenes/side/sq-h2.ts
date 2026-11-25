@@ -44,7 +44,7 @@ export default scene('sq-h2', [
   card('freshness'),
   show('hare', 'center', 'happy'),
   say('hare', 'happy', '來！替籃球社，重做一面計分板！'),
-  minigame('sq-h2', { stats: { con: 5, ans: 5 }, bond: { hare: 5 } }, { stats: { con: 3, ans: 3 }, bond: { hare: 5 } }),
+  minigame('sq-h2', { stats: { con: 5, ans: 5 }, bond: { hare: 2 } }, { stats: { con: 3, ans: 3 }, bond: { hare: 2 } }),
 
   say('narr', undefined, '新的搜尋結果預覽跳出來：年份、對手、時間、場館，一行看完。'),
   say('narr', undefined, '隊長盯著螢幕，看了很久。'),
@@ -54,7 +54,7 @@ export default scene('sq-h2', [
   say('hare', 'surprised', '這是……稱讚嗎？'),
   say('narr', undefined, '「籃球社隊長：『……賽後，這頁，刪？』」'),
   choice([
-    opt('保留同一頁，改成賽果，寫上更新日期', { bond: { hare: 2 }, stats: { con: 1 } }, [
+    opt('保留同一頁，改成賽果，寫上更新日期', { bond: { hare: 1 }, stats: { con: 1 } }, [
       show('hare', 'center', 'happy'),
       say('hare', 'happy', '想查比數的人，也找得到！還能放明年的連結！'),
       say('narr', undefined, '「籃球社隊長：『……謝了。』」'),
@@ -69,7 +69,7 @@ export default scene('sq-h2', [
   show('hare', 'center', 'sad'),
   say('hare', 'sad', '他一句話就講完了。我講三十句，都沒他有用。'),
   choice([
-    opt('他有重點，妳有溫度。重點先講，溫度跟著來', { bond: { hare: 2 } }, [
+    opt('他有重點，妳有溫度。重點先講，溫度跟著來', { bond: { hare: 1 } }, [
       show('hare', 'center', 'blush'),
       say('hare', 'blush', '……你很會講結論耶。'),
       say('me', undefined, '跟某位廣播社社長學的。'),

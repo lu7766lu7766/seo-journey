@@ -14,7 +14,7 @@ export default scene('w4', [
   show('hare', 'right', 'happy'),
   say('hare', 'happy', 'CLS 我懂！就是桌子突然移位，害你打翻整碗湯！'),
   say('rin', 'smile', '……比喻不錯。不過是我先想到的。'),
-  minigame('w4-cwv', { stats: { tec: 4 }, bond: { rin: 2, hare: 2 } }, { stats: { tec: 1 } }),
+  minigame('w4-cwv', { stats: { tec: 4 }, bond: { rin: 1, hare: 1 } }, { stats: { tec: 1 } }),
   say('rin', 'normal', 'LCP、INP、CLS，就是網站體驗核心指標。它是訊號之一，不是排名的萬靈丹。'),
   card('core-web-vitals'),
   say('hare', 'think', '所以最大的那張主圖，要最先端上桌！'),
@@ -31,15 +31,15 @@ export default scene('w4', [
   show('rin', 'left', 'angry'),
   say('rin', 'angry', '{name}，別理他。沒有任何人能「保證」排名。'),
   choice([
-    opt('聽起來不錯……讓我試試', { inc: { blackhat: 1 }, stats: { con: 15 }, bond: { rin: -3, hare: -3, mirai: -3 } }, [
-      say('kuro', 'smug', '哈哈，識貨！等著看數據暴漲吧！'),
-      say('rin', 'sad', '……你竟然選擇走捷徑。'),
-    ]),
-    opt('那是違反垃圾內容政策的，我拒絕', { bond: { rin: 3, hare: 3, mirai: 3 } }, [
+    opt('那是違反垃圾內容政策的，我拒絕', { bond: { rin: 2, hare: 2, mirai: 2 } }, [
       show('kuro', 'center', 'shock'),
       say('kuro', 'shock', '切，死腦筋！別後悔啊！'),
       show('rin', 'left', 'smile'),
       say('rin', 'smile', '說得好。真正的網站靠的是價值，不是作弊。'),
+    ]),
+    opt('聽起來不錯……讓我試試', { inc: { blackhat: 1 }, stats: { con: 15 }, bond: { rin: -3, hare: -3, mirai: -3 } }, [
+      say('kuro', 'smug', '哈哈，識貨！等著看數據暴漲吧！'),
+      say('rin', 'sad', '……你竟然選擇走捷徑。'),
     ]),
     opt('讓我考慮一下', { flags: { kuroPending: true } }, [
       say('kuro', 'smug', '行，過兩週我再來問你。想通了隨時找我。'),

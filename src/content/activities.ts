@@ -105,3 +105,17 @@ export const WEEK_THEMES: Record<number, WeekTheme> = {
   5: { week: 5, title: '被引用的理由', topic: 'GEO 生成式引擎優化', bonusActivities: ['authors', 'write'] },
   6: { week: 6, title: '演算法的大雨', topic: 'E-E-A-T 與核心更新', bonusActivities: ['authors', 'write'] },
 }
+
+/**
+ * The 「推薦排程」 button. Theme activity first, then a balanced mix, last slot rests.
+ * Deliberately NOT optimal (it does not look at who you are courting), so mashing it yields
+ * a decent site but not the true ending on its own.
+ */
+export const RECOMMENDED_SCHEDULE: Record<number, ActivityId[]> = {
+  1: ['techcheck', 'write', 'research', 'rest'],
+  2: ['qa', 'research', 'social', 'rest'],
+  3: ['schema', 'authors', 'write', 'rest'],
+  4: ['techcheck', 'qa', 'schema', 'rest'],
+  5: ['authors', 'write', 'research', 'rest'],
+  6: ['write', 'authors', 'social', 'rest'],
+}

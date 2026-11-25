@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { TUNING } from '@/systems/score'
 import { and, bondIs, evalCond, flag, not, or, scoreIs, seen, statIs } from '@/engine/cond'
 import { initialCore } from '@/engine/effects'
 import type { CondState } from '@/engine/types'
@@ -28,9 +29,10 @@ describe('evalCond', () => {
     expect(evalCond(statIs('tec', 'gte', 60), s)).toBe(true)
     expect(evalCond(statIs('tec', 'gt', 60), s)).toBe(false)
     expect(evalCond(bondIs('rin', 'eq', 10), s)).toBe(true)
-    // rin: 10*.3+60*.35+10*.15+10*.05+10*.15 +10 = 3+21+1.5+.5+1.5+10 = 37.5
-    expect(evalCond(scoreIs('rin', 'gte', 37.5), s)).toBe(true)
-    expect(evalCond(scoreIs('rin', 'gt', 38), s)).toBe(false)
+    // rin weighted stat sum: 3+21+1.5+.5+1.5 = 27.5, scaled by TUNING.statScale, plus bond 10
+    const expected = 27.5 * TUNING.statScale + 10
+    expect(evalCond(scoreIs('rin', 'gte', expected - 0.01), s)).toBe(true)
+    expect(evalCond(scoreIs('rin', 'gt', expected + 0.5), s)).toBe(false)
     expect(evalCond(seen('w1'), s)).toBe(true)
     expect(evalCond(seen('w2'), s)).toBe(false)
   })

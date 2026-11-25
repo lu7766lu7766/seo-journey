@@ -22,7 +22,7 @@ export default scene('w5', [
 
   say('mirai', 'think', '「青葉學生社團大調查」的結果出爐了。你打算怎麼發表？'),
   choice([
-    opt('附上完整調查方法、樣本數與原始數據', { bond: { mirai: 6 }, stats: { tru: 4 } }, [
+    opt('附上完整調查方法、樣本數與原始數據', { bond: { mirai: 4 }, stats: { tru: 4 } }, [
       show('mirai', 'center', 'happy'),
       say('mirai', 'happy', '正確。第一手原創資料，是他人無法取代的資訊增益。'),
     ]),

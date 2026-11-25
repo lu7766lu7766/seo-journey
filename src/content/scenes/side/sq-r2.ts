@@ -50,14 +50,14 @@ export default scene('sq-r2', [
   say('me', undefined, '這盞燈，是不是該換了？'),
   say('rin', 'think', '已提出申請。第三次。'),
   say('narr', undefined, '我把筆電轉向她，我們一起，逐行揪出會生出分身的地方。'),
-  minigame('sq-r2', { stats: { str: 6, tec: 4 }, bond: { rin: 5 } }, { stats: { str: 3, tec: 2 }, bond: { rin: 5 } }),
+  minigame('sq-r2', { stats: { str: 6, tec: 4 }, bond: { rin: 2 } }, { stats: { str: 3, tec: 2 }, bond: { rin: 2 } }),
 
   show('rin', 'center', 'sad'),
   say('rin', 'sad', '最後一題。我昨晚查到一半，嚇得沒睡。'),
   say('rin', 'sad', '半夜兩點，螢幕上的分身，一直在增加。'),
   say('rin', 'think', '重複內容，會讓整個學生會網站被停權嗎？'),
   choice([
-    opt('不會直接被罰，但會分散訊號、浪費爬取', { bond: { rin: 2 }, stats: { str: 1 } }, [
+    opt('不會直接被罰，但會分散訊號、浪費爬取', { bond: { rin: 1 }, stats: { str: 1 } }, [
       show('rin', 'center', 'smile'),
       say('rin', 'smile', '對。可怕的不是處罰，是本尊被埋沒。'),
       say('rin', 'blush', '所以那包鹽，白帶了。'),
