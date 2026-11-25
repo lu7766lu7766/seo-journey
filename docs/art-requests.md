@@ -669,13 +669,13 @@ npm run art -- D:/seo-art-src/sources.json    # 或指定其他來源對照檔
 
 | # | Key | 輸出檔 | 完成？ |
 |---|---|---|---|
-| 1 | `rin/smile` | `public/art/rin/smile.webp` | ☐ |
+| 1 | `rin/smile` | `public/art/rin/smile.webp` | ✅ |
 | 2 | `rin/happy` | `public/art/rin/happy.webp` | ☐ |
-| 3 | `rin/blush` | `public/art/rin/blush.webp` | ☐ |
+| 3 | `rin/blush` | `public/art/rin/blush.webp` | ✅ |
 | 4 | `rin/surprised` | `public/art/rin/surprised.webp` | ☐ |
 | 5 | `rin/angry` | `public/art/rin/angry.webp` | ☐ |
 | 6 | `rin/sad` | `public/art/rin/sad.webp` | ☐ |
-| 7 | `rin/think` | `public/art/rin/think.webp` | ☐ |
+| 7 | `rin/think` | `public/art/rin/think.webp` | ✅ |
 | 8 | `hare/smile` | `public/art/hare/smile.webp` | ☐ |
 | 9 | `hare/happy` | `public/art/hare/happy.webp` | ☐ |
 | 10 | `hare/blush` | `public/art/hare/blush.webp` | ☐ |
@@ -690,7 +690,7 @@ npm run art -- D:/seo-art-src/sources.json    # 或指定其他來源對照檔
 | 19 | `mirai/angry` | `public/art/mirai/angry.webp` | ☐ |
 | 20 | `mirai/sad` | `public/art/mirai/sad.webp` | ☐ |
 | 21 | `mirai/think` | `public/art/mirai/think.webp` | ☐ |
-| 22 | `sensei/smile` | `public/art/sensei/smile.webp` | ☐ |
+| 22 | `sensei/smile` | `public/art/sensei/smile.webp` | ✅ |
 | 23 | `sensei/think` | `public/art/sensei/think.webp` | ☐ |
 | 24 | `sensei/sad` | `public/art/sensei/sad.webp` | ☐ |
 | 25 | `kuro/smug` | `public/art/kuro/smug.webp` | ☐ |
@@ -707,9 +707,9 @@ npm run art -- D:/seo-art-src/sources.json    # 或指定其他來源對照檔
 | 36 | `cg/date-mirai-3` | `public/art/cg/date-mirai-3.webp` | ✅ |
 | 37 | `cg/end-true` | `public/art/cg/end-true.webp` | ✅ |
 | 38 | `cg/end-rin` | `public/art/cg/end-rin.webp` | ✅ |
-| 39 | `cg/end-hare` | `public/art/cg/end-hare.webp` | ☐ |
-| 40 | `cg/end-mirai` | `public/art/cg/end-mirai.webp` | ☐ |
+| 39 | `cg/end-hare` | `public/art/cg/end-hare.webp` | ✅ |
+| 40 | `cg/end-mirai` | `public/art/cg/end-mirai.webp` | ✅ |
 | 41 | `cg/end-normal` | `public/art/cg/end-normal.webp` | ✅ |
-| 42 | `cg/end-bad` | `public/art/cg/end-bad.webp` | ☐ |
-| 43 | `cg/end-blackhat` | `public/art/cg/end-blackhat.webp` | ☐ |
+| 42 | `cg/end-bad` | `public/art/cg/end-bad.webp` | ✅ |
+| 43 | `cg/end-blackhat` | `public/art/cg/end-blackhat.webp` | ✅ |
 

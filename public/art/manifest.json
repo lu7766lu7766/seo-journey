@@ -24,5 +24,13 @@
   "cg/date-mirai-3": "/art/cg/date-mirai-3.webp",
   "cg/end-true": "/art/cg/end-true.webp",
   "cg/end-rin": "/art/cg/end-rin.webp",
-  "cg/end-normal": "/art/cg/end-normal.webp"
+  "cg/end-normal": "/art/cg/end-normal.webp",
+  "cg/end-bad": "/art/cg/end-bad.webp",
+  "cg/end-mirai": "/art/cg/end-mirai.webp",
+  "cg/end-blackhat": "/art/cg/end-blackhat.webp",
+  "cg/end-hare": "/art/cg/end-hare.webp",
+  "rin/smile": "/art/rin/smile.webp",
+  "rin/think": "/art/rin/think.webp",
+  "rin/blush": "/art/rin/blush.webp",
+  "sensei/smile": "/art/sensei/smile.webp"
 }
