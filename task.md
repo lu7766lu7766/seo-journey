@@ -4,7 +4,7 @@
 > **完成一項就立刻打勾 `[x]`**，並在「進度紀錄」寫一行。接手的 AI 請先讀 plan.md → 本檔 → `CONTRIBUTING.md`（P0 完成後才會有）。
 >
 > - 開發分支：`claude/wonderful-thompson-av0l1r`
-> - 每個階段完成後 commit + push
+> - **每個階段完成都必須先 commit + push，才能開始下一階段**（commit 訊息格式：`P<n>: <摘要>`）；平行進行的階段各自完成後分別 commit
 > - 標記說明：`[ ]` 未開始｜`[~]` 進行中｜`[x]` 完成｜`[!]` 卡住（寫原因）
 
 ---
@@ -15,12 +15,12 @@
 - [~] Vite + React 19 + TS strict 專案，scripts：dev／build／preview／typecheck／test，alias `@/`
 - [ ] Tailwind 4 主題 token（粉彩色、字型 Noto Sans TC／LXGW WenKai TC）
 - [ ] `src/engine/types.ts`：Cmd、ChoiceOpt、Effects、Cond、Scene 型別
-- [ ] DSL helper：scene／bg／show／hide／say／choice／opt／effect／when／minigame／card／bgm／sfx／cg／wait
-- [ ] Scene runner（純 TS）：PC 堆疊、巢狀區塊、效果套用、穩定的行 id、`{name}` 替換
-- [ ] 註冊表：characters.ts（角色、表情、主色）、BgId、knowledge.ts（ID＋標題＋空白內文）、minigame ID
-- [ ] Scene 註冊表＋動態 import（code split）＋ demo 劇本
-- [ ] Zustand store：遊戲狀態、設定、已讀紀錄
-- [ ] 存讀檔：自動存檔＋3 欄位、版本號＋migrate、try/catch；跨存檔的全域資料（圖鑑、結局、已讀）
+- [x] DSL helper：scene／bg／show／hide／say／choice／opt／effect／when／minigame／card／bgm／sfx／cg／wait
+- [x] Scene runner（純 TS）：PC 堆疊、巢狀區塊、效果套用、穩定的行 id、`{name}` 替換
+- [x] 註冊表：characters.ts（角色、表情、主色）、BgId、knowledge.ts（ID＋標題＋空白內文）、minigame ID
+- [x] Scene 註冊表＋動態 import（code split）＋ demo 劇本
+- [x] Zustand store：遊戲狀態、設定、已讀紀錄
+- [x] 存讀檔：自動存檔＋3 欄位、版本號＋migrate、try/catch；跨存檔的全域資料（圖鑑、結局、已讀）
 - [ ] `src/systems/score.ts` 好感度公式＋測試
 - [ ] `src/systems/estimate.ts` 時長估算＋測試
 - [ ] 16:9 舞台縮放＋黑邊、桌機檢查（< 1024px 顯示「請使用電腦遊玩」）
