@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import { Background } from '@/art/backgrounds'
+import { CharacterAvatar } from '@/art/characters/Avatar'
+import { ActivityChibi } from '@/art/chibi/ActivityChibi'
 import { audio } from '@/audio'
 import { ACTIVITIES, ACTIVITY_LIST, WEEK_THEMES } from '@/content/activities'
 import type { ActivityId } from '@/content/activityIds'
-import { CHARACTERS } from '@/content/characters'
+import { CHARACTERS, type CharId } from '@/content/characters'
 import { STAT_KEYS, type StatKey } from '@/engine/types'
 import { useGame } from '@/store/game'
 import { isThemedActivity, previewSchedule, runWeekSchedule, type WeekScheduleResult } from '@/systems/schedule'
@@ -63,52 +65,118 @@ export function ScheduleScreen() {
     const out = result.outcomes[stepIdx]
     const def = ACTIVITIES[out.activityId]
     const isLast = stepIdx >= result.outcomes.length - 1
+    const chatterChar = out.chatter && CHARACTERS[out.chatter.who].hasSprite ? (out.chatter.who as CharId) : null
     return (
-      <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-8" data-testid="schedule-playback">
+      <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-6" data-testid="schedule-playback">
         <Background id="clubroom" time="day" />
-        <div className="pointer-events-none absolute inset-0 bg-[#0c1228]/50 backdrop-blur-[2px]" />
+        <div className="pointer-events-none absolute inset-0 bg-[#0c1228]/52 backdrop-blur-[2px]" />
         <motion.div
           key={stepIdx}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass relative z-10 flex w-[760px] flex-col gap-5 rounded-3xl p-8"
+          className="glass relative z-10 flex w-[840px] max-h-[676px] flex-col gap-3.5 rounded-3xl p-6"
         >
-          <div className="flex items-center justify-between">
-            <span className="rounded-full bg-ink px-4 py-1 text-sm font-bold text-white">
-              第 {s.week} 週 · 行程 {stepIdx + 1} / 4
-            </span>
-            <span className="font-title text-xl font-bold">{def.name}</span>
+          {/* Header + 4-Slot Progress Stepper */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="rounded-full bg-ink px-4 py-1 text-sm font-bold text-white">
+                第 {s.week} 週 · 行程 {stepIdx + 1} / 4
+              </span>
+              <span className="font-title text-2xl font-bold text-ink">{def.name}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              {result.outcomes.map((item, idx) => {
+                const done = idx < stepIdx
+                const current = idx === stepIdx
+                const icon =
+                  item.status === 'fail' ? '✕' : item.status === 'infirmary' || item.status === 'skipped' ? '✚' : done ? '✓' : `${idx + 1}`
+                return (
+                  <div
+                    key={idx}
+                    className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold transition ${
+                      current
+                        ? 'bg-gradient-to-r from-[#d6334a] to-[#f07b3f] text-white shadow'
+                        : done
+                          ? 'bg-mint/80 text-ink'
+                          : 'bg-white/65 text-ink/55'
+                    }`}
+                  >
+                    <span>{icon}</span>
+                    <span>{ACTIVITIES[item.activityId].short}</span>
+                  </div>
+                )
+              })}
+            </div>
           </div>
 
-          <div className="rounded-2xl bg-white/85 p-5">
-            {out.status === 'fail' && <p className="mb-2 text-sm font-bold text-[#d6334a]">壓力過高造成失誤！（效果 0）</p>}
-            {out.status === 'infirmary' && <p className="mb-2 text-sm font-bold text-[#d6334a]">體力歸零！被送進保健室，剩餘排程作廢。</p>}
-            <p className="font-title text-2xl leading-relaxed text-[#251e38]">{out.caption}</p>
+          {/* Q版 Japanese Anime Animated Chibi Stage */}
+          <ActivityChibi outcome={out} />
 
-            <div className="mt-4 flex flex-wrap gap-2">
-              {STAT_KEYS.map((k) =>
+          {/* Result Caption & Animated Stat Popups */}
+          <div className="rounded-2xl bg-white/88 px-5 py-3.5 shadow-sm">
+            {out.status === 'fail' && <p className="mb-1 text-sm font-bold text-[#d6334a]">壓力過高造成失誤！（效果 0）</p>}
+            {out.status === 'infirmary' && <p className="mb-1 text-sm font-bold text-[#d6334a]">體力歸零！被送進保健室，剩餘排程作廢。</p>}
+            <p className="font-title text-xl leading-snug text-[#251e38]">{out.caption}</p>
+
+            <div className="mt-2.5 flex flex-wrap items-center gap-2">
+              {STAT_KEYS.map((k, kIdx) =>
                 out.statDelta[k] ? (
-                  <span key={k} className="rounded-full bg-mint/70 px-3 py-1 text-sm font-bold">
+                  <motion.span
+                    key={k}
+                    initial={{ scale: 0.7, y: 6, opacity: 0 }}
+                    animate={{ scale: 1, y: 0, opacity: 1 }}
+                    transition={{ delay: 0.08 + kIdx * 0.05, type: 'spring', stiffness: 320, damping: 18 }}
+                    className="rounded-full bg-mint/85 px-3 py-0.5 text-sm font-bold text-ink shadow-xs"
+                  >
                     {STAT_SHORT[k]} +{out.statDelta[k]}
-                  </span>
+                  </motion.span>
                 ) : null,
               )}
-              {out.themed && out.status === 'ok' && <span className="rounded-full bg-sakura/60 px-3 py-1 text-sm font-bold">本週主題 ×1.5</span>}
-              {out.halfTired && out.status === 'ok' && <span className="rounded-full bg-amber-200 px-3 py-1 text-sm font-bold">疲勞減半</span>}
+              {out.staminaDelta !== 0 && (
+                <span
+                  className={`rounded-full px-3 py-0.5 text-xs font-bold ${
+                    out.staminaDelta > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'
+                  }`}
+                >
+                  體力 {out.staminaDelta > 0 ? `+${out.staminaDelta}` : out.staminaDelta}
+                </span>
+              )}
+              {out.stressDelta !== 0 && (
+                <span
+                  className={`rounded-full px-3 py-0.5 text-xs font-bold ${
+                    out.stressDelta < 0 ? 'bg-sky/35 text-ink' : 'bg-amber-100 text-amber-900'
+                  }`}
+                >
+                  壓力 {out.stressDelta > 0 ? `+${out.stressDelta}` : out.stressDelta}
+                </span>
+              )}
             </div>
           </div>
 
           {out.chatter && (
-            <div className="rounded-2xl border-2 border-sakura/70 bg-white/90 p-4">
-              <p className="text-sm font-bold" style={{ color: CHARACTERS[out.chatter.who].color }}>
-                小插曲 · {CHARACTERS[out.chatter.who].name}
-              </p>
-              <p className="mt-1 font-title text-lg">{out.chatter.text.replace(/\{name\}/g, s.playerName)}</p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, x: 14 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.14 }}
+              className="flex items-center gap-3.5 rounded-2xl border-2 border-sakura/75 bg-white/92 px-4 py-3 shadow-sm"
+            >
+              {chatterChar && <CharacterAvatar id={chatterChar} size={48} />}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-bold" style={{ color: CHARACTERS[out.chatter.who].color }}>
+                    小插曲 · {CHARACTERS[out.chatter.who].name}
+                  </p>
+                  {out.chatter.bond && (
+                    <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs font-bold text-[#d6334a]">好感 +1 ♥</span>
+                  )}
+                </div>
+                <p className="mt-0.5 font-title text-base text-[#251e38]">{out.chatter.text.replace(/\{name\}/g, s.playerName)}</p>
+              </div>
+            </motion.div>
           )}
 
           {out.status === 'infirmary' && result.infirmaryLines.length > 0 && (
-            <div className="space-y-1 rounded-2xl bg-mint/30 p-4 text-sm">
+            <div className="space-y-1 rounded-2xl border border-emerald-200 bg-mint/35 px-4 py-2.5 text-sm">
               {result.infirmaryLines.slice(0, 3).map((l, i) => (
                 <p key={i}>
                   <strong>{CHARACTERS[l.who].name}：</strong>
@@ -120,7 +188,7 @@ export function ScheduleScreen() {
 
           <div className="flex justify-end">
             <button
-              className="btn-pastel px-8 py-2.5 text-xl"
+              className="rounded-full bg-gradient-to-r from-[#d6334a] to-[#f07b3f] px-8 py-2.5 text-lg font-bold text-white shadow-md transition hover:brightness-110"
               data-testid="schedule-next"
               onClick={() => {
                 if (!isLast) setStepIdx((v) => v + 1)

@@ -185,6 +185,10 @@ async function main() {
       spot: false,
       serp: false,
       schedule: false,
+      playback: false,
+      playback2: false,
+      board: false,
+      weekend: false,
       status: false,
       report: false,
       saveTested: false,
@@ -211,20 +215,41 @@ async function main() {
         }
         await page.locator('[data-testid="schedule-go"]').click()
         await page.locator('[data-testid="schedule-playback"]').waitFor({ state: 'visible', timeout: 3000 })
+        let stepCount = 0
         while (await page.locator('[data-testid="schedule-playback"]').isVisible().catch(() => false)) {
+          if (stepCount === 0 && !captured.playback) {
+            await page.waitForTimeout(260)
+            await shot(page, 'schedule-playback.png')
+            captured.playback = true
+          } else if (stepCount === 1 && !captured.playback2) {
+            await page.waitForTimeout(260)
+            await shot(page, 'schedule-playback-2.png')
+            captured.playback2 = true
+          }
           await page.locator('[data-testid="schedule-next"]').click()
           await page.waitForTimeout(25)
+          stepCount++
         }
         continue
       }
 
       if (await page.locator('[data-testid="notice-board"]').isVisible().catch(() => false)) {
+        if (!captured.board) {
+          await page.waitForTimeout(160)
+          await shot(page, 'notice-board.png')
+          captured.board = true
+        }
         await page.locator('[data-testid="skip-board"]').click()
         await page.locator('[data-testid="notice-board"]').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {})
         continue
       }
 
       if (await page.locator('[data-testid="weekend-menu"]').isVisible().catch(() => false)) {
+        if (!captured.weekend) {
+          await page.waitForTimeout(200)
+          await shot(page, 'weekend-menu.png')
+          captured.weekend = true
+        }
         await page.locator('[data-testid="date-rin"]').click()
         await page.locator('[data-testid="weekend-menu"]').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {})
         continue

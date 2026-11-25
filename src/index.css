@@ -107,7 +107,62 @@ button { font-family: inherit; cursor: pointer; }
 @keyframes flash { from { opacity: .95; } to { opacity: 0; } }
 @keyframes blink-caret { 50% { opacity: 0; } }
 
+@keyframes chibi-bob {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes chibi-float {
+  0%, 100% { transform: translateY(4px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes chibi-type-l {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(-10deg); }
+}
+@keyframes chibi-type-r {
+  0%, 100% { transform: translateY(-4px) rotate(10deg); }
+  50% { transform: translateY(0px) rotate(0deg); }
+}
+@keyframes chibi-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes chibi-zzz {
+  0% { transform: translateY(6px) translateX(0px) scale(0.85); opacity: 0; }
+  30% { opacity: 0.95; }
+  80% { opacity: 0.9; }
+  100% { transform: translateY(-22px) translateX(8px) scale(1.1); opacity: 0; }
+}
+@keyframes chibi-sway {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes chibi-orbit {
+  0% { transform: translateX(-5px) translateY(0px); }
+  25% { transform: translateX(0px) translateY(-4px); }
+  50% { transform: translateX(5px) translateY(0px); }
+  75% { transform: translateX(0px) translateY(3px); }
+  100% { transform: translateX(-5px) translateY(0px); }
+}
+@keyframes chibi-pop {
+  0% { transform: scale(0.75) translateY(8px); opacity: 0; }
+  70% { transform: scale(1.04) translateY(-2px); opacity: 1; }
+  100% { transform: scale(1) translateY(0px); opacity: 1; }
+}
+
+.chibi-bob { animation: chibi-bob 1.6s ease-in-out infinite; }
+.chibi-float { animation: chibi-float 2.4s ease-in-out infinite; }
+.chibi-type-l { animation: chibi-type-l 0.28s ease-in-out infinite; }
+.chibi-type-r { animation: chibi-type-r 0.28s ease-in-out infinite; }
+.chibi-spin { animation: chibi-spin 5s linear infinite; }
+.chibi-zzz { animation: chibi-zzz 2.4s ease-out infinite; }
+.chibi-sway { animation: chibi-sway 2.2s ease-in-out infinite; }
+.chibi-orbit { animation: chibi-orbit 1.4s ease-in-out infinite; }
+.chibi-pop { animation: chibi-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
 @media (prefers-reduced-motion: reduce) {
-  .sakura-petal, .rain-layer, .char-breath { animation: none !important; }
+  .sakura-petal, .rain-layer, .char-breath,
+  .chibi-bob, .chibi-float, .chibi-type-l, .chibi-type-r,
+  .chibi-spin, .chibi-zzz, .chibi-sway, .chibi-orbit, .chibi-pop { animation: none !important; }
   .btn-pastel, .choice-btn, .hud-pill { transition: none !important; }
 }

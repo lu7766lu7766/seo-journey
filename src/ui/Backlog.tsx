@@ -17,7 +17,7 @@ export function Backlog() {
         {backlog.length === 0 && <p className="opacity-60">（還沒有紀錄）</p>}
         {backlog.map((b) =>
           b.who === 'choice' ? (
-            <p key={b.lineId} className="pl-4 text-lg text-sakura">▶ {b.text}</p>
+            <p key={b.lineId} className="pl-4 text-lg font-bold text-[#b8325a]">▶ {b.text}</p>
           ) : (
             <div key={b.lineId}>
               <div className="font-title text-base font-bold" style={{ color: CHARACTERS[b.who as SpeakerId]?.color }}>
