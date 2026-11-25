@@ -1,5 +1,5 @@
 import type {
-  BgFx, BgId, ChoiceOpt, Cmd, CharId, Cond, Effects, Face, KnowledgeId, MinigameId, Scene, Slot, SpeakerId, TimeOfDay,
+  BgFx, BgId, CgId, ChoiceOpt, Cmd, CharId, Cond, Effects, Face, KnowledgeId, MinigameId, Scene, Slot, SpeakerId, TimeOfDay,
 } from './types'
 
 export const scene = (id: string, cmds: Cmd[]): Scene => ({ id, cmds })
@@ -17,5 +17,5 @@ export const card = (id: KnowledgeId): Cmd => ({ k: 'card', id })
 export const bgm = (id: string): Cmd => ({ k: 'bgm', id })
 export const sfx = (id: string): Cmd => ({ k: 'sfx', id })
 /** show an event CG; `cg('none')` clears it */
-export const cg = (id: string): Cmd => ({ k: 'cg', id })
+export const cg = (id: CgId | 'none'): Cmd => ({ k: 'cg', id })
 export const wait = (ms: number): Cmd => ({ k: 'wait', ms })

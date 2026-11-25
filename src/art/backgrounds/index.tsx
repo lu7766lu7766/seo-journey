@@ -7,7 +7,7 @@ const PALETTE: Record<BgId, [string, string]> = {
   corridor: ['#dbe7f3', '#f2e6d8'], rooftop: ['#a9d6f2', '#e5f3d8'], library: ['#e8d7c2', '#cdb99f'],
   broadcast: ['#f5d4b8', '#e9c0cf'], council: ['#c7d3ec', '#e2e6f2'], street: ['#fcd9b8', '#f0b8c4'],
   planetarium: ['#2a2656', '#5a4a9a'], beach: ['#9fd8ef', '#f7e6b8'], festival: ['#f7b8c8', '#ffe3a8'],
-  rain: ['#8fa3b8', '#c3ced9'],
+  rain: ['#8fa3b8', '#c3ced9'], home: ['#f6e7d4', '#e8d8f0'], infirmary: ['#eef5f7', '#dcebe6'],
 }
 const TINT: Record<TimeOfDay, string> = {
   day: 'none',

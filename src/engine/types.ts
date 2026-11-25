@@ -6,8 +6,9 @@ import type { BgId } from '@/content/backgrounds'
 import type { CharId, Face, SpeakerId } from '@/content/characters'
 import type { KnowledgeId } from '@/content/knowledge'
 import type { MinigameId } from '@/content/minigames'
+import type { CgId } from '@/content/cgs'
 
-export type { BgId, CharId, Face, SpeakerId, KnowledgeId, MinigameId }
+export type { BgId, CharId, Face, SpeakerId, KnowledgeId, MinigameId, CgId }
 
 export const STAT_KEYS = ['con', 'tec', 'str', 'ans', 'tru'] as const
 export type StatKey = (typeof STAT_KEYS)[number]
@@ -64,7 +65,7 @@ export type Cmd =
   | { k: 'minigame'; id: MinigameId; win?: Effects; lose?: Effects }
   | { k: 'card'; id: KnowledgeId }
   | { k: 'bgm' | 'sfx'; id: string }
-  | { k: 'cg'; id: string }
+  | { k: 'cg'; id: CgId | 'none' }
   | { k: 'wait'; ms: number }
 
 export interface Scene {

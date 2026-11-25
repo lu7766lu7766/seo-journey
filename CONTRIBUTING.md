@@ -29,3 +29,25 @@
 - 遊戲狀態：`useGame`（`src/store/game.ts`）；設定：`useSettings`；跨存檔資料（圖鑑/結局/CG/已讀）：`useGlobal`；UI 狀態：`useUI`。
 - 要存進存檔的欄位加在 `PersistedGame`（`src/store/save.ts`），**並**：升 `SAVE_VERSION`、新增 `migrations[n]`、補 `normalizeData` 預設值、補測試。
 - 所有 localStorage 存取只能透過 `src/store/storage.ts`。
+
+## 系統 ↔ 劇本 介面約定（P2 與 P3 共同遵守）
+**場景 ID（＝檔名）**
+- 主線 `main/`：`prologue`、`w1`～`w6`、`festival`
+- 結局 `endings/`：`end-blackhat`、`end-true`、`end-rin`、`end-hare`、`end-mirai`、`end-normal`、`end-bad`
+- 約會 `dates/`：`date-rin-1`～`3`、`date-rin-casual`（hare、mirai 同理）、`weekend-rest`（在家休息）
+- 支線 `side/`：`sq-r1`～`sq-r3`、`sq-h1`～`sq-h3`、`sq-m1`～`sq-m3`、`sq-x1`
+
+**流程分工**
+- P2 依每週流程呼叫上述場景；`festival` 結束後由 P2 依 plan §2.6 判定並播放 `end-*`。
+- 第 6 週的人工處罰（`blackhat ≥ 1`）**寫在 `w6` 劇本內**（`when(flag('blackhat','gte',1), …)`），P2 不重複扣分。
+- 週末約會：P2 決定播放哪一場（依該角色已約會次數旗標 `dateCount.rin` 等，以及第 3 場的好感度 ≥ 55 門檻），並在播放後遞增次數旗標；劇本不需處理次數。
+- 支線完成：P2 在支線場景結束後設 `sq.<id>.done = true`；解鎖規則由 P2 負責（plan §3.5）。
+
+**旗標命名**
+- `blackhat`（數字）、`kuroPending`（第 4 週選「讓我考慮」）、`w6Choice`（數字：1＝rin、2＝hare、3＝mirai）
+
+**資料檔**
+- 評語、排程小插曲、失誤台詞、保健室、公佈欄文案：`src/content/flavor.ts`（形狀已固定；P3 填內容，P2 讀取）
+- 活動 ID：`src/content/activityIds.ts`；活動數值：`src/content/activities.ts`（P2）
+- CG ID：`src/content/cgs.ts`（P1 繪製 `src/art/cg/`，P3 以 `cg(id)` 呼叫）
+- 背景另有 `home`（主角房間）、`infirmary`（保健室）
