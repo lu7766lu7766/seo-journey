@@ -15,7 +15,7 @@ export default scene('date-rin-3', [
       say('rin', 'smile', '……謝謝。'),
     ]),
   ]),
-  say('narr', undefined, '他們走過攤販，金魚的水面反射著燈光。'),
+  say('narr', undefined, '你們走過攤販，金魚的水面反射著燈光。'),
   say('rin', 'normal', '以前我只想著，把事情做到沒有錯。'),
   say('rin', 'smile', '現在更想把重要的東西，讓人看見。'),
   say('narr', undefined, '第一發煙火拉著長長的哨音，升上夜空。'),
