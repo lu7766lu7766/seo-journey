@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sakura: #f7b8c8;
+  --color-sky: #9fd3f0;
+  --color-mint: #b5ead7;
+  --color-cream: #fffaf0;
+  --color-ink: #3b3550;
+  --font-sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-title: "LXGW WenKai TC", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", serif;
+}
+
+html, body, #root { height: 100%; margin: 0; }
+body { background: #000; color: var(--color-ink); font-family: var(--font-sans); overflow: hidden; user-select: none; }
+button { font-family: inherit; cursor: pointer; }
+
+.glass {
+  background: rgba(255, 250, 240, 0.72);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 32px rgba(80, 60, 110, 0.25);
+}
+.btn-pastel {
+  background: linear-gradient(180deg, #fff 0%, var(--color-sakura) 160%);
+  border: 1.5px solid rgba(255,255,255,.9);
+  border-radius: 999px;
+  padding: 6px 18px;
+  color: var(--color-ink);
+  box-shadow: 0 2px 8px rgba(80,60,110,.2);
+  transition: transform .12s, filter .12s;
+}
+.btn-pastel:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.btn-pastel:focus-visible, .choice-btn:focus-visible { outline: 3px solid var(--color-sky); outline-offset: 2px; }
+
+@keyframes rain-fall { from { background-position: 0 0; } to { background-position: -60px 400px; } }
+.rain-layer {
+  background-image: repeating-linear-gradient(105deg, rgba(255,255,255,.35) 0 1.5px, transparent 1.5px 28px);
+  background-size: 60px 400px;
+  animation: rain-fall .5s linear infinite;
+}
+@keyframes flash { from { opacity: .95; } to { opacity: 0; } }
+@keyframes blink-caret { 50% { opacity: 0; } }
