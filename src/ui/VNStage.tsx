@@ -29,7 +29,16 @@ function QuickBar() {
     <div className="absolute right-6 top-4 z-30 flex gap-2 text-sm">
       <button className="hud-pill" onClick={stop(() => setOverlay('status'))}>狀態</button>
       <button className="hud-pill" aria-pressed={auto} onClick={stop(() => set({ auto: !auto }))}>自動 (A){auto ? ' ●' : ''}</button>
-      <button className="hud-pill" aria-pressed={skipping} onMouseDown={stop(() => set({ skipping: true }))} onMouseUp={stop(() => set({ skipping: false }))} onMouseLeave={() => set({ skipping: false })}>快轉 (Ctrl)</button>
+      <button
+        className="hud-pill"
+        aria-pressed={skipping}
+        onClick={stop(() => set({ skipping: !skipping }))}
+        onMouseDown={stop(() => set({ skipping: true }))}
+        onMouseUp={stop(() => set({ skipping: false }))}
+        onMouseLeave={() => set({ skipping: false })}
+      >
+        快轉 (Ctrl){skipping ? ' ●' : ''}
+      </button>
       <button className="hud-pill" onClick={stop(() => setOverlay('backlog'))}>紀錄 (L)</button>
       <button className="hud-pill" onClick={stop(() => set({ hidden: true }))}>隱藏 (H)</button>
       <button className="hud-pill" onClick={stop(() => setOverlay('menu'))}>選單 (Esc)</button>

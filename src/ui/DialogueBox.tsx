@@ -22,14 +22,19 @@ export function DialogueBox({ line }: { line: Say }) {
   }, [line.lineId])
 
   useEffect(() => {
+    if (skipping) {
+      setN(chars.length)
+      useUI.getState().set({ typed: true })
+      return
+    }
     if (n >= chars.length) {
       useUI.getState().set({ typed: true })
       return
     }
     const t = setTimeout(() => {
-      if (!skipping && n % 3 === 0) audio.sfx('blip')
+      if (n % 3 === 0) audio.sfx('blip')
       setN((v) => v + 1)
-    }, skipping ? 0 : 1000 / textSpeed)
+    }, 1000 / textSpeed)
     return () => clearTimeout(t)
   }, [n, chars.length, textSpeed, skipping])
 

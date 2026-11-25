@@ -11,7 +11,7 @@ export interface Settings {
   skipUnreadAllowed: boolean
 }
 
-export const DEFAULT_SETTINGS: Settings = { textSpeed: 40, autoDelayMs: 1500, bgmVolume: 0.3, sfxVolume: 0.6, skipUnreadAllowed: false }
+export const DEFAULT_SETTINGS: Settings = { textSpeed: 40, autoDelayMs: 1500, bgmVolume: 0.3, sfxVolume: 0.6, skipUnreadAllowed: true }
 const KEY = 'seo-journey:settings'
 
 interface SettingsStore extends Settings {

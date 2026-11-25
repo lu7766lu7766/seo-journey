@@ -19,7 +19,7 @@ const sources = JSON.parse(readFileSync(SOURCES_PATH, 'utf8'))
 const browser = await chromium.launch({ executablePath, headless: true })
 const page = await browser.newPage()
 
-const manifest = {}
+const manifest = existsSync(MANIFEST_PATH) ? JSON.parse(readFileSync(MANIFEST_PATH, 'utf8')) : {}
 
 try {
   for (const [key, srcPath] of Object.entries(sources)) {

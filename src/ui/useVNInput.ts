@@ -1,9 +1,17 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { audio } from '@/audio'
 import { useGame } from '@/store/game'
 import { useGlobal } from '@/store/global'
 import { useSettings } from '@/store/settings'
 import { useUI } from '@/store/ui'
+
+const isCtrlKey = (e: KeyboardEvent) =>
+  e.key === 'Control' || e.code === 'ControlLeft' || e.code === 'ControlRight'
+
+const isTextInputFocused = () => {
+  const el = document.activeElement
+  return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el?.getAttribute('contenteditable') === 'true'
+}
 
 /** Advance request shared by click / Space / Enter. */
 export function requestAdvance() {
@@ -20,6 +28,8 @@ export function requestAdvance() {
 }
 
 export function useVNInput() {
+  const ctrlHeldRef = useRef(false)
+
   // keyboard
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -29,7 +39,14 @@ export function useVNInput() {
         ui.setOverlay(ui.overlay === null ? 'menu' : ui.overlay === 'menu' || ui.overlay === 'backlog' ? null : 'menu')
         return
       }
-      if (e.key === 'Control') return ui.set({ skipping: true })
+      if (isCtrlKey(e)) {
+        if (!ui.overlay && !isTextInputFocused()) {
+          ctrlHeldRef.current = true
+          ui.set({ skipping: true })
+        }
+        return
+      }
+      if (isTextInputFocused()) return
       if (e.key.toLowerCase() === 'l') return ui.setOverlay(ui.overlay === 'backlog' ? null : ui.overlay ? ui.overlay : 'backlog')
       if (ui.overlay) return
       if (e.key.toLowerCase() === 'h') return ui.set({ hidden: !ui.hidden })
@@ -45,15 +62,27 @@ export function useVNInput() {
         if (!e.repeat) requestAdvance()
       }
     }
-    const up = (e: KeyboardEvent) => e.key === 'Control' && useUI.getState().set({ skipping: false })
-    const blur = () => useUI.getState().set({ skipping: false })
+    const stopSkip = () => {
+      ctrlHeldRef.current = false
+      if (useUI.getState().skipping) useUI.getState().set({ skipping: false })
+    }
+    const up = (e: KeyboardEvent) => {
+      if (isCtrlKey(e) || !e.ctrlKey) {
+        if (ctrlHeldRef.current) stopSkip()
+      }
+    }
+    const onVis = () => {
+      if (document.hidden) stopSkip()
+    }
     window.addEventListener('keydown', down)
     window.addEventListener('keyup', up)
-    window.addEventListener('blur', blur)
+    window.addEventListener('blur', stopSkip)
+    document.addEventListener('visibilitychange', onVis)
     return () => {
       window.removeEventListener('keydown', down)
       window.removeEventListener('keyup', up)
-      window.removeEventListener('blur', blur)
+      window.removeEventListener('blur', stopSkip)
+      document.removeEventListener('visibilitychange', onVis)
     }
   }, [])
 
@@ -78,13 +107,29 @@ export function useVNInput() {
   }, [auto, typed, pause, overlay, skipping, autoDelay])
 
   useEffect(() => {
+    if (!skipping) return
+    if (pause.kind !== 'say' && pause.kind !== 'wait' && !ctrlHeldRef.current) {
+      useUI.getState().set({ skipping: false })
+    }
+  }, [pause.kind, skipping])
+
+  useEffect(() => {
     if (!skipping || overlay) return
-    const iv = setInterval(() => {
+    const tick = () => {
       const g = useGame.getState()
       const p = g.pause
+      if (p.kind === 'wait') {
+        g.advance()
+        return
+      }
       if (p.kind !== 'say') return
-      if (useSettings.getState().skipUnreadAllowed || useGlobal.getState().isRead(p.lineId)) g.advance()
-    }, 60)
+      if (ctrlHeldRef.current || useSettings.getState().skipUnreadAllowed || useGlobal.getState().isRead(p.lineId)) {
+        useGlobal.getState().markRead(p.lineId)
+        g.advance()
+      }
+    }
+    tick()
+    const iv = setInterval(tick, 55)
     return () => clearInterval(iv)
   }, [skipping, overlay])
 }
