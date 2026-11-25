@@ -1,18 +1,24 @@
 import type { BgId } from '@/content/backgrounds'
 import type { TimeOfDay } from '@/engine/types'
 import { useArtManifest } from '../manifest'
+import { OutingBackground } from './outing'
+import { SakuraParticles } from './Particles'
+import { SchoolBackground } from './school'
 
-const PALETTE: Record<BgId, [string, string]> = {
-  gate: ['#fbd3e0', '#cfe8c9'], classroom: ['#fdf1d6', '#dfe9f5'], clubroom: ['#e6dff5', '#f7e1d0'],
-  corridor: ['#dbe7f3', '#f2e6d8'], rooftop: ['#a9d6f2', '#e5f3d8'], library: ['#e8d7c2', '#cdb99f'],
-  broadcast: ['#f5d4b8', '#e9c0cf'], council: ['#c7d3ec', '#e2e6f2'], street: ['#fcd9b8', '#f0b8c4'],
-  planetarium: ['#2a2656', '#5a4a9a'], beach: ['#9fd8ef', '#f7e6b8'], festival: ['#f7b8c8', '#ffe3a8'],
-  rain: ['#8fa3b8', '#c3ced9'], home: ['#f6e7d4', '#e8d8f0'], infirmary: ['#eef5f7', '#dcebe6'],
+const SCHOOL_BGS = new Set<BgId>([
+  'gate', 'classroom', 'clubroom', 'corridor', 'rooftop', 'library', 'broadcast', 'council', 'infirmary',
+])
+
+const SKY_GRAD: Record<TimeOfDay, [string, string]> = {
+  day: ['#9cd7f5', '#eef7ff'],
+  dusk: ['#f48c72', '#ffe0a3'],
+  night: ['#151b38', '#333b69'],
 }
-const TINT: Record<TimeOfDay, string> = {
-  day: 'none',
-  dusk: 'sepia(0.35) saturate(1.3) hue-rotate(-15deg) brightness(0.92)',
-  night: 'brightness(0.55) saturate(0.9) hue-rotate(200deg)',
+
+const OVERLAY_TINT: Record<TimeOfDay, string> = {
+  day: 'transparent',
+  dusk: 'rgba(255, 132, 68, 0.22)',
+  night: 'rgba(18, 24, 62, 0.42)',
 }
 
 export interface BackgroundProps {
@@ -21,25 +27,42 @@ export interface BackgroundProps {
 }
 
 /**
- * PUBLIC ART INTERFACE (P1 replaces the body, keeps the props). Fills its parent (1280x720 stage).
+ * PUBLIC ART INTERFACE. Fills its parent (1280x720 stage).
  * Uses /art/bg/<id>.png when listed in public/art/manifest.json.
  */
 export function Background({ id, time = 'day' }: BackgroundProps) {
   const manifest = useArtManifest()
-  const [a, b] = PALETTE[id]
   const png = !!manifest[`bg/${id}`]
+  if (png) {
+    return (
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: `center/cover url(/art/bg/${id}.png)`,
+        }}
+      >
+        {time !== 'day' && <div style={{ position: 'absolute', inset: 0, background: OVERLAY_TINT[time], pointerEvents: 'none' }} />}
+      </div>
+    )
+  }
+
+  const [skyTop, skyBot] = SKY_GRAD[time]
+  const night = time === 'night'
+
   return (
-    <div
-      style={{
-        position: 'absolute', inset: 0, filter: TINT[time],
-        background: png ? `center/cover url(/art/bg/${id}.png)` : `linear-gradient(180deg, ${a}, ${b})`,
-      }}
-    >
-      {!png && (
-        <div style={{ position: 'absolute', left: 24, top: 20, font: '600 22px var(--font-title)', color: 'rgba(0,0,0,.35)' }}>
-          [BG] {id} · {time}
-        </div>
-      )}
+    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+      <svg viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid slice" style={{ width: '100%', height: '100%', display: 'block' }}>
+        <defs>
+          <linearGradient id="sky-soft" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={skyTop} />
+            <stop offset="1" stopColor={skyBot} />
+          </linearGradient>
+        </defs>
+        {SCHOOL_BGS.has(id) ? <SchoolBackground id={id} night={night} /> : <OutingBackground id={id} night={night} />}
+        {time !== 'day' && <rect width="1280" height="720" fill={OVERLAY_TINT[time]} />}
+      </svg>
+      {id === 'gate' && <SakuraParticles />}
     </div>
   )
 }

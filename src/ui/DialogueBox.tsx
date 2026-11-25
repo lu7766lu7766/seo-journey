@@ -51,9 +51,9 @@ export function DialogueBox({ line }: { line: Say }) {
         </div>
       )}
       <div className="glass min-h-[168px] rounded-3xl px-10 pb-6 pt-8" style={{ borderLeft: `8px solid ${color}` }}>
-        <p className="font-title text-[27px] leading-[1.6]" data-testid="dialogue-text">
+        <p className="font-title text-[27px] font-medium leading-[1.6] text-[#241d35]" data-testid="dialogue-text">
           {chars.slice(0, n).join('')}
-          {done && <span className="ml-1 inline-block text-sakura" style={{ animation: 'blink-caret 1s infinite' }}>▼</span>}
+          {done && <span className="ml-1.5 inline-block text-[#d6334a]" style={{ animation: 'blink-caret 1s infinite' }}>▼</span>}
         </p>
       </div>
     </div>

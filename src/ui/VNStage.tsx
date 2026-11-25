@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect } from 'react'
 import { Background } from '@/art/backgrounds'
+import { CgArt } from '@/art/cg'
+import type { CgId } from '@/content/cgs'
 import { MinigameHost } from '@/minigames'
 import { useGame } from '@/store/game'
 import { useUI } from '@/store/ui'
@@ -51,7 +53,9 @@ export function VNStage() {
       {stage.rain && <div className="rain-layer pointer-events-none absolute inset-0 z-[5]" />}
       <CharacterLayer chars={stage.chars} speaker={pause.kind === 'say' ? pause.who : undefined} />
       {stage.cg && (
-        <div className="absolute inset-0 z-[15] flex items-center justify-center bg-gradient-to-br from-sakura to-sky font-title text-4xl text-white">[CG] {stage.cg}</div>
+        <div className="absolute inset-0 z-[15]">
+          <CgArt id={stage.cg as CgId} />
+        </div>
       )}
       {stage.flash > 0 && <motion.div key={stage.flash} className="pointer-events-none absolute inset-0 z-50 bg-white" initial={{ opacity: 0.9 }} animate={{ opacity: 0 }} transition={{ duration: 0.6 }} />}
 

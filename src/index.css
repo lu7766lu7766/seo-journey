@@ -15,23 +15,37 @@ body { background: #000; color: var(--color-ink); font-family: var(--font-sans);
 button { font-family: inherit; cursor: pointer; }
 
 .glass {
-  background: rgba(255, 250, 240, 0.72);
+  background: rgba(255, 250, 240, 0.86);
   backdrop-filter: blur(14px) saturate(1.2);
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
-  border: 1.5px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 8px 32px rgba(80, 60, 110, 0.25);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 32px rgba(60, 44, 88, 0.24);
 }
 .btn-pastel {
-  background: linear-gradient(180deg, #fff 0%, var(--color-sakura) 160%);
-  border: 1.5px solid rgba(255,255,255,.9);
+  background: linear-gradient(180deg, #ffffff 0%, #ffe6ee 100%);
+  border: 1.5px solid rgba(232, 164, 186, 0.8);
   border-radius: 999px;
   padding: 6px 18px;
-  color: var(--color-ink);
-  box-shadow: 0 2px 8px rgba(80,60,110,.2);
-  transition: transform .12s, filter .12s;
+  color: #2b233d;
+  font-weight: 600;
+  box-shadow: 0 3px 10px rgba(60, 44, 88, 0.16);
+  transition: transform .12s, filter .12s, box-shadow .12s;
 }
-.btn-pastel:hover { transform: translateY(-1px); filter: brightness(1.05); }
-.btn-pastel:focus-visible, .choice-btn:focus-visible { outline: 3px solid var(--color-sky); outline-offset: 2px; }
+.btn-pastel:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.03); box-shadow: 0 5px 14px rgba(60, 44, 88, 0.24); }
+.btn-pastel:focus-visible, .choice-btn:focus-visible { outline: 3px solid #2b6cb0; outline-offset: 2px; }
+
+.choice-btn {
+  background: rgba(255, 252, 246, 0.95);
+  color: #261f38;
+  border: 2px solid rgba(247, 184, 200, 0.9);
+  box-shadow: 0 8px 24px rgba(36, 26, 56, 0.26);
+  transition: transform .12s, background-color .12s, border-color .12s;
+}
+.choice-btn:hover {
+  background: #ffffff;
+  border-color: #d6334a;
+  transform: translateY(-2px) scale(1.01);
+}
 
 @keyframes rain-fall { from { background-position: 0 0; } to { background-position: -60px 400px; } }
 .rain-layer {
@@ -39,5 +53,32 @@ button { font-family: inherit; cursor: pointer; }
   background-size: 60px 400px;
   animation: rain-fall .5s linear infinite;
 }
+
+@keyframes sakura-drift {
+  0% { transform: translateY(-40px) translateX(0) rotate(0deg); opacity: 0; }
+  12% { opacity: 0.85; }
+  88% { opacity: 0.85; }
+  100% { transform: translateY(760px) translateX(110px) rotate(320deg); opacity: 0; }
+}
+.sakura-petal {
+  position: absolute;
+  top: -20px;
+  border-radius: 75% 15% 75% 15%;
+  background: linear-gradient(135deg, #ffd4e1, #f7a2bc);
+  box-shadow: 0 1px 4px rgba(180, 90, 120, 0.25);
+  animation: sakura-drift 8s linear infinite;
+}
+
+@keyframes char-breath {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.008); }
+}
+.char-breath { animation: char-breath 3.8s ease-in-out infinite; }
+
 @keyframes flash { from { opacity: .95; } to { opacity: 0; } }
 @keyframes blink-caret { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sakura-petal, .rain-layer, .char-breath { animation: none !important; }
+  .btn-pastel, .choice-btn { transition: none !important; }
+}

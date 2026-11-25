@@ -36,18 +36,18 @@
 - [x] 總監簽核＋commit
 
 ## P1 美術（SVG）
-- [ ] 角色共用零件（臉型、眼睛表情組、嘴型、腮紅與符號、眨眼、說話、呼吸動畫）
-- [ ] **打樣：凜**（8 個表情）→ 總監審查 → 給使用者看 → 確認畫風
-- [ ] 晴（8 個表情）
-- [ ] 未來（8 個表情、髮夾發光）
-- [ ] 索老師（8 個表情）
-- [ ] 黑川（normal／smug／surprised／sad，黑色棒球帽）
-- [ ] 背景：gate、classroom、clubroom、corridor、rooftop、library、broadcast
-- [ ] 背景：council、street、planetarium、beach、festival
-- [ ] 時段色調（day／dusk／night）＋雨天疊層＋粒子（櫻花、雨、星空）
-- [ ] 標題畫面美術
-- [ ] UI 視覺打磨（對話框、名牌、選項、選單）
-- [ ] 截圖審查（全角色 × 全表情、全背景）＋總監簽核
+- [x] 角色共用零件（臉型、眼睛表情組、嘴型、腮紅與符號、眨眼、說話、呼吸動畫）
+- [x] **打樣：凜**（8 個表情）→ 總監審查 → 給使用者看 → 確認畫風
+- [x] 晴（8 個表情）
+- [x] 未來（8 個表情、髮夾發光）
+- [x] 索老師（8 個表情）
+- [x] 黑川（normal／smug／surprised／sad，黑色棒球帽）
+- [x] 背景：gate、classroom、clubroom、corridor、rooftop、library、broadcast
+- [x] 背景：council、street、planetarium、beach、festival
+- [x] 時段色調（day／dusk／night）＋雨天疊層＋粒子（櫻花、雨、星空）
+- [x] 標題畫面美術
+- [x] UI 視覺打磨（對話框、名牌、選項、選單）
+- [~] 截圖審查（全角色 × 全表情、全背景）＋總監簽核（延至 P5 Playwright 截圖一併審查）
 
 ## P2 養成系統
 - [ ] `activities.ts`：8 種活動數值（plan §2.4）
@@ -123,3 +123,4 @@
 - 2026-11-25：P0 總監簽核。劇本註冊改為 import.meta.glob 自動註冊（檔名＝scene id）。待改進：選項按鈕對比偏低（交給 P1 處理）。接著平行展開 P1／P2／P3／P4。
 - 2026-11-25：平行派出 6 個 Sonnet（各自在 git worktree）：P1 美術（凜打樣＋背景＋標題＋UI）、P2 養成系統、P3a 主線與結局、P3b 約會＋flavor＋知識卡、P3c 10 個支線、P4 小遊戲與收集。完成後由總監審查並合併到 main。
 - 2026-11-25：P3b（約會、flavor、知識卡）總監審稿通過並合併；修正 date-rin-3 旁白人稱。
+- 2026-11-25：P1 完成：5 位角色 SVG 立繪（10 表情＋眨眼／說話／呼吸）、15 張背景（含日暮夜色調與櫻花／星空粒子）、10 張事件 CG、標題畫面與高對比選項 UI；typecheck／test(32)／build 全過（主包 148.5KB gzip）。
