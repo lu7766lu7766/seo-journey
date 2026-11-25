@@ -19,8 +19,8 @@
 - `src/audio/index.ts`：`audio.sfx(id)`、`audio.bgm(id)`
 
 ## 劇本寫法
-- 一個檔案一個場景：`export default scene('<id>', [...])`，並在 `src/content/scenes/index.ts` 的 `SCENE_LOADERS` 註冊（key 必須等於 scene id）。
-- 檔案放 `main/ dates/ side/ endings/`；每個檔案都必須註冊（測試會檢查）。
+- 一個檔案一個場景：`export default scene('<id>', [...])`，**檔名（不含 .ts）必須等於 scene id**，且全專案不可重名。
+- 檔案放 `main/ dates/ side/ endings/`，會被 `import.meta.glob` 自動註冊——**不要手動編輯 `src/content/scenes/index.ts`**。
 - 每行對白 ≤ 45 字、不得空白；`{name}` 為玩家名字。角色／表情／背景／知識卡／小遊戲 ID 都是型別，拼錯會編譯失敗。
 - 新增知識卡 ID：`src/content/knowledge.ts`；新增小遊戲 ID：`src/content/minigames/index.ts`；新增背景：`src/content/backgrounds.ts`。
 - `npm test` 內含 `tests/scriptLint.test.ts` 與 `src/systems/estimate.ts` 時長估算。

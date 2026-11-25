@@ -32,8 +32,8 @@
 - [x] audio stub API
 - [x] 測試：runner、cond、存讀檔、score；`tests/scriptLint.test.ts` 骨架
 - [x] `vercel.json`、`.gitignore`、`CONTRIBUTING.md`（目錄分工規則）
-- [ ] 驗收：typecheck／test／build 全過、Playwright 煙霧測試＋截圖審查
-- [ ] 總監簽核＋commit
+- [x] 驗收：typecheck／test／build 全過、Playwright 煙霧測試＋截圖審查
+- [x] 總監簽核＋commit
 
 ## P1 美術（SVG）
 - [ ] 角色共用零件（臉型、眼睛表情組、嘴型、腮紅與符號、眨眼、說話、呼吸動畫）
@@ -119,3 +119,5 @@
 
 ## 進度紀錄
 - 2026-11-25：完成 plan.md 與 task.md；P0 開始（Sonnet 執行中）。
+- 2026-11-25：P0 完成（Sonnet）：typecheck／test(25)／build 通過，主 chunk 129KB gzip；Playwright 煙霧測試（標題→名字→demo→選項→backlog→存/讀檔→重載）無 console error，截圖在 scratchpad；待總監簽核＋commit。
+- 2026-11-25：P0 總監簽核。劇本註冊改為 import.meta.glob 自動註冊（檔名＝scene id）。待改進：選項按鈕對比偏低（交給 P1 處理）。接著平行展開 P1／P2／P3／P4。
