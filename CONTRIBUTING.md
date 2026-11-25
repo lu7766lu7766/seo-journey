@@ -14,7 +14,7 @@
 ## 穩定介面（不要改簽名）
 - `src/art/characters/index.tsx`：`<CharacterSprite id face speaking />`（600×1000 viewBox，高度撐滿父層）
 - `src/art/backgrounds/index.tsx`：`<Background id time />`（填滿 1280×720 父層）
-- PNG 覆蓋：`public/art/manifest.json` 以 `"<charId>/<face>": true`、`"bg/<bgId>": true` 宣告，檔案放 `public/art/<id>/<face>.png`、`public/art/bg/<id>.png`。
+- 圖片覆蓋：以 WebP 為準（`public/art/<id>/<face>.webp`、`public/art/bg/<id>.webp`、`public/art/cg/<id>.webp`），由 `scripts/process-art.mjs` 處理並寫入 `public/art/manifest.json`（鍵 `"<id>/<face>"`、`"bg/<bgId>"`、`"cg/<cgId>"`，值為路徑字串）。製作規格與流程見 `docs/art-requests.md`；`npm run art:check` 檢查進度。
 - `src/minigames/index.tsx`：`<MinigameHost id onResolve(won) />`
 - `src/audio/index.ts`：`audio.sfx(id)`、`audio.bgm(id)`
 
