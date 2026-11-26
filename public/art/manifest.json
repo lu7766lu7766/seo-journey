@@ -32,5 +32,19 @@
   "rin/smile": "/art/rin/smile.webp",
   "rin/think": "/art/rin/think.webp",
   "rin/blush": "/art/rin/blush.webp",
-  "sensei/smile": "/art/sensei/smile.webp"
+  "sensei/smile": "/art/sensei/smile.webp",
+  "rin/angry": "/art/rin/angry.webp",
+  "hare/happy": "/art/hare/happy.webp",
+  "hare/think": "/art/hare/think.webp",
+  "hare/smile": "/art/hare/smile.webp",
+  "hare/surprised": "/art/hare/surprised.webp",
+  "hare/blush": "/art/hare/blush.webp",
+  "hare/sad": "/art/hare/sad.webp",
+  "mirai/smile": "/art/mirai/smile.webp",
+  "mirai/think": "/art/mirai/think.webp",
+  "mirai/blush": "/art/mirai/blush.webp",
+  "kuro/smug": "/art/kuro/smug.webp",
+  "mirai/sad": "/art/mirai/sad.webp",
+  "kuro/shock": "/art/kuro/shock.webp",
+  "rin/surprised": "/art/rin/surprised.webp"
 }
