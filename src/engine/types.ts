@@ -43,6 +43,7 @@ export type Cond =
   | { t: 'bond'; who: HeroineId; op: CmpOp; value: number }
   | { t: 'score'; who: HeroineId; op: CmpOp; value: number }
   | { t: 'seen'; scene: string }
+  | { t: 'card'; id: KnowledgeId }
   | { t: 'and'; all: Cond[] }
   | { t: 'or'; any: Cond[] }
   | { t: 'not'; cond: Cond }
@@ -85,6 +86,8 @@ export interface CoreState {
 /** Read-only view used by condition evaluation. */
 export interface CondState extends CoreState {
   seenScenes: string[]
+  /** knowledge cards unlocked in this run (for conditions like `hasCard('canonical')`) */
+  unlockedCards: string[]
 }
 
 /** Serializable program counter. See runner.ts for the path encoding. */

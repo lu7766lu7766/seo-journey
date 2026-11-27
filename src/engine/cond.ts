@@ -1,5 +1,5 @@
 import { score } from '@/systems/score'
-import type { CmpOp, Cond, CondState, FlagValue, HeroineId, StatKey } from './types'
+import type { CmpOp, Cond, CondState, FlagValue, HeroineId, KnowledgeId, StatKey } from './types'
 
 function cmp(a: number, op: CmpOp, b: number): boolean {
   switch (op) {
@@ -26,6 +26,7 @@ export function evalCond(c: Cond, s: CondState): boolean {
     case 'bond': return cmp(s.bond[c.who], c.op, c.value)
     case 'score': return cmp(score(c.who, s.stats, s.bond), c.op, c.value)
     case 'seen': return s.seenScenes.includes(c.scene)
+    case 'card': return s.unlockedCards.includes(c.id)
     case 'and': return c.all.every((x) => evalCond(x, s))
     case 'or': return c.any.some((x) => evalCond(x, s))
     case 'not': return !evalCond(c.cond, s)
@@ -38,6 +39,8 @@ export const statIs = (key: StatKey, op: CmpOp, value: number): Cond => ({ t: 's
 export const bondIs = (who: HeroineId, op: CmpOp, value: number): Cond => ({ t: 'bond', who, op, value })
 export const scoreIs = (who: HeroineId, op: CmpOp, value: number): Cond => ({ t: 'score', who, op, value })
 export const seen = (scene: string): Cond => ({ t: 'seen', scene })
+/** true once the player has unlocked this knowledge card in the current run */
+export const hasCard = (id: KnowledgeId): Cond => ({ t: 'card', id })
 export const and = (...all: Cond[]): Cond => ({ t: 'and', all })
 export const or = (...any: Cond[]): Cond => ({ t: 'or', any })
 export const not = (cond: Cond): Cond => ({ t: 'not', cond })

@@ -194,9 +194,15 @@ async function playScene(id: string, state: CoreState, seen: Set<string>, pol: P
   const scene = await loadScene(id)
   let cur = state
   const runner = new SceneRunner(scene, {
-    getState: () => ({ ...cur, seenScenes: [...seen], playerName: '搜一' }),
+    // `seen` doubles as the run's memory: scene ids, plus `card:<id>` for unlocked knowledge cards
+    getState: () => ({
+      ...cur,
+      seenScenes: [...seen].filter((x) => !x.startsWith('card:')),
+      unlockedCards: [...seen].filter((x) => x.startsWith('card:')).map((x) => x.slice(5)),
+      playerName: '搜一',
+    }),
     applyEffects: (e) => { cur = applyEffects(cur, e) },
-    onCmd: () => {},
+    onCmd: (c) => { if (c.k === 'card') seen.add(`card:${c.id}`) },
   })
   let p = runner.start()
   for (let guard = 0; guard < 5000; guard++) {

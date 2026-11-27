@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { TUNING } from '@/systems/score'
-import { and, bondIs, evalCond, flag, not, or, scoreIs, seen, statIs } from '@/engine/cond'
+import { and, bondIs, evalCond, flag, hasCard, not, or, scoreIs, seen, statIs } from '@/engine/cond'
 import { initialCore } from '@/engine/effects'
 import type { CondState } from '@/engine/types'
 
-const base = (): CondState => ({ ...initialCore(), seenScenes: ['w1'] })
+const base = (): CondState => ({ ...initialCore(), seenScenes: ['w1'], unlockedCards: ['canonical'] })
 
 describe('evalCond', () => {
   it('flags: truthy, equals, comparisons, numeric/boolean', () => {
@@ -35,6 +35,9 @@ describe('evalCond', () => {
     expect(evalCond(scoreIs('rin', 'gt', expected + 0.5), s)).toBe(false)
     expect(evalCond(seen('w1'), s)).toBe(true)
     expect(evalCond(seen('w2'), s)).toBe(false)
+    expect(evalCond(hasCard('canonical'), s)).toBe(true)
+    expect(evalCond(hasCard('sitemap'), s)).toBe(false)
+    expect(evalCond(not(hasCard('sitemap')), s)).toBe(true)
   })
   it('and / or / not', () => {
     const s = base()
