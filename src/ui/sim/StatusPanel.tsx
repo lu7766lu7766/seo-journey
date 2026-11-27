@@ -3,7 +3,9 @@ import { CHARACTERS } from '@/content/characters'
 import { HEROINES, STAT_KEYS, type HeroineId, type StatKey } from '@/engine/types'
 import { useGame } from '@/store/game'
 import { scores } from '@/systems/score'
+import { RULES } from '@/systems/schedule'
 import { Panel } from '../Panel'
+import { SiteDashboard } from './SiteDashboard'
 
 const STAT_LABEL: Record<StatKey, string> = {
   con: '內容力',
@@ -90,8 +92,18 @@ export function StatusSummary({ compact = false }: { compact?: boolean }) {
             </div>
             <div>
               <div className="mb-1 flex justify-between text-xs font-bold">
-                <span>壓力</span>
-                <span className={stress >= 80 ? 'text-[#d6334a]' : ''}>{stress} / 100</span>
+                <span>
+                  壓力
+                  {stress >= RULES.tenseAt && (
+                    <span
+                      className={`ml-1.5 rounded-full px-1.5 py-px text-[10px] ${stress >= RULES.failAt ? 'bg-rose-100 text-[#d6334a]' : 'bg-amber-200 text-amber-900'}`}
+                      data-testid="stress-tier"
+                    >
+                      {stress >= RULES.failAt ? '失誤風險' : '焦躁 ×' + RULES.tenseMul}
+                    </span>
+                  )}
+                </span>
+                <span className={stress >= RULES.failAt ? 'text-[#d6334a]' : stress >= RULES.tenseAt ? 'text-amber-800' : ''}>{stress} / 100</span>
               </div>
               <div className="h-2.5 overflow-hidden rounded-full bg-ink/10">
                 <div className="h-full rounded-full bg-gradient-to-r from-[#f7b267] to-[#e05263]" style={{ width: `${stress}%` }} />
@@ -127,9 +139,13 @@ export function StatusSummary({ compact = false }: { compact?: boolean }) {
 }
 
 export function StatusPanel({ onClose }: { onClose: () => void }) {
+  const { stats, week } = useGame()
   return (
     <Panel title="社團狀態" onClose={onClose} wide>
-      <StatusSummary />
+      <div className="flex flex-col gap-3">
+        <StatusSummary />
+        <SiteDashboard stats={stats} week={week} />
+      </div>
     </Panel>
   )
 }

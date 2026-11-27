@@ -9,7 +9,7 @@ import type { ActivityId } from '@/content/activityIds'
 import { CHARACTERS, type CharId } from '@/content/characters'
 import { STAT_KEYS, type StatKey } from '@/engine/types'
 import { useGame } from '@/store/game'
-import { isThemedActivity, previewSchedule, runWeekSchedule, type WeekScheduleResult } from '@/systems/schedule'
+import { isThemedActivity, previewSchedule, RULES, runWeekSchedule, type WeekScheduleResult } from '@/systems/schedule'
 import { StatusSummary } from './StatusPanel'
 
 const STAT_SHORT: Record<StatKey, string> = {
@@ -114,7 +114,16 @@ export function ScheduleScreen() {
           {/* Result Caption & Animated Stat Popups */}
           <div className="rounded-2xl bg-white/88 px-5 py-3.5 shadow-sm">
             {out.status === 'fail' && <p className="mb-1 text-sm font-bold text-[#d6334a]">壓力過高造成失誤！（效果 0）</p>}
-            {out.status === 'infirmary' && <p className="mb-1 text-sm font-bold text-[#d6334a]">體力歸零！被送進保健室，剩餘排程作廢。</p>}
+            {out.status === 'infirmary' && (
+              <p className="mb-1 text-sm font-bold text-[#d6334a]" data-testid="infirmary-note">
+                體力歸零！被送進保健室，這格白做了、剩餘排程作廢，這週週末也只能在家休養。
+              </p>
+            )}
+            {out.tense && out.status === 'ok' && (
+              <p className="mb-1 inline-block rounded-full bg-amber-200 px-3 py-0.5 text-xs font-bold text-amber-900" data-testid="tense-badge">
+                😖 焦躁中：能力值 ×{RULES.tenseMul}
+              </p>
+            )}
             <p className="font-title text-xl leading-snug text-[#251e38]">{out.caption}</p>
 
             <div className="mt-2.5 flex flex-wrap items-center gap-2">
@@ -312,8 +321,17 @@ export function ScheduleScreen() {
                 <span className={`rounded-full px-2.5 py-0.5 ${preview.stamina < 20 ? 'bg-rose-100 text-[#d6334a]' : 'bg-emerald-50 text-emerald-800'}`}>
                   體力 → {preview.stamina}
                 </span>
-                <span className={`rounded-full px-2.5 py-0.5 ${preview.stress >= 80 ? 'bg-rose-100 text-[#d6334a]' : 'bg-amber-50 text-amber-900'}`}>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 ${
+                    preview.stress >= RULES.failAt
+                      ? 'bg-rose-100 text-[#d6334a]'
+                      : preview.stress >= RULES.tenseAt
+                        ? 'bg-amber-200 text-amber-900'
+                        : 'bg-amber-50 text-amber-900'
+                  }`}
+                >
                   壓力 → {preview.stress}
+                  {preview.stress >= RULES.tenseAt && preview.stress < RULES.failAt ? '（焦躁）' : ''}
                 </span>
               </div>
             </div>
@@ -332,16 +350,26 @@ export function ScheduleScreen() {
               )}
             </div>
 
-            {(preview.infirmaryRisk || preview.failRisk) && (
-              <div className="mt-2 flex flex-wrap gap-1.5">
+            {(preview.infirmaryRisk || preview.failRisk || preview.tenseRisk || preview.tiredRisk) && (
+              <div className="mt-2 flex flex-col gap-1 text-[11px] leading-tight" data-testid="schedule-risks">
                 {preview.infirmaryRisk && (
-                  <span className="rounded-lg bg-rose-100 px-2.5 py-1 text-xs font-bold text-[#d6334a]">
-                    ⚠ 體力將歸零，可能進保健室！
+                  <span className="rounded-lg bg-rose-100 px-2 py-0.5 font-bold text-[#d6334a]">
+                    ⚠ 體力將歸零：進保健室、倒下那格白做，週末只能在家休養
                   </span>
                 )}
                 {preview.failRisk && (
-                  <span className="rounded-lg bg-rose-100 px-2.5 py-1 text-xs font-bold text-[#d6334a]">
-                    ⚠ 壓力 ≥ 80，有機率失誤！
+                  <span className="rounded-lg bg-rose-100 px-2 py-0.5 font-bold text-[#d6334a]">
+                    ⚠ 壓力 ≥ {RULES.failAt}：工作有 {Math.round(RULES.failChance * 100)}% 機率失誤（效果歸零）
+                  </span>
+                )}
+                {preview.tenseRisk && (
+                  <span className="rounded-lg bg-amber-100 px-2 py-0.5 font-bold text-amber-900" data-testid="risk-tense">
+                    ⚠ 壓力 ≥ {RULES.tenseAt}「焦躁」：能力值 ×{RULES.tenseMul}（已計入預期）
+                  </span>
+                )}
+                {preview.tiredRisk && (
+                  <span className="rounded-lg bg-amber-100 px-2 py-0.5 font-bold text-amber-900">
+                    ⚠ 體力 &lt; {RULES.tiredBelow}：能力值減半（已計入預期）
                   </span>
                 )}
               </div>

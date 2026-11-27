@@ -8,6 +8,8 @@ import { WEEKLY_COMMENTS } from '@/content/flavor'
 import { HEROINES, type HeroineId } from '@/engine/types'
 import { useGame } from '@/store/game'
 import { scores } from '@/systems/score'
+import { readStatSnapshot } from '@/systems/siteMetrics'
+import { SiteDashboard } from './SiteDashboard'
 
 function tierFor(v: number): 'low' | 'mid' | 'high' {
   if (v < 40) return 'low'
@@ -24,6 +26,8 @@ const TIER_LABEL: Record<'low' | 'mid' | 'high', { text: string; cls: string }> 
 export function WeeklyReport() {
   const s = useGame()
   const cur = scores(s.stats, s.bond)
+  // stats at the start of this week (stored in flags by the store); old saves simply show no deltas
+  const weekStart = readStatSnapshot(s.flags)
 
   useEffect(() => {
     audio.sfx('bond')
@@ -33,13 +37,14 @@ export function WeeklyReport() {
     <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-6" data-testid="weekly-report">
       <Background id="council" time="dusk" />
       <div className="pointer-events-none absolute inset-0 bg-[#0b1024]/55 backdrop-blur-[2px]" />
-      <div className="glass relative z-10 flex w-[900px] flex-col gap-4 rounded-3xl p-7">
+      <div className="glass relative z-10 flex w-[1180px] flex-col gap-3.5 rounded-3xl px-7 py-5">
         <div className="text-center">
           <h2 className="font-title text-3xl font-bold text-ink">第 {s.week} 週 · 週日評測報告</h2>
           <p className="mt-0.5 text-sm text-ink/75">三位評審檢視了網站研究社本週的成果</p>
         </div>
 
-        <div className="space-y-3.5">
+        <div className="grid grid-cols-[1fr_400px] items-start gap-5">
+        <div className="space-y-3">
           {HEROINES.map((h: HeroineId, idx) => {
             const c = CHARACTERS[h]
             const prev = Math.round(s.prevScores[h] ?? 10)
@@ -55,9 +60,9 @@ export function WeeklyReport() {
                 initial={{ opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.12 }}
-                className="flex items-center gap-5 rounded-2xl bg-white/88 px-5 py-4 shadow-sm"
+                className="flex items-center gap-4 rounded-2xl bg-white/88 px-4 py-3 shadow-sm"
               >
-                <CharacterAvatar id={h} size={68} />
+                <CharacterAvatar id={h} size={60} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
@@ -84,11 +89,16 @@ export function WeeklyReport() {
                       style={{ background: `linear-gradient(90deg, ${c.color}, ${c.accent})` }}
                     />
                   </div>
-                  <p className="mt-2 font-title text-lg text-[#251e38]">「{line.text.replace(/\{name\}/g, s.playerName)}」</p>
+                  <p className="mt-1.5 font-title text-base leading-snug text-[#251e38]">「{line.text.replace(/\{name\}/g, s.playerName)}」</p>
                 </div>
               </motion.div>
             )
           })}
+        </div>
+
+        <div className="rounded-2xl bg-white/60 p-3" data-testid="report-dashboard">
+          <SiteDashboard stats={s.stats} week={s.week} prevStats={weekStart} compact />
+        </div>
         </div>
 
         <div className="flex justify-center pt-1">

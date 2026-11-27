@@ -2,12 +2,15 @@ import { useState } from 'react'
 import { CgArt } from '@/art/cg'
 import { CHARACTERS } from '@/content/characters'
 import { KNOWLEDGE_IDS } from '@/content/knowledge'
+import { MINIGAME_IDS } from '@/content/minigames'
 import { HEROINES, STAT_KEYS, type StatKey } from '@/engine/types'
 import { useGame } from '@/store/game'
+import { useGlobal } from '@/store/global'
 import { useUI } from '@/store/ui'
 import { determineEnding, ENDING_BY_ID } from '@/systems/ending'
 import { isQuestDone, SIDE_QUESTS } from '@/systems/quests'
 import { scores } from '@/systems/score'
+import { CopyChecklistButton } from './CopyChecklistButton'
 
 const STAT_LABEL: Record<StatKey, string> = {
   con: '內容',
@@ -34,6 +37,11 @@ export function EndingScreen() {
   const questsCount = SIDE_QUESTS.filter((q) => isQuestDone(q.id, s.flags)).length
   const mgPlayed = typeof s.flags['mg.played'] === 'number' ? s.flags['mg.played'] : 0
   const mgWon = typeof s.flags['mg.won'] === 'number' ? s.flags['mg.won'] : 0
+  // best star rating per minigame (cross-save), out of 3 stars for every real minigame
+  const stars = useGlobal((g) => g.stars)
+  const starIds = MINIGAME_IDS.filter((id) => id !== 'demo-quiz')
+  const starsTotal = starIds.reduce((a, id) => a + (stars[id] ?? 0), 0)
+  const starsMax = starIds.length * 3
 
   return (
     <div className="relative h-full w-full overflow-hidden" data-testid="ending-screen">
@@ -92,6 +100,12 @@ export function EndingScreen() {
                 {mgWon} / {mgPlayed}
               </div>
             </div>
+            <div data-testid="ending-stars">
+              <div className="text-[#9fd3f0]">⭐ 小遊戲星等</div>
+              <div className="mt-0.5 font-title text-lg text-[#ffe599]">
+                {starsTotal} / {starsMax}
+              </div>
+            </div>
             <div>
               <div className="text-[#9fd3f0]">✅ 支線任務</div>
               <div className="mt-0.5 font-title text-lg text-[#ffd6e2]">
@@ -101,16 +115,19 @@ export function EndingScreen() {
           </div>
         </div>
 
-        <button
-          className="btn-pastel mt-0.5 px-8 py-2 text-lg"
-          data-testid="ending-to-title"
-          onClick={() => {
-            s.quitToTitle()
-            useUI.getState().setScreen('title')
-          }}
-        >
-          回到標題畫面
-        </button>
+        <div className="mt-0.5 flex items-center gap-4">
+          <CopyChecklistButton unlocked={s.unlockedCards} playerName={s.playerName} className="btn-pastel px-6 py-2 text-base" />
+          <button
+            className="btn-pastel px-8 py-2 text-lg"
+            data-testid="ending-to-title"
+            onClick={() => {
+              s.quitToTitle()
+              useUI.getState().setScreen('title')
+            }}
+          >
+            回到標題畫面
+          </button>
+        </div>
       </div>
     </div>
   )

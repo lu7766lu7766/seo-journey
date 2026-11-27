@@ -19,8 +19,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDef> = {
     short: '寫作',
     desc: '撰寫第一手社團觀察與實用指南，提升內容力與信任力。',
     stats: { con: 6, tru: 1 },
-    stamina: -15,
-    stress: 5,
+    stamina: -16,
+    stress: 9,
   },
   research: {
     id: 'research',
@@ -28,8 +28,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDef> = {
     short: '意圖研究',
     desc: '分析讀者搜尋詞背後的真正需求，兼顧內容力與可答力。',
     stats: { con: 3, ans: 3 },
-    stamina: -10,
-    stress: 3,
+    stamina: -11,
+    stress: 8,
   },
   techcheck: {
     id: 'techcheck',
@@ -37,8 +37,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDef> = {
     short: '技術健檢',
     desc: '檢查索引設定、載入速度與行動版體驗，大幅提升技術力。',
     stats: { tec: 6 },
-    stamina: -15,
-    stress: 6,
+    stamina: -16,
+    stress: 9,
   },
   schema: {
     id: 'schema',
@@ -46,8 +46,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDef> = {
     short: '結構標記',
     desc: '整理標題層級、內部連結與 JSON-LD，讓機器一目了然。',
     stats: { str: 6 },
-    stamina: -12,
-    stress: 4,
+    stamina: -14,
+    stress: 9,
   },
   qa: {
     id: 'qa',
@@ -55,8 +55,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDef> = {
     short: '問答整理',
     desc: '改寫為問題型標題與「結論先說」的精簡段落，強化可答力。',
     stats: { ans: 6 },
-    stamina: -12,
-    stress: 4,
+    stamina: -14,
+    stress: 9,
   },
   authors: {
     id: 'authors',
@@ -64,8 +64,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDef> = {
     short: '來源署名',
     desc: '完善作者經歷與可查證的資料出處，累積網站信任力。',
     stats: { tru: 5, con: 1 },
-    stamina: -12,
-    stress: 4,
+    stamina: -14,
+    stress: 9,
   },
   social: {
     id: 'social',
@@ -74,7 +74,7 @@ export const ACTIVITIES: Record<ActivityId, ActivityDef> = {
     desc: '與其他社團交換連結、宣傳合作，舒緩壓力的同時累積外部提及。',
     stats: { tru: 3, ans: 1 },
     stamina: -10,
-    stress: -5,
+    stress: -6,
   },
   rest: {
     id: 'rest',
@@ -82,8 +82,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDef> = {
     short: '休息',
     desc: '買個紅豆麵包去天台吹風午睡，恢復大量體力並大幅減壓。',
     stats: {},
-    stamina: 35,
-    stress: -15,
+    stamina: 45,
+    stress: -20,
   },
 }
 

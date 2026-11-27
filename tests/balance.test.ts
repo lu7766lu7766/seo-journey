@@ -83,6 +83,14 @@ describe('ending balance on real content', () => {
     expect(rnd.pct['end-bad']).toBeLessThanOrEqual(30)
   })
 
+  it('never looking at the stamina bar is punished: the blind random player ends clearly worse than the aware one', async () => {
+    const aware = await batch('casual-random')
+    const blind = await batch('blind-random')
+    expect(blind.pct['end-true']).toBeLessThanOrEqual(3)
+    expect(blind.pct['end-bad']).toBeGreaterThan(aware.pct['end-bad'] + 10)
+    expect(blind.pct['end-normal']).toBeLessThan(aware.pct['end-normal'])
+  })
+
   it('every one of the 7 endings is reachable (>= 10% for at least one behaviour)', async () => {
     for (const e of ENDING_ORDER) {
       let best = 0
