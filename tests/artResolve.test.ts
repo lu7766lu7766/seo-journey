@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { resolveBgSrc, resolveCgSrc, resolveSpriteSrc } from '../src/art/resolve'
+import { activityBannerName, resolveBgSrc, resolveCgSrc, resolveSpriteSrc, resolveUiSrc } from '../src/art/resolve'
 import { BG_IDS } from '../src/content/backgrounds'
 import { SPRITE_IDS, FACES } from '../src/content/characters'
 import { CG_IDS } from '../src/content/cgs'
@@ -37,6 +37,17 @@ describe('art manifest resolution', () => {
     expect(resolveSpriteSrc({ ...m, 'rin/sad': '/r/sad.webp' }, 'rin', 'sad')).toEqual({ src: '/r/sad.webp', exact: true })
     // no fallback face available -> normal
     expect(resolveSpriteSrc({ 'mirai/normal': '/m/n.webp' }, 'mirai', 'angry')).toEqual({ src: '/m/n.webp', exact: false })
+  })
+
+  it('resolves UI illustrations (`ui/<name>`) and picks the right schedule banner', () => {
+    const m = { 'ui/logo': '/art/ui/logo.webp', 'ui/activity-write': '/art/ui/activity-write.webp' }
+    expect(resolveUiSrc(m, 'logo')).toBe('/art/ui/logo.webp')
+    expect(resolveUiSrc(m, 'activity-qa')).toBeNull()
+    expect(resolveUiSrc({ 'ui/logo': true }, 'logo')).toBe('/art/ui/logo.png')
+    expect(activityBannerName({ status: 'ok', activityId: 'write' })).toBe('write')
+    expect(activityBannerName({ status: 'fail', activityId: 'write' })).toBe('fail')
+    expect(activityBannerName({ status: 'infirmary', activityId: 'techcheck' })).toBe('infirmary')
+    expect(activityBannerName({ status: 'skipped', activityId: 'rest' })).toBe('infirmary')
   })
 
   it('accepts legacy boolean entries as .png paths', () => {

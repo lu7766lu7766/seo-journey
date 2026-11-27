@@ -25,10 +25,18 @@ try {
     const b64 = readFileSync(srcPath).toString('base64')
     const dataUrl = `data:image/${ext};base64,${b64}`
 
-    const isSprite = !key.startsWith('bg/') && !key.startsWith('cg/')
+    // Kinds: bg/ + cg/ -> 16:9 cover 1280x720; ui/activity-* -> wide banner cover 1584x404;
+    // ui/logo -> chroma-keyed, trimmed, fit within 1200x400; everything else -> chroma-keyed sprite 600x1000.
+    const kind = key.startsWith('bg/') || key.startsWith('cg/')
+      ? 'scene'
+      : key.startsWith('ui/activity-')
+        ? 'banner'
+        : key === 'ui/logo'
+          ? 'logo'
+          : 'sprite'
 
     const webpBase64 = await page.evaluate(
-      async ({ dataUrl: src, isSprite: sprite }) => {
+      async ({ dataUrl: src, kind: assetKind }) => {
         const img = new Image()
         img.src = src
         await new Promise((resolve, reject) => {
@@ -39,15 +47,17 @@ try {
         const iw = img.naturalWidth
         const ih = img.naturalHeight
 
-        if (!sprite) {
+        if (assetKind === 'scene' || assetKind === 'banner') {
+          const W = assetKind === 'scene' ? 1280 : 1584
+          const H = assetKind === 'scene' ? 720 : 404
           const canvas = document.createElement('canvas')
-          canvas.width = 1280
-          canvas.height = 720
+          canvas.width = W
+          canvas.height = H
           const ctx = canvas.getContext('2d')
-          const scale = Math.max(1280 / iw, 720 / ih)
+          const scale = Math.max(W / iw, H / ih)
           const dw = iw * scale
           const dh = ih * scale
-          ctx.drawImage(img, (1280 - dw) / 2, (720 - dh) / 2, dw, dh)
+          ctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh)
           return canvas.toDataURL('image/webp', 0.86).split(',')[1]
         }
 
@@ -178,6 +188,21 @@ try {
           }
         }
 
+        if (assetKind === 'logo') {
+          // keep the logo's own aspect ratio: tight crop (+8px margin), scaled down to fit 1200x400, transparent
+          if (!(maxX > minX && maxY > minY)) return ''
+          const pad = 8
+          const sx = Math.max(0, minX - pad), sy = Math.max(0, minY - pad)
+          const bw = Math.min(iw, maxX + pad + 1) - sx
+          const bh = Math.min(ih, maxY + pad + 1) - sy
+          const k = Math.min(1, 1200 / bw, 400 / bh)
+          const lc = document.createElement('canvas')
+          lc.width = Math.round(bw * k)
+          lc.height = Math.round(bh * k)
+          lc.getContext('2d').drawImage(srcCanvas, sx, sy, bw, bh, 0, 0, lc.width, lc.height)
+          return lc.toDataURL('image/webp', 0.92).split(',')[1]
+        }
+
         const out = document.createElement('canvas')
         out.width = 600
         out.height = 1000
@@ -197,8 +222,13 @@ try {
 
         return out.toDataURL('image/webp', 0.88).split(',')[1]
       },
-      { dataUrl, isSprite },
+      { dataUrl, kind },
     )
+
+    if (!webpBase64) {
+      console.warn(`Skipped ${key}: nothing opaque found after keying out the green background`)
+      continue
+    }
 
     const relPath = `${key}.webp`
     const outFile = join(OUT_DIR, relPath)

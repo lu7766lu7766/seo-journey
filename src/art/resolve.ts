@@ -48,3 +48,15 @@ export function resolveBgSrc(manifest: Manifest, id: BgId): string | null {
 export function resolveCgSrc(manifest: Manifest, id: CgId): string | null {
   return entryToSrc(manifest[`cg/${id}`], `/art/cg/${id}.png`)
 }
+
+/** UI illustrations: `ui/<name>`, e.g. `ui/logo`, `ui/activity-write`, `ui/activity-fail`. */
+export function resolveUiSrc(manifest: Manifest, name: string): string | null {
+  return entryToSrc(manifest[`ui/${name}`], `/art/ui/${name}.png`)
+}
+
+/** Which schedule banner (`ui/activity-<name>`) a slot outcome should show. */
+export function activityBannerName(outcome: { status: string; activityId: string }): string {
+  if (outcome.status === 'infirmary' || outcome.status === 'skipped') return 'infirmary'
+  if (outcome.status === 'fail') return 'fail'
+  return outcome.activityId
+}

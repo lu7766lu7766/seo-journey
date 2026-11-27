@@ -12,7 +12,7 @@ export default scene('end-true', [
   say('rin', 'blush', '我、我是學生會長，公開場合不適合——……三秒。只准三秒。'),
   say('mirai', 'smile', '已讀取。……不，是我自己看見的。我們，贏了。'),
   say('mirai', 'happy', '三位評審同時通過的機率，我算過。……算了，我不想再算了。'),
-  say('sensei', 'happy', '（人群後方）我沒哭！是咖啡太燙，蒸氣的關係。'),
+  say('sensei', 'smile', '（人群後方）我沒哭！是咖啡太燙，蒸氣的關係。'),
   say('hare', 'surprised', '社長！一句話感言！麥克風給你！'),
   say('me', undefined, '我們讓「404」，變成了一個找得到的地方。'),
   say('rin', 'smile', '……文句通順，語意清楚。採用。'),

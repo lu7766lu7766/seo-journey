@@ -5,26 +5,33 @@
 
 ## 0. 總覽
 
-| 類別 | 已有 | 要新增 | 說明 |
-|---|---|---|---|
-| 角色表情立繪 | 5（各角色 `normal`） | **27** | 凜／晴／未來各 7 張（smile、happy、blush、surprised、angry、sad、think）＝21；索老師 3 張（smile、think、sad）；黑川 3 張（smug、shock、sad） |
-| 背景 | 9 | **6** | street、planetarium、beach、festival、rain、infirmary（目前以程式繪製的 SVG 頂替） |
-| 事件 CG | 0 | **10** | 7 個結局＋3 個第 3 次約會，目前以「背景＋立繪合成」頂替 |
-| **合計** | 14 | **43** | 檢查表在第 6 章；`npm run art:check` 會自動列出完成／未完成 |
+**目前進度**：第一批（立繪表情、背景、事件 CG）**57 張已全部完成**，`npm run art:check` 0 損壞。盤點遊戲後，還有 **14 項**沒有真圖（介面插圖與網站圖），列在**第 7 章（第二批）**。
 
-**建議出圖順序**（依劇本中出現次數，投資報酬率由高到低）
+| 批次 | 類別 | 數量 | 狀態 | 說明 |
+|---|---|---|---|---|
+| 第一批 | 角色表情立繪 | 27 | ✅ 完成 | 凜／晴／未來各 7 張、索老師 3 張、黑川 3 張（細節在第 3 章） |
+| 第一批 | 背景 | 6 | ✅ 完成 | street、planetarium、beach、festival、rain、infirmary（第 4 章） |
+| 第一批 | 事件 CG | 10 | ✅ 完成 | 7 個結局＋3 個第 3 次約會（第 5 章） |
+| **第二批** | **活動插圖** | **10** | **☐ 待產** | 排程播放時的橫幅圖：8 種活動＋失誤＋保健室。目前是程式繪製的 Q 版 SVG（第 7.1 節） |
+| **第二批** | **標題 Logo** | **1** | **☐ 待產** | 目前是純文字標題（第 7.2 節） |
+| **第二批** | **網站圖** | **3** | **☐ 待產（已有暫代版）** | 分享預覽圖、網站圖示、iOS 圖示；目前是用標題畫面自動產生的暫代版（第 7.3 節） |
 
-1. 凜：think、smile、blush、angry；晴：happy、think、blush、smile、surprised、sad；未來：think、smile、blush、sad、happy；索老師：smile；黑川：smug、shock。
-2. 背景：street（週末選單每週都看得到）、festival、planetarium、beach、rain、infirmary。
-3. 其餘表情（angry/surprised 等次要的）與 10 張 CG。
+**第二批建議出圖順序**
+
+1. 分享預覽圖 `og-image.jpg`：別人貼遊戲連結時看到的第一印象，上線前最值得做。
+2. 標題 Logo：每次開遊戲都會看到。
+3. 活動插圖：每週會看到 4 次，先做 `write`、`techcheck`、`qa`、`authors`（本週主題常出現），再做其餘。
+4. 網站圖示 `favicon.png`、`apple-touch-icon.png`。
 
 ### 遊戲如何使用這些圖（務必先讀）
 
+（第 7 章的介面插圖與網站圖用法，在第 7 章各小節。）
+
 - **立繪**：`CharacterSprite` 以 `<角色>/<表情>` 查 manifest。**有該表情的圖＝直接顯示（完全比對，不再疊 emoji 小符號）**；沒有就退回 `normal` 並疊上 emoji 風格小符號（愛心、汗滴等）。索老師與黑川另有退回對照：索老師 happy／blush→smile、surprised→normal、angry→think、smug→smile、shock→normal；黑川 smile／happy→smug、blush／angry／think→normal、surprised→shock。所以索老師只需補 3 張、黑川只需補 3 張。
-- 遊戲對部分表情會再套**輕微 CSS 濾鏡**（smile／happy／blush 略亮、angry 提高對比、sad 略暗且降飽和、shock 提高對比）。**請不要在圖上再加整體調色**，以免重複。
+- **有該表情的真圖時，遊戲不會再替它調色**（原本為了彌補沒有表情圖而加的濾鏡，現在只用在「缺圖退回」的情況）。所以請直接把情緒畫進圖裡，包含 `sad` 的偏冷色調。
 - **舞台**是 1280×720。立繪顯示框為 384×640（高 640、寬 = 高×0.6），左／中／右三個站位的中心 x = 250／640／1030，框頂 y = 150、底部超出舞台 70px。對話框寬 1120、高約 164，貼底 20px，所以**畫面最下方約 200px（y > 515）會被對話框遮住**。
-- **背景**會被遊戲套用時段濾鏡：`dusk` ＝ 褐黃（sepia 0.22）＋飽和 1.25＋亮度 0.92，再疊橘紅漸層；`night` ＝ 亮度 0.58＋飽和 0.88＋色相 +8°，再疊深藍漸層，戶外背景（gate／rooftop／street／beach／festival）還會疊星點。因此原圖請畫成「白天、亮度中等」。`gate` 另外有櫻花瓣粒子。
-- **CG** 以 z-index 蓋在整個舞台（含立繪）之上，外圍有 10px 半透明白框，**右上角（約 x 900～1250、y 20～65）有標題膠囊**；結局畫面還會在下方蓋一個 960px 寬的面板與漸層；約會 CG 播放時下方會有對話框。→ 請把主體與臉放在 **y ≈ 60～470**，右上角與下 1/3 保持簡單。回憶相簿縮圖只有 288×162，主體要夠大。
+- **背景**會被遊戲套用時段濾鏡：`dusk` ＝ 褐黃（sepia 0.22）＋飽和 1.25＋亮度 0.92，再疊橘紅漸層；`night` ＝ 亮度 0.58＋飽和 0.88＋色相 +8°，再疊深藍漸層，戶外背景（gate／rooftop／street／beach／festival）還會疊星點。因此原圖請畫成「白天、亮度中等」。**例外**：`planetarium`、`rain` 的原圖本身就是暗色調，遊戲**不會**再對它們套時段濾鏡。`gate` 另外有櫻花瓣粒子。
+- **CG** 以 z-index 蓋在整個舞台（含立繪）之上，外圍有 10px 半透明白框，**右上角（約 x 900～1250、y 20～65）有標題膠囊**；結局畫面還會在下方蓋一個 960px 寬的面板與漸層；約會 CG 播放時下方會有對話框。→ 請把主體與臉放在 **y ≈ 60～470**，右上角與下 1/3 保持簡單。結局畫面左上角有「只看 CG」按鈕，玩家按了就能無遮擋欣賞整張圖。回憶相簿縮圖只有 288×162，主體要夠大。
 
 ## 1. 風格聖經（Style Bible）
 
@@ -624,7 +631,7 @@ Japanese visual novel comedy event CG. In a school student-council room at sunse
    }
    ```
 
-   key 規則：角色表情 `<id>/<face>`（id ∈ rin、hare、mirai、sensei、kuro；face ∈ normal、smile、happy、blush、surprised、angry、sad、think、smug、shock）；背景 `bg/<bgId>`；CG `cg/<cgId>`。**以 `bg/`、`cg/` 開頭的走「16:9 cover 1280×720」流程，其他一律當成立繪（去綠幕＋裁切成 600×1000）。**
+   key 規則：角色表情 `<id>/<face>`（id ∈ rin、hare、mirai、sensei、kuro；face ∈ normal、smile、happy、blush、surprised、angry、sad、think、smug、shock）；背景 `bg/<bgId>`；CG `cg/<cgId>`；活動插圖 `ui/activity-<id>`；標題 Logo `ui/logo`。**處理流程依 key 前綴決定：`bg/`、`cg/` → 16:9 cover 1280×720；`ui/activity-` → 橫幅 cover 1584×404；`ui/logo` → 去綠幕、裁邊、等比縮到 1200×400 內；其餘一律當成立繪（去綠幕＋裁切成 600×1000）。**
 
 ### 6.2 執行處理腳本
 
@@ -639,12 +646,14 @@ npm run art -- D:/seo-art-src/sources.json    # 或指定其他來源對照檔
 - 腳本用 Playwright 的 Chromium 在無頭瀏覽器裡用 canvas 處理圖片。找瀏覽器順序：環境變數 `CHROME_PATH` → Playwright 預設 Chromium → `PLAYWRIGHT_BROWSERS_PATH`、`/opt/pw-browsers`、`~/.cache/ms-playwright` 內已安裝的 chromium → 系統 Chrome／Edge（Windows、macOS、Linux 常見路徑）。找不到時請設定：`CHROME_PATH="C:\Program Files\Google\Chrome\Application\chrome.exe"`。
 - **立繪處理**：以四個角落估計背景色，從畫面邊緣做洪水填充去除綠色背景，再補去封閉的純綠孔洞，邊緣 2px 去綠溢色與羽化；取不透明外框（alpha > 20）→ 縮放到「寬 ≤ 560、高 ≤ 950」→ 水平置中、貼底 → 輸出 600×1000 WebP（0.88）。
 - **背景／CG 處理**：cover 縮放、置中裁切 → 1280×720 WebP（0.86）。
+- **活動插圖處理**：cover 縮放、置中裁切 → 1584×404 WebP（0.86）。來源比例與 3.92:1 差越多，被裁掉的上下越多（見 7.1 節）。
+- **Logo 處理**：與立繪同一套去綠幕演算法，但**保留原本長寬比**：取不透明外框、四周留 8px、必要時等比縮小到 1200×400 以內 → WebP（0.92，含透明）。找不到任何不透明像素時會警告並略過。
 - **增量合併**：腳本會先讀既有的 `public/art/manifest.json`，**只更新來源對照檔裡有列的 key**，其他既有 key 原樣保留；來源檔不存在的 key 會警告並略過（不會動到舊資料）；最後把 manifest 以 2 空白縮排寫回，每個 key 的值為 `"/art/<key>.webp"`。所以可以**分批做**：做好幾張就跑一次。重跑同一個 key 會覆蓋舊圖。
 - 注意：輸出的是 `.webp`（不是 `.png`）。`CONTRIBUTING.md` 中「`true` ＋ `.png`」的舊寫法仍相容（manifest 值為 `true` 時遊戲會找 `/art/<key>.png`），但建議一律走腳本。
 
 ### 6.3 驗證
 
-1. **檢查清單與尺寸**：`npm run art:check`。它會列出 57 個預期資產（5 角色表情、15 背景、10 CG）各自是 DONE／TODO／BROKEN，檢查 WebP 尺寸是否為 600×1000／1280×720，並提醒「某表情的外框與 `normal` 差超過 12px」（代表遊戲內臉會跳動，請重出或重裁）。
+1. **檢查清單與尺寸**：`npm run art:check`。它會列出 71 個預期資產（57 個第一批＋10 張活動插圖、1 個 Logo、3 個網站圖檔）各自是 DONE／TODO／BROKEN，檢查尺寸是否為 600×1000（立繪）／1280×720（背景、CG）／1584×404（活動插圖）／Logo 1200×400 以內／網站圖檔指定尺寸，並提醒「某表情的外框與 `normal` 差超過 12px」（代表遊戲內臉會跳動，請重出或重裁）。
 2. **接觸表（供總監審查）**：`npm run art:check -- --sheet ./art-review` 會輸出每個角色所有表情並排圖（`sprites-<id>.png`）、`backgrounds.png`、`cgs.png`（plan §4 品質關卡：每角色表情並排審查）。
 3. **在遊戲中看**：`npm run dev`（或 `npm run build && npm run preview`），按 Ctrl+Shift+R 強制重新整理後遊玩。
    - 表情：進劇情，換到該表情時應顯示新圖、**沒有** emoji 小符號（有 emoji 代表 manifest 沒有該 key，正在使用 `normal` 頂替）。
@@ -663,9 +672,9 @@ npm run art -- D:/seo-art-src/sources.json    # 或指定其他來源對照檔
 
 若你已經有「去背完成、600×1000」的立繪或「1280×720」的背景，可直接放到 `public/art/<id>/<face>.png`（背景 `public/art/bg/<id>.png`、CG `public/art/cg/<id>.png`），並在 `public/art/manifest.json` 寫入 `"<key>": true`。這種方式**不會**經過去綠幕與自動裁切。
 
-### 6.5 檢查表（43 項）
+### 6.5 檢查表：第一批（43 項，全部完成）
 
-已完成的 14 項（5 張角色 `normal`、9 張背景）不在表內。完成後把 ☐ 改成 ✅；`npm run art:check` 為準。
+已完成的 14 項（5 張角色 `normal`、9 張背景）不在表內。`npm run art:check` 為準。第二批檢查表在 7.5 節。
 
 | # | Key | 輸出檔 | 完成？ |
 |---|---|---|---|
@@ -713,3 +722,224 @@ npm run art -- D:/seo-art-src/sources.json    # 或指定其他來源對照檔
 | 42 | `cg/end-bad` | `public/art/cg/end-bad.webp` | ✅ |
 | 43 | `cg/end-blackhat` | `public/art/cg/end-blackhat.webp` | ✅ |
 
+
+---
+
+## 7. 第二批需求：介面插圖與網站圖（14 項）
+
+第一批（立繪、背景、CG）已全部完成。這一批是盤點遊戲後發現**仍是程式繪製或暫代**的地方。三種的整合方式不同，**都已經接好，放檔案就生效**（已用替身圖驗證過）：
+
+| 類別 | 數量 | 怎麼進遊戲 | 沒有圖時 |
+|---|---|---|---|
+| 活動插圖 `ui/activity-*` | 10 | 來源圖 → `npm run art`（寫入 manifest） | 繼續顯示程式繪製的 Q 版 SVG |
+| 標題 Logo `ui/logo` | 1 | 來源圖（綠幕）→ `npm run art` | 顯示文字標題 |
+| 網站圖 | 3 | **直接覆蓋** `public/` 內同名檔案（不走 manifest） | 已有自動產生的暫代版 |
+
+### 7.1 活動插圖（10 張）
+
+**用在哪裡**：玩家在「平日排程」按「開始執行」後，4 格行程會一格一格播放；每一格上方的橫幅就是這張圖，下方是結果文字與數值。**每週至少看到 4 次**，是遊戲裡出現頻率最高的插圖。
+
+| Key | 輸出檔 | 何時顯示 |
+|---|---|---|
+| `ui/activity-write` | `public/art/ui/activity-write.webp` | 排到「撰寫原創文章」 |
+| `ui/activity-research` | `public/art/ui/activity-research.webp` | 「關鍵字與搜尋意圖研究」 |
+| `ui/activity-techcheck` | `public/art/ui/activity-techcheck.webp` | 「技術健檢」 |
+| `ui/activity-schema` | `public/art/ui/activity-schema.webp` | 「結構化資料標記」 |
+| `ui/activity-qa` | `public/art/ui/activity-qa.webp` | 「問答段落整理」 |
+| `ui/activity-authors` | `public/art/ui/activity-authors.webp` | 「作者頁與來源引用」 |
+| `ui/activity-social` | `public/art/ui/activity-social.webp` | 「社群交流與外部合作」 |
+| `ui/activity-rest` | `public/art/ui/activity-rest.webp` | 「休息」 |
+| `ui/activity-fail` | `public/art/ui/activity-fail.webp` | 壓力 ≥ 80 時那一格失誤（任何活動） |
+| `ui/activity-infirmary` | `public/art/ui/activity-infirmary.webp` | 體力歸 0 被送進保健室，以及之後被取消的格子 |
+
+**規格（已對照程式驗證）**
+- 輸出 **1584×404 WebP**（= 遊戲內顯示框 792×202 的 2 倍，比例 **3.92:1**，超寬橫幅）。腳本以 **cover** 方式縮放並**置中裁切**。
+- ⚠️ **來源比例要盡量接近 3.92:1**，否則上下會被裁掉很多：16:9 的來源只會留下中間約 **45%** 的高度。建議二擇一：①用工具支援的最寬比例出圖（21:9 或 3:1），主體放正中央；②用 16:9 出圖，**自己先裁成約 3.9:1 的橫條**再交給腳本。來源寬度建議 ≥ 2400px。
+- **畫面被這些東西蓋住**（請在這些區域保持單純、不要放重要細節）：
+  - 左上角：狀態徽章（例：「網站效能調校中」，約 180×26）。
+  - 右上角：「★ 本週主題 ×1.5」與「疲勞減半」徽章（各約 150×26）。
+  - 右下角約 **110×110**：有女主角路過時，會出現她的圓形頭像與「♥ +1」。
+  - 所以**主角與主要道具請放在畫面中央偏左**。
+- **底色**：每個活動有自己的主題色（現行 SVG 的底色與重點色），請沿用，視覺才會連貫：
+
+| 活動 | 底色（上→下） | 重點色 |
+|---|---|---|
+| write | `#fff3e4` → `#fde2cf` 暖橘奶油 | `#f07b3f` |
+| research | `#e8f3ff` → `#cfe4ff` 淡藍 | `#3b82f6` |
+| techcheck | `#e0f7fa` → `#c4ecf5` 青 | `#0891b2` |
+| schema | `#efe9ff` → `#dcd0ff` 淡紫 | `#7c3aed` |
+| qa | `#fff1e6` → `#ffe0c7` 橘 | `#ea580c` |
+| authors | `#fef8dc` → `#fceba8` 淡黃 | `#ca8a04` |
+| social | `#ffeef4` → `#ffd6e6` 粉 | `#e11d48` |
+| rest | `#dff3ff` → `#bfe6ff` 天藍 | `#0284c7` |
+| fail | `#ffe8ee` → `#ffd0dc` 粉紅 | `#e11d48` |
+| infirmary | `#e6faf3` → `#c8f2e4` 薄荷 | `#10b981` |
+
+**畫風建議（與現有程式繪製版一致）**：**Q 版（2～3 頭身）**，可愛、輕鬆、色彩明亮的日系插畫，加粗描邊、頂光、柔和陰影，不要寫實比例（這是「快轉過場」的氣氛圖，不是劇情 CG）。主角是玩家分身「葉 搜一」：**深藍黑色短髮（微翹）、青葉制服（深藍西裝外套＋白襯衫＋緋紅領帶）**。路過的女主角不要畫進橫幅（會用頭像另外顯示）。**索老師**只有 `infirmary` 會出現（見該項）。
+
+**共通風格段落**（附在每條提示詞後面）：
+
+```text
+chibi 2.5-head-tall cute character illustration, a bright cheerful Japanese anime game event banner, thick clean outlines with soft cel shading, pastel background gradient, simple stage floor line near the bottom, the main character centered slightly left, important props around, the top-left and top-right corners and the bottom-right corner kept simple, ultra-wide banner composition 3.9:1, 3168x808, no text, no letters
+```
+
+**負面提示詞**：
+
+```text
+realistic proportions, photorealistic, 3D render, text, letters, watermark, signature, extra characters, crowd, cluttered corners, dark moody lighting, blurry, low quality
+```
+
+**主角固定描述**（每條都要附上，維持同一張臉）：
+
+```text
+the protagonist "Ye Souichi": a chibi high-school boy with short slightly spiky dark navy hair, big expressive eyes, navy school blazer, white shirt, crimson necktie
+```
+
+各活動的場景提示詞（內含上面的「主角固定描述」，請再加上「共通風格段落」）：
+
+**`write` 撰寫原創文章** — 背景色：暖橘奶油
+```text
+the protagonist typing happily on a glowing laptop at a wooden club desk, warm sunlight window behind, floating manuscript pages and sparkles around, a coffee mug on the desk, cozy club room mood, pastel peach cream gradient background with orange accents
+```
+
+**`research` 關鍵字與搜尋意圖研究** — 背景色：淡藍
+```text
+the protagonist holding a big magnifying glass looking at floating search-bar windows and keyword tag bubbles, question marks above that turn into a light bulb, thoughtful excited expression, pastel sky-blue gradient background with blue accents
+```
+
+**`techcheck` 技術健檢** — 背景色：青
+```text
+the protagonist wearing a blue headband like a mechanic, holding a wrench beside a computer monitor that shows a green speed gauge reading 98, small gears and loading-bar icons floating around, determined excited expression, pastel cyan gradient background with teal accents
+```
+
+**`schema` 結構化資料標記** — 背景色：淡紫
+```text
+the protagonist snapping glowing puzzle-piece blocks together into a tidy tree structure, curly-brace and angle-bracket symbols floating around like code blocks, focused cheerful expression, pastel lavender gradient background with violet accents
+```
+
+**`qa` 問答段落整理** — 背景色：橘
+```text
+the protagonist raising one finger confidently while holding a small microphone, big round speech bubbles with a "Q" and an "A" symbol floating beside him, bright answering expression, pastel orange gradient background with orange accents
+```
+
+**`authors` 作者頁與來源引用** — 背景色：淡黃
+```text
+the protagonist proudly holding up a shiny author profile card with a star badge, a neat stack of books with colorful sticky-note bookmarks beside him, a small approved-stamp icon floating, confident smile, pastel butter-yellow gradient background with golden accents
+```
+
+**`social` 社群交流與外部合作** — 背景色：粉
+```text
+the protagonist cheerfully exchanging colorful flyers with a few faceless simplified chibi silhouettes of other club members at the right, small chain-link and heart icons floating between them, friendly high-five energy, pastel pink gradient background with rose accents
+```
+
+**`rest` 休息** — 背景色：天藍
+```text
+the protagonist napping peacefully on a school rooftop lying on his back with a red-bean bun in hand, a gentle breeze moving his hair, fluffy clouds and a small "zzz" floating, the fence and blue sky behind, pastel sky-blue gradient background with blue accents
+```
+
+**`fail` 壓力過載失誤** — 背景色：粉紅
+```text
+the protagonist overwhelmed and dizzy with spiral eyes, steam puffing from his head, red error pop-up windows and flying paper sheets around him, comedic burnout mood, pastel pink-red gradient background with crimson accents
+```
+
+**`infirmary` 保健室** — 背景色：薄荷。**可畫索老師**（棕色低馬尾、黑色細框眼鏡、白襯衫＋棕黃開襟毛衣；Q 版）
+```text
+the protagonist lying in an infirmary bed with an ice pack on his forehead and a mint-green blanket, swirly tired eyes, a white curtain and window beside, a small red-cross badge floating, and a chibi school teacher "Sensei" (brown low ponytail, black thin-frame glasses, white shirt and mustard cardigan) kindly bringing him a mug of hot cocoa, pastel mint-green gradient background with green accents
+```
+
+### 7.2 標題 Logo（1 張）
+
+**用在哪裡**：標題畫面左上方，**取代**現在的文字「搜尋戀曲」與副標「～青葉學園網站研究社～」。原本上方的小標籤「SEO · AEO · GEO 青春校園戀愛養成」會保留，所以**Logo 不用包含這句**。背景是深藍色調的櫻花校門，Logo 需要在深色底上清楚可讀。
+
+| Key | 輸出檔 | 
+|---|---|
+| `ui/logo` | `public/art/ui/logo.webp`（含透明） |
+
+**規格（已對照程式驗證）**
+- **綠幕**：Logo 周圍請用單一純綠 `#00FF00` 背景（與立繪相同，腳本會去背），Logo 本身**不可以含綠色**。
+- **保留原比例**：腳本不會改變長寬比，只會裁掉多餘的綠邊（四周留 8px）、必要時等比縮小到 **1200×400 以內**。建議來源約 **3:1～4:1 的橫式**、寬 ≥ 1800px。
+- 遊戲內顯示：**最大 500px 寬 × 190px 高**（等比縮放、靠左），所以細節要夠粗，縮小後仍清楚。
+- 內容：**「搜尋戀曲」**為主標（大）、**「～青葉學園網站研究社～」**為副標（小）。圖案點綴：放大鏡（搜尋）＋愛心（戀愛）＋櫻花花瓣＋星光；主色可用櫻花粉 `#f7b8c8`、天空藍 `#9fd3f0`、奶油白 `#fffaf0`，加深藍描邊或外光暈讓它在深色底上跳出來。
+
+⚠️ **文字風險**：AI 影像工具常把中文寫錯字或畫成亂碼。建議做法：**先出「不含文字」的裝飾圖樣（放大鏡＋愛心＋櫻花的標誌），再用設計軟體把「搜尋戀曲」排上去**；若直接讓 AI 出字，**逐字檢查「搜／尋／戀／曲／青／葉／學／園／網／站／研／究／社」**。
+
+```text
+a game title logo lockup for a Japanese-style school romance simulation, a bold rounded hand-lettered Traditional Chinese title "搜尋戀曲" in cream white with a soft pink and sky-blue gradient outline and a subtle deep-navy outer glow, a magnifying glass with a small heart inside its lens sitting tightly beside the title, cherry blossom petals and tiny sparkles around, a smaller subtitle line "～青葉學園網站研究社～" in soft pink below the title, clean vector-like game logo, centered, on a flat pure chroma green #00FF00 background, no green in the logo, wide 3:1 composition, 2400x800
+```
+
+負面提示詞：
+
+```text
+green colored elements, garbled characters, wrong Chinese characters, extra text, watermark, photo background, gradient background, shadows on the ground, low quality
+```
+
+### 7.3 網站圖（3 個檔案，直接放進 `public/`）
+
+這三個**不經過腳本也不寫入 manifest**：直接用同名檔案覆蓋 `public/` 內現有檔案即可。**目前是用現有標題畫面自動產生的暫代版**，上線前建議換成正式圖。
+
+| 檔案 | 尺寸 | 格式 | 用途 | 設計重點 |
+|---|---|---|---|---|
+| `public/og-image.jpg` | **1200×630** | JPEG，建議 ≤ 300KB（目前約 150KB） | 在 LINE、Facebook、X（Twitter）、Discord、Slack 貼遊戲連結時的**預覽圖** | 主視覺：三位女主角＋遊戲名稱。各平台會裁切邊緣，**重要內容放中央約 1000×500 內**；縮成手機縮圖也要看得懂，字要大。 |
+| `public/favicon.png` | **512×512** | PNG，可透明 | 瀏覽器分頁圖示 | 只會縮成 16～32px 顯示：**不要放字、輪廓要粗**。建議單一符號：星形髮夾、放大鏡＋愛心、或某位女主角的臉部特寫。 |
+| `public/apple-touch-icon.png` | **180×180** | PNG，**不透明** | iPhone／iPad 加到主畫面 | 滿版方形，**不要透明、不要自己畫圓角**（iOS 會自動裁圓角，透明處會變黑）。 |
+
+提示詞（分享預覽圖）：
+
+```text
+a promotional key visual for a Japanese school romance simulation game, three high-school girls standing close together in a cherry blossom school gate scene at golden hour — a tall girl with long dark blue hair, a red hairband and a red student-council armband; a cheerful girl with short orange hair, a side ponytail and headphones around her neck; a gentle girl with long silver-lilac hair and a star-shaped cyan hairclip in a lilac cardigan — warm cinematic lighting, falling petals, Japanese anime illustration, leave the lower center calm for a title, wide 1.91:1 composition, 2400x1260, no text
+```
+
+做完 `og-image.jpg` 後：在設計軟體把遊戲名稱「搜尋戀曲」排進去更保險（避免 AI 亂碼）。
+
+**關於分享預覽的小細節**
+- 預覽圖網址必須是**完整的網址**。部署到 Vercel 時系統會自動帶入網域；如果你用**自訂網域**，請到 Vercel 專案的 Settings → Environment Variables 新增 `SITE_URL`（例如 `https://your-game.com`，不要結尾斜線）後重新部署。
+- 各平台會**快取**預覽圖：換圖後要用各平台的偵錯工具（例如 Facebook Sharing Debugger）手動刷新才看得到新圖。
+
+### 7.4 整合步驟（第二批）
+
+1. 把活動插圖、Logo 的來源圖放在專案外（和第一批一樣）。
+2. 在 `scripts/art-sources.json` 只列這次要處理的 key，例如：
+
+   ```json
+   {
+     "ui/activity-write": "D:/seo-art-src/activity-write.png",
+     "ui/activity-techcheck": "D:/seo-art-src/activity-techcheck.png",
+     "ui/logo": "D:/seo-art-src/logo-green.png"
+   }
+   ```
+
+3. 執行 `npm run art`（分批沒問題，只會更新有列出的 key，其他保留）。
+4. 網站圖：直接把 `og-image.jpg`、`favicon.png`、`apple-touch-icon.png` 覆蓋到 `public/`。
+5. `npm run art:check`：會列出第二批 14 項是 DONE／TODO／BROKEN，並檢查尺寸（活動插圖 1584×404、Logo 1200×400 以內、網站圖指定尺寸）。
+6. 在遊戲中看：
+   - **Logo**：開啟遊戲就在標題畫面。
+   - **活動插圖**：新遊戲 → 看完序章與第 1 週開場 → 進到排程畫面 → 按「推薦排程」→「開始執行」，每按一次「下一格」就換下一張。
+   - **失誤、保健室**：不容易觸發。保健室：連續幾週都排「寫作」「技術健檢」這類耗體力的活動、不排休息，體力歸 0 就會進入；失誤需要壓力 ≥ 80（排滿耗壓力的活動，約 30% 機率）。想快速確認這兩張，可以在做完後告訴我，我用測試把它們強制顯示出來截圖給你看。
+   - **網站圖**：`npm run build && npm run preview`，看分頁圖示；分享預覽圖需上線後用各平台的偵錯工具檢查。
+7. `npm run typecheck && npm test && npm run build && npm run e2e`。
+
+### 7.5 檢查表：第二批（14 項）
+
+完成後把 ☐ 改成 ✅；`npm run art:check` 為準。
+
+| # | Key／檔案 | 輸出檔 | 完成？ |
+|---|---|---|---|
+| 1 | `ui/activity-write` | `public/art/ui/activity-write.webp` | ☐ |
+| 2 | `ui/activity-research` | `public/art/ui/activity-research.webp` | ☐ |
+| 3 | `ui/activity-techcheck` | `public/art/ui/activity-techcheck.webp` | ☐ |
+| 4 | `ui/activity-schema` | `public/art/ui/activity-schema.webp` | ☐ |
+| 5 | `ui/activity-qa` | `public/art/ui/activity-qa.webp` | ☐ |
+| 6 | `ui/activity-authors` | `public/art/ui/activity-authors.webp` | ☐ |
+| 7 | `ui/activity-social` | `public/art/ui/activity-social.webp` | ☐ |
+| 8 | `ui/activity-rest` | `public/art/ui/activity-rest.webp` | ☐ |
+| 9 | `ui/activity-fail` | `public/art/ui/activity-fail.webp` | ☐ |
+| 10 | `ui/activity-infirmary` | `public/art/ui/activity-infirmary.webp` | ☐ |
+| 11 | `ui/logo` | `public/art/ui/logo.webp` | ☐ |
+| 12 | `og-image.jpg` | `public/og-image.jpg`（目前為暫代版） | ☐ 暫代 |
+| 13 | `favicon.png` | `public/favicon.png`（目前為暫代版） | ☐ 暫代 |
+| 14 | `apple-touch-icon.png` | `public/apple-touch-icon.png`（目前為暫代版） | ☐ 暫代 |
+
+### 7.6 其他（選配，不影響遊戲運作）
+
+- **主角立繪**：玩家分身「葉 搜一」目前只以名字出現，沒有立繪（劇情用內心獨白）。若想在標題或結局出現主角，再另外討論；目前沒有任何畫面需要它。
+- **主角 Q 版造型**會同時出現在 10 張活動插圖中，**建議先完成 `write` 一張定稿造型**，其餘用同一張當參考圖（img2img），避免 10 張臉不同。

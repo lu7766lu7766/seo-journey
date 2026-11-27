@@ -38,12 +38,22 @@ const items = []
 for (const [id, faces] of Object.entries(WANT)) for (const f of faces) items.push({ key: `${id}/${f}`, kind: 'sprite', id, face: f })
 for (const b of BGS) items.push({ key: `bg/${b}`, kind: 'bg' })
 for (const c of CGS) items.push({ key: `cg/${c}`, kind: 'cg' })
+// second batch: UI illustrations (via the manifest) and site icons / share image (plain files in public/)
+const ACTIVITIES = ['write', 'research', 'techcheck', 'schema', 'qa', 'authors', 'social', 'rest', 'fail', 'infirmary']
+for (const a of ACTIVITIES) items.push({ key: `ui/activity-${a}`, kind: 'banner' })
+items.push({ key: 'ui/logo', kind: 'logo' })
+const FILES = [
+  { file: 'og-image.jpg', w: 1200, h: 630 },
+  { file: 'favicon.png', w: 512, h: 512 },
+  { file: 'apple-touch-icon.png', w: 180, h: 180 },
+]
 
 const browser = await launchBrowser()
 const page = await browser.newPage()
 
 async function inspect(file) {
   const b64 = readFileSync(file).toString('base64')
+  const mime = /\.png$/i.test(file) ? 'png' : /\.jpe?g$/i.test(file) ? 'jpeg' : 'webp'
   return page.evaluate(async (src) => {
     const img = new Image()
     img.src = src
@@ -66,7 +76,7 @@ async function inspect(file) {
       }
     }
     return { width, height, bbox: maxX >= 0 ? [minX, minY, maxX, maxY] : null }
-  }, `data:image/webp;base64,${b64}`)
+  }, `data:image/${mime};base64,${b64}`)
 }
 
 const rows = []
@@ -91,8 +101,17 @@ try {
       continue
     }
     const info = await inspect(file)
-    const wantW = it.kind === 'sprite' ? 600 : 1280
-    const wantH = it.kind === 'sprite' ? 1000 : 720
+    const wantW = it.kind === 'sprite' ? 600 : it.kind === 'banner' ? 1584 : 1280
+    const wantH = it.kind === 'sprite' ? 1000 : it.kind === 'banner' ? 404 : 720
+    if (it.kind === 'logo') {
+      if (info.width > 1200 || info.height > 400) {
+        rows.push([it.key, 'BROKEN', `${url} is ${info.width}x${info.height}; the logo must fit within 1200x400 (re-run process-art)`])
+        broken++
+        continue
+      }
+      rows.push([it.key, 'DONE', `${url} (${info.width}x${info.height})`])
+      continue
+    }
     if (info.width !== wantW || info.height !== wantH) {
       rows.push([it.key, 'BROKEN', `${url} is ${info.width}x${info.height}, expected ${wantW}x${wantH} (re-run process-art)`])
       broken++
@@ -108,6 +127,18 @@ try {
       }
     }
     rows.push([it.key, 'DONE', note])
+  }
+  for (const f of FILES) {
+    const file = join(process.cwd(), 'public', f.file)
+    if (!existsSync(file)) {
+      rows.push([f.file, 'TODO', `public/${f.file} not found`])
+      continue
+    }
+    const info = await inspect(file)
+    if (info.width !== f.w || info.height !== f.h) {
+      rows.push([f.file, 'BROKEN', `public/${f.file} is ${info.width}x${info.height}, expected ${f.w}x${f.h}`])
+      broken++
+    } else rows.push([f.file, 'DONE', `public/${f.file}`])
   }
 } finally {
   await browser.close()

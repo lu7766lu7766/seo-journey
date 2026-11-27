@@ -3,6 +3,9 @@ import { ACTIVITIES } from '@/content/activities'
 import type { ActivityId } from '@/content/activityIds'
 import { CHARACTERS, type SpeakerId } from '@/content/characters'
 import type { SlotOutcome } from '@/systems/schedule'
+import { CharacterAvatar } from '../characters/Avatar'
+import { useArtManifest } from '../manifest'
+import { activityBannerName, resolveUiSrc } from '../resolve'
 
 export interface ActivityChibiProps {
   outcome: SlotOutcome
@@ -683,6 +686,9 @@ function ActivityStageContent({ outcome }: { outcome: SlotOutcome }) {
 }
 
 export function ActivityChibi({ outcome }: ActivityChibiProps) {
+  const manifest = useArtManifest()
+  // A real illustration (`ui/activity-<id>|fail|infirmary`, see docs/art-requests.md) replaces the drawn chibi scene.
+  const bannerSrc = resolveUiSrc(manifest, `activity-${activityBannerName(outcome)}`)
   const def = ACTIVITIES[outcome.activityId]
   const theme =
     outcome.status === 'infirmary' || outcome.status === 'skipped'
@@ -702,6 +708,9 @@ export function ActivityChibi({ outcome }: ActivityChibiProps) {
       className="relative h-[202px] w-full overflow-hidden rounded-2xl border-2 border-white/85 shadow-inner"
       style={{ background: `linear-gradient(180deg, ${theme.bgFrom}, ${theme.bgTo})` }}
     >
+      {bannerSrc ? (
+        <img src={bannerSrc} alt={def.name} draggable={false} className="h-full w-full select-none object-cover" data-testid="activity-banner" />
+      ) : (
       <svg viewBox="0 0 792 202" preserveAspectRatio="xMidYMid slice" className="h-full w-full select-none" aria-label={def.name}>
         <defs>
           <linearGradient id="chibi-stage-bg" x1="0" y1="0" x2="0" y2="1">
@@ -762,6 +771,7 @@ export function ActivityChibi({ outcome }: ActivityChibiProps) {
           )}
         </g>
       </svg>
+      )}
 
       {/* Top-left activity status badge */}
       <div className="pointer-events-none absolute left-3 top-2.5 flex items-center gap-2">
@@ -786,6 +796,21 @@ export function ActivityChibi({ outcome }: ActivityChibiProps) {
           </span>
         )}
       </div>
+
+      {/* With a real illustration the drawn cameo is gone, so show the visitor's portrait instead */}
+      {bannerSrc && hasSpriteChatter && chatterWho && (
+        <motion.div
+          className="pointer-events-none absolute bottom-9 right-4"
+          initial={{ opacity: 0, scale: 0.7 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+        >
+          <CharacterAvatar id={chatterWho} size={64} />
+          {outcome.chatter?.bond && (
+            <span className="absolute -right-2 -top-2 rounded-full border-2 border-[#f472b6] bg-white px-1.5 text-xs font-extrabold text-[#e11d48]">♥ +1</span>
+          )}
+        </motion.div>
+      )}
 
       {/* Optional cameos nameplate at bottom-right if chatter triggered */}
       {hasSpriteChatter && chatterWho && (

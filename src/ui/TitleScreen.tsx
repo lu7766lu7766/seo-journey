@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Background } from '@/art/backgrounds'
 import { CharacterSprite } from '@/art/characters'
+import { useArtManifest } from '@/art/manifest'
+import { resolveUiSrc } from '@/art/resolve'
 import { DEFAULT_PLAYER_NAME } from '@/content/characters'
 import { SCENE_IDS } from '@/content/scenes'
 import { useGame } from '@/store/game'
@@ -9,6 +11,7 @@ import { useUI } from '@/store/ui'
 import { loadSlot } from './SaveLoad'
 
 export function TitleScreen() {
+  const logoSrc = resolveUiSrc(useArtManifest(), 'logo')
   const [step, setStep] = useState<'menu' | 'name'>('menu')
   const [name, setName] = useState(DEFAULT_PLAYER_NAME)
   const latest = latestSave()
@@ -50,12 +53,21 @@ export function TitleScreen() {
         <span className="mb-3 inline-flex w-fit items-center gap-2 rounded-full border border-[#9fd3f0]/50 bg-[#101836]/80 px-4 py-1 text-sm font-bold tracking-widest text-[#9fd3f0] shadow-[0_0_16px_rgba(159,211,240,0.28)]">
           SEO · AEO · GEO 青春校園戀愛養成
         </span>
-        <h1 className="font-title text-7xl font-bold tracking-tight text-white drop-shadow-[0_4px_24px_rgba(159,211,240,0.45)]">
-          搜尋戀曲
-        </h1>
-        <p className="mb-10 mt-3 font-title text-2xl font-bold tracking-wide text-[#f7b8c8] drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
-          ～青葉學園網站研究社～
-        </p>
+        {logoSrc ? (
+          <>
+            <h1 className="sr-only">搜尋戀曲 ～青葉學園網站研究社～</h1>
+            <img src={logoSrc} alt="" draggable={false} className="mb-8 mt-1 h-auto max-h-[190px] w-auto max-w-[500px] select-none object-contain object-left drop-shadow-[0_6px_24px_rgba(0,0,0,0.45)]" data-testid="title-logo" />
+          </>
+        ) : (
+          <>
+            <h1 className="font-title text-7xl font-bold tracking-tight text-white drop-shadow-[0_4px_24px_rgba(159,211,240,0.45)]">
+              搜尋戀曲
+            </h1>
+            <p className="mb-10 mt-3 font-title text-2xl font-bold tracking-wide text-[#f7b8c8] drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
+              ～青葉學園網站研究社～
+            </p>
+          </>
+        )}
 
         {step === 'menu' ? (
           <div className="flex w-72 flex-col gap-3">
