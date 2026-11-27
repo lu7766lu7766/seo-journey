@@ -66,7 +66,8 @@ export function ScheduleScreen() {
     const chatterChar = out.chatter && CHARACTERS[out.chatter.who].hasSprite ? (out.chatter.who as CharId) : null
     return (
       <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-6" data-testid="schedule-playback">
-        <Background id="clubroom" time="day" />
+        {/* collapsing at 0 stamina (and the slots cancelled after it) plays out in the infirmary */}
+        <Background id={out.status === 'infirmary' || out.status === 'skipped' ? 'infirmary' : 'clubroom'} time="day" />
         <div className="pointer-events-none absolute inset-0 bg-[#0c1228]/52 backdrop-blur-[2px]" />
         <motion.div
           key={stepIdx}
