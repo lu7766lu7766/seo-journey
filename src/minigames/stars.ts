@@ -39,8 +39,8 @@ export const canOfferRetry = (passed: boolean, attempt: Attempt): boolean => !pa
 
 export const quizStars = (correct: number, total: number, passed: boolean, attempt: Attempt): Stars =>
   resolveStars({ passed, attempt, perfect: isQuizPerfect(correct, total) })
-export const spotStars = (won: boolean, wrongClicks: number, attempt: Attempt): Stars =>
-  resolveStars({ passed: won, attempt, perfect: isSpotPerfect(wrongClicks) })
+export const spotStars = (won: boolean, wrongClicks: number, attempt: Attempt, usedHint = false): Stars =>
+  resolveStars({ passed: won, attempt, perfect: isSpotPerfect(wrongClicks) && !usedHint })
 export const serpStars = (score: number, passed: boolean, attempt: Attempt): Stars =>
   resolveStars({ passed, attempt, perfect: isSerpPerfect(score) })
 

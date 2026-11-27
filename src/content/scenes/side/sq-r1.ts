@@ -53,7 +53,7 @@ export default scene('sq-r1', [
   show('rin', 'center', 'think'),
   say('rin', 'think', '轉址規則上線了。你怎麼確認，它真的生效？'),
   choice([
-    opt('開無痕視窗，實際點舊連結，再看狀態碼', { bond: { rin: 1 }, stats: { tec: 1 } }, [
+    opt('開無痕配開發者工具，點舊連結看狀態碼', { bond: { rin: 1 }, stats: { tec: 1 } }, [
       show('rin', 'center', 'smile'),
       say('rin', 'smile', '好習慣。還要看有沒有「A 轉 B、B 又轉 C」。'),
       say('me', undefined, '一步到位，不繞圈。'),

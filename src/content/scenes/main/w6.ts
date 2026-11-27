@@ -1,8 +1,8 @@
 import { bg, bgm, card, choice, effect, hide, opt, say, scene, sfx, show, when } from '@/engine'
-import { bondIs, flag, or } from '@/engine/cond'
+import { bondIs, flag, or, seen } from '@/engine/cond'
 
 export default scene('w6', [
-  bgm('daily'),
+  bgm('tense'),
   bg('clubroom', 'day', 'rain'),
   say('narr', undefined, '第六週週一。雨聲大得蓋過了電腦風扇，螢幕上的排名曲線像雲霄飛車。'),
   sfx('fail'),
@@ -19,6 +19,7 @@ export default scene('w6', [
   say('hare', 'think', '……呼。結論先說：我們慌了，但網站還沒壞。'),
   say('mirai', 'think', '已讀取公告。此次為全面性的核心更新，並非針對單一網站。'),
   say('mirai', 'sad', '數據只能告訴我這些。……還有，我有點不安。這個，沒有資料。'),
+  hide('hare'),
   show('sensei', 'center', 'normal'),
   say('sensei', 'smile', '都到齊了。別急著把標題全改一遍。排名像天氣，網站的品質才是氣候。'),
   say('sensei', 'normal', '官方的建議很樸素：專注做有幫助、以人為本的內容。'),
@@ -28,6 +29,7 @@ export default scene('w6', [
   say('rin', 'think', 'E-E-A-T 是經驗、專業、權威、信任，不是單一排名分數。最後一個，最重要。'),
   card('eeat'),
   say('rin', 'smile', '作者頁的格式，我來整理。'),
+  hide('sensei'),
   show('hare', 'center', 'happy'),
   say('hare', 'happy', '作者簡介我來寫！三十字，結論先說！'),
   say('mirai', 'smile', '我負責核對，名字與頁面資料要一致。'),
@@ -39,7 +41,7 @@ export default scene('w6', [
     bg('clubroom', 'day', 'rain'),
     show('rin', 'center', 'angry'),
     say('rin', 'angry', '等等，站長工具有「人工處罰」通知。……這不是天氣，是我們種的因。'),
-    effect({ stats: { con: -20, tru: -10 } }),
+    effect({ stats: { con: -25, tec: -10, tru: -15 }, bond: { rin: -2, hare: -2, mirai: -2 } }),
     hide('rin'),
   ]),
 
@@ -56,10 +58,17 @@ export default scene('w6', [
         say('kuro', 'sad', '……你竟然還敢跟著我跳火坑啊。'),
       ]),
     ]),
+  ], [
+    when(seen('sq-x1'), [
+      say('me', undefined, '你商店街那張傳單，還貼在我們社辦牆上。'),
+    ], [
+      say('me', undefined, '先停手吧。真正的讀者，還在等你寫給人看的內容。'),
+    ]),
   ]),
   say('kuro', 'sad', '一直騙演算法，最後被淘汰的，是自己。'),
   hide('kuro'),
 
+  bgm('warm'),
   bg('rain', 'night', 'rain'),
   say('narr', undefined, '夜裡的雨還沒停。離搜尋祭只剩幾天，我撐著傘，想去見一個人。'),
   choice([
@@ -71,7 +80,11 @@ export default scene('w6', [
       show('rin', 'center', 'blush'),
       say('rin', 'blush', '規則不能保證結果。但這六週，你每一步都照規則走，我都看見了。'),
       say('me', undefined, '學姊也會怕嗎？'),
-      say('rin', 'blush', '怕。……所以才需要一個會問「規則能先看一下嗎」的人。'),
+      when(
+        flag('askedRules'),
+        [say('rin', 'blush', '怕。……所以才需要一個會問「規則能先看一下嗎」的人。')],
+        [say('rin', 'blush', '怕。……所以才需要一個陪我把規則走到最後的人。')],
+      ),
       say('narr', undefined, '她把毛巾輕輕蓋在我頭上，指尖停了一秒，又縮了回去。'),
       when(
         bondIs('rin', 'gte', 28),
@@ -96,7 +109,7 @@ export default scene('w6', [
       say('me', undefined, '手這麼涼，妳在發抖嗎？'),
       say('hare', 'surprised', '才沒有！是……麥克風的後座力！'),
       when(
-        bondIs('hare', 'gte', 30),
+        bondIs('hare', 'gte', 28),
         [
           say('hare', 'blush', '騙你的。……是因為你來了。所以，我現在不抖了。'),
           say('hare', 'happy', '結論先說：搜尋祭那天，我要用一句話讓全場聽見我們！'),

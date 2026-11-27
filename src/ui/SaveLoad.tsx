@@ -51,7 +51,7 @@ export function SaveLoad({ mode }: { mode: 'save' | 'load' }) {
 
   return (
     <Panel title={mode === 'save' ? '存檔' : '讀檔'} onClose={back}>
-      <div className="space-y-3">
+      <div className="max-h-[300px] space-y-2.5 overflow-y-auto pr-1">
         {saves.map(({ slot, env }) => {
           const disabled = mode === 'save' ? slot === 'auto' : !env
           return (
@@ -60,18 +60,23 @@ export function SaveLoad({ mode }: { mode: 'save' | 'load' }) {
               disabled={disabled}
               data-testid={`slot-${slot}`}
               onClick={() => act(slot)}
-              className="glass flex w-full items-center justify-between rounded-2xl px-5 py-3 text-left text-lg enabled:hover:brightness-105 disabled:opacity-50"
+              className="glass flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-2.5 text-left text-base enabled:hover:brightness-105 disabled:opacity-50"
             >
-              <span className="font-title font-bold">{slot === 'auto' ? '自動存檔' : `欄位 ${slot}`}</span>
-              <span className="text-base">{env ? `${env.label}　${new Date(env.savedAt).toLocaleString()}` : '（空）'}</span>
+              <span className="shrink-0 font-title font-bold">{slot === 'auto' ? '自動存檔' : `欄位 ${slot}`}</span>
+              <span className="min-w-0 truncate text-sm">{env ? `${env.label}　${new Date(env.savedAt).toLocaleString()}` : '（空）'}</span>
             </button>
           )
         })}
       </div>
 
-      <div className="mt-4 rounded-2xl border border-ink/15 bg-white/75 p-3.5 text-sm">
+      <div className="mt-3 rounded-2xl border border-ink/15 bg-white/75 p-3.5 text-sm">
         <div className="flex items-center justify-between gap-2">
-          <span className="font-bold text-ink">電腦教室存檔碼（跨機／防還原用）</span>
+          <div>
+            <span className="font-bold text-ink">電腦教室存檔碼（跨機／防還原用）</span>
+            <p className="text-xs text-ink/65">
+              {mode === 'save' ? '換座位或使用公共電腦前，可複製存檔碼保存進度' : '從別台電腦複製來的 SEOJ1: 存檔碼可在此貼上繼續'}
+            </p>
+          </div>
           {mode === 'save' && (
             <button
               type="button"

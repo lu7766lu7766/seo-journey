@@ -93,6 +93,8 @@ describe('siteMetrics (simulated dashboard numbers)', () => {
     expect(c.sitelinks.length).toBeGreaterThanOrEqual(2)
     expect(c.aiChip).toBeTruthy()
     expect(b.aiChip).toBeNull()
+    const lowTrust = serpMock({ con: 85, tec: 85, str: 85, ans: 85, tru: 10 })
+    expect(lowTrust.aiChip).toBeNull()
   })
 
   it('the weekly stat snapshot round-trips through flags', () => {

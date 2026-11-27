@@ -47,6 +47,10 @@ export default scene('w1', [
 
   say('rin', 'normal', '三件事都急。{name}，這週你先做哪一件？'),
   choice([
+    opt('先提交 Sitemap，再開 Search Console', { bond: { rin: 1, hare: 1 }, stats: { tec: 2, str: 1 } }, [
+      show('rin', 'center', 'normal'),
+      say('rin', 'normal', '兩頭都顧到。……穩健派。'),
+    ]),
     opt('先整理收錄清單：哪些頁該露面', { bond: { rin: 2 }, stats: { tec: 3 } }, [
       show('rin', 'center', 'smile'),
       say('rin', 'smile', '先打地基。穩當，我喜歡。'),
@@ -55,25 +59,21 @@ export default scene('w1', [
       show('hare', 'right', 'happy'),
       say('hare', 'happy', '耶！我的炸雞排情報派上用場了！'),
     ]),
-    opt('先提交 Sitemap，再開 Search Console', { bond: { rin: 1, hare: 1 }, stats: { tec: 2, str: 1 } }, [
-      show('rin', 'center', 'normal'),
-      say('rin', 'normal', '兩頭都顧到。……穩健派。'),
-    ]),
   ]),
   hide('hare'),
   say('rin', 'normal', '之後每週用 Search Console，看收錄狀態。'),
   card('search-console'),
   when(
-    bondIs('rin', 'gte', 6),
+    bondIs('rin', 'gte', 4),
     [
-      say('narr', undefined, '她轉身要走，貓咪鑰匙圈叮的一聲掉在地上。這次，她沒有急著藏。'),
+      say('narr', undefined, '她轉身要走，貓咪鑰匙圈叮的一聲掉在地上。她撿起來，沒有急著藏。'),
       show('rin', 'center', 'blush'),
-      say('rin', 'blush', '……長這樣。備品。你敢笑，就罰你抄規則三遍。'),
+      say('rin', 'blush', '……備品。你敢笑，就罰你抄規則三遍。'),
       say('rin', 'smile', '今天做得很好，{name}。明天，也這樣。'),
     ],
     [
       when(
-        bondIs('rin', 'lt', 4),
+        bondIs('rin', 'lt', 3),
         [
           show('rin', 'center', 'normal'),
           say('rin', 'normal', '本週進度，合格。下週同一時間，請準時。'),

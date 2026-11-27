@@ -1,5 +1,5 @@
 import { score } from '@/systems/score'
-import type { CmpOp, Cond, CondState, FlagValue, HeroineId, KnowledgeId, StatKey } from './types'
+import { HEROINES, type CmpOp, type Cond, type CondState, type FlagValue, type HeroineId, type KnowledgeId, type StatKey } from './types'
 
 function cmp(a: number, op: CmpOp, b: number): boolean {
   switch (op) {
@@ -14,6 +14,18 @@ function cmp(a: number, op: CmpOp, b: number): boolean {
 
 const num = (v: FlagValue | undefined) => (typeof v === 'number' ? v : v ? 1 : 0)
 
+const HEROINE_TIE_PRIORITY: Record<HeroineId, number> = { rin: 3, hare: 2, mirai: 1 }
+
+function currentTopHeroine(s: CondState): HeroineId {
+  const sorted = [...HEROINES].sort((a, b) => {
+    const diff = score(b, s.stats, s.bond) - score(a, s.stats, s.bond)
+    if (Math.abs(diff) > 1e-6) return diff
+    if (s.bond[b] !== s.bond[a]) return s.bond[b] - s.bond[a]
+    return HEROINE_TIE_PRIORITY[b] - HEROINE_TIE_PRIORITY[a]
+  })
+  return sorted[0]
+}
+
 export function evalCond(c: Cond, s: CondState): boolean {
   switch (c.t) {
     case 'flag': {
@@ -25,6 +37,7 @@ export function evalCond(c: Cond, s: CondState): boolean {
     case 'stat': return cmp(s.stats[c.key], c.op, c.value)
     case 'bond': return cmp(s.bond[c.who], c.op, c.value)
     case 'score': return cmp(score(c.who, s.stats, s.bond), c.op, c.value)
+    case 'topHeroine': return currentTopHeroine(s) === c.who
     case 'seen': return s.seenScenes.includes(c.scene)
     case 'card': return s.unlockedCards.includes(c.id)
     case 'and': return c.all.every((x) => evalCond(x, s))
@@ -38,6 +51,7 @@ export const flag = (key: string, op?: CmpOp, value?: FlagValue): Cond => ({ t: 
 export const statIs = (key: StatKey, op: CmpOp, value: number): Cond => ({ t: 'stat', key, op, value })
 export const bondIs = (who: HeroineId, op: CmpOp, value: number): Cond => ({ t: 'bond', who, op, value })
 export const scoreIs = (who: HeroineId, op: CmpOp, value: number): Cond => ({ t: 'score', who, op, value })
+export const topHeroine = (who: HeroineId): Cond => ({ t: 'topHeroine', who })
 export const seen = (scene: string): Cond => ({ t: 'seen', scene })
 /** true once the player has unlocked this knowledge card in the current run */
 export const hasCard = (id: KnowledgeId): Cond => ({ t: 'card', id })

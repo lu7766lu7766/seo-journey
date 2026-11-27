@@ -7,6 +7,7 @@ import { CHARACTERS } from '@/content/characters'
 import { WEEKLY_COMMENTS } from '@/content/flavor'
 import { HEROINES, type HeroineId } from '@/engine/types'
 import { useGame } from '@/store/game'
+import { useUI } from '@/store/ui'
 import { scores } from '@/systems/score'
 import { readStatSnapshot } from '@/systems/siteMetrics'
 import { SiteDashboard } from './SiteDashboard'
@@ -25,6 +26,7 @@ const TIER_LABEL: Record<'low' | 'mid' | 'high', { text: string; cls: string }> 
 
 export function WeeklyReport() {
   const s = useGame()
+  const ui = useUI.getState()
   const cur = scores(s.stats, s.bond)
   // stats at the start of this week (stored in flags by the store); old saves simply show no deltas
   const weekStart = readStatSnapshot(s.flags)
@@ -38,9 +40,16 @@ export function WeeklyReport() {
       <Background id="council" time="dusk" />
       <div className="pointer-events-none absolute inset-0 bg-[#0b1024]/55 backdrop-blur-[2px]" />
       <div className="glass relative z-10 flex w-[1180px] flex-col gap-3.5 rounded-3xl px-7 py-5">
-        <div className="text-center">
+        <div className="relative text-center">
           <h2 className="font-title text-3xl font-bold text-ink">第 {s.week} 週 · 週日評測報告</h2>
-          <p className="mt-0.5 text-sm text-ink/75">三位評審檢視了網站研究社本週的成果</p>
+          <p className="mt-0.5 text-sm text-ink/75">
+            搜尋祭門檻：存續平均 35｜個人結局 60｜真結局全 65
+            {s.week === 1 && '　·　電腦教室換位可在「選單 → 存檔」複製存檔碼帶走進度'}
+          </p>
+          <div className="absolute right-0 top-0 flex gap-2">
+            <button type="button" className="hud-pill" onClick={() => ui.openGallery('cards')}>圖鑑</button>
+            <button type="button" className="hud-pill" onClick={() => ui.setOverlay('menu')}>選單 (Esc)</button>
+          </div>
         </div>
 
         <div className="grid grid-cols-[1fr_400px] items-start gap-5">

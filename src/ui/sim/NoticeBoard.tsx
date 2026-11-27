@@ -3,10 +3,17 @@ import { CharacterAvatar } from '@/art/characters/Avatar'
 import { QUEST_BLURBS } from '@/content/flavor'
 import { SCENE_IDS } from '@/content/scenes'
 import { useGame } from '@/store/game'
+import { useUI } from '@/store/ui'
 import { availableQuests, MAX_QUESTS_PER_WEEK } from '@/systems/quests'
+
+function questSeriesLabel(id: string): string | null {
+  const m = id.match(/^sq-[rhm](\d)$/)
+  return m ? `第 ${m[1]}/3 話` : null
+}
 
 export function NoticeBoard() {
   const { week, flags, questsDoneThisWeek, startSideQuest, skipBoardToWeekend } = useGame()
+  const setOverlay = useUI((s) => s.setOverlay)
   const quests = availableQuests(week, flags).filter((q) => SCENE_IDS.includes(q.id))
   const remaining = Math.max(0, MAX_QUESTS_PER_WEEK - questsDoneThisWeek)
 
@@ -15,7 +22,7 @@ export function NoticeBoard() {
       <Background id="corridor" time="dusk" />
       <div className="pointer-events-none absolute inset-0 bg-[#0c1228]/50 backdrop-blur-[2px]" />
       <div className="relative z-10 flex max-h-[640px] w-[920px] flex-col gap-5">
-        <div className="vn-box flex items-center justify-between rounded-2xl px-6 py-4 text-white">
+        <div className="vn-box flex items-center justify-between gap-4 rounded-2xl px-6 py-4 text-white">
           <div>
             <div className="flex items-center gap-3">
               <h2 className="font-title text-3xl font-bold text-white">放學後 · 委託公佈欄</h2>
@@ -25,9 +32,13 @@ export function NoticeBoard() {
             </div>
             <p className="mt-1 text-sm text-[#d5e3ff]">不佔平日排程，完成支線可獲得屬性、好感度與知識卡</p>
           </div>
-          <button className="btn-pastel px-6 py-2.5 text-lg" data-testid="skip-board" onClick={skipBoardToWeekend}>
-            前往週末 →
-          </button>
+          <div className="flex shrink-0 items-center gap-2">
+            <button type="button" className="hud-pill" onClick={() => setOverlay('status')}>狀態</button>
+            <button type="button" className="hud-pill" onClick={() => setOverlay('menu')}>選單 (Esc)</button>
+            <button className="btn-pastel px-6 py-2.5 text-lg" data-testid="skip-board" onClick={skipBoardToWeekend}>
+              前往週末 →
+            </button>
+          </div>
         </div>
 
         {remaining === 0 || quests.length === 0 ? (
@@ -40,6 +51,8 @@ export function NoticeBoard() {
           <div className="grid grid-cols-2 gap-4 overflow-y-auto pr-1">
             {quests.map((q) => {
               const b = QUEST_BLURBS[q.id]
+              const isLastWeek = q.maxWeek === week
+              const series = questSeriesLabel(q.id)
               return (
                 <button
                   key={q.id}
@@ -58,6 +71,18 @@ export function NoticeBoard() {
                         <span className="font-title text-xl font-bold text-ink">{b?.title ?? q.id}</span>
                         <span className="shrink-0 rounded-full bg-sakura/55 px-2.5 py-0.5 text-xs font-bold text-ink">
                           {b?.client ?? ''}
+                        </span>
+                      </div>
+                      <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] font-bold">
+                        {series && (
+                          <span className="rounded-full bg-white/85 px-2 py-0.5 text-ink/75">{series}</span>
+                        )}
+                        <span
+                          className={`rounded-full px-2 py-0.5 ${
+                            isLastWeek ? 'bg-rose-100 text-[#d6334a]' : 'bg-white/75 text-ink/65'
+                          }`}
+                        >
+                          {isLastWeek ? '⚠ 本週截止' : `第 ${q.maxWeek} 週前可接`}
                         </span>
                       </div>
                       <p className="mt-1.5 text-sm leading-relaxed text-ink/85">{b?.blurb ?? ''}</p>

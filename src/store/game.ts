@@ -14,11 +14,19 @@ import { statSnapshotFlags } from '@/systems/siteMetrics'
 import { useGlobal } from './global'
 import { defaultPersisted, normalizeData, writeSave, type PersistedGame, type Phase } from './save'
 
+export interface CardToast {
+  id: string
+  title: string
+  summary: string
+  n: number
+}
+
 export interface GameStore extends PersistedGame {
   active: boolean
   pause: Pause
-  /** last unlocked card, for a toast */
-  toast: { id: string; title: string; summary: string; n: number } | null
+  /** queued knowledge card toasts; `toast` mirrors `toastQueue[0] ?? null` */
+  toastQueue: CardToast[]
+  toast: CardToast | null
 
   /** reset to a fresh game (does not start a scene) */
   newGame: (playerName: string) => void
@@ -29,6 +37,7 @@ export interface GameStore extends PersistedGame {
   resolveMinigame: (won: boolean, stars?: number) => void
   applyEffects: (e: Effects) => void
   unlockCard: (id: string) => void
+  dismissToast: () => void
   reachEnding: (id: string) => void
   setPhase: (phase: Phase, week?: number) => void
 
@@ -90,11 +99,12 @@ export const useGame = create<GameStore>((set, get) => {
     ...defaultPersisted(),
     active: false,
     pause: { kind: 'end' },
+    toastQueue: [],
     toast: null,
 
     newGame: (playerName) => {
       runner = null
-      set({ ...defaultPersisted(playerName), active: true, pause: { kind: 'end' }, toast: null })
+      set({ ...defaultPersisted(playerName), active: true, pause: { kind: 'end' }, toastQueue: [], toast: null })
     },
 
     startScene: async (id) => {
@@ -123,14 +133,19 @@ export const useGame = create<GameStore>((set, get) => {
       set((s) => {
         const played = typeof s.flags['mg.played'] === 'number' ? s.flags['mg.played'] : 0
         const wonCnt = typeof s.flags['mg.won'] === 'number' ? s.flags['mg.won'] : 0
+        const starsSum = typeof s.flags['mg.stars'] === 'number' ? s.flags['mg.stars'] : 0
+        const starsMax = typeof s.flags['mg.starsMax'] === 'number' ? s.flags['mg.starsMax'] : 0
         return {
           flags: {
             ...s.flags,
             'mg.played': played + 1,
             'mg.won': wonCnt + (won ? 1 : 0),
+            'mg.stars': starsSum + (typeof stars === 'number' ? stars : won ? 2 : 0),
+            'mg.starsMax': starsMax + 3,
           },
         }
       })
+      if (won && stars === 3) get().applyEffects({ stats: { con: 1 } })
       sync(runner.resolveMinigame(won))
     },
 
@@ -138,12 +153,26 @@ export const useGame = create<GameStore>((set, get) => {
 
     unlockCard: (id) => {
       useGlobal.getState().unlockCard(id)
-      set((s) => (s.unlockedCards.includes(id) ? s : { unlockedCards: [...s.unlockedCards, id] }))
+      if (get().unlockedCards.includes(id)) return
       const card = (KNOWLEDGE as Record<string, { title: string; summary?: string }>)[id]
       const title = card?.title ?? id
       const summary = card?.summary ?? ''
+      const nextItem: CardToast = { id, title, summary, n: ++toastN }
       audio.sfx('card')
-      set({ toast: { id, title, summary, n: ++toastN } })
+      set((s) => {
+        const nextQueue = [...s.toastQueue, nextItem]
+        return {
+          unlockedCards: [...s.unlockedCards, id],
+          toastQueue: nextQueue,
+          toast: nextQueue[0] ?? null,
+        }
+      })
+    },
+    dismissToast: () => {
+      set((s) => {
+        const nextQueue = s.toastQueue.slice(1)
+        return { toastQueue: nextQueue, toast: nextQueue[0] ?? null }
+      })
     },
     reachEnding: (id) => {
       useGlobal.getState().unlockEnding(id)
@@ -291,7 +320,7 @@ export const useGame = create<GameStore>((set, get) => {
     loadPersisted: async (raw) => {
       const data = normalizeData(raw)
       runner = null
-      set({ ...data, active: true, toast: null, pause: { kind: 'end' } })
+      set({ ...data, active: true, toastQueue: [], toast: null, pause: { kind: 'end' } })
       if (data.scene) {
         const scene = await loadScene(data.scene.sceneId)
         runner = new SceneRunner(scene, host, data.scene)

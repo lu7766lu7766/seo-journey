@@ -2,7 +2,7 @@ import { WEEK_THEMES } from '@/content/activities'
 import { CHARACTERS } from '@/content/characters'
 import { HEROINES, STAT_KEYS, type HeroineId, type StatKey } from '@/engine/types'
 import { useGame } from '@/store/game'
-import { scores } from '@/systems/score'
+import { scores, TUNING, WEIGHTS } from '@/systems/score'
 import { RULES } from '@/systems/schedule'
 import { Panel } from '../Panel'
 import { SiteDashboard } from './SiteDashboard'
@@ -116,14 +116,19 @@ export function StatusSummary({ compact = false }: { compact?: boolean }) {
             {HEROINES.map((h) => {
               const c = CHARACTERS[h]
               const val = Math.round(sc[h])
+              const weighted = STAT_KEYS.reduce((acc, k) => acc + WEIGHTS[h][k] * stats[k], 0) * TUNING.statScale
+              const sitePart = Math.round(weighted)
+              const bondPart = Math.round(bond[h] * TUNING.bondScale)
               const hint = HEROINE_HINT[h]
               return (
                 <div key={h} className="space-y-0.5">
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center justify-between gap-2 text-xs">
                     <span className="font-bold" style={{ color: c.color }}>
                       {c.name}（{hint.domain} ♥ {val}）
                     </span>
-                    <span className="text-[11px] text-ink/70">在意：{hint.focus}</span>
+                    <span className="text-[11px] text-ink/70">
+                      網站 {sitePart} + 互動 {bondPart}/{TUNING.bondMax} · 在意：{hint.focus}
+                    </span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-ink/10">
                     <div className="h-full rounded-full transition-all" style={{ width: `${val}%`, background: c.color }} />
@@ -131,6 +136,11 @@ export function StatusSummary({ compact = false }: { compact?: boolean }) {
                 </div>
               )
             })}
+            {!compact && (
+              <p className="pt-1 text-right text-[11px] text-ink/65">
+                目標：存續平均 ≥ 35 ｜ 約會第 3 階 ≥ 55 ｜ 個人結局 ≥ 60 ｜ 真結局全 ≥ 65
+              </p>
+            )}
           </div>
         </div>
       </div>

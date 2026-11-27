@@ -100,6 +100,19 @@ export function Quiz({
           <div className="space-y-2">
             {game.questions.map((q, idx) => {
               const ok = answers[idx] === q.correct
+              const hideAnswerForRetry = !ok && retryAvailable
+              if (hideAnswerForRetry) {
+                return (
+                  <div key={idx} className="rounded-xl border border-amber-300 bg-amber-50/85 px-4 py-3 text-sm">
+                    <div className="flex items-start justify-between gap-2 font-bold">
+                      <span>
+                        Q{idx + 1}. {q.prompt}
+                      </span>
+                      <span className="shrink-0 text-amber-800">未答對 · 重新挑戰時再想想</span>
+                    </div>
+                  </div>
+                )
+              }
               return (
                 <div
                   key={idx}
@@ -115,6 +128,11 @@ export function Quiz({
                       {ok ? '正確' : '錯誤'}
                     </span>
                   </div>
+                  {!ok && (
+                    <p className="mt-1 text-xs font-semibold text-ink/75">
+                      你的選擇：{q.options[answers[idx]] ?? '未作答'} ｜ 正確答案：{q.options[q.correct]}
+                    </p>
+                  )}
                   <p className="mt-1 text-ink/85">{q.explain}</p>
                 </div>
               )
@@ -150,6 +168,7 @@ export function Quiz({
   }
 
   const isCorrect = selected === question.correct
+  const revealImmediately = isCorrect || attempt === 2
   const order = orders[step] ?? question.options.map((_, i) => i)
   const hint = game.hint ?? DEFAULT_HINT
 
@@ -191,10 +210,12 @@ export function Quiz({
             let cls =
               'border-ink/15 bg-white/90 text-ink hover:border-sakura hover:bg-white'
             if (hasPicked) {
-              if (isAnswer) {
+              if (isAnswer && revealImmediately) {
                 cls = 'border-emerald-500 bg-emerald-50 text-emerald-950 font-semibold'
               } else if (isPicked) {
-                cls = 'border-rose-500 bg-rose-50 text-rose-950'
+                cls = isCorrect
+                  ? 'border-emerald-500 bg-emerald-50 text-emerald-950 font-semibold'
+                  : 'border-rose-500 bg-rose-50 text-rose-950'
               } else {
                 cls = 'border-ink/10 bg-white/55 text-ink/60'
               }
@@ -212,7 +233,7 @@ export function Quiz({
                   {LETTERS[i] ?? i + 1}
                 </span>
                 <span className="flex-1 leading-snug">{optText}</span>
-                {hasPicked && isAnswer && (
+                {hasPicked && isAnswer && revealImmediately && (
                   <span className="shrink-0 text-xs font-bold text-emerald-700">正確答案</span>
                 )}
                 {hasPicked && isPicked && !isAnswer && (
@@ -232,7 +253,11 @@ export function Quiz({
             }`}
           >
             <p className="font-bold">{isCorrect ? '答對了！' : '答錯囉！'}</p>
-            <p className="mt-1">{question.explain}</p>
+            <p className="mt-1">
+              {revealImmediately
+                ? question.explain
+                : '先記下這一題的疑問！完成全部題目後若未達門檻，可免費重考並參考索老師提示。'}
+            </p>
           </div>
         )}
       </div>

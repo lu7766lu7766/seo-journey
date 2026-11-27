@@ -1,5 +1,5 @@
 import { bg, bgm, cg, hide, say, scene, show, when } from '@/engine'
-import { flag } from '@/engine/cond'
+import { flag, seen } from '@/engine/cond'
 
 export default scene('end-hare', [
   bgm('warm'),
@@ -13,7 +13,11 @@ export default scene('end-hare', [
   say('me', undefined, '這都是妳每天練習「先講結論」的成果。'),
   show('hare', 'center', 'blush'),
   say('hare', 'blush', '我以前老怕講太少，大家會無聊，才一直繞遠路。'),
-  say('hare', 'think', '可是有一句話，我繞了整整六週，都沒說出口。'),
+  when(
+    seen('date-hare-3'),
+    [say('hare', 'blush', '上次在海邊說過一次，但今天我要對著麥克風再說一次。')],
+    [say('hare', 'think', '可是有一句話，我繞了整整六週，都沒說出口。')],
+  ),
   say('me', undefined, '要講多久？我先去倒杯茶。'),
   say('hare', 'think', '首先，故事要從轉學第一天的咖哩說起——'),
   say('me', undefined, '結論呢？'),
@@ -41,8 +45,12 @@ export default scene('end-hare', [
   say('me', undefined, '不要，我已經存檔了。永久保存。'),
   say('narr', undefined, '她紅著臉，把脖子上的耳機取下來，輕輕掛到了我的脖子上。'),
   cg('none'),
+  hide('hare'),
+  bg('street', 'dusk', 'fade'),
   say('narr', undefined, '回家的路上，她的耳機線纏在我們的手指之間，誰也沒有鬆開。'),
+  bg('classroom', 'day', 'fade'),
   say('narr', undefined, '隔天早上，全校廣播傳來晴的聲音：「今日一問：誰是我最喜歡的人？」'),
+  show('hare', 'center', 'smile'),
   say('hare', 'smile', '答案是——秘密！詳細內容，放學後當面說！'),
   hide('hare'),
 ])

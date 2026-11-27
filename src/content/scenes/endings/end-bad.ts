@@ -38,6 +38,7 @@ export default scene('end-bad', [
   say('me', undefined, 'robots.txt 管能不能爬，noindex 管能不能收錄……我都還記得。'),
   say('me', undefined, '404 號社辦，暫時打烊。……但是，我還會再回來。'),
   cg('none'),
+  bg('clubroom', 'day', 'fade'),
   say('narr', undefined, '新學期的早晨，社辦門口站著三個人，手裡各拿著一份申請書。'),
   show('rin', 'left', 'smile'),
   show('hare', 'center', 'happy'),

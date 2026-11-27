@@ -35,6 +35,7 @@ export function CopyChecklistButton({
   label = '複製我的實戰檢查清單',
   testId = 'copy-checklist',
   toastBelow = false,
+  showDownload = false,
 }: {
   unlocked: readonly string[]
   playerName?: string
@@ -43,24 +44,49 @@ export function CopyChecklistButton({
   testId?: string
   /** show the toast under the button (when there is no room above, e.g. inside a scrolling list) */
   toastBelow?: boolean
+  showDownload?: boolean
 }) {
   const [state, setState] = useState<'idle' | 'ok' | 'fail'>('idle')
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   useEffect(() => () => clearTimeout(timer.current), [])
 
+  const makeMarkdown = () => buildChecklistMarkdown(unlocked, KNOWLEDGE_TITLES, { playerName, total: KNOWLEDGE_IDS.length })
+
   const onClick = async () => {
-    const md = buildChecklistMarkdown(unlocked, KNOWLEDGE_TITLES, { playerName, total: KNOWLEDGE_IDS.length })
-    const ok = await copyText(md)
+    const ok = await copyText(makeMarkdown())
     setState(ok ? 'ok' : 'fail')
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setState('idle'), 2200)
   }
 
+  const onDownload = () => {
+    const blob = new Blob([makeMarkdown()], { type: 'text/markdown;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'seo-checklist.md'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
   return (
-    <span className="relative inline-flex">
+    <span className="relative inline-flex items-center gap-2">
       <button type="button" className={className} data-testid={testId} onClick={() => void onClick()}>
         📋 {label}
       </button>
+      {showDownload && (
+        <button
+          type="button"
+          className="btn-pastel px-4 py-2 text-base"
+          data-testid={`${testId}-download`}
+          onClick={onDownload}
+          title="下載 Markdown 檢查清單"
+        >
+          ⬇ 下載 .md
+        </button>
+      )}
       {state !== 'idle' && (
         <span
           role="status"

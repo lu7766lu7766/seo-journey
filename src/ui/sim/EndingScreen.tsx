@@ -37,11 +37,14 @@ export function EndingScreen() {
   const questsCount = SIDE_QUESTS.filter((q) => isQuestDone(q.id, s.flags)).length
   const mgPlayed = typeof s.flags['mg.played'] === 'number' ? s.flags['mg.played'] : 0
   const mgWon = typeof s.flags['mg.won'] === 'number' ? s.flags['mg.won'] : 0
-  // best star rating per minigame (cross-save), out of 3 stars for every real minigame
-  const stars = useGlobal((g) => g.stars)
+  // Prefer current run star tally; fall back to cross-save global stars only for old saves without mg.starsMax
+  const globalStars = useGlobal((g) => g.stars)
   const starIds = MINIGAME_IDS.filter((id) => id !== 'demo-quiz')
-  const starsTotal = starIds.reduce((a, id) => a + (stars[id] ?? 0), 0)
-  const starsMax = starIds.length * 3
+  const runStarsMax = typeof s.flags['mg.starsMax'] === 'number' ? s.flags['mg.starsMax'] : 0
+  const starsTotal = runStarsMax > 0
+    ? (typeof s.flags['mg.stars'] === 'number' ? s.flags['mg.stars'] : 0)
+    : starIds.reduce((a, id) => a + (globalStars[id] ?? 0), 0)
+  const starsMax = runStarsMax > 0 ? runStarsMax : starIds.length * 3
 
   return (
     <div className="relative h-full w-full overflow-hidden" data-testid="ending-screen">
@@ -116,7 +119,14 @@ export function EndingScreen() {
         </div>
 
         <div className="mt-0.5 flex items-center gap-4">
-          <CopyChecklistButton unlocked={s.unlockedCards} playerName={s.playerName} className="btn-pastel px-6 py-2 text-base" />
+          <CopyChecklistButton unlocked={s.unlockedCards} playerName={s.playerName} showDownload className="btn-pastel px-6 py-2 text-base" />
+          <button
+            type="button"
+            className="btn-pastel px-6 py-2 text-base"
+            onClick={() => useUI.getState().openGallery('cards')}
+          >
+            查看圖鑑・練習
+          </button>
           <button
             className="btn-pastel px-8 py-2 text-lg"
             data-testid="ending-to-title"

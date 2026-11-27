@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { TUNING } from '@/systems/score'
-import { and, bondIs, evalCond, flag, hasCard, not, or, scoreIs, seen, statIs } from '@/engine/cond'
+import { and, bondIs, evalCond, flag, hasCard, not, or, scoreIs, seen, statIs, topHeroine } from '@/engine/cond'
 import { initialCore } from '@/engine/effects'
 import type { CondState } from '@/engine/types'
 
@@ -46,5 +46,13 @@ describe('evalCond', () => {
     expect(evalCond(or(flag('x'), seen('w1')), s)).toBe(true)
     expect(evalCond(or(), s)).toBe(false)
     expect(evalCond(and(), s)).toBe(true)
+  })
+  it('topHeroine picks the highest-scoring heroine (and uses bond on ties)', () => {
+    const s = base()
+    s.bond.hare = 12
+    expect(evalCond(topHeroine('hare'), s)).toBe(true)
+    expect(evalCond(topHeroine('rin'), s)).toBe(false)
+    s.bond.mirai = 20
+    expect(evalCond(topHeroine('mirai'), s)).toBe(true)
   })
 })

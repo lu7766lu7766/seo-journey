@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { animate, motion } from 'motion/react'
-import type { Stats } from '@/engine/types'
+import type { StatKey, Stats } from '@/engine/types'
 import {
   METRIC_META,
   metricRatio,
@@ -10,6 +10,14 @@ import {
   type MetricMeta,
   type SiteMetrics,
 } from '@/systems/siteMetrics'
+
+const DRIVER_SHORT: Record<StatKey, string> = {
+  con: '內容',
+  tec: '技術',
+  str: '結構',
+  ans: '可答',
+  tru: '信任',
+}
 
 const reduceMotion = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
@@ -51,9 +59,13 @@ function MetricTile({ meta, now, prev, compact }: { meta: MetricMeta; now: SiteM
   const from = prev ? prev[meta.key] : value
   const ratio = metricRatio(meta.key, now)
   const good = meta.key === 'lcp' ? value <= 2.5 : ratio >= 0.55
+  const driversText = meta.drivers.map((d) => DRIVER_SHORT[d]).join('・')
   return (
     <div className={`rounded-xl bg-white/80 ${compact ? 'px-2.5 py-1.5' : 'px-3 py-1.5'}`} data-testid={`metric-${meta.key}`} title={meta.hint}>
-      <div className="truncate text-[11px] font-bold text-ink/70">{meta.label}</div>
+      <div className="flex items-center justify-between gap-1">
+        <span className="truncate text-[11px] font-bold text-ink/70">{meta.label}</span>
+        <span className="shrink-0 rounded bg-ink/8 px-1 text-[9px] font-bold text-ink/55">{driversText}</span>
+      </div>
       <div className="flex items-center gap-1">
         <span className={`font-title font-bold leading-tight ${compact ? 'text-xl' : 'text-2xl'} ${good ? 'text-[#1f6f8f]' : 'text-ink'}`}>
           <CountTo from={from} to={value} decimals={meta.key === 'lcp' ? 1 : 0} />
@@ -73,6 +85,7 @@ function MetricTile({ meta, now, prev, compact }: { meta: MetricMeta; now: SiteM
           className="h-full rounded-full bg-gradient-to-r from-[#9fd3f0] to-[#58c49b]"
         />
       </div>
+      {!compact && <p className="mt-0.5 truncate text-[10px] text-ink/55">{meta.hint}</p>}
     </div>
   )
 }

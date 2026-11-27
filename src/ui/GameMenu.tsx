@@ -6,6 +6,7 @@ export function GameMenu() {
   const ui = useUI.getState()
   const items: [string, () => void][] = [
     ['繼續遊戲', () => ui.setOverlay(null)],
+    ['社團狀態', () => ui.setOverlay('status')],
     ['存檔', () => ui.setOverlay('save')],
     ['讀檔', () => ui.setOverlay('load')],
     ['圖鑑・相簿', () => ui.openGallery('cards')],

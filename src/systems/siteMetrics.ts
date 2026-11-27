@@ -114,7 +114,7 @@ export interface SerpMock {
 
 /** 搜尋結果示意：能力值越高，標題與描述越完整（純示意，Google 實際顯示的標題與摘要由系統自行決定）。 */
 export function serpMock(stats: Stats): SerpMock {
-  const quality = (stats.con + stats.ans + stats.str + stats.tec) / 4
+  const quality = (stats.con + stats.ans + stats.str + stats.tec + stats.tru) / 5
   if (quality < 28) {
     return {
       tier: 'bare',
@@ -141,7 +141,7 @@ export function serpMock(stats: Stats): SerpMock {
     url: 'club.example.jp › guide',
     description: '結論先說：先讓頁面被找到、再寫清楚答案、最後累積可信的來源。附技術健檢清單與問答範例。',
     sitelinks: ['技術健檢｜Core Web Vitals', '問答整理｜結論先說', '作者與來源'],
-    aiChip: '被 AI 回答引用：網站研究社',
+    aiChip: stats.tru >= 55 ? '被 AI 回答引用：網站研究社' : null,
   }
 }
 

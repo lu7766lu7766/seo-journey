@@ -21,7 +21,7 @@ export const CHECKLIST: Record<KnowledgeId, ChecklistItem> = {
   'search-intent': { area: 'SEO', action: '替每個頁面寫下它要回答的那一個搜尋問題，答不出來就重寫' },
   'title-and-meta': { area: 'SEO', action: '每頁寫獨一無二的標題，重點放前段，再補上清楚的描述' },
   'answer-first': { area: 'AEO', action: '每段開頭先用一兩句直接給結論，再補充細節與例子' },
-  'question-headings': { area: 'AEO', action: '把標題改成讀者真的會問的問題句，例如「怎麼設定轉址？」' },
+  'question-headings': { area: 'AEO', action: '把適合問答段落的小標題改成讀者會問的問題句' },
   'json-ld': { area: 'SEO', action: '用 JSON-LD 標記文章與組織資訊，再用官方工具驗證' },
   'schema-visible-match': { area: 'SEO', action: '逐項核對結構化資料，確保都和頁面上看得到的內容一致' },
   'entity-consistency': { area: 'GEO', action: '統一各平台上的名稱、成立年份與簡介寫法，不要互相矛盾' },
@@ -40,10 +40,10 @@ export const CHECKLIST: Record<KnowledgeId, ChecklistItem> = {
   'core-update': { area: '通用', action: '排名波動時先檢視內容是否真有幫助，別急著追逐演算法' },
   'geo-citations': { area: 'GEO', action: '重點用具體、可查證的陳述寫出，並標明資料出處' },
   'original-data': { area: 'GEO', action: '公開自己整理的調查或實測數據，並標明日期與方法' },
-  'ai-crawlers': { area: 'GEO', action: '檢視 robots.txt，決定要放行哪些 AI 爬蟲再逐一設定' },
+  'ai-crawlers': { area: 'GEO', action: '檢視 robots.txt 設定 AI 爬蟲，重要文字別只靠 JS 載入' },
   'llms-txt-truth': { area: 'GEO', action: '別指望 llms.txt 帶來引用，把力氣花在內容與來源上' },
   'faq-reality': { area: 'AEO', action: '用問答區塊讓內容結構清楚，但別期待一定出現 FAQ 特效' },
-  freshness: { area: '通用', action: '標示文章更新日期，並定期檢查舊內容是否已經過時' },
+  freshness: { area: '通用', action: '有實質更新時才改日期，定期檢查舊資訊是否過時' },
   'author-pages': { area: 'GEO', action: '建立作者頁：寫明姓名、經歷與聯絡方式，文章都連過去' },
 }
 

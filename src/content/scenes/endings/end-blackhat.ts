@@ -1,7 +1,7 @@
 import { bg, bgm, cg, hide, say, scene, show } from '@/engine'
 
 export default scene('end-blackhat', [
-  bgm('daily'),
+  bgm('tense'),
   bg('council', 'dusk'),
   say('narr', undefined, '搜尋祭後第二天。搜尋「青葉 網站研究社」，結果：零筆。'),
   say('narr', undefined, '站長工具裡躺著一封「人工處罰」通知，紅字特別醒目。'),
@@ -30,10 +30,13 @@ export default scene('end-blackhat', [
   say('rin', 'normal', '買來的一千條連結、AI 灌出的五百頁，都違反垃圾內容政策。'),
   say('me', undefined, '我沒管住自己。……是我的錯。'),
   say('rin', 'think', '知道錯在哪裡，才有重來的資格。'),
+  hide('mirai'),
   show('sensei', 'right', 'sad'),
   say('sensei', 'sad', '人工處罰會寫明原因。先刪掉垃圾頁、修好問題，才能送出重新審查。'),
   say('sensei', 'normal', '能不能恢復，要看審查結果。沒有任何人能保證。'),
   say('rin', 'think', '不過，願意承認錯誤這一點……合格。'),
+  hide('all'),
+  bg('clubroom', 'dusk', 'fade'),
   say('narr', undefined, '那天放學後，社辦白板前多了兩個正座的人，在抄寫垃圾內容政策。'),
   say('kuro', 'sad', '這個抄一百遍……算原創內容嗎？'),
   say('rin', 'angry', '抄寫，不算。重寫。'),

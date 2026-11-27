@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CgArt } from '@/art/cg'
 import { CG_IDS, type CgId } from '@/content/cgs'
+import { CHECKLIST, CHECKLIST_AREAS, type ChecklistArea } from '@/content/checklist'
 import { KNOWLEDGE, KNOWLEDGE_IDS, type KnowledgeId } from '@/content/knowledge'
 import { MINIGAMES, MINIGAME_IDS, type MinigameId, type MinigameKind } from '@/content/minigames'
 import { MinigameHost } from '@/minigames'
@@ -32,7 +33,7 @@ const PRACTICE_LABELS: Partial<Record<MinigameId, string>> = {
   'sq-r1': '凜支線 1 · 轉址與標準網址測驗',
   'sq-r2': '凜支線 2 · 重複內容與 Sitemap 除錯',
   'sq-r3': '凜支線 3 · 圖片與行動版最佳化檢查',
-  'sq-h1': '晴支線 1 · 語意標籤與結構檢查',
+  'sq-h1': '晴支線 1 · 圖片替代文字與結構化資料檢查',
   'sq-h2': '晴支線 2 · 籃球社搜尋結果改寫',
   'sq-h3': '晴支線 3 · 問答結構與 AEO 測驗',
   'sq-m1': '未來支線 1 · 實體一致性除錯',
@@ -43,6 +44,53 @@ const PRACTICE_LABELS: Partial<Record<MinigameId, string>> = {
 
 const PRACTICE_IDS = MINIGAME_IDS.filter((id) => id !== 'demo-quiz')
 
+const CARD_SOURCES: Partial<Record<KnowledgeId, string>> = {
+  'what-is-seo-aeo-geo': '序章「404 號社辦」',
+  'robots-vs-noindex': '第 1 週主線「看不見的網站」',
+  sitemap: '第 1 週主線「看不見的網站」',
+  'search-console': '第 1 週主線「看不見的網站」',
+  'search-intent': '第 2 週主線「一句話的勇氣」',
+  'title-and-meta': '第 2 週主線「一句話的勇氣」',
+  'answer-first': '第 2 週主線「一句話的勇氣」',
+  'question-headings': '第 5 週主線或晴支線 3',
+  'json-ld': '第 3 週主線「說給機器聽的語言」',
+  'schema-visible-match': '第 3 週主線「說給機器聽的語言」',
+  'entity-consistency': '第 3 週主線或未來支線 1',
+  'core-web-vitals': '第 4 週主線「快一點，再快一點」',
+  'mobile-first': '第 4 週主線「快一點，再快一點」',
+  'image-optimization': '第 4 週主線或凜支線 3',
+  'alt-text': '第 4 週主線或晴支線 1',
+  redirects: '第 1 週主線或凜支線 1',
+  canonical: '第 1 週主線或凜支線 1',
+  'duplicate-content': '第 1 週主線或凜支線 2',
+  'internal-links': '第 3 週主線或凜支線 2',
+  'spam-policies': '第 4 週主線或黑川支線',
+  'link-schemes': '黑川支線「流量學院的挑戰」（W4–6）',
+  eeat: '第 6 週主線「演算法的大雨」',
+  'helpful-content': '第 6 週主線「演算法的大雨」',
+  'core-update': '第 6 週主線「演算法的大雨」',
+  'geo-citations': '第 5 週主線「被引用的理由」',
+  'original-data': '第 5 週主線或未來支線 3',
+  'ai-crawlers': '第 5 週主線或未來支線 2',
+  'llms-txt-truth': '第 5 週主線或未來支線 3',
+  'faq-reality': '晴支線 3「廣播社的語音問答」（需先完成晴支線 1、2）',
+  freshness: '晴支線 2「籃球社的比賽頁」（需先完成晴支線 1）',
+  'author-pages': '第 6 週主線「演算法的大雨」',
+}
+
+const CG_SOURCES: Record<CgId, string> = {
+  'date-rin-3': '凜第 3 階段約會（好感度 ≥ 55）',
+  'date-hare-3': '晴第 3 階段約會（好感度 ≥ 55）',
+  'date-mirai-3': '未來第 3 階段約會（好感度 ≥ 55）',
+  'end-true': '真結局（三人皆 ≥ 65 且無黑帽）',
+  'end-rin': '凜結局（凜最高且 ≥ 60）',
+  'end-hare': '晴結局（晴最高且 ≥ 60）',
+  'end-mirai': '未來結局（未來最高且 ≥ 60）',
+  'end-normal': '普通結局（三人平均 ≥ 35）',
+  'end-bad': '壞結局（三人平均 < 35）',
+  'end-blackhat': '黑帽結局（接受黑帽 ≥ 2 次）',
+}
+
 function CardsTab({
   unlocked,
   selected,
@@ -52,17 +100,23 @@ function CardsTab({
   selected: KnowledgeId | null
   onSelect: (id: KnowledgeId | null) => void
 }) {
+  const [area, setArea] = useState<'all' | ChecklistArea>('all')
+  const [query, setQuery] = useState('')
   const unlockedSet = new Set(unlocked)
   const count = KNOWLEDGE_IDS.filter((id) => unlockedSet.has(id)).length
 
   if (selected && unlockedSet.has(selected)) {
     const card = KNOWLEDGE[selected]
+    const check = CHECKLIST[selected]
     return (
       <div className="flex h-full flex-col justify-between gap-4" data-testid="card-detail">
-        <div className="space-y-4">
+        <div className="space-y-3.5">
           <div className="flex items-center justify-between border-b border-ink/15 pb-3">
             <div>
-              <span className="rounded-full bg-sakura/50 px-3 py-0.5 text-xs font-bold text-[#73233b]">知識卡</span>
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-sakura/50 px-3 py-0.5 text-xs font-bold text-[#73233b]">知識卡</span>
+                <span className="rounded-full bg-sky/40 px-2.5 py-0.5 text-xs font-bold text-[#1d4e6b]">{check.area}</span>
+              </div>
               <h3 className="mt-1 font-title text-3xl font-bold text-ink">{card.title}</h3>
             </div>
             <button className="btn-pastel" onClick={() => onSelect(null)}>返回列表</button>
@@ -78,9 +132,15 @@ function CardsTab({
             <p className="text-base leading-relaxed text-ink">{card.detail}</p>
           </div>
 
-          <div className="rounded-2xl border border-sakura/60 bg-[#fff3f6]/90 p-4">
-            <div className="mb-1 text-xs font-bold uppercase tracking-wider text-[#9c2b48]">常見誤解</div>
-            <p className="text-base font-medium text-[#5c2032]">{card.misconception}</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-2xl border border-sakura/60 bg-[#fff3f6]/90 p-3.5">
+              <div className="mb-1 text-xs font-bold uppercase tracking-wider text-[#9c2b48]">常見誤解</div>
+              <p className="text-sm font-medium text-[#5c2032]">{card.misconception}</p>
+            </div>
+            <div className="rounded-2xl border border-emerald-300/80 bg-emerald-50/90 p-3.5">
+              <div className="mb-1 text-xs font-bold uppercase tracking-wider text-emerald-800">實戰檢查清單</div>
+              <p className="text-sm font-medium text-emerald-950">{check.action}</p>
+            </div>
           </div>
         </div>
 
@@ -89,10 +149,39 @@ function CardsTab({
     )
   }
 
+  const trimmed = query.trim().toLowerCase()
+  const filteredIds = KNOWLEDGE_IDS.filter((id) => {
+    if (area !== 'all' && CHECKLIST[id].area !== area) return false
+    if (!trimmed) return true
+    if (!unlockedSet.has(id)) return false
+    const c = KNOWLEDGE[id]
+    return c.title.toLowerCase().includes(trimmed) || c.summary.toLowerCase().includes(trimmed)
+  })
+
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between text-sm text-ink/75">
-        <span>點擊已解鎖的知識卡可查看詳細說明與常見誤解。</span>
+      <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-ink/75">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {(['all', ...CHECKLIST_AREAS] as const).map((a) => (
+            <button
+              key={a}
+              type="button"
+              onClick={() => setArea(a)}
+              className={`rounded-full px-3 py-1 text-xs font-bold transition ${
+                area === a ? 'bg-ink text-white' : 'bg-white/75 text-ink hover:bg-white'
+              }`}
+            >
+              {a === 'all' ? '全部' : a}
+            </button>
+          ))}
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="搜尋已收集卡片…"
+            className="ml-1 w-40 rounded-full border border-ink/15 bg-white/85 px-3 py-1 text-xs text-ink focus:outline-none focus:ring-2 focus:ring-sakura"
+          />
+        </div>
         <span className="flex items-center gap-2">
           <CopyChecklistButton unlocked={unlocked} label="複製清單" testId="copy-checklist-gallery" toastBelow className="btn-pastel px-3 py-1 text-xs" />
           <span className="rounded-full bg-white/80 px-3 py-1 font-bold text-ink" data-testid="cards-count">
@@ -101,9 +190,11 @@ function CardsTab({
         </span>
       </div>
       <div className="grid grid-cols-3 gap-3">
-        {KNOWLEDGE_IDS.map((id, idx) => {
+        {filteredIds.map((id) => {
+          const idx = KNOWLEDGE_IDS.indexOf(id)
           const isUnlocked = unlockedSet.has(id)
           const card = KNOWLEDGE[id]
+          const itemArea = CHECKLIST[id].area
           return isUnlocked ? (
             <button
               key={id}
@@ -111,7 +202,10 @@ function CardsTab({
               onClick={() => onSelect(id)}
               className="flex flex-col rounded-2xl border border-white/90 bg-white/85 p-3.5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-sakura hover:bg-white"
             >
-              <span className="text-xs font-bold text-[#b83b5e]">#{String(idx + 1).padStart(2, '0')}</span>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-bold text-[#b83b5e]">#{String(idx + 1).padStart(2, '0')}</span>
+                <span className="rounded-full bg-sky/35 px-2 py-0.5 text-[10px] font-bold text-[#1d4e6b]">{itemArea}</span>
+              </div>
               <span className="mt-0.5 font-title text-lg font-bold text-ink">{card.title}</span>
               <span className="mt-1 line-clamp-2 text-xs leading-relaxed text-ink/75">{card.summary}</span>
             </button>
@@ -119,11 +213,14 @@ function CardsTab({
             <div
               key={id}
               data-testid={`card-locked-${id}`}
-              className="flex flex-col rounded-2xl border border-ink/10 bg-ink/5 p-3.5 text-left opacity-70"
+              className="flex flex-col rounded-2xl border border-ink/10 bg-ink/5 p-3.5 text-left opacity-75"
             >
-              <span className="text-xs font-bold text-ink/45">#{String(idx + 1).padStart(2, '0')}</span>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-bold text-ink/45">#{String(idx + 1).padStart(2, '0')}</span>
+                <span className="rounded-full bg-ink/10 px-2 py-0.5 text-[10px] font-bold text-ink/50">{itemArea}</span>
+              </div>
               <span className="mt-0.5 font-title text-lg font-bold text-ink/50">？？？</span>
-              <span className="mt-1 text-xs text-ink/50">在劇情或支線中解鎖</span>
+              <span className="mt-1 text-xs text-ink/55">{CARD_SOURCES[id] ?? '在劇情或支線中解鎖'}</span>
             </div>
           )
         })}
@@ -166,14 +263,14 @@ function CgTab({
               <div className="pointer-events-none absolute inset-0 bg-ink/0 transition group-hover:bg-ink/10" />
             </button>
           ) : (
-            <div
-              key={id}
-              data-testid={`cg-locked-${id}`}
-              className="flex h-[162px] w-[288px] flex-col items-center justify-center rounded-2xl border border-dashed border-ink/20 bg-ink/10 text-ink/45"
-            >
-              <span className="font-title text-2xl font-bold tracking-widest">LOCKED</span>
-              <span className="mt-1 text-sm">尚未解鎖</span>
-            </div>
+              <div
+                key={id}
+                data-testid={`cg-locked-${id}`}
+                className="flex h-[162px] w-[288px] flex-col items-center justify-center rounded-2xl border border-dashed border-ink/20 bg-ink/10 px-4 text-center text-ink/45"
+              >
+                <span className="font-title text-2xl font-bold tracking-widest">LOCKED</span>
+                <span className="mt-1 text-xs">{CG_SOURCES[id] ?? '尚未解鎖'}</span>
+              </div>
           )
         })}
       </div>
@@ -268,17 +365,27 @@ function PracticeTab({ onLaunch }: { onLaunch: (id: MinigameId) => void }) {
 
 export function Gallery() {
   const tab = useUI((s) => s.galleryTab)
+  const galleryCardId = useUI((s) => s.galleryCardId)
   const setOverlay = useUI((s) => s.setOverlay)
   const openGallery = useUI((s) => s.openGallery)
   const cards = useGlobal((s) => s.cards)
   const cgs = useGlobal((s) => s.cgs)
   const endings = useGlobal((s) => s.endings)
 
-  const [selectedCard, setSelectedCard] = useState<KnowledgeId | null>(null)
+  const [selectedCard, setSelectedCard] = useState<KnowledgeId | null>(galleryCardId)
   const [lightboxCg, setLightboxCg] = useState<CgId | null>(null)
   const [activeMinigame, setActiveMinigame] = useState<MinigameId | null>(null)
 
+  useEffect(() => {
+    setSelectedCard(galleryCardId)
+  }, [galleryCardId])
+
   const close = () => setOverlay(useUI.getState().screen === 'game' ? 'menu' : null)
+
+  const handleSelectCard = (id: KnowledgeId | null) => {
+    setSelectedCard(id)
+    if (!id) useUI.setState({ galleryCardId: null })
+  }
 
   const switchTab = (next: GalleryTab) => {
     setSelectedCard(null)
@@ -332,7 +439,7 @@ export function Gallery() {
 
         <div className="min-h-0 flex-1 overflow-y-auto pr-1">
           {tab === 'cards' && (
-            <CardsTab unlocked={cards} selected={selectedCard} onSelect={setSelectedCard} />
+            <CardsTab unlocked={cards} selected={selectedCard} onSelect={handleSelectCard} />
           )}
           {tab === 'cg' && (
             <CgTab unlocked={cgs} onOpenLightbox={setLightboxCg} />

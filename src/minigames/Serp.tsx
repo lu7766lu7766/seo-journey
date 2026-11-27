@@ -21,8 +21,8 @@ export function Serp({
   /** display order of the authored fragments, fixed for this mount; state keeps AUTHORED indices */
   const titleOrder = useMemo(() => shuffledOrder(game.titles.length), [game])
   const descOrder = useMemo(() => shuffledOrder(game.descriptions.length), [game])
-  const [titleIndex, setTitleIndex] = useState(titleOrder[0] ?? 0)
-  const [descIndex, setDescIndex] = useState(descOrder[0] ?? 0)
+  const [titleIndex, setTitleIndex] = useState<number | null>(null)
+  const [descIndex, setDescIndex] = useState<number | null>(null)
   const [submitted, setSubmitted] = useState(false)
   const resolvedRef = useRef(false)
 
@@ -30,8 +30,8 @@ export function Serp({
   const descMaxUnits = game.descMaxUnits ?? 140
   const passScore = game.passScore ?? 75
 
-  const activeTitle = game.titles[titleIndex]
-  const activeDesc = game.descriptions[descIndex]
+  const activeTitle = titleIndex !== null ? game.titles[titleIndex] : undefined
+  const activeDesc = descIndex !== null ? game.descriptions[descIndex] : undefined
   const liveTitle = truncateSerpPreview(activeTitle?.text ?? '', titleMaxUnits)
   const liveDesc = truncateSerpPreview(activeDesc?.text ?? '', descMaxUnits)
 
@@ -42,7 +42,7 @@ export function Serp({
     onResolve(passed, stars)
   }
 
-  if (submitted) {
+  if (submitted && titleIndex !== null && descIndex !== null) {
     const result = scoreSerp(game, titleIndex, descIndex)
     const stars = serpStars(result.score, result.passed, attempt)
     const retryAvailable = canOfferRetry(result.passed, attempt) && !!onRetry
@@ -78,7 +78,14 @@ export function Serp({
           <div className="flex items-center justify-between rounded-2xl border border-ink/15 bg-white/85 px-5 py-3">
             <div>
               <p className="text-xl font-bold">綜合評分：{result.score} / 100</p>
-              <p className="text-xs text-ink/75">
+              <p className="mt-0.5 flex flex-wrap gap-2 text-xs font-semibold text-ink/80">
+                <span>標題 {result.titleScore}/50</span>
+                <span>·</span>
+                <span>描述 {result.descScore}/50</span>
+                {result.truncationPenalty > 0 && <span className="text-amber-800">· 截斷未前置 -{result.truncationPenalty}</span>}
+                {result.spamCapped && <span className="text-[#d6334a]">· 觸犯垃圾政策上限封頂</span>}
+              </p>
+              <p className="mt-0.5 text-xs text-ink/75">
                 過關門檻：{passScore} 分；{SERP_THREE_STAR_SCORE} 分以上（選出最佳組合）才有三顆星
               </p>
             </div>
@@ -160,8 +167,12 @@ export function Serp({
             <span>›</span>
             <span className="truncate">{game.urlPreview}</span>
           </div>
-          <p className="mt-1 text-lg font-medium text-[#1a0dab]">{liveTitle.preview}</p>
-          <p className="mt-1 text-sm leading-relaxed text-[#4d5156]">{liveDesc.preview}</p>
+          <p className={`mt-1 text-lg font-medium ${activeTitle ? 'text-[#1a0dab]' : 'text-slate-400'}`}>
+            {activeTitle ? liveTitle.preview : '（請從下方選擇一則標題，即時觀察搜尋結果樣式）'}
+          </p>
+          <p className={`mt-1 text-sm leading-relaxed ${activeDesc ? 'text-[#4d5156]' : 'text-slate-400'}`}>
+            {activeDesc ? liveDesc.preview : '（請從下方選擇一則摘要描述）'}
+          </p>
           {(liveTitle.truncated || liveDesc.truncated) && (
             <p className="mt-2 text-xs font-medium text-amber-800">
               提示：過長內容在預覽末端可能顯示為「…」，沒有固定字數標準，建議把核心重點放前段。
@@ -232,14 +243,16 @@ export function Serp({
         <span className="text-xs text-ink/75">評估標準：搜尋意圖、清晰度、重點前置、無堆砌垃圾詞</span>
         <button
           type="button"
-          className="btn-pastel px-7 py-2 text-base"
+          disabled={titleIndex === null || descIndex === null}
+          className="btn-pastel px-7 py-2 text-base disabled:cursor-not-allowed disabled:opacity-45"
           data-testid="serp-submit"
           onClick={() => {
+            if (titleIndex === null || descIndex === null) return
             audio.sfx('choice')
             setSubmitted(true)
           }}
         >
-          提交評分
+          {titleIndex === null || descIndex === null ? '請先選擇標題與描述' : '提交評分'}
         </button>
       </div>
     </div>

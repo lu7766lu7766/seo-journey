@@ -1,11 +1,12 @@
 import { initialCore } from '@/engine/effects'
 import { initialStage } from '@/engine/stage'
 import type { Bonds, Flags, HeroineId, RunnerSnapshot, StageState, Stats } from '@/engine/types'
+import { scores } from '@/systems/score'
 import { safeGetJSON, safeRemove, safeSetJSON } from './storage'
 
 export const SAVE_VERSION = 2
-export type SlotId = 'auto' | 1 | 2 | 3
-export const SLOTS: SlotId[] = ['auto', 1, 2, 3]
+export type SlotId = 'auto' | 1 | 2 | 3 | 4 | 5 | 6
+export const SLOTS: SlotId[] = ['auto', 1, 2, 3, 4, 5, 6]
 const key = (slot: SlotId) => `seo-journey:save:${slot}`
 
 export type Phase = 'story' | 'schedule' | 'board' | 'weekend' | 'report' | 'ending'
@@ -150,9 +151,20 @@ export function migrate(raw: unknown): SaveEnvelope | null {
   }
 }
 
+const PHASE_LABELS: Record<Phase, string> = {
+  story: '劇情',
+  schedule: '排程',
+  board: '委託',
+  weekend: '週末',
+  report: '週報',
+  ending: '結局',
+}
+
 export function makeLabel(d: PersistedGame): string {
-  const where = d.week >= 7 ? '搜尋祭' : d.week > 0 ? `第 ${d.week} 週` : d.scene?.sceneId ?? '序章'
-  return `${d.playerName} · ${where}`
+  const where = d.week >= 7 ? '搜尋祭' : d.week > 0 ? `第 ${d.week} 週 ${PHASE_LABELS[d.phase] ?? ''}`.trim() : d.scene?.sceneId ?? '序章'
+  const sc = scores(d.stats, d.bond)
+  const scoreTag = `（凜${Math.round(sc.rin)}/晴${Math.round(sc.hare)}/未${Math.round(sc.mirai)}）`
+  return `${d.playerName} · ${where}${scoreTag}`
 }
 
 export function writeSave(slot: SlotId, data: PersistedGame, now = Date.now()): boolean {

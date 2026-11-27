@@ -1,7 +1,7 @@
-import { bg, bgm, card, choice, hide, minigame, opt, say, scene, show } from '@/engine'
+import { bg, bgm, card, choice, flag, hide, minigame, opt, say, scene, show, when } from '@/engine'
 
 export default scene('sq-x1', [
-  bgm('daily'),
+  bgm('tense'),
   bg('street', 'dusk'),
   say('narr', undefined, '商店街入口，一個攤位掛著手寫大旗：「流量保證第一名！」'),
   say('narr', undefined, '旗子下，戴黑色棒球帽的人正在吆喝。路人全都繞著走。'),
@@ -29,8 +29,8 @@ export default scene('sq-x1', [
   say('me', undefined, '帽子的顏色，不會改變演算法的想法。'),
   say('kuro', 'normal', '少貧嘴！先看今日套餐！'),
   say('kuro', 'smug', '一號餐，一千條外部連結。二號餐，只給機器看的暗號頁。'),
-  say('kuro', 'smug', '三號餐，AI 一天產出五百頁！'),
-  say('me', undefined, '這是菜單，還是自首清單？'),
+  say('kuro', 'smug', '三號餐，AI 一天產出五百頁！再送借知名大站子目錄掛廣告！'),
+  say('me', undefined, '網站聲譽濫用都拿來賣，這是菜單還是自首清單？'),
   say('kuro', 'normal', '少貧嘴！搜尋引擎有份垃圾內容政策，聽過吧？'),
   say('me', undefined, '社辦牆上就貼著。'),
   say('kuro', 'smug', '哼，紙老虎！我今天要賣的，全是它禁止的——'),
@@ -38,11 +38,21 @@ export default scene('sq-x1', [
   say('kuro', 'shock', '呃，我是說，全是它「提醒」的。'),
   say('me', undefined, '你剛剛，自己承認了。'),
   say('kuro', 'smug', '那是口誤！擂台賽，開打！'),
-  minigame('sq-x1', { stats: { tru: 6 }, bond: { rin: 1, hare: 1, mirai: 1 } }, { stats: { tru: 3 }, bond: { rin: 1, hare: 1, mirai: 1 } }),
+  minigame('sq-x1', { stats: { tru: 6 }, bond: { rin: 1, hare: 1, mirai: 1 } }, { stats: { tru: 3 }, bond: { rin: 1, hare: 1, mirai: 1 }, flags: { 'sq-x1.lost': true } }),
 
-  show('kuro', 'center', 'shock'),
-  say('kuro', 'shock', '……可惡。連網站聲譽濫用，都被你看穿了？'),
-  say('me', undefined, '買一千條連結，叫連結計畫。第一題就露餡。'),
+  when(
+    flag('sq-x1.lost'),
+    [
+      show('kuro', 'center', 'smug'),
+      say('kuro', 'smug', '哈！差一點就騙過你了吧！不過……算你點出幾個破綻。'),
+      say('me', undefined, '網站聲譽濫用跟連結計畫，剛剛測驗結算都寫得清清楚楚了。'),
+    ],
+    [
+      show('kuro', 'center', 'shock'),
+      say('kuro', 'shock', '……可惡。連網站聲譽濫用，都被你看穿了？'),
+      say('me', undefined, '買一千條連結，叫連結計畫。第一題就露餡。'),
+    ],
+  ),
   card('link-schemes'),
   say('kuro', 'normal', '那給爬蟲看一份、給人看另一份呢？'),
   say('me', undefined, '偽裝。五百頁 AI 批量灌的廢文，叫大規模濫用內容。'),

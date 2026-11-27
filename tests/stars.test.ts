@@ -38,6 +38,7 @@ describe('star rules', () => {
 
   it('spot: zero wrong clicks = 3, any wrong click = 2, retry pass = 1, lost = 0', () => {
     expect(spotStars(true, 0, 1)).toBe(3)
+    expect(spotStars(true, 0, 1, true)).toBe(2) // using the hint on attempt 1 caps at 2 stars
     expect(spotStars(true, 1, 1)).toBe(2)
     expect(spotStars(true, 2, 1)).toBe(2)
     expect(spotStars(true, 0, 2)).toBe(1)

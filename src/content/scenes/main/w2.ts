@@ -18,11 +18,10 @@ export default scene('w2', [
   show('hare', 'center', 'happy'),
   say('hare', 'happy', '所以要先說需求！聽的人想找什麼，就是搜尋意圖！'),
   card('search-intent'),
-  say('hare', 'normal', '這週先把社團首頁的標題和描述，改成倒金字塔！'),
+  say('hare', 'normal', '標題跟描述也要前段放重點、別塞誇大詞，太長尾端會被截斷！'),
   minigame('w2-serp', { stats: { ans: 4, str: 2 }, bond: { hare: 1 } }, { stats: { ans: 1 } }),
 
   show('hare', 'center', 'smile'),
-  say('hare', 'smile', '標題先放最重要的資訊，描述再補細節，前段別被截斷！'),
   show('sensei', 'left', 'normal'),
   say('sensei', 'normal', '不過沒有固定的「正確字數」，搜尋引擎有時也會自己改寫。'),
   hide('sensei'),
@@ -37,7 +36,7 @@ export default scene('w2', [
 
   say('narr', undefined, '夕陽把耳機線染成金色，晴忽然安靜下來，捏著領結的一角。'),
   show('hare', 'center', 'sad'),
-  say('hare', 'sad', '那個……{name}。我是不是真的很吵啊？'),
+  say('hare', 'sad', '我想當能用一句話打動聽眾的主播……但我是不是總是很吵？'),
   choice([
     opt('熱情是優點，只是要先講結論', { bond: { hare: 2 }, stats: { ans: 1 } }, [
       show('hare', 'center', 'happy'),
@@ -53,7 +52,7 @@ export default scene('w2', [
     ]),
   ]),
   when(
-    bondIs('hare', 'gte', 10),
+    bondIs('hare', 'gte', 6),
     [
       say('narr', undefined, '她戴上耳機，又摘了下來，在門口回過頭。'),
       show('hare', 'center', 'blush'),

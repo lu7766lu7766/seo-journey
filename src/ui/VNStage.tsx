@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect } from 'react'
 import { Background } from '@/art/backgrounds'
 import { CgArt } from '@/art/cg'
 import type { CgId } from '@/content/cgs'
+import type { KnowledgeId } from '@/content/knowledge'
 import { useGame } from '@/store/game'
 
 const MinigameHost = lazy(() => import('@/minigames').then((m) => ({ default: m.MinigameHost })))
@@ -33,9 +34,6 @@ function QuickBar() {
         className="hud-pill"
         aria-pressed={skipping}
         onClick={stop(() => set({ skipping: !skipping }))}
-        onMouseDown={stop(() => set({ skipping: true }))}
-        onMouseUp={stop(() => set({ skipping: false }))}
-        onMouseLeave={() => set({ skipping: false })}
       >
         快轉 (Ctrl){skipping ? ' ●' : ''}
       </button>
@@ -57,7 +55,7 @@ export function VNStage() {
 
   useEffect(() => {
     if (!toast) return
-    const t = setTimeout(() => useGame.setState({ toast: null }), 4200)
+    const t = setTimeout(() => useGame.getState().dismissToast(), 4500)
     return () => clearTimeout(t)
   }, [toast])
 
@@ -108,22 +106,42 @@ export function VNStage() {
       )}
       <AnimatePresence>
         {toast && (
-          <motion.button
+          <motion.div
             key={toast.n}
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation()
-              useGame.setState({ toast: null })
-            }}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="vn-box absolute left-6 top-4 z-50 max-w-[540px] rounded-2xl px-5 py-2.5 text-left"
+            className="vn-box absolute left-6 top-4 z-50 flex max-w-[540px] items-start gap-2 rounded-2xl px-4 py-2.5 text-left"
             data-testid="card-toast"
           >
-            <div className="font-title text-base font-bold text-[#ffe599]">✦ 獲得知識卡「{toast.title}」</div>
-            {toast.summary && <p className="mt-0.5 text-xs leading-snug text-[#d5e3ff]">{toast.summary}</p>}
-          </motion.button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                const id = toast.id as KnowledgeId
+                useGame.getState().dismissToast()
+                useUI.getState().openCard(id)
+              }}
+              className="min-w-0 flex-1 text-left"
+            >
+              <div className="flex items-center gap-2">
+                <span className="font-title text-base font-bold text-[#ffe599]">✦ 獲得知識卡「{toast.title}」</span>
+                <span className="rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-bold text-[#9fd3f0]">點擊查看詳情</span>
+              </div>
+              {toast.summary && <p className="mt-0.5 text-xs leading-snug text-[#d5e3ff]">{toast.summary}</p>}
+            </button>
+            <button
+              type="button"
+              aria-label="關閉知識卡通知"
+              onClick={(e) => {
+                e.stopPropagation()
+                useGame.getState().dismissToast()
+              }}
+              className="shrink-0 rounded-full px-1.5 py-0.5 text-xs text-[#9fd3f0] hover:bg-white/15 hover:text-white"
+            >
+              ✕
+            </button>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

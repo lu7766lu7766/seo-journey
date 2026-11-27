@@ -226,6 +226,8 @@ export interface SchedulePreview {
   stamina: number
   stress: number
   infirmaryRisk: boolean
+  /** 0-based index of the slot that triggers the infirmary, or null */
+  infirmarySlot: number | null
   failRisk: boolean
   /** some work slot would start with stress >= 60 (gains x0.75) */
   tenseRisk: boolean
@@ -239,11 +241,13 @@ export function previewSchedule(state: CoreState, week: number, slots: ActivityI
   let simStress = state.stress
   const gains: Record<StatKey, number> = { con: 0, tec: 0, str: 0, ans: 0, tru: 0 }
   let infirmaryRisk = false
+  let infirmarySlot: number | null = null
   let failRisk = false
   let tenseRisk = false
   let tiredRisk = false
 
-  for (const id of slots) {
+  for (let idx = 0; idx < slots.length; idx++) {
+    const id = slots[idx]
     const def = ACTIVITIES[id]
     const themed = isThemedActivity(week, id)
     const isWork = id !== 'rest'
@@ -255,6 +259,8 @@ export function previewSchedule(state: CoreState, week: number, slots: ActivityI
     if (tense) tenseRisk = true
     if (isWork && simStamina + def.stamina <= 0) {
       infirmaryRisk = true
+      infirmarySlot = idx
+      simStamina = RULES.infirmaryStamina
       break
     }
     for (const k of STAT_KEYS) {
@@ -265,5 +271,5 @@ export function previewSchedule(state: CoreState, week: number, slots: ActivityI
     simStamina = Math.min(100, Math.max(0, simStamina + def.stamina))
     simStress = Math.min(100, Math.max(0, simStress + def.stress))
   }
-  return { stats: gains, stamina: simStamina, stress: simStress, infirmaryRisk, failRisk, tenseRisk, tiredRisk }
+  return { stats: gains, stamina: simStamina, stress: simStress, infirmaryRisk, infirmarySlot, failRisk, tenseRisk, tiredRisk }
 }

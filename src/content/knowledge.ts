@@ -196,7 +196,7 @@ const BODY: Partial<Record<KnowledgeId, Pick<KnowledgeCard, 'summary' | 'detail'
   'geo-citations': {
     summary: '生成式搜尋會綜合多個來源，並附上引用。',
     detail:
-      'Google AI摘要與AI模式、ChatGPT搜尋、Perplexity、Copilot等，會綜合多個來源寫出答案並附上引用。可以提高被引用機會的做法有：原創資料、明確且可查證的主張、標明來源、清楚的作者與實體資訊，以及讓爬蟲讀得到內容。沒有任何方法保證被引用。',
+      'Google AI摘要與AI模式、ChatGPT搜尋、Perplexity、Copilot等，會綜合來源寫出答案並附上引用。提高被引用機會的做法：原創資料、可查證的主張、標明來源、清楚作者與實體資訊，以及讓爬蟲讀得到重要內容（別只靠JS才出現）。沒有方法保證被引用。',
     misconception: '常見誤解：只要照著做，就能保證被AI引用。',
   },
   'original-data': {
@@ -208,7 +208,7 @@ const BODY: Partial<Record<KnowledgeId, Pick<KnowledgeCard, 'summary' | 'detail'
   'ai-crawlers': {
     summary: 'AI爬蟲有搜尋用與訓練用，要分開看。',
     detail:
-      'GPTBot用於OpenAI模型訓練，OAI-SearchBot用於ChatGPT搜尋，另有PerplexityBot等。Google-Extended控制內容是否用於Gemini的訓練與grounding，不影響Google搜尋的排名與收錄。擋掉搜尋用爬蟲，可能讓你不出現在該服務的搜尋結果中。',
+      'GPTBot用於OpenAI訓練，OAI-SearchBot用於ChatGPT搜尋，另有PerplexityBot等。Google-Extended只控管Gemini訓練與grounding，不影響Google搜尋與AI摘要（仍受Googlebot控制）。擋掉搜尋爬蟲可能不出現在該服務結果。',
     misconception: '常見誤解：擋掉Google-Extended，就會從Google搜尋消失。',
   },
   'llms-txt-truth': {

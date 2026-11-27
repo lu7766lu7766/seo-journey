@@ -64,7 +64,7 @@ export default scene('w3', [
     ]),
   ]),
   when(
-    bondIs('mirai', 'gte', 10),
+    bondIs('mirai', 'gte', 4),
     [
       say('narr', undefined, '她收拾得特別慢，直到我存好最後一個檔案，才開口。'),
       show('mirai', 'center', 'blush'),

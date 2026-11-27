@@ -43,7 +43,7 @@ export default scene('prologue', [
     opt('一定會做到！', { bond: { rin: 1 } }, [
       say('rin', 'normal', '很有精神。但搜尋引擎看的是成果，不是口號。'),
     ]),
-    opt('規則能讓我先看一下嗎？', { bond: { rin: 2 } }, [
+    opt('規則能讓我先看一下嗎？', { bond: { rin: 2 }, flags: { askedRules: true } }, [
       show('rin', 'right', 'surprised'),
       say('rin', 'surprised', '……你第一個問的是規則？'),
       show('rin', 'right', 'smile'),

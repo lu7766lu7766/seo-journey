@@ -71,7 +71,7 @@ export const ACTIVITIES: Record<ActivityId, ActivityDef> = {
     id: 'social',
     name: '社群交流與外部合作',
     short: '外部合作',
-    desc: '與其他社團交換連結、宣傳合作，舒緩壓力的同時累積外部提及。',
+    desc: '與其他社團合辦活動、互相介紹報導，舒緩壓力的同時累積自然外部提及。',
     stats: { tru: 3, ans: 1 },
     stamina: -10,
     stress: -6,
@@ -103,7 +103,7 @@ export const WEEK_THEMES: Record<number, WeekTheme> = {
   3: { week: 3, title: '說給機器聽的語言', topic: '結構化資料與實體', bonusActivities: ['schema'] },
   4: { week: 4, title: '快一點，再快一點', topic: 'Core Web Vitals 與行動版', bonusActivities: ['techcheck'] },
   5: { week: 5, title: '被引用的理由', topic: 'GEO 生成式引擎優化', bonusActivities: ['authors', 'write'] },
-  6: { week: 6, title: '演算法的大雨', topic: 'E-E-A-T 與核心更新', bonusActivities: ['authors', 'write'] },
+  6: { week: 6, title: '演算法的大雨', topic: 'E-E-A-T 與核心更新', bonusActivities: ['authors', 'write', 'social'] },
 }
 
 /**

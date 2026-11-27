@@ -3,7 +3,7 @@ import { bg, bgm, cg, choice, hide, opt, say, scene, show } from '@/engine'
 export default scene('date-rin-3', [
   bgm('warm'),
   bg('festival', 'night'),
-  say('narr', undefined, '夏日祭的夜晚，紙燈籠一路亮到神社階梯。'),
+  say('narr', undefined, '晚春夜市的夜晚，紙燈籠一路亮到神社階梯。'),
   show('rin', 'center', 'blush'),
   say('rin', 'blush', '……浴衣，會不會很奇怪？'),
   say('me', undefined, '（紅色髮帶配上藍色浴衣。我一時說不出話。）'),

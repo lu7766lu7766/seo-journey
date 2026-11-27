@@ -22,7 +22,7 @@ describe('save/load', () => {
     expect(env.label).toContain('第 3 週')
     expect(env.data).toEqual(d)
     expect(readSave(1)).toBeNull()
-    expect(listSaves().map((s) => !!s.env)).toEqual([false, false, true, false])
+    expect(listSaves().map((s) => !!s.env)).toEqual([false, false, true, false, false, false, false])
   })
   it('latestSave picks the newest', () => {
     writeSave(1, defaultPersisted('a'), 10)

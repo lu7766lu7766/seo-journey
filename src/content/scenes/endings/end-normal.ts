@@ -14,6 +14,7 @@ export default scene('end-normal', [
   say('hare', 'happy', '結論先說：我們還在！太好了！'),
   say('me', undefined, '可是沒有拿到最高分。對不起，大家。'),
   say('rin', 'smile', '最高分不是目的。三位評審，都真的看見了你的網站。'),
+  hide('sensei'),
   show('mirai', 'left', 'smile'),
   say('mirai', 'smile', '三種評分，各看各的角度。你的網站，每一種都有分數。'),
   say('rin', 'think', '下個月起，我會再檢查你的收錄狀態。……別以為過關就能偷懶。'),

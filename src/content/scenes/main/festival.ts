@@ -28,13 +28,13 @@ export default scene('festival', [
   // 凜 (SEO)：爬取、索引、速度、結構
   say('rin', 'normal', '先由我。你們的網站，搜尋引擎找得到、讀得快嗎？'),
   choice([
+    opt('我們做了社團大調查，附上方法與樣本數', undefined, [
+      say('rin', 'normal', '……資料很有價值。但，不是我問的。'),
+    ], hasCard('original-data')),
     opt('我們解開了雙重上鎖：爬蟲進得來，頁面也收得進', { bond: { rin: 2 } }, [
       show('rin', 'left', 'smile'),
       say('rin', 'smile', '爬取與收錄分開處理，正確。……這份細心，我記下了。'),
     ], hasCard('robots-vs-noindex')),
-    opt('我們做了社團大調查，附上方法與樣本數', undefined, [
-      say('rin', 'normal', '……資料很有價值。但，不是我問的。'),
-    ], hasCard('original-data')),
     opt('我們每週都有進步，也很努力！', undefined, [
       say('rin', 'normal', '努力，我看見了。具體內容，下次請補上。'),
     ]),
@@ -63,13 +63,13 @@ export default scene('festival', [
   // 晴 (AEO)：直接回答、標題、清楚
   say('hare', 'normal', '換我！結論先說——你們最想讓讀者帶走的答案是什麼？'),
   choice([
+    opt('每頁先給結論再補細節，標題寫成讀者會問的話', { bond: { hare: 2 } }, [
+      show('hare', 'center', 'happy'),
+      say('hare', 'happy', '就是這個！先講答案再補細節，超帥的！'),
+    ], hasCard('answer-first')),
     opt('我們把原創資料與來源，整理成可被引用的樣子', undefined, [
       say('hare', 'smile', '好厲害！可是……答案在哪？下次請一句話講完！'),
     ], hasCard('geo-citations')),
-    opt('每頁先給結論再補細節，標題寫成讀者會問的話', { bond: { hare: 2 } }, [
-      show('hare', 'center', 'happy'),
-      say('hare', 'happy', '就是這個！我現在就想念給全校聽！'),
-    ], hasCard('answer-first')),
     opt('我們的內容，都是用心寫的！', undefined, [
       say('hare', 'smile', '好感動！可是……可以更短嗎？一句話！'),
     ]),
@@ -100,13 +100,13 @@ export default scene('festival', [
     opt('網站在手機上變快了：大圖壓縮，版面不再亂跳', undefined, [
       say('mirai', 'normal', '已讀取。改善屬實，但這是多數網站都有的證據。'),
     ], hasCard('core-web-vitals')),
+    opt('我們寫的每一句，都是自己的話。', undefined, [
+      say('mirai', 'normal', '主張已記錄。證據欄位，目前為空白。'),
+    ]),
     opt('學生社團大調查：附上方法、樣本與原始數據', { bond: { mirai: 2 } }, [
       show('mirai', 'right', 'happy'),
       say('mirai', 'happy', '原創、可查證、有署名。……我會引用它。'),
     ], hasCard('original-data')),
-    opt('我們寫的每一句，都是自己的話。', undefined, [
-      say('mirai', 'normal', '主張已記錄。證據欄位，目前為空白。'),
-    ]),
   ]),
   tiers(
     'mirai',

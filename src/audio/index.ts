@@ -1,7 +1,7 @@
 import { useSettings } from '@/store/settings'
 
 export type SfxId = 'click' | 'blip' | 'choice' | 'card' | 'grow' | 'bond' | 'fail' | 'win'
-export type BgmId = 'daily' | 'warm' | 'festival'
+export type BgmId = 'daily' | 'warm' | 'festival' | 'tense'
 
 let ctx: AudioContext | null = null
 let currentBgm: string | null = null
@@ -61,6 +61,12 @@ const BGM_TRACKS: Record<BgmId, { tempoMs: number; wave: OscillatorType; notes: 
     wave: 'triangle',
     notes: [587.33, 659.25, 783.99, 880.0, 783.99, 659.25, 783.99, 1046.5, 880.0, 783.99, 659.25, 587.33, 659.25, 783.99, 587.33, 0],
     bass: [293.66, 196.0, 293.66, 220.0, 246.94, 196.0, 261.63, 196.0, 293.66, 196.0, 220.0, 246.94, 261.63, 196.0, 293.66, 0],
+  },
+  tense: {
+    tempoMs: 480,
+    wave: 'triangle',
+    notes: [440.0, 0, 415.3, 392.0, 349.23, 0, 329.63, 349.23, 392.0, 0, 349.23, 329.63, 293.66, 0, 329.63, 0],
+    bass: [220.0, 0, 196.0, 0, 174.61, 0, 164.81, 0, 196.0, 0, 174.61, 0, 146.83, 0, 164.81, 0],
   },
 }
 

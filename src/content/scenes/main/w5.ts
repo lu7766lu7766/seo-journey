@@ -20,9 +20,9 @@ export default scene('w5', [
   say('mirai', 'smile', '那是社群提案，主要搜尋引擎尚未確認採用。……神秘檔案，不是魔法咒語。'),
   card('llms-txt-truth'),
 
-  say('mirai', 'think', '「青葉學生社團大調查」的結果出爐了。草稿，請晴試讀。'),
+  say('mirai', 'think', '上週發起的「青葉學生社團大調查」出爐了。草稿，請晴試讀。'),
   say('hare', 'surprised', '前兩頁都在講背景，答案在第三頁！讀者得先聽三分鐘天氣！'),
-  say('mirai', 'normal', '同意。另外，重要文字別只靠 JS 才出現。那麼，如何開頭？'),
+  say('mirai', 'normal', '收到回饋。這份原創調查報告，該怎麼開頭？'),
   choice([
     opt('開頭先放一兩句結論，方法接在後面', { bond: { hare: 2 }, stats: { ans: 2 } }, [
       show('hare', 'right', 'happy'),

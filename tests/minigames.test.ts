@@ -134,6 +134,9 @@ describe('scoreSerp', () => {
       const best = scoreSerp(game, bestTitleIdx, bestDescIdx)
       expect(best.passed, `${id} best should pass`).toBe(true)
       expect(best.score).toBeGreaterThanOrEqual(75)
+      expect(best.titleScore).toBe(50)
+      expect(best.descScore).toBe(50)
+      expect(best.spamCapped).toBe(false)
       expect(best.feedback.length).toBeGreaterThanOrEqual(2)
 
       const spamTitleIdx = game.titles.findIndex((t) => !t.noSpam)

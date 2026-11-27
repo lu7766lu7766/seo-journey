@@ -13,12 +13,12 @@ export default scene('date-hare-2', [
   say('hare', 'sad', '可是我話太多，總講不出重點。'),
   say('narr', undefined, '窗外的蟲鳴，一陣一陣填進沉默的空檔。'),
   choice([
+    opt('先講結論，再補細節，妳教我的', { bond: { hare: 5 } }, [
+      say('hare', 'happy', '哈！用我的話來鼓勵我，犯規！'),
+    ]),
     opt('妳的聲音，讓人想繼續聽下去', { bond: { hare: 8 } }, [
       say('hare', 'surprised', '……真的？'),
       say('hare', 'blush', '別、別突然講這麼溫柔的話啦！'),
-    ]),
-    opt('先講結論，再補細節，妳教我的', { bond: { hare: 5 } }, [
-      say('hare', 'happy', '哈！用我的話來鼓勵我，犯規！'),
     ]),
   ]),
   say('hare', 'smile', '那，{name}當我的第一位聽眾，好不好？'),

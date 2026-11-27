@@ -1,5 +1,5 @@
 import { bg, bgm, cg, hide, say, scene, show, when } from '@/engine'
-import { flag } from '@/engine/cond'
+import { flag, seen } from '@/engine/cond'
 
 export default scene('end-rin', [
   bgm('warm'),
@@ -12,13 +12,26 @@ export default scene('end-rin', [
   say('rin', 'think', '我很嚴格嗎？……大概吧。我一直以為，沒有人願意讀懂規則。'),
   say('narr', undefined, '她低頭整理著臂章。那是所有人眼中，「完美學生會長」的標誌。'),
   say('rin', 'normal', '我把自己整理成一份沒有錯字的公文。結果，沒有人想打開。'),
-  say('rin', 'normal', '可是第一天，你問的是：「規則能讓我先看一下嗎？」'),
-  say('me', undefined, '因為那是學姊寫的規則。我想先弄懂，妳在乎的東西。'),
+  when(
+    flag('askedRules'),
+    [
+      say('rin', 'normal', '可是第一天，你問的是：「規則能讓我先看一下嗎？」'),
+      say('me', undefined, '因為那是學姊寫的規則。我想先弄懂，妳在乎的東西。'),
+    ],
+    [
+      say('rin', 'normal', '可是這六週，你一次也沒有逃避我的規則。'),
+      say('me', undefined, '因為我想透過規則，弄懂學姊真正想守護的東西。'),
+    ],
+  ),
   show('rin', 'center', 'blush'),
   say('rin', 'blush', '……！笨蛋。這種話，要事先預告。'),
   say('narr', undefined, '風吹起她的紅色髮帶。她從口袋掏出那個貓咪鑰匙圈，輕輕放進我手心。'),
   cg('end-rin'),
-  say('rin', 'blush', '這個不是學生會備品。是我的。……還有更丟臉的祕密，下次再說。'),
+  when(
+    seen('sq-r3'),
+    [say('rin', 'blush', '……還有街角那本貓咪日記，除了你，誰都不准告訴。')],
+    [say('rin', 'blush', '這個不是學生會備品。是我的。……還有更丟臉的祕密，下次再說。')],
+  ),
   when(flag('w6Choice', 'eq', 1), [
     say('rin', 'blush', '那晚下雨，你濕淋淋地跑來學生會室。……我其實，高興得不得了。'),
     say('rin', 'smile', '毛巾是學生會備品。但想替你擦頭髮，是我自己的心意。'),
@@ -39,8 +52,8 @@ export default scene('end-rin', [
   say('me', undefined, '收到。新增條款，我簽名。'),
   say('rin', 'blush', '不需要簽名。需要的是……明天你要準時。'),
   say('narr', undefined, '她走在前面半步，髮帶隨風一晃一晃。那抹笑，早就超越了任何索引。'),
+  hide('rin'),
   bg('clubroom', 'day', 'fade'),
   say('narr', undefined, '隔天，社辦電腦的桌面多了一個資料夾，上面貼著一張紙條：謝絕參觀。'),
   say('me', undefined, '（這張紙條的味道……是 robots.txt 吧。凜的筆跡。）'),
-  hide('rin'),
 ])

@@ -7,8 +7,10 @@ import { audio } from '@/audio'
 import { ACTIVITIES, ACTIVITY_LIST, RECOMMENDED_SCHEDULE } from '@/content/activities'
 import type { ActivityId } from '@/content/activityIds'
 import { CHARACTERS, type CharId } from '@/content/characters'
-import { STAT_KEYS, type StatKey } from '@/engine/types'
+import { HEROINES, STAT_KEYS, type StatKey } from '@/engine/types'
 import { useGame } from '@/store/game'
+import { useUI } from '@/store/ui'
+import { scores } from '@/systems/score'
 import { isThemedActivity, previewSchedule, RULES, runWeekSchedule, type WeekScheduleResult } from '@/systems/schedule'
 import { StatusSummary } from './StatusPanel'
 
@@ -22,12 +24,23 @@ const STAT_SHORT: Record<StatKey, string> = {
 
 export function ScheduleScreen() {
   const s = useGame()
+  const overlay = useUI((u) => u.overlay)
+  const setOverlay = useUI((u) => u.setOverlay)
   const [slots, setSlots] = useState<(ActivityId | null)[]>([null, null, null, null])
   const [result, setResult] = useState<WeekScheduleResult | null>(null)
   const [stepIdx, setStepIdx] = useState(0)
 
   const filledSlots = slots.filter((x): x is ActivityId => x !== null)
   const preview = previewSchedule(s, s.week, filledSlots)
+  const baseScores = scores(s.stats, s.bond)
+  const previewStats = {
+    con: Math.min(100, s.stats.con + preview.stats.con),
+    tec: Math.min(100, s.stats.tec + preview.stats.tec),
+    str: Math.min(100, s.stats.str + preview.stats.str),
+    ans: Math.min(100, s.stats.ans + preview.stats.ans),
+    tru: Math.min(100, s.stats.tru + preview.stats.tru),
+  }
+  const previewScores = scores(previewStats, s.bond)
 
   const assignNext = (id: ActivityId) => {
     const empty = slots.indexOf(null)
@@ -59,11 +72,25 @@ export function ScheduleScreen() {
     else if (out.status === 'ok') audio.sfx('grow')
   }, [result, stepIdx])
 
+  useEffect(() => {
+    if (!result || overlay) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== ' ' && e.key !== 'Enter') return
+      if ((e.target as HTMLElement | null)?.closest('button, input, textarea')) return
+      e.preventDefault()
+      if (stepIdx < result.outcomes.length - 1) setStepIdx((v) => v + 1)
+      else s.commitScheduleResult(result.nextState)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [result, stepIdx, overlay, s])
+
   if (result) {
     const out = result.outcomes[stepIdx]
     const def = ACTIVITIES[out.activityId]
     const isLast = stepIdx >= result.outcomes.length - 1
     const chatterChar = out.chatter && CHARACTERS[out.chatter.who].hasSprite ? (out.chatter.who as CharId) : null
+    const chatterBondTotal = out.chatter ? Object.values(out.bondDelta).reduce((a, b) => a + (b ?? 0), 0) : 0
     return (
       <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-6" data-testid="schedule-playback">
         {/* collapsing at 0 stamina (and the slots cancelled after it) plays out in the infirmary */}
@@ -117,6 +144,11 @@ export function ScheduleScreen() {
             {out.status === 'infirmary' && (
               <p className="mb-1 text-sm font-bold text-[#d6334a]" data-testid="infirmary-note">
                 體力歸零！被送進保健室，這格白做了、剩餘排程作廢，這週週末也只能在家休養。
+              </p>
+            )}
+            {out.halfTired && out.status === 'ok' && (
+              <p className="mb-1 mr-1.5 inline-block rounded-full bg-rose-100 px-3 py-0.5 text-xs font-bold text-[#d6334a]" data-testid="tired-badge">
+                😮‍💨 體力不足：能力值減半
               </p>
             )}
             {out.tense && out.status === 'ok' && (
@@ -174,8 +206,8 @@ export function ScheduleScreen() {
                   <p className="text-sm font-bold" style={{ color: CHARACTERS[out.chatter.who].color }}>
                     小插曲 · {CHARACTERS[out.chatter.who].name}
                   </p>
-                  {out.chatter.bond && (
-                    <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs font-bold text-[#d6334a]">好感 +1 ♥</span>
+                  {chatterBondTotal > 0 && (
+                    <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs font-bold text-[#d6334a]">好感 +{chatterBondTotal} ♥</span>
                   )}
                 </div>
                 <p className="mt-0.5 font-title text-base text-[#251e38]">{out.chatter.text.replace(/\{name\}/g, s.playerName)}</p>
@@ -194,7 +226,19 @@ export function ScheduleScreen() {
             </div>
           )}
 
-          <div className="flex justify-end">
+          <div className="flex items-center justify-between gap-3">
+            {!isLast ? (
+              <button
+                type="button"
+                className="btn-pastel px-5 py-2 text-sm"
+                data-testid="schedule-skip"
+                onClick={() => s.commitScheduleResult(result.nextState)}
+              >
+                略過本週演出 ⏭
+              </button>
+            ) : (
+              <span className="text-xs text-ink/60">按 Space / Enter 繼續</span>
+            )}
             <button
               className="rounded-full bg-gradient-to-r from-[#d6334a] to-[#f07b3f] px-8 py-2.5 text-lg font-bold text-white shadow-md transition hover:brightness-110"
               data-testid="schedule-next"
@@ -222,7 +266,10 @@ export function ScheduleScreen() {
             <h2 className="font-title text-2xl font-bold">第 {s.week} 週 · 平日排程</h2>
             <p className="text-sm text-ink/75">點擊或拖放活動填滿 4 個時段（帶 ★ 為本週主題 ×1.5 加成）</p>
           </div>
-          <button className="btn-pastel text-sm" onClick={autoFill}>推薦排程</button>
+          <div className="flex shrink-0 items-center gap-2">
+            <button type="button" className="btn-pastel text-sm" onClick={autoFill}>推薦排程</button>
+            <button type="button" className="btn-pastel text-sm" onClick={() => setOverlay('menu')}>選單</button>
+          </div>
         </div>
 
         {/* 4 Slots */}
@@ -318,8 +365,8 @@ export function ScheduleScreen() {
             <div className="flex items-center justify-between gap-2">
               <span className="font-bold text-ink">預期變化</span>
               <div className="flex items-center gap-2 text-xs font-bold">
-                <span className={`rounded-full px-2.5 py-0.5 ${preview.stamina < 20 ? 'bg-rose-100 text-[#d6334a]' : 'bg-emerald-50 text-emerald-800'}`}>
-                  體力 → {preview.stamina}
+                <span className={`rounded-full px-2.5 py-0.5 ${preview.infirmaryRisk || preview.stamina < 20 ? 'bg-rose-100 text-[#d6334a]' : 'bg-emerald-50 text-emerald-800'}`}>
+                  {preview.infirmaryRisk ? `體力 → 0 → ${preview.stamina}（保健室）` : `體力 → ${preview.stamina}`}
                 </span>
                 <span
                   className={`rounded-full px-2.5 py-0.5 ${
@@ -338,13 +385,23 @@ export function ScheduleScreen() {
 
             <div className="mt-2 flex min-h-[26px] flex-wrap items-center gap-1.5">
               {STAT_KEYS.some((k) => preview.stats[k] > 0) ? (
-                STAT_KEYS.map((k) =>
-                  preview.stats[k] > 0 ? (
-                    <span key={k} className="rounded-full bg-mint/70 px-2.5 py-0.5 text-xs font-bold text-ink">
-                      {STAT_SHORT[k]} +{preview.stats[k]}
-                    </span>
-                  ) : null,
-                )
+                <>
+                  {STAT_KEYS.map((k) =>
+                    preview.stats[k] > 0 ? (
+                      <span key={k} className="rounded-full bg-mint/70 px-2.5 py-0.5 text-xs font-bold text-ink">
+                        {STAT_SHORT[k]} +{preview.stats[k]}
+                      </span>
+                    ) : null,
+                  )}
+                  {HEROINES.map((h) => {
+                    const delta = previewScores[h] - baseScores[h]
+                    return delta >= 0.1 ? (
+                      <span key={h} className="rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-bold" style={{ color: CHARACTERS[h].color }}>
+                        {(CHARACTERS[h].name ?? h).slice(-1)} +{delta.toFixed(1)}♥
+                      </span>
+                    ) : null
+                  })}
+                </>
               ) : (
                 <span className="text-xs text-ink/55">點選左側活動或「推薦排程」填滿 4 格</span>
               )}
@@ -354,7 +411,7 @@ export function ScheduleScreen() {
               <div className="mt-2 flex flex-col gap-1 text-[11px] leading-tight" data-testid="schedule-risks">
                 {preview.infirmaryRisk && (
                   <span className="rounded-lg bg-rose-100 px-2 py-0.5 font-bold text-[#d6334a]">
-                    ⚠ 體力將歸零：進保健室、倒下那格白做，週末只能在家休養
+                    ⚠ 第 {(preview.infirmarySlot ?? 0) + 1} 格體力將歸零：進保健室、該格與後續作廢，週末鎖定休養
                   </span>
                 )}
                 {preview.failRisk && (

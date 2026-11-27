@@ -12,12 +12,12 @@ export default scene('date-mirai-1', [
   say('mirai', 'smile', '星座，就像知識圖譜。星與星之間，有連線。'),
   say('mirai', 'think', '單獨的光點沒有意義，被連起來，才有故事。'),
   choice([
-    opt('網站也是，頁面之間要有連結', { bond: { mirai: 5 } }, [
-      say('mirai', 'surprised', '……比喻成立。你的推論，已記錄。'),
-    ]),
     opt('我只看到好多星星，好美', { bond: { mirai: 6 } }, [
       say('mirai', 'blush', '「好美」……這個詞，沒有標準答案。'),
       say('mirai', 'smile', '但我的資料庫裡，正在增加一筆。'),
+    ]),
+    opt('網站也是，頁面之間要有連結', { bond: { mirai: 5 } }, [
+      say('mirai', 'surprised', '……比喻成立。你的推論，已記錄。'),
     ]),
   ]),
   say('narr', undefined, '流星的投影劃過圓頂，她輕輕「啊」了一聲。'),

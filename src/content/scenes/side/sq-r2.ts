@@ -65,7 +65,7 @@ export default scene('sq-r2', [
     opt('會！快把分身全部刪掉', {}, [
       show('rin', 'center', 'think'),
       say('rin', 'think', '別慌。刪掉，舊連結就變 404。'),
-      say('rin', 'normal', '該收斂，不是消滅。用 301，把分身送回本尊。'),
+      say('rin', 'normal', '功能參數用 canonical 收斂，廢棄的重複頁才用 301。'),
       say('me', undefined, '收斂。懂了。'),
     ]),
   ]),

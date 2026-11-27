@@ -118,6 +118,10 @@ export function truncateSerpPreview(text: string, maxUnits: number): { preview: 
 export interface SerpScoreResult {
   score: number
   passed: boolean
+  titleScore: number
+  descScore: number
+  truncationPenalty: number
+  spamCapped: boolean
   titlePreview: string
   descPreview: string
   titleTruncated: boolean
@@ -136,6 +140,10 @@ export function scoreSerp(game: SerpGame, titleIndex: number, descIndex: number)
     return {
       score: 0,
       passed: false,
+      titleScore: 0,
+      descScore: 0,
+      truncationPenalty: 0,
+      spamCapped: false,
       titlePreview: '',
       descPreview: '',
       titleTruncated: false,
@@ -148,23 +156,20 @@ export function scoreSerp(game: SerpGame, titleIndex: number, descIndex: number)
   const { preview: descPreview, truncated: descTruncated } = truncateSerpPreview(desc.text, descMaxUnits)
 
   // Each fragment contributes up to 50 points: intent (0-25) + clarity (0-15) + frontLoaded (5) + noSpam (5)
-  let rawScore =
-    title.intentScore +
-    title.clarityScore +
-    (title.frontLoaded ? 5 : 0) +
-    (title.noSpam ? 5 : 0) +
-    desc.intentScore +
-    desc.clarityScore +
-    (desc.frontLoaded ? 5 : 0) +
-    (desc.noSpam ? 5 : 0)
+  const titleScore = title.intentScore + title.clarityScore + (title.frontLoaded ? 5 : 0) + (title.noSpam ? 5 : 0)
+  const descScore = desc.intentScore + desc.clarityScore + (desc.frontLoaded ? 5 : 0) + (desc.noSpam ? 5 : 0)
+  let rawScore = titleScore + descScore
 
   // Penalize truncation when core information wasn't front-loaded
-  if (titleTruncated && !title.frontLoaded) rawScore -= 5
-  if (descTruncated && !desc.frontLoaded) rawScore -= 5
+  let truncationPenalty = 0
+  if (titleTruncated && !title.frontLoaded) truncationPenalty += 5
+  if (descTruncated && !desc.frontLoaded) truncationPenalty += 5
+  rawScore -= truncationPenalty
 
   // Keyword stuffing / misleading spam cannot pass regardless of partial matches
   const hasSpam = !title.noSpam || !desc.noSpam
-  const score = Math.max(0, Math.min(100, hasSpam ? Math.min(rawScore, passScore - 20) : rawScore))
+  const capped = hasSpam ? Math.min(rawScore, passScore - 20) : rawScore
+  const score = Math.max(0, Math.min(100, capped))
 
   const feedback: string[] = [
     `標題評估：${title.feedback}`,
@@ -188,6 +193,10 @@ export function scoreSerp(game: SerpGame, titleIndex: number, descIndex: number)
   return {
     score,
     passed: score >= passScore,
+    titleScore,
+    descScore,
+    truncationPenalty,
+    spamCapped: hasSpam,
     titlePreview,
     descPreview,
     titleTruncated,

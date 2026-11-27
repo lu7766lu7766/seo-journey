@@ -32,6 +32,7 @@ export function Spot({
   const [feedback, setFeedback] = useState<{ kind: 'hit' | 'miss' | 'info'; text: string } | null>(null)
   // the retry starts with the teacher's hint already open
   const [showHint, setShowHint] = useState(attempt === 2)
+  const [usedHint, setUsedHint] = useState(attempt === 2)
   const [showResult, setShowResult] = useState(false)
   const resolvedRef = useRef(false)
 
@@ -44,7 +45,7 @@ export function Spot({
   const revealMissed = lost && !canRetryNow
 
   const handleLineClick = (index: number) => {
-    if (gameEnded) return
+    if (gameEnded || wrongLines.includes(index)) return
     const res = evaluateSpotClick(game, foundLines, mistakes, index)
     setFoundLines(res.nextFound)
     setMistakes(res.nextMistakes)
@@ -66,7 +67,7 @@ export function Spot({
   }
 
   if (showResult) {
-    const stars = spotStars(won, mistakes, attempt)
+    const stars = spotStars(won, mistakes, attempt, usedHint)
     const retryAvailable = canOfferRetry(won, attempt) && !!onRetry
     return (
       <div className="glass flex max-h-[640px] w-[880px] flex-col rounded-3xl p-7 text-ink">
@@ -176,12 +177,16 @@ export function Spot({
             type="button"
             onClick={() => {
               audio.sfx('click')
-              setShowHint((v) => !v)
+              setShowHint((v) => {
+                const next = !v
+                if (next) setUsedHint(true)
+                return next
+              })
             }}
             data-testid="spot-hint-btn"
             className="rounded-full border border-amber-400 bg-amber-100 px-3 py-1 text-xs font-bold text-amber-950 transition hover:brightness-95"
           >
-            💡 {showHint ? '收起提示' : '索老師小提示'}
+            💡 {showHint ? '收起提示' : attempt === 1 ? '索老師小提示（最高 ★★）' : '索老師小提示'}
           </button>
           <span className="rounded-full bg-emerald-100 px-3 py-1 text-emerald-900">
             進度 {foundLines.length} / {game.targets.length}
@@ -237,7 +242,7 @@ export function Spot({
                 <button
                   key={i}
                   type="button"
-                  disabled={gameEnded}
+                  disabled={gameEnded || isWrong}
                   data-testid={`spot-line-${i}`}
                   onClick={() => handleLineClick(i)}
                   style={CODE_STYLE}

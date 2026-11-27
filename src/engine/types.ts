@@ -42,6 +42,7 @@ export type Cond =
   | { t: 'stat'; key: StatKey; op: CmpOp; value: number }
   | { t: 'bond'; who: HeroineId; op: CmpOp; value: number }
   | { t: 'score'; who: HeroineId; op: CmpOp; value: number }
+  | { t: 'topHeroine'; who: HeroineId }
   | { t: 'seen'; scene: string }
   | { t: 'card'; id: KnowledgeId }
   | { t: 'and'; all: Cond[] }
