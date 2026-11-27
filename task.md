@@ -141,8 +141,9 @@
 - 2026-11-25（美術 CG 補齊）：定時排程於 15:45 自動喚醒執行；採用既有原畫／立繪風格基準，產出並轉檔補齊全部其餘 **6 張背景**（`street`、`festival`、`planetarium`、`beach`、`rain`、`infirmary`，全遊戲 15/15 背景皆已 AI 繪製完成）及 **6 張事件 CG**（`date-rin-3`、`date-hare-3`、`date-mirai-3`、`end-true`、`end-rin`、`end-normal`），總計 26/57 項資產就緒（`public/art/` 共 2.84 MB）。通過 `art:check`（0 broken）、`typecheck`、`test(68)`、`build`（177.90KB gzip）、`vite preview` 全程 E2E（0 error）與截圖審查。剩餘 `end-hare`、`end-mirai`、`end-bad`、`end-blackhat` 4 張 CG 因後端配額再次觸及 429 暫維持現有 AI 背景＋AI 立繪合成呈現（預計約 4 小時 47 分後可補齊）。
 
 ## 待辦（下一步）
-- [ ] 使用者依 [docs/art-requests.md](docs/art-requests.md) 補齊剩餘 27 個角色表情＋4 張結局 CG（`end-hare`／`end-mirai`／`end-bad`／`end-blackhat`），跑 `npm run art` 後 `npm run art:check` 確認
+- [x] 美術 57/57 全部到齊（27 個表情、6 張背景、10 張 CG），`npm run art:check` 0 損壞；程式內的缺圖退回對應保留作為保險
 - [ ] 實機計時：真人完整玩一次主線，確認落在 30 分鐘內（估算公式為近似值）
 - [ ] 目前沒有任何場景使用 `bg('infirmary')`（保健室背景已完成，等排程「體力歸 0」事件接入時確認）
 - [ ] Vercel 部署（見 P6）
 - 2026-11-27（美術整合）：檢查使用者產出的圖與遊戲結合——立繪、背景、CG 都已正確載入。整合修正：(1) 有真圖的表情不再重複套情緒色調濾鏡（之前 `sad` 會偏灰）；(2) 缺圖退回對應改為凜 happy→smile、sad→think、晴／未來 angry→think；(3) 星象館與雨天背景本身已是暗色，不再套夜晚濾鏡（原本星象館幾乎全黑）；(4) 結局畫面新增「只看 CG」切換鈕，避免成果報告蓋住結局圖；(5) e2e 總時限放寬到 420 秒並新增「同一句卡住 20 秒才失敗」偵測，納入 CG 切換鈕測試。測試 69 項全過、e2e 通關 0 錯誤。
+- 2026-11-27：使用者補齊最後 8 張表情（57/57）並已合併；測試 69 項全過、e2e 通關 0 錯誤。
