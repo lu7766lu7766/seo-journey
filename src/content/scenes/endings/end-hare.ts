@@ -1,4 +1,5 @@
-import { bg, bgm, cg, hide, say, scene, show } from '@/engine'
+import { bg, bgm, cg, hide, say, scene, show, when } from '@/engine'
+import { flag } from '@/engine/cond'
 
 export default scene('end-hare', [
   bgm('warm'),
@@ -24,6 +25,14 @@ export default scene('end-hare', [
   say('hare', 'blush', '……！那、那個，結論先說，等一下，我先喝口水！'),
   cg('end-hare'),
   say('hare', 'blush', '我本來準備了三分鐘的開場白……算了，全部刪掉。'),
+  when(flag('w6Choice', 'eq', 2), [
+    say('hare', 'blush', '那晚下雨，你濕淋淋跑來。熱可可的杯子，其實是我自己的！'),
+    say('hare', 'happy', '從那一刻起，我的結論就只有一個。'),
+  ], [when(flag('w6Choice', 'eq', 1), [
+    say('hare', 'sad', '雨夜你去找凜學姊了吧？我有看到你的傘。……但結論是，現在你在這裡！'),
+  ], [when(flag('w6Choice', 'eq', 3), [
+    say('hare', 'think', '雨夜你去了天台吧？我一直開著麥克風等你。……但結論是，現在你在這裡！'),
+  ])])]),
   say('hare', 'happy', '結論先說：{name}，我喜歡你。以上，報告完畢！'),
   say('narr', undefined, '一句話，沒有鋪陳、沒有前情提要，卻準確地落進了我心裡。'),
   say('me', undefined, '我的結論，也只有一句。……我也喜歡妳。'),

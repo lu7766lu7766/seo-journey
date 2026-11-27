@@ -8,19 +8,22 @@ import { countCmds, countScene, estimateMinutes } from '@/systems/estimate'
  *
  * The ceiling (main path <= 30 min / <= 10,000 chars, tests/scriptLint.test.ts) and these floors
  * bound the same quantity from both sides. Fixed costs on the main path (4 minigames, 6 scheduling
- * rounds, 6 dates) already take ~12.8 minutes, so the floors sit just under the current writing.
+ * rounds, 6 dates) already take ~12.8 minutes. The interactive festival pitch, the foundation
+ * lessons, Hare's extra beats and the relationship-reactive variants were paid for by trimming the
+ * prologue / week 6 / end-true, so the floors sit just under the current writing (sizes are the
+ * longest branch of every choice / `when`).
  */
 const FLOORS: Record<string, number> = {
-  prologue: 750,
-  w1: 500,
-  w2: 480,
-  w3: 480,
-  w4: 500,
-  w5: 500,
-  w6: 750,
-  festival: 500,
+  prologue: 650,
+  w1: 630,
+  w2: 430,
+  w3: 520,
+  w4: 560,
+  w5: 560,
+  w6: 640,
+  festival: 470,
   'end-blackhat': 500,
-  'end-true': 500,
+  'end-true': 440,
   'end-rin': 500,
   'end-hare': 500,
   'end-mirai': 500,
