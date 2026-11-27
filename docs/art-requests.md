@@ -684,7 +684,7 @@ npm run art -- D:/seo-art-src/sources.json    # 或指定其他來源對照檔
 | 13 | `hare/sad` | `public/art/hare/sad.webp` | ✅ |
 | 14 | `hare/think` | `public/art/hare/think.webp` | ✅ |
 | 15 | `mirai/smile` | `public/art/mirai/smile.webp` | ✅ |
-| 16 | `mirai/happy` | `public/art/mirai/happy.webp` | ☐ |
+| 16 | `mirai/happy` | `public/art/mirai/happy.webp` | ✅ |
 | 17 | `mirai/blush` | `public/art/mirai/blush.webp` | ✅ |
 | 18 | `mirai/surprised` | `public/art/mirai/surprised.webp` | ☐ |
 | 19 | `mirai/angry` | `public/art/mirai/angry.webp` | ☐ |
