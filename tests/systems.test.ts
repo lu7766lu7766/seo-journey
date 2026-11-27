@@ -8,13 +8,14 @@ describe('schedule & quests & ending systems', () => {
   it('applies week theme x1.5 bonus and cancels remaining slots on stamina=0', () => {
     const s = { ...initialCore(), stamina: 20, stress: 10 }
     // Week 1 theme bonus is techcheck (tec+6 -> round(6*1.5)=9).
-    // Slot 0: 20 -> 5 stamina (not tired yet at start). Slot 1: 5 -> 0 (halfTired -> 4, triggers infirmary!).
+    // Slot 0: 20 -> 4 stamina (not tired yet at start). Slot 1: 4 -> 0: halfTired, and the slot that collapses yields nothing.
     const res = runWeekSchedule(s, 1, ['techcheck', 'techcheck', 'write', 'authors'], () => 0.99)
     expect(res.infirmaryTriggered).toBe(true)
     expect(res.outcomes[0].statDelta.tec).toBe(9)
     expect(res.outcomes[1].status).toBe('infirmary')
     expect(res.outcomes[1].halfTired).toBe(true)
-    expect(res.outcomes[1].statDelta.tec).toBe(4)
+    expect(res.outcomes[1].statDelta).toEqual({})
+    expect(res.nextState.flags.infirmaryWeek).toBe(true)
     expect(res.outcomes[2].status).toBe('skipped')
     expect(res.outcomes[3].status).toBe('skipped')
   })

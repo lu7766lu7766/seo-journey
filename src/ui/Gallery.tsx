@@ -7,6 +7,7 @@ import { MinigameHost } from '@/minigames'
 import { useGlobal } from '@/store/global'
 import { useUI, type GalleryTab } from '@/store/ui'
 import { ENDINGS_META } from '@/systems/ending'
+import { CopyChecklistButton } from './sim/CopyChecklistButton'
 
 const TABS: { id: GalleryTab; label: string; testId: string }[] = [
   { id: 'cards', label: '知識卡圖鑑', testId: 'tab-cards' },
@@ -91,8 +92,11 @@ function CardsTab({
     <div className="space-y-3">
       <div className="flex items-center justify-between text-sm text-ink/75">
         <span>點擊已解鎖的知識卡可查看詳細說明與常見誤解。</span>
-        <span className="rounded-full bg-white/80 px-3 py-1 font-bold text-ink" data-testid="cards-count">
-          已收集 {count} / {KNOWLEDGE_IDS.length}
+        <span className="flex items-center gap-2">
+          <CopyChecklistButton unlocked={unlocked} label="複製清單" testId="copy-checklist-gallery" toastBelow className="btn-pastel px-3 py-1 text-xs" />
+          <span className="rounded-full bg-white/80 px-3 py-1 font-bold text-ink" data-testid="cards-count">
+            已收集 {count} / {KNOWLEDGE_IDS.length}
+          </span>
         </span>
       </div>
       <div className="grid grid-cols-3 gap-3">

@@ -5,11 +5,14 @@ import { CHARACTERS } from '@/content/characters'
 import { HEROINES } from '@/engine/types'
 import { useGame } from '@/store/game'
 import { getDateCount, pickDateScene } from '@/systems/ending'
+import { INFIRMARY_WEEK_FLAG, WEEKEND } from '@/systems/schedule'
 import { score } from '@/systems/score'
 
 export function WeekendMenu() {
   const s = useGame()
   const [busy, setBusy] = useState(false)
+  // collapsing in the infirmary this week costs the weekend: only resting at home is possible
+  const locked = s.flags[INFIRMARY_WEEK_FLAG] === true
 
   const pickDate = async (h: (typeof HEROINES)[number]) => {
     if (busy) return
@@ -38,7 +41,16 @@ export function WeekendMenu() {
       <div className="vn-box relative z-10 flex items-center justify-between rounded-2xl px-6 py-4 text-white">
         <div>
           <h2 className="font-title text-3xl font-bold text-white">第 {s.week} 週 · 週末自由行動</h2>
-          <p className="text-base text-[#d5e3ff]">邀請一位夥伴出門，或留在家裡好好休息（體力 +25、壓力 -15）</p>
+          {locked ? (
+            <p className="text-base font-bold text-[#ffd6e2]" data-testid="infirmary-lock">
+              這週倒下過，週末只能好好休息（約會暫時鎖定）
+            </p>
+          ) : (
+            <p className="text-base text-[#d5e3ff]">邀請一位夥伴出門（壓力 {WEEKEND.dateStress}），或留在家裡好好休息</p>
+          )}
+          <p className="text-sm text-[#b9cdf2]">
+            在家休息：體力 +{WEEKEND.rest.stamina}、壓力 {WEEKEND.rest.stress}
+          </p>
         </div>
         <button disabled={busy} className="btn-pastel px-6 py-2.5 text-lg disabled:opacity-50" data-testid="weekend-rest" onClick={() => void pickRest()}>
           在家休息
@@ -55,10 +67,10 @@ export function WeekendMenu() {
           return (
             <button
               key={h}
-              disabled={busy}
+              disabled={busy || locked}
               data-testid={`date-${h}`}
               onClick={() => void pickDate(h)}
-              className="glass group relative flex flex-col items-center justify-end overflow-hidden rounded-3xl p-5 text-center transition hover:ring-2 hover:ring-sakura disabled:opacity-60"
+              className={`glass group relative flex flex-col items-center justify-end overflow-hidden rounded-3xl p-5 text-center transition hover:ring-2 hover:ring-sakura disabled:opacity-60 ${locked ? 'grayscale' : ''}`}
             >
               <div className="pointer-events-none absolute inset-x-0 top-2 flex h-[340px] justify-center opacity-95 transition group-hover:scale-105">
                 <CharacterSprite id={h} face="smile" />
@@ -71,7 +83,9 @@ export function WeekendMenu() {
                   好感度 ♥ {sc} · 已約會 {count} 次
                 </p>
                 <p className="mt-1 text-xs text-ink/65">
-                  {lockedStage3
+                  {locked
+                    ? '🔒 這週倒下過，沒辦法赴約'
+                    : lockedStage3
                     ? '第 3 階段約會需好感度 ≥ 55（本次為普通相處）'
                     : pick.stage === 'casual'
                       ? '進行普通相處'

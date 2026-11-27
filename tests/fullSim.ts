@@ -12,7 +12,7 @@ import { HEROINES, type ChoiceOpt, type CoreState, type Effects, type HeroineId 
 import { determineEnding, pickDateScene, type EndingId } from '@/systems/ending'
 import { availableQuests, MAX_QUESTS_PER_WEEK, questDoneFlag } from '@/systems/quests'
 import { score, scores } from '@/systems/score'
-import { runWeekSchedule } from '@/systems/schedule'
+import { INFIRMARY_WEEK_FLAG, runWeekSchedule, WEEKEND } from '@/systems/schedule'
 
 export type Rng = () => number
 export function makeRng(seed: number): Rng {
@@ -54,18 +54,23 @@ export function optionValue(o: ChoiceOpt): number {
 
 const pickRand = <T,>(arr: T[], rng: Rng) => arr[Math.floor(rng() * arr.length)]
 
-/** greedy schedule that raises the weakest heroine score the most (a careful player). */
+/**
+ * A careful player: three greedy work slots (raising the weakest heroine's score the most, tired / tense
+ * penalties included because the value comes from the real runWeekSchedule), then rests in the last slot
+ * unless stamina and stress are both comfortable. Rests earlier when stamina is already low.
+ */
 function smartSchedule(state: CoreState, week: number, rng: Rng): ActivityId[] {
   let st = state
   const picked: ActivityId[] = []
+  const WORK = ALL.filter((a) => a !== 'rest')
   for (let i = 0; i < 4; i++) {
     let best: ActivityId = 'rest'
     let bestV = -Infinity
-    for (const a of ALL) {
-      if (a === 'rest' && (st.stamina > 45 || i < 3)) continue
+    const mustRest = i === 3 ? !(st.stamina >= 60 && st.stress <= 30) : st.stamina < 35
+    for (const a of mustRest ? (['rest'] as ActivityId[]) : WORK) {
       const r = runWeekSchedule(st, week, [a], () => 0.99).nextState
       const sc = scores(r.stats, r.bond)
-      const v = Math.min(sc.rin, sc.hare, sc.mirai) * 3 + sc.rin + sc.hare + sc.mirai - (r.stamina < 25 ? 8 : 0)
+      const v = Math.min(sc.rin, sc.hare, sc.mirai) * 3 + sc.rin + sc.hare + sc.mirai - (r.stress >= 60 ? 6 : 0)
       if (v > bestV) { bestV = v; best = a }
     }
     picked.push(best)
@@ -73,6 +78,23 @@ function smartSchedule(state: CoreState, week: number, rng: Rng): ActivityId[] {
   }
   void rng
   return picked
+}
+
+/**
+ * Random clicking. `aware` players still glance at the stamina bar (rest when it is nearly empty); `blind` ones never do,
+ * so they collapse into the infirmary again and again and lose their weekends.
+ */
+function randomSchedule(aware: boolean) {
+  return (state: CoreState, week: number, rng: Rng): ActivityId[] => {
+    let st = state
+    const out: ActivityId[] = []
+    for (let i = 0; i < 4; i++) {
+      const a: ActivityId = aware && st.stamina < 35 ? 'rest' : pickRand(ALL, rng)
+      out.push(a)
+      st = runWeekSchedule(st, week, [a], () => 0.99).nextState
+    }
+    return out
+  }
 }
 
 function focusSchedule(who: HeroineId) {
@@ -98,10 +120,19 @@ export const POLICIES: Record<string, Policy> = {
     weekend: (_s, week) => (['rin', 'hare', 'mirai'] as const)[(week - 1) % 3],
   },
   'casual-random': {
-    name: '隨便亂玩（全隨機，支線50%）',
+    name: '隨便亂玩（全隨機、體力見底才休息，支線50%）',
     choose: (o, rng) => pickRand(o, rng).index,
     minigameWinRate: 0.6,
-    schedule: (_s, _w, rng) => [0, 1, 2, 3].map(() => pickRand(ALL, rng)),
+    schedule: randomSchedule(true),
+    quests: (_w, a, rng) => (rng() < 0.5 ? Math.min(a, 1 + Math.floor(rng() * 2)) : 0),
+    weekend: (_s, _w, rng) => (rng() < 0.2 ? 'rest' : pickRand([...HEROINES], rng)),
+  },
+  // never looks at stamina / stress: collapses into the infirmary again and again (and loses those weekends)
+  'blind-random': {
+    name: '亂玩且完全不看體力（全隨機，支線50%）',
+    choose: (o, rng) => pickRand(o, rng).index,
+    minigameWinRate: 0.6,
+    schedule: randomSchedule(false),
     quests: (_w, a, rng) => (rng() < 0.5 ? Math.min(a, 1 + Math.floor(rng() * 2)) : 0),
     weekend: (_s, _w, rng) => (rng() < 0.2 ? 'rest' : pickRand([...HEROINES], rng)),
   },
@@ -241,16 +272,18 @@ export async function simulateRun(pol: Policy, rng: Rng): Promise<RunResult> {
       state = await playScene(q.id, state, seen, pol, rng)
       state = applyEffects(state, { flags: { [questDoneFlag(q.id)]: true } })
     }
-    // weekend
-    const wk = pol.weekend(state, week, rng)
+    // weekend: collapsing in the infirmary locks the dates (only resting at home); mirrors src/store/game.ts
+    const locked = state.flags[INFIRMARY_WEEK_FLAG] === true
+    const wk = locked ? 'rest' : pol.weekend(state, week, rng)
     if (wk === 'rest') {
-      state = applyEffects(state, { stamina: 25, stress: -15 })
       state = await playScene('weekend-rest', state, seen, pol, rng)
     } else {
       const pick = pickDateScene(wk, state)
+      state = applyEffects(state, { stress: WEEKEND.dateStress })
       state = await playScene(pick.sceneId, state, seen, pol, rng)
       if (pick.increment) state = applyEffects(state, { inc: { [`dateCount.${wk}`]: 1 } })
     }
+    state = applyEffects(state, { flags: { [INFIRMARY_WEEK_FLAG]: false } })
   }
   state = await playScene('festival', state, seen, pol, rng)
   const ending = determineEnding(state)

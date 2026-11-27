@@ -264,7 +264,12 @@ async function main() {
           await shot(page, 'weekend-menu.png')
           captured.weekend = true
         }
-        await page.locator('[data-testid="date-rin"]').click()
+        // after an infirmary collapse the dates are locked and only resting at home is offered
+        if (await page.locator('[data-testid="date-rin"]').isEnabled().catch(() => false)) {
+          await page.locator('[data-testid="date-rin"]').click()
+        } else {
+          await page.locator('[data-testid="weekend-rest"]').click()
+        }
         await page.locator('[data-testid="weekend-menu"]').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {})
         continue
       }

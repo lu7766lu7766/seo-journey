@@ -8,7 +8,9 @@ import { loadScene, SCENE_IDS } from '@/content/scenes'
 import { KNOWLEDGE } from '@/content/knowledge'
 import { dateCountFlag, determineEnding, pickDateScene } from '@/systems/ending'
 import { questDoneFlag } from '@/systems/quests'
+import { INFIRMARY_WEEK_FLAG, WEEKEND } from '@/systems/schedule'
 import { scores } from '@/systems/score'
+import { statSnapshotFlags } from '@/systems/siteMetrics'
 import { useGlobal } from './global'
 import { defaultPersisted, normalizeData, writeSave, type PersistedGame, type Phase } from './save'
 
@@ -153,7 +155,7 @@ export const useGame = create<GameStore>((set, get) => {
         if (s.week === 0) {
           // Prologue (or demo) finished -> enter Week 1
           const snap = scores(s.stats, s.bond)
-          set({ week: 1, phase: 'story', scene: null, prevScores: snap, questsDoneThisWeek: 0 })
+          set({ week: 1, phase: 'story', scene: null, prevScores: snap, questsDoneThisWeek: 0, flags: { ...s.flags, ...statSnapshotFlags(s.stats) } })
           if (SCENE_IDS.includes('w1')) {
             await get().startScene('w1')
           } else {
@@ -197,6 +199,8 @@ export const useGame = create<GameStore>((set, get) => {
           const cur = typeof nextFlags[fk] === 'number' ? (nextFlags[fk] as number) : 0
           nextFlags[fk] = cur + 1
         }
+        // the weekend is over: a collapse in the infirmary no longer locks anything
+        nextFlags[INFIRMARY_WEEK_FLAG] = false
         set({ flags: nextFlags, activeDateHeroine: null, scene: null, phase: 'report' })
         autosaveNow()
         return
@@ -231,13 +235,16 @@ export const useGame = create<GameStore>((set, get) => {
 
     startWeekendDate: async (who) => {
       const s = get()
+      // dates are locked in a week that ended in the infirmary (the UI only offers resting at home)
+      if (s.flags[INFIRMARY_WEEK_FLAG] === true) return
       const pick = pickDateScene(who, s)
+      get().applyEffects({ stress: WEEKEND.dateStress })
       set({ activeDateHeroine: { who, increment: pick.increment } })
       await get().startScene(pick.sceneId)
     },
 
     startWeekendRest: async () => {
-      get().applyEffects({ stamina: 25, stress: -15 })
+      // stamina / stress come from the weekend-rest scene itself (WEEKEND.rest)
       set({ activeDateHeroine: null })
       await get().startScene('weekend-rest')
     },
@@ -246,7 +253,7 @@ export const useGame = create<GameStore>((set, get) => {
       const s = get()
       const snap = scores(s.stats, s.bond)
       const nextWeek = s.week + 1
-      set({ prevScores: snap, questsDoneThisWeek: 0, week: nextWeek, phase: 'story', scene: null })
+      set({ prevScores: snap, questsDoneThisWeek: 0, week: nextWeek, phase: 'story', scene: null, flags: { ...s.flags, ...statSnapshotFlags(s.stats) } })
       if (nextWeek <= 6) {
         const sceneId = `w${nextWeek}`
         if (SCENE_IDS.includes(sceneId)) {

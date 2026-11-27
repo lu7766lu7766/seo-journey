@@ -12,12 +12,49 @@ import { STAT_KEYS, type CoreState, type HeroineId, type StatKey } from '@/engin
 
 export type Rng = () => number
 
+/**
+ * Stamina / stress rules (plan §2.4, retuned for real trade-offs):
+ * - stamina < tiredBelow : work gains are halved (min 1)
+ * - stress >= tenseAt   : 「焦躁」 work gains x tenseMul (min 1)
+ * - stress >= failAt    : additionally failChance that a work slot FAILS (effect 0)
+ * - stamina 0 on a work slot: infirmary (+infirmaryStamina / infirmaryStress), the rest of the weekdays are cancelled
+ *   and the weekend can only be spent resting at home (flag `infirmaryWeek`).
+ */
+export const RULES = {
+  tiredBelow: 20,
+  tenseAt: 60,
+  tenseMul: 0.75,
+  failAt: 80,
+  failChance: 0.3,
+  infirmaryStamina: 25,
+  infirmaryStress: 0,
+} as const
+
+/** Weekend: a date costs no stamina but relaxes a little; resting is the weekend-rest scene (+30 stamina, -20 stress). */
+export const WEEKEND = { dateStress: -5, rest: { stamina: 30, stress: -20 } } as const
+
+/** flag set when the weekday schedule ended in the infirmary; cleared at the end of the weekend */
+export const INFIRMARY_WEEK_FLAG = 'infirmaryWeek'
+
+/** One slot's stat gain after the theme bonus and the tired / tense penalties. */
+export function slotGain(
+  base: number,
+  opts: { themed: boolean; halfTired: boolean; tense: boolean },
+): number {
+  let v = opts.themed ? Math.round(base * 1.5) : base
+  if (opts.halfTired) v = Math.max(1, Math.floor(v / 2))
+  if (opts.tense) v = Math.max(1, Math.round(v * RULES.tenseMul))
+  return v
+}
+
 export interface SlotOutcome {
   slotIndex: number
   activityId: ActivityId
   status: 'ok' | 'fail' | 'infirmary' | 'skipped'
   themed: boolean
   halfTired: boolean
+  /** stress >= 60: work gains x0.75 */
+  tense?: boolean
   statDelta: Partial<Record<StatKey, number>>
   bondDelta: Partial<Record<HeroineId, number>>
   staminaDelta: number
@@ -54,16 +91,17 @@ export function runScheduleSlot(
   const themed = isThemedActivity(week, activityId)
   const isWork = activityId !== 'rest'
 
-  // Stamina < 20 halves positive stat gains; stress >= 80 gives 30% fail chance on work
-  const halfTired = isWork && state.stamina < 20
-  const failed = isWork && state.stress >= 80 && rng() < 0.3
+  // Stamina < 20 halves gains; stress >= 60 makes work 焦躁 (x0.75); stress >= 80 adds a 30% fail chance on work
+  const halfTired = isWork && state.stamina < RULES.tiredBelow
+  const tense = isWork && state.stress >= RULES.tenseAt
+  const failed = isWork && state.stress >= RULES.failAt && rng() < RULES.failChance
 
   if (failed) {
     const next = applyEffects(state, { stamina: def.stamina, stress: def.stress })
     const failLine = pick(FAIL_LINES, rng)
     const triggeredInfirmary = next.stamina <= 0
     const finalState = triggeredInfirmary
-      ? applyEffects(next, { stamina: 35, stress: -15 })
+      ? applyEffects(next, { stamina: RULES.infirmaryStamina, stress: RULES.infirmaryStress })
       : next
     return {
       state: finalState,
@@ -73,6 +111,7 @@ export function runScheduleSlot(
         status: triggeredInfirmary ? 'infirmary' : 'fail',
         themed,
         halfTired,
+        tense,
         statDelta: {},
         bondDelta: {},
         staminaDelta: finalState.stamina - state.stamina,
@@ -83,13 +122,15 @@ export function runScheduleSlot(
     }
   }
 
+  // running on empty: the slot that drains the last stamina collapses before it produces anything
+  const collapses = isWork && state.stamina + def.stamina <= 0
   const statDelta: Partial<Record<StatKey, number>> = {}
-  for (const k of STAT_KEYS) {
-    const base = def.stats[k]
-    if (!base) continue
-    let v = themed ? Math.round(base * 1.5) : base
-    if (halfTired) v = Math.max(1, Math.floor(v / 2))
-    statDelta[k] = v
+  if (!collapses) {
+    for (const k of STAT_KEYS) {
+      const base = def.stats[k]
+      if (!base) continue
+      statDelta[k] = slotGain(base, { themed, halfTired, tense })
+    }
   }
 
   let next = applyEffects(state, {
@@ -100,7 +141,7 @@ export function runScheduleSlot(
 
   let chatter: FlavorLine | undefined
   const bondDelta: Partial<Record<HeroineId, number>> = {}
-  if (rng() < 0.15) {
+  if (!collapses && rng() < 0.15) {
     chatter = pick(ACTIVITY_CHATTER[activityId], rng)
     if (chatter.bond) {
       for (const [h, d] of Object.entries(chatter.bond) as [HeroineId, number][]) {
@@ -112,7 +153,7 @@ export function runScheduleSlot(
 
   const triggeredInfirmary = isWork && next.stamina <= 0
   if (triggeredInfirmary) {
-    next = applyEffects(next, { stamina: 35, stress: -15 })
+    next = applyEffects(next, { stamina: RULES.infirmaryStamina, stress: RULES.infirmaryStress })
   }
 
   return {
@@ -123,6 +164,7 @@ export function runScheduleSlot(
       status: triggeredInfirmary ? 'infirmary' : 'ok',
       themed,
       halfTired,
+      tense,
       statDelta,
       bondDelta,
       staminaDelta: next.stamina - state.stamina,
@@ -153,6 +195,7 @@ export function runWeekSchedule(
         status: 'skipped',
         themed: isThemedActivity(week, activityId),
         halfTired: false,
+        tense: false,
         statDelta: {},
         bondDelta: {},
         staminaDelta: 0,
@@ -167,6 +210,9 @@ export function runWeekSchedule(
     if (res.outcome.status === 'infirmary') infirmaryTriggered = true
   }
 
+  // collapsing also costs the weekend: only resting at home is possible (cleared at the end of the weekend)
+  if (infirmaryTriggered) state = applyEffects(state, { flags: { [INFIRMARY_WEEK_FLAG]: true } })
+
   return {
     nextState: state,
     outcomes,
@@ -175,37 +221,49 @@ export function runWeekSchedule(
   }
 }
 
+export interface SchedulePreview {
+  stats: Record<StatKey, number>
+  stamina: number
+  stress: number
+  infirmaryRisk: boolean
+  failRisk: boolean
+  /** some work slot would start with stress >= 60 (gains x0.75) */
+  tenseRisk: boolean
+  /** some work slot would start with stamina < 20 (gains halved) */
+  tiredRisk: boolean
+}
+
 /** Deterministic preview of expected stat/stamina/stress changes for the UI. */
-export function previewSchedule(
-  state: CoreState,
-  week: number,
-  slots: ActivityId[],
-): { stats: Record<StatKey, number>; stamina: number; stress: number; infirmaryRisk: boolean; failRisk: boolean } {
+export function previewSchedule(state: CoreState, week: number, slots: ActivityId[]): SchedulePreview {
   let simStamina = state.stamina
   let simStress = state.stress
   const gains: Record<StatKey, number> = { con: 0, tec: 0, str: 0, ans: 0, tru: 0 }
   let infirmaryRisk = false
   let failRisk = false
+  let tenseRisk = false
+  let tiredRisk = false
 
   for (const id of slots) {
     const def = ACTIVITIES[id]
     const themed = isThemedActivity(week, id)
     const isWork = id !== 'rest'
-    if (isWork && simStress >= 80) failRisk = true
-    const halfTired = isWork && simStamina < 20
-    for (const k of STAT_KEYS) {
-      const base = def.stats[k]
-      if (!base) continue
-      let v = themed ? Math.round(base * 1.5) : base
-      if (halfTired) v = Math.max(1, Math.floor(v / 2))
-      gains[k] += v
-    }
-    simStamina = Math.min(100, Math.max(0, simStamina + def.stamina))
-    simStress = Math.min(100, Math.max(0, simStress + def.stress))
-    if (isWork && simStamina <= 0) {
+    const failChance = isWork && simStress >= RULES.failAt
+    if (failChance) failRisk = true
+    const halfTired = isWork && simStamina < RULES.tiredBelow
+    const tense = isWork && simStress >= RULES.tenseAt
+    if (halfTired) tiredRisk = true
+    if (tense) tenseRisk = true
+    if (isWork && simStamina + def.stamina <= 0) {
       infirmaryRisk = true
       break
     }
+    for (const k of STAT_KEYS) {
+      const base = def.stats[k]
+      if (!base) continue
+      gains[k] += slotGain(base, { themed, halfTired, tense })
+    }
+    simStamina = Math.min(100, Math.max(0, simStamina + def.stamina))
+    simStress = Math.min(100, Math.max(0, simStress + def.stress))
   }
-  return { stats: gains, stamina: simStamina, stress: simStress, infirmaryRisk, failRisk }
+  return { stats: gains, stamina: simStamina, stress: simStress, infirmaryRisk, failRisk, tenseRisk, tiredRisk }
 }
