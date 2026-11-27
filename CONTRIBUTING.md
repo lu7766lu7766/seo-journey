@@ -57,4 +57,8 @@
 - `tests/balance.test.ts` 是回歸測試：用心玩可拿真結局但按鈕狂點不行、專情於一人必走她的結局、7 個結局都能達成。改數值後跑 `npm test`；想看完整分布表：`BALANCE_REPORT=1 npx vitest run tests/balance.test.ts`。
 - 全域旋鈕在 `src/systems/score.ts` 的 `TUNING`（`statScale`、`bondMax`）；推薦排程在 `src/content/activities.ts` 的 `RECOMMENDED_SCHEDULE`。
 - 黑帽結局需要 `blackhat ≥ 2`：第 4 週接受＋第 6 週再接受（第 6 週的再次邀約在 `kuroPending` 或 `blackhat ≥ 1` 時出現）。
+- 體力／壓力經濟另有 `tests/economy.test.ts`（`tests/economySim.ts`）：最佳可持續節奏是「3 格工作＋1 格休息」，4 格硬撐會因為焦躁（壓力 ≥ 60，工作收益 ×0.75）、失誤（壓力 ≥ 80，30%）、倒下（體力歸 0 會失去當週週末約會）而吃虧。改活動的體力／壓力數字前先看它。
+- 好感度與能力的顯示：網站儀表板的指標由 `src/systems/siteMetrics.ts` 從五項能力推導（示意數據，非真實預測）；結局的「實戰檢查清單」文字在 `src/content/checklist.ts`（31 張知識卡各一條，新增知識卡時要同步補）。
+- 劇本裡可用 `hasCard('<id>')` 判斷玩家是否學過某張知識卡（搜尋祭簡報用它決定選項）。
+- 小遊戲星等：3 顆＝第一次全對／零失誤／搜尋結果分數 ≥ 90；2 顆＝第一次過關；1 顆＝重試後過關。最高星等存在 `useGlobal.stars`。
 
