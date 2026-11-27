@@ -1,30 +1,43 @@
+import { useState } from 'react'
 import { MINIGAMES, type MinigameId } from '@/content/minigames'
 import { MINIGAME_DATA } from '@/content/minigames/data'
 import { Quiz } from './Quiz'
 import { Serp } from './Serp'
 import { Spot } from './Spot'
+import type { Attempt } from './stars'
 
 /**
  * PUBLIC MINIGAME INTERFACE (P4 quiz/spot/serp engines keyed off MINIGAMES[id].kind).
- * Call onResolve(true|false) exactly once when finished.
+ * Call onResolve(won, stars?) exactly once when finished. `stars` is 0-3 (see ./stars.ts for the rules);
+ * old callers that only look at `won` keep working. A failed first attempt may be retried once INSIDE the host
+ * (same game, hint shown from the start); onResolve only fires when the player finishes for good.
  */
-export function MinigameHost({ id, onResolve }: { id: MinigameId; onResolve: (won: boolean) => void }) {
+export function MinigameHost({
+  id,
+  onResolve,
+}: {
+  id: MinigameId
+  onResolve: (won: boolean, stars?: number) => void
+}) {
+  const [attempt, setAttempt] = useState<Attempt>(1)
   const registeredKind = MINIGAMES[id].kind
   const game = MINIGAME_DATA[id]
+  // remounting on `key` resets every engine to a fresh run (and re-shuffles option order)
+  const common = { attempt, onResolve, onRetry: () => setAttempt(2) }
 
   const renderGame = () => {
     if ((registeredKind === 'placeholder' || registeredKind === 'quiz') && game.kind === 'quiz') {
-      return <Quiz game={game} onResolve={onResolve} />
+      return <Quiz game={game} key={attempt} {...common} />
     }
     if (registeredKind === 'spot' && game.kind === 'spot') {
-      return <Spot game={game} onResolve={onResolve} />
+      return <Spot game={game} key={attempt} {...common} />
     }
     if (registeredKind === 'serp' && game.kind === 'serp') {
-      return <Serp game={game} onResolve={onResolve} />
+      return <Serp game={game} key={attempt} {...common} />
     }
-    if (game.kind === 'quiz') return <Quiz game={game} onResolve={onResolve} />
-    if (game.kind === 'spot') return <Spot game={game} onResolve={onResolve} />
-    return <Serp game={game} onResolve={onResolve} />
+    if (game.kind === 'quiz') return <Quiz game={game} key={attempt} {...common} />
+    if (game.kind === 'spot') return <Spot game={game} key={attempt} {...common} />
+    return <Serp game={game} key={attempt} {...common} />
   }
 
   return (

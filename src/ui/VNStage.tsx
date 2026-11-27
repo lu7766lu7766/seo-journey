@@ -101,7 +101,7 @@ export function VNStage() {
           {pause.kind === 'choice' && <ChoiceMenu pause={pause} />}
           {pause.kind === 'minigame' && (
             <Suspense fallback={null}>
-              <MinigameHost key={pause.lineId} id={pause.id} onResolve={(w) => useGame.getState().resolveMinigame(w)} />
+              <MinigameHost key={pause.lineId} id={pause.id} onResolve={(w, stars) => useGame.getState().resolveMinigame(w, stars)} />
             </Suspense>
           )}
         </>
