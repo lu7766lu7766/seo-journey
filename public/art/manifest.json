@@ -55,5 +55,16 @@
   "mirai/angry": "/art/mirai/angry.webp",
   "sensei/think": "/art/sensei/think.webp",
   "sensei/sad": "/art/sensei/sad.webp",
-  "kuro/sad": "/art/kuro/sad.webp"
+  "kuro/sad": "/art/kuro/sad.webp",
+  "ui/activity-write": "/art/ui/activity-write.webp",
+  "ui/logo": "/art/ui/logo.webp",
+  "ui/activity-research": "/art/ui/activity-research.webp",
+  "ui/activity-techcheck": "/art/ui/activity-techcheck.webp",
+  "ui/activity-schema": "/art/ui/activity-schema.webp",
+  "ui/activity-qa": "/art/ui/activity-qa.webp",
+  "ui/activity-authors": "/art/ui/activity-authors.webp",
+  "ui/activity-social": "/art/ui/activity-social.webp",
+  "ui/activity-rest": "/art/ui/activity-rest.webp",
+  "ui/activity-fail": "/art/ui/activity-fail.webp",
+  "ui/activity-infirmary": "/art/ui/activity-infirmary.webp"
 }

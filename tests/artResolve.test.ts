@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { activityBannerName, resolveBgSrc, resolveCgSrc, resolveSpriteSrc, resolveUiSrc } from '../src/art/resolve'
+import { ACTIVITY_IDS } from '../src/content/activityIds'
 import { BG_IDS } from '../src/content/backgrounds'
 import { SPRITE_IDS, FACES } from '../src/content/characters'
 import { CG_IDS } from '../src/content/cgs'
@@ -66,10 +67,12 @@ describe('art manifest resolution', () => {
 
   it('every key shipped in public/art/manifest.json maps to a known id', () => {
     const manifest = JSON.parse(readFileSync('public/art/manifest.json', 'utf8')) as Record<string, string>
+    const uiKeys = ['logo', ...ACTIVITY_IDS.map((id) => `activity-${id}`), 'activity-fail', 'activity-infirmary']
     for (const key of Object.keys(manifest)) {
       const [head, tail] = key.split('/')
       if (head === 'bg') expect(BG_IDS as readonly string[]).toContain(tail)
       else if (head === 'cg') expect(CG_IDS as readonly string[]).toContain(tail)
+      else if (head === 'ui') expect(uiKeys).toContain(tail)
       else {
         expect(SPRITE_IDS as readonly string[]).toContain(head)
         expect(FACES as readonly string[]).toContain(tail)

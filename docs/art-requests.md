@@ -5,16 +5,16 @@
 
 ## 0. 總覽
 
-**目前進度**：第一批（立繪表情、背景、事件 CG）**57 張已全部完成**，`npm run art:check` 0 損壞。盤點遊戲後，還有 **14 項**沒有真圖（介面插圖與網站圖），列在**第 7 章（第二批）**。
+**目前進度**：第一批（57 張）與第二批（14 項）**全數 71/71 已完成**，`npm run art:check` 0 損壞、0 待產。
 
 | 批次 | 類別 | 數量 | 狀態 | 說明 |
 |---|---|---|---|---|
 | 第一批 | 角色表情立繪 | 27 | ✅ 完成 | 凜／晴／未來各 7 張、索老師 3 張、黑川 3 張（細節在第 3 章） |
 | 第一批 | 背景 | 6 | ✅ 完成 | street、planetarium、beach、festival、rain、infirmary（第 4 章） |
 | 第一批 | 事件 CG | 10 | ✅ 完成 | 7 個結局＋3 個第 3 次約會（第 5 章） |
-| **第二批** | **活動插圖** | **10** | **☐ 待產** | 排程播放時的橫幅圖：8 種活動＋失誤＋保健室。目前是程式繪製的 Q 版 SVG（第 7.1 節） |
-| **第二批** | **標題 Logo** | **1** | **☐ 待產** | 目前是純文字標題（第 7.2 節） |
-| **第二批** | **網站圖** | **3** | **☐ 待產（已有暫代版）** | 分享預覽圖、網站圖示、iOS 圖示；目前是用標題畫面自動產生的暫代版（第 7.3 節） |
+| **第二批** | **活動插圖** | **10** | **✅ 完成** | 排程播放時的 1584×404 Q 版橫幅圖：8 種活動＋失誤＋保健室（第 7.1 節） |
+| **第二批** | **標題 Logo** | **1** | **✅ 完成** | `public/art/ui/logo.webp` 透明標題標誌（第 7.2 節） |
+| **第二批** | **網站圖** | **3** | **✅ 完成** | 正式版 `og-image.jpg`、`favicon.png`、`apple-touch-icon.png`（第 7.3 節） |
 
 **第二批建議出圖順序**
 
@@ -924,20 +924,20 @@ a promotional key visual for a Japanese school romance simulation game, three hi
 
 | # | Key／檔案 | 輸出檔 | 完成？ |
 |---|---|---|---|
-| 1 | `ui/activity-write` | `public/art/ui/activity-write.webp` | ☐ |
-| 2 | `ui/activity-research` | `public/art/ui/activity-research.webp` | ☐ |
-| 3 | `ui/activity-techcheck` | `public/art/ui/activity-techcheck.webp` | ☐ |
-| 4 | `ui/activity-schema` | `public/art/ui/activity-schema.webp` | ☐ |
-| 5 | `ui/activity-qa` | `public/art/ui/activity-qa.webp` | ☐ |
-| 6 | `ui/activity-authors` | `public/art/ui/activity-authors.webp` | ☐ |
-| 7 | `ui/activity-social` | `public/art/ui/activity-social.webp` | ☐ |
-| 8 | `ui/activity-rest` | `public/art/ui/activity-rest.webp` | ☐ |
-| 9 | `ui/activity-fail` | `public/art/ui/activity-fail.webp` | ☐ |
-| 10 | `ui/activity-infirmary` | `public/art/ui/activity-infirmary.webp` | ☐ |
-| 11 | `ui/logo` | `public/art/ui/logo.webp` | ☐ |
-| 12 | `og-image.jpg` | `public/og-image.jpg`（目前為暫代版） | ☐ 暫代 |
-| 13 | `favicon.png` | `public/favicon.png`（目前為暫代版） | ☐ 暫代 |
-| 14 | `apple-touch-icon.png` | `public/apple-touch-icon.png`（目前為暫代版） | ☐ 暫代 |
+| 1 | `ui/activity-write` | `public/art/ui/activity-write.webp` | ✅ |
+| 2 | `ui/activity-research` | `public/art/ui/activity-research.webp` | ✅ |
+| 3 | `ui/activity-techcheck` | `public/art/ui/activity-techcheck.webp` | ✅ |
+| 4 | `ui/activity-schema` | `public/art/ui/activity-schema.webp` | ✅ |
+| 5 | `ui/activity-qa` | `public/art/ui/activity-qa.webp` | ✅ |
+| 6 | `ui/activity-authors` | `public/art/ui/activity-authors.webp` | ✅ |
+| 7 | `ui/activity-social` | `public/art/ui/activity-social.webp` | ✅ |
+| 8 | `ui/activity-rest` | `public/art/ui/activity-rest.webp` | ✅ |
+| 9 | `ui/activity-fail` | `public/art/ui/activity-fail.webp` | ✅ |
+| 10 | `ui/activity-infirmary` | `public/art/ui/activity-infirmary.webp` | ✅ |
+| 11 | `ui/logo` | `public/art/ui/logo.webp` | ✅ |
+| 12 | `og-image.jpg` | `public/og-image.jpg` | ✅ |
+| 13 | `favicon.png` | `public/favicon.png` | ✅ |
+| 14 | `apple-touch-icon.png` | `public/apple-touch-icon.png` | ✅ |
 
 ### 7.6 其他（選配，不影響遊戲運作）
 

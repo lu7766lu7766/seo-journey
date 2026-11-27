@@ -142,8 +142,8 @@
 
 ## 待辦（下一步）
 - [x] 美術 57/57 全部到齊（27 個表情、6 張背景、10 張 CG），`npm run art:check` 0 損壞；程式內的缺圖退回對應保留作為保險
-- [ ] 第二批美術（見 `docs/art-requests.md` 第 7 章）：10 張活動插圖 `ui/activity-*`、標題 Logo `ui/logo`（`npm run art:check` 目前 60/71，缺的 11 張就是這些）
-- [ ] 網站圖正式版：`public/og-image.jpg`、`favicon.png`、`apple-touch-icon.png` 目前是自動產生的暫代版，上線前換成正式圖
+- [x] 第二批美術（見 `docs/art-requests.md` 第 7 章）：10 張活動插圖 `ui/activity-*`、標題 Logo `ui/logo`（`npm run art:check` 71/71 全數完成）
+- [x] 網站圖正式版：`public/og-image.jpg`、`favicon.png`、`apple-touch-icon.png` 皆已換成正式版美術（含 Open Graph 主視覺＋Logo 排版、高辨識度透明 Favicon、不透明深藍漸層 iOS 主畫面圖示）
 - [ ] 實機計時：真人完整玩一次主線，確認落在 30 分鐘內（估算公式為近似值）
 - [x] 保健室背景：排程中體力歸 0（及之後被取消的格子）改在保健室背景播放
 - [ ] Vercel 部署（見 P6）
@@ -156,4 +156,4 @@
   - 劇情：雨夜選擇在結局有呼應、好感度分歧台詞（第 1、2、3、5、6 週）、晴與 AEO 戲份補強、7 張基礎知識卡進入主線（redirects、canonical、duplicate-content、internal-links、image-optimization、alt-text、question-headings）、第 5 週改為對話、第 1～5 週各有一個無對錯的取捨選擇、搜尋祭改為互動簡報。
   - 整合結果：測試 134 項全過、e2e 通關 0 錯誤；主線估算 29.8 分鐘（上限 30）。結局分布：用心玩 91% 真結局、認真玩 85%、偷懶點擊 3%（幾乎都走凜）、半認真與亂玩以普通結局為主、偏愛某角色 99～100% 走她的結局、擺爛 100% 壞結局、黑帽 100%。
   - 已知小問題：全部只點第一個選項的玩家幾乎都會走凜的結局（第一個選項常偏向凜）；硬撐型玩家平均會倒下約 4 次、壓力到頂，偏嚴苛。
-
+- 2026-11-27（第二批美術完成 71/71）：補齊全部 14 項第二批素材——10 張 1584×404 Q 版活動橫幅（`ui/activity-*`，一致主角造型＋安全區置左延伸漸層）、透明標題 Logo（`ui/logo`，LXGW WenKai TC＋放大鏡愛心徽章）、正式版分享預覽圖（`public/og-image.jpg` 1200×630）、透明 Favicon（`public/favicon.png` 512×512）與不透明 iOS 圖示（`public/apple-touch-icon.png` 180×180）。`npm run art:check` 71/71 0 損壞、`typecheck`/`test`/`build`/實機 E2E 與截圖審查全數通過。
