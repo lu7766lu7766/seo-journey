@@ -47,5 +47,13 @@
   "mirai/sad": "/art/mirai/sad.webp",
   "kuro/shock": "/art/kuro/shock.webp",
   "rin/surprised": "/art/rin/surprised.webp",
-  "mirai/happy": "/art/mirai/happy.webp"
+  "mirai/happy": "/art/mirai/happy.webp",
+  "rin/happy": "/art/rin/happy.webp",
+  "rin/sad": "/art/rin/sad.webp",
+  "hare/angry": "/art/hare/angry.webp",
+  "mirai/surprised": "/art/mirai/surprised.webp",
+  "mirai/angry": "/art/mirai/angry.webp",
+  "sensei/think": "/art/sensei/think.webp",
+  "sensei/sad": "/art/sensei/sad.webp",
+  "kuro/sad": "/art/kuro/sad.webp"
 }
