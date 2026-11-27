@@ -24,7 +24,7 @@ export interface GameStore extends PersistedGame {
   startScene: (id: string) => Promise<void>
   advance: () => void
   choose: (optionIndex: number) => void
-  resolveMinigame: (won: boolean) => void
+  resolveMinigame: (won: boolean, stars?: number) => void
   applyEffects: (e: Effects) => void
   unlockCard: (id: string) => void
   reachEnding: (id: string) => void
@@ -113,8 +113,11 @@ export const useGame = create<GameStore>((set, get) => {
       audio.sfx('choice')
       sync(runner.choose(i))
     },
-    resolveMinigame: (won) => {
+    resolveMinigame: (won, stars) => {
       if (!runner) return
+      // best star rating per minigame lives in the cross-save global store (setStars only ever raises it)
+      const p = get().pause
+      if (typeof stars === 'number' && p.kind === 'minigame') useGlobal.getState().setStars(p.id, stars)
       set((s) => {
         const played = typeof s.flags['mg.played'] === 'number' ? s.flags['mg.played'] : 0
         const wonCnt = typeof s.flags['mg.won'] === 'number' ? s.flags['mg.won'] : 0

@@ -4,6 +4,7 @@ import { CG_IDS, type CgId } from '@/content/cgs'
 import { KNOWLEDGE, KNOWLEDGE_IDS, type KnowledgeId } from '@/content/knowledge'
 import { MINIGAMES, MINIGAME_IDS, type MinigameId, type MinigameKind } from '@/content/minigames'
 import { MinigameHost } from '@/minigames'
+import { BestStars } from '@/minigames/StarRating'
 import { useGlobal } from '@/store/global'
 import { useUI, type GalleryTab } from '@/store/ui'
 import { ENDINGS_META } from '@/systems/ending'
@@ -227,10 +228,11 @@ function EndingsTab({ reached }: { reached: string[] }) {
 }
 
 function PracticeTab({ onLaunch }: { onLaunch: (id: MinigameId) => void }) {
+  const stars = useGlobal((s) => s.stars)
   return (
     <div className="space-y-3">
       <p className="text-sm text-ink/75">
-        可單獨重玩主線與支線小遊戲，練習成績不會影響劇情存檔與屬性。
+        可單獨重玩主線與支線小遊戲，練習不會影響劇情存檔與屬性；只會更新每個小遊戲的最佳星等（★ 最多三顆）。
       </p>
       <div className="grid grid-cols-2 gap-3">
         {PRACTICE_IDS.map((id) => {
@@ -243,12 +245,15 @@ function PracticeTab({ onLaunch }: { onLaunch: (id: MinigameId) => void }) {
               onClick={() => onLaunch(id)}
               className="flex items-center justify-between rounded-2xl border border-white/90 bg-white/85 px-4 py-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-sakura hover:bg-white"
             >
-              <span className="font-title text-base font-bold text-ink">
-                {PRACTICE_LABELS[id] ?? id}
+              <span className="min-w-0 flex-1 pr-3">
+                <span className="block font-title text-base font-bold text-ink">
+                  {PRACTICE_LABELS[id] ?? id}
+                </span>
+                <span className={`mt-1 inline-block rounded-full px-3 py-0.5 text-xs font-bold ${km.badgeClass}`}>
+                  {km.label}
+                </span>
               </span>
-              <span className={`shrink-0 rounded-full px-3 py-0.5 text-xs font-bold ${km.badgeClass}`}>
-                {km.label}
-              </span>
+              <BestStars stars={stars[id] ?? 0} testId={`practice-stars-${id}`} />
             </button>
           )
         })}
@@ -362,7 +367,14 @@ export function Gallery() {
           className="absolute inset-0 z-50"
           onClick={(e) => e.stopPropagation()}
         >
-          <MinigameHost id={activeMinigame} onResolve={() => setActiveMinigame(null)} />
+          <MinigameHost
+            id={activeMinigame}
+            onResolve={(_won, stars) => {
+              // practice never touches story flags or rewards; it may only raise the stored best star rating
+              if (typeof stars === 'number') useGlobal.getState().setStars(activeMinigame, stars)
+              setActiveMinigame(null)
+            }}
+          />
           <button
             className="btn-pastel absolute right-6 top-4 z-40"
             data-testid="practice-exit"

@@ -1,11 +1,28 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { audio } from '@/audio'
 import { scoreSerp, truncateSerpPreview } from '@/content/minigames/scoring'
 import type { SerpGame } from '@/content/minigames/types'
+import { StarRating } from './StarRating'
+import { SERP_THREE_STAR_SCORE, canOfferRetry, serpStars, shuffledOrder, type Attempt, type Stars } from './stars'
 
-export function Serp({ game, onResolve }: { game: SerpGame; onResolve: (won: boolean) => void }) {
-  const [titleIndex, setTitleIndex] = useState(0)
-  const [descIndex, setDescIndex] = useState(0)
+const DEFAULT_HINT = '索老師提示：想像搜尋結果只看得到前半段——哪一組一眼就讓人知道你是誰、能找到什麼？再留意有沒有誇大或堆砌的字眼。'
+
+export function Serp({
+  game,
+  onResolve,
+  attempt = 1,
+  onRetry,
+}: {
+  game: SerpGame
+  onResolve: (won: boolean, stars?: number) => void
+  attempt?: Attempt
+  onRetry?: () => void
+}) {
+  /** display order of the authored fragments, fixed for this mount; state keeps AUTHORED indices */
+  const titleOrder = useMemo(() => shuffledOrder(game.titles.length), [game])
+  const descOrder = useMemo(() => shuffledOrder(game.descriptions.length), [game])
+  const [titleIndex, setTitleIndex] = useState(titleOrder[0] ?? 0)
+  const [descIndex, setDescIndex] = useState(descOrder[0] ?? 0)
   const [submitted, setSubmitted] = useState(false)
   const resolvedRef = useRef(false)
 
@@ -18,15 +35,17 @@ export function Serp({ game, onResolve }: { game: SerpGame; onResolve: (won: boo
   const liveTitle = truncateSerpPreview(activeTitle?.text ?? '', titleMaxUnits)
   const liveDesc = truncateSerpPreview(activeDesc?.text ?? '', descMaxUnits)
 
-  const finishOnce = (passed: boolean) => {
+  const finishOnce = (passed: boolean, stars: Stars) => {
     if (resolvedRef.current) return
     resolvedRef.current = true
     audio.sfx(passed ? 'card' : 'click')
-    onResolve(passed)
+    onResolve(passed, stars)
   }
 
   if (submitted) {
     const result = scoreSerp(game, titleIndex, descIndex)
+    const stars = serpStars(result.score, result.passed, attempt)
+    const retryAvailable = canOfferRetry(result.passed, attempt) && !!onRetry
     return (
       <div className="glass flex max-h-[640px] w-[880px] flex-col rounded-3xl p-7 text-ink">
         <div className="mb-4 flex items-center justify-between border-b border-ink/10 pb-3">
@@ -59,13 +78,19 @@ export function Serp({ game, onResolve }: { game: SerpGame; onResolve: (won: boo
           <div className="flex items-center justify-between rounded-2xl border border-ink/15 bg-white/85 px-5 py-3">
             <div>
               <p className="text-xl font-bold">綜合評分：{result.score} / 100</p>
-              <p className="text-xs text-ink/75">過關門檻：{passScore} 分（依搜尋意圖、清晰度、無堆砌與重點前置評估）</p>
+              <p className="text-xs text-ink/75">
+                過關門檻：{passScore} 分；{SERP_THREE_STAR_SCORE} 分以上（選出最佳組合）才有三顆星
+              </p>
             </div>
             {(result.titleTruncated || result.descTruncated) && (
               <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-900">
                 預覽尾端有截斷
               </span>
             )}
+          </div>
+
+          <div className="rounded-2xl border border-ink/15 bg-white/85 px-5 py-3">
+            <StarRating stars={stars} attempt={attempt} retryAvailable={retryAvailable} />
           </div>
 
           <div className="space-y-2">
@@ -77,14 +102,27 @@ export function Serp({ game, onResolve }: { game: SerpGame; onResolve: (won: boo
           </div>
         </div>
 
-        <div className="mt-5 flex justify-end border-t border-ink/10 pt-4">
+        <div className="mt-5 flex items-center justify-end gap-3 border-t border-ink/10 pt-4">
+          {retryAvailable && (
+            <button
+              type="button"
+              className="btn-pastel px-6 py-2.5 text-base"
+              data-testid="minigame-retry"
+              onClick={() => {
+                audio.sfx('choice')
+                onRetry?.()
+              }}
+            >
+              再挑戰一次（索老師會給提示）
+            </button>
+          )}
           <button
             type="button"
-            className="btn-pastel px-8 py-2.5 text-base"
+            className={retryAvailable ? 'rounded-full border border-ink/25 bg-white/70 px-6 py-2.5 text-base font-semibold text-ink/80 transition hover:bg-white' : 'btn-pastel px-8 py-2.5 text-base'}
             data-testid="minigame-done"
-            onClick={() => finishOnce(result.passed)}
+            onClick={() => finishOnce(result.passed, stars)}
           >
-            完成並繼續
+            {retryAvailable ? '放棄並繼續' : '完成並繼續'}
           </button>
         </div>
       </div>
@@ -104,6 +142,15 @@ export function Serp({ game, onResolve }: { game: SerpGame; onResolve: (won: boo
       </div>
 
       <p className="mb-3 text-sm text-ink/85">{game.intro}</p>
+
+      {attempt === 2 && (
+        <div
+          data-testid="serp-hint"
+          className="mb-3 rounded-xl border border-amber-300 bg-amber-50/95 px-4 py-2 text-xs font-semibold leading-relaxed text-amber-950"
+        >
+          💡 {game.hint ?? DEFAULT_HINT}
+        </div>
+      )}
 
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
         {/* Live SERP preview card */}
@@ -126,8 +173,9 @@ export function Serp({ game, onResolve }: { game: SerpGame; onResolve: (won: boo
           <div>
             <h3 className="mb-1.5 text-sm font-bold text-ink">1. 選擇標題（Title）</h3>
             <div className="space-y-2">
-              {game.titles.map((t, i) => {
-                const active = titleIndex === i
+              {titleOrder.map((authored, i) => {
+                const t = game.titles[authored]
+                const active = titleIndex === authored
                 return (
                   <button
                     key={i}
@@ -135,7 +183,7 @@ export function Serp({ game, onResolve }: { game: SerpGame; onResolve: (won: boo
                     data-testid={`serp-title-${i}`}
                     onClick={() => {
                       audio.sfx('click')
-                      setTitleIndex(i)
+                      setTitleIndex(authored)
                     }}
                     className={`w-full rounded-xl border-2 px-3 py-2 text-left text-xs leading-relaxed transition ${
                       active
@@ -153,8 +201,9 @@ export function Serp({ game, onResolve }: { game: SerpGame; onResolve: (won: boo
           <div>
             <h3 className="mb-1.5 text-sm font-bold text-ink">2. 選擇描述（Meta Description）</h3>
             <div className="space-y-2">
-              {game.descriptions.map((d, i) => {
-                const active = descIndex === i
+              {descOrder.map((authored, i) => {
+                const d = game.descriptions[authored]
+                const active = descIndex === authored
                 return (
                   <button
                     key={i}
@@ -162,7 +211,7 @@ export function Serp({ game, onResolve }: { game: SerpGame; onResolve: (won: boo
                     data-testid={`serp-desc-${i}`}
                     onClick={() => {
                       audio.sfx('click')
-                      setDescIndex(i)
+                      setDescIndex(authored)
                     }}
                     className={`w-full rounded-xl border-2 px-3 py-2 text-left text-xs leading-relaxed transition ${
                       active

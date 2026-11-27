@@ -11,6 +11,8 @@ export interface QuizGame {
   intro: string
   questions: QuizQuestion[]
   passCount: number
+  /** shown from the start of the one free retry; a nudge, never the answer */
+  hint?: string
 }
 
 export interface SpotLine {
@@ -49,6 +51,8 @@ export interface SerpGame {
   titles: SerpFragment[]
   descriptions: SerpFragment[]
   passScore?: number
+  /** shown from the start of the one free retry; a nudge, never the answer */
+  hint?: string
   titleMaxUnits?: number
   descMaxUnits?: number
 }

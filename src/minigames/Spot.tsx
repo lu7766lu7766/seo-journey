@@ -2,6 +2,8 @@ import { useRef, useState } from 'react'
 import { audio } from '@/audio'
 import { evaluateSpotClick } from '@/content/minigames/scoring'
 import type { SpotGame } from '@/content/minigames/types'
+import { StarRating } from './StarRating'
+import { canOfferRetry, spotStars, type Attempt, type Stars } from './stars'
 
 /**
  * Monospace stack for code blocks. Applied inline because the global `button { font-family: inherit }`
@@ -13,12 +15,23 @@ const CODE_FONT_STACK =
   "'Noto Sans Mono CJK TC', 'Source Han Mono TC', 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', monospace"
 const CODE_STYLE = { fontFamily: CODE_FONT_STACK, fontVariantLigatures: 'none' } as const
 
-export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boolean) => void }) {
+export function Spot({
+  game,
+  onResolve,
+  attempt = 1,
+  onRetry,
+}: {
+  game: SpotGame
+  onResolve: (won: boolean, stars?: number) => void
+  attempt?: Attempt
+  onRetry?: () => void
+}) {
   const [foundLines, setFoundLines] = useState<number[]>([])
   const [wrongLines, setWrongLines] = useState<number[]>([])
   const [mistakes, setMistakes] = useState(0)
   const [feedback, setFeedback] = useState<{ kind: 'hit' | 'miss' | 'info'; text: string } | null>(null)
-  const [showHint, setShowHint] = useState(false)
+  // the retry starts with the teacher's hint already open
+  const [showHint, setShowHint] = useState(attempt === 2)
   const [showResult, setShowResult] = useState(false)
   const resolvedRef = useRef(false)
 
@@ -26,6 +39,9 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
   const won = game.targets.every((t) => foundLines.includes(t))
   const lost = mistakes >= maxMistakes
   const gameEnded = won || lost
+  // with a free retry still pending, the missed lines stay hidden so the second run is a real second try
+  const canRetryNow = canOfferRetry(won, attempt) && !!onRetry
+  const revealMissed = lost && !canRetryNow
 
   const handleLineClick = (index: number) => {
     if (gameEnded) return
@@ -42,14 +58,16 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
     }
   }
 
-  const finishOnce = (passed: boolean) => {
+  const finishOnce = (passed: boolean, stars: Stars) => {
     if (resolvedRef.current) return
     resolvedRef.current = true
     audio.sfx(passed ? 'card' : 'click')
-    onResolve(passed)
+    onResolve(passed, stars)
   }
 
   if (showResult) {
+    const stars = spotStars(won, mistakes, attempt)
+    const retryAvailable = canOfferRetry(won, attempt) && !!onRetry
     return (
       <div className="glass flex max-h-[640px] w-[880px] flex-col rounded-3xl p-7 text-ink">
         <div className="mb-4 flex items-center justify-between border-b border-ink/10 pb-3">
@@ -76,12 +94,25 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
               已找出 {foundLines.length} / {game.targets.length} 處問題（誤判 {mistakes} / {maxMistakes} 次）
             </p>
             {game.summary && <p className="mt-2 text-sm leading-relaxed text-ink/85">{game.summary}</p>}
+            <div className="mt-3 border-t border-ink/10 pt-3">
+              <StarRating stars={stars} attempt={attempt} retryAvailable={retryAvailable} />
+            </div>
           </div>
 
           <div className="space-y-2">
             {game.targets.map((targetIdx) => {
               const found = foundLines.includes(targetIdx)
               const line = game.lines[targetIdx]
+              if (!found && retryAvailable) {
+                return (
+                  <div key={targetIdx} className="rounded-xl border border-amber-300 bg-amber-50/85 px-4 py-2.5 text-sm">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-ink/80">還有一處問題沒找到</span>
+                      <span className="shrink-0 text-xs font-bold text-amber-800">重新挑戰時再找找看</span>
+                    </div>
+                  </div>
+                )
+              }
               return (
                 <div
                   key={targetIdx}
@@ -104,14 +135,27 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
           </div>
         </div>
 
-        <div className="mt-5 flex justify-end border-t border-ink/10 pt-4">
+        <div className="mt-5 flex items-center justify-end gap-3 border-t border-ink/10 pt-4">
+          {retryAvailable && (
+            <button
+              type="button"
+              className="btn-pastel px-6 py-2.5 text-base"
+              data-testid="minigame-retry"
+              onClick={() => {
+                audio.sfx('choice')
+                onRetry?.()
+              }}
+            >
+              再挑戰一次（索老師會給提示）
+            </button>
+          )}
           <button
             type="button"
-            className="btn-pastel px-8 py-2.5 text-base"
+            className={retryAvailable ? 'rounded-full border border-ink/25 bg-white/70 px-6 py-2.5 text-base font-semibold text-ink/80 transition hover:bg-white' : 'btn-pastel px-8 py-2.5 text-base'}
             data-testid="minigame-done"
-            onClick={() => finishOnce(won)}
+            onClick={() => finishOnce(won, stars)}
           >
-            完成並繼續
+            {retryAvailable ? '放棄並繼續' : '完成並繼續'}
           </button>
         </div>
       </div>
@@ -177,7 +221,7 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
           <div className="divide-y divide-white/5 py-1">
             {game.lines.map((line, i) => {
               const isFound = foundLines.includes(i)
-              const isMissedTarget = lost && game.targets.includes(i) && !isFound
+              const isMissedTarget = revealMissed && game.targets.includes(i) && !isFound
               const isWrong = wrongLines.includes(i)
 
               let rowCls = 'text-slate-100 hover:bg-white/10'
@@ -244,7 +288,9 @@ export function Spot({ game, onResolve }: { game: SpotGame; onResolve: (won: boo
           {won
             ? '所有問題都找出來了！點擊右側查看結算。'
             : lost
-              ? '已達最大誤判次數，橘色標記為漏掉的目標行。'
+              ? revealMissed
+                ? '已達最大誤判次數，橘色標記為漏掉的目標行。'
+                : '已達最大誤判次數，查看結算後可以免費重新挑戰一次。'
               : `找出全部 ${game.targets.length} 行錯誤（最多容錯 ${maxMistakes} 次）`}
         </span>
         {gameEnded && (
