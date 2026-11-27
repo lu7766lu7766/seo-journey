@@ -29,6 +29,16 @@ describe('art manifest resolution', () => {
     expect(resolveSpriteSrc(m, 'kuro', 'happy')).toEqual({ src: '/k/smug.webp', exact: false })
   })
 
+  it('uses the closest existing face for heroines whose own face is still missing, but prefers a real image', () => {
+    const m = { 'rin/normal': '/r/n.webp', 'rin/smile': '/r/smile.webp', 'rin/think': '/r/think.webp' }
+    expect(resolveSpriteSrc(m, 'rin', 'happy')).toEqual({ src: '/r/smile.webp', exact: false })
+    expect(resolveSpriteSrc(m, 'rin', 'sad')).toEqual({ src: '/r/think.webp', exact: false })
+    // once the real image is added it wins, with no overlay
+    expect(resolveSpriteSrc({ ...m, 'rin/sad': '/r/sad.webp' }, 'rin', 'sad')).toEqual({ src: '/r/sad.webp', exact: true })
+    // no fallback face available -> normal
+    expect(resolveSpriteSrc({ 'mirai/normal': '/m/n.webp' }, 'mirai', 'angry')).toEqual({ src: '/m/n.webp', exact: false })
+  })
+
   it('accepts legacy boolean entries as .png paths', () => {
     expect(resolveSpriteSrc({ 'hare/smile': true }, 'hare', 'smile')).toEqual({ src: '/art/hare/smile.png', exact: true })
     expect(resolveBgSrc({ 'bg/beach': true }, 'beach')).toBe('/art/bg/beach.png')

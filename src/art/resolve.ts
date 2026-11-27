@@ -11,7 +11,11 @@ type Manifest = Record<string, unknown>
 
 /** When a face has no image of its own, borrow this one (then `normal`) and show the emoji-style overlay. */
 export const FACE_FALLBACK: Partial<Record<CharId, Partial<Record<Face, Face>>>> = {
-  sensei: { happy: 'smile', blush: 'smile', surprised: 'normal', angry: 'think', smug: 'smile', shock: 'normal' },
+  // heroines: only faces that are still missing need an entry; a real image is always preferred
+  rin: { happy: 'smile', sad: 'think' },
+  hare: { angry: 'think' },
+  mirai: { angry: 'think' },
+  sensei: { happy: 'smile', blush: 'smile', surprised: 'normal', angry: 'normal', smug: 'smile', shock: 'normal' },
   kuro: { smile: 'smug', happy: 'smug', blush: 'normal', surprised: 'shock', angry: 'normal', think: 'normal' },
 }
 

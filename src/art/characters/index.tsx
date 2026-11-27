@@ -115,7 +115,7 @@ export function CharacterSprite({ id, face, speaking }: CharacterSpriteProps) {
           alt=""
           draggable={false}
           className="h-full w-auto select-none object-contain drop-shadow-[0_14px_28px_rgba(10,14,34,0.52)]"
-          style={{ filter: MOOD_FILTER[face] }}
+          style={{ filter: resolved.exact ? undefined : MOOD_FILTER[face] }}
         />
         {!resolved.exact && <ExpressionEmote face={face} />}
       </div>

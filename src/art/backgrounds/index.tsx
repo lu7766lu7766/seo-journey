@@ -24,6 +24,9 @@ const OVERLAY_TINT: Record<TimeOfDay, string> = {
   night: 'linear-gradient(180deg, rgba(10, 16, 48, 0.56) 0%, rgba(22, 30, 72, 0.44) 100%)',
 }
 
+/** Backgrounds whose artwork is already dark/moody: applying the time-of-day tint on top would turn them black. */
+const PRE_TINTED_BGS = new Set<BgId>(['planetarium', 'rain'])
+
 export interface BackgroundProps {
   id: BgId
   time?: TimeOfDay
@@ -33,9 +36,11 @@ export interface BackgroundProps {
  * PUBLIC ART INTERFACE. Fills its parent (1280x720 stage).
  * Uses /art/bg/<id>.webp|png when listed in public/art/manifest.json.
  */
-export function Background({ id, time = 'day' }: BackgroundProps) {
+export function Background({ id, time: requestedTime = 'day' }: BackgroundProps) {
   const manifest = useArtManifest()
   const imgSrc = resolveBgSrc(manifest, id)
+  // Real artwork that is already dark keeps its own lighting; the SVG fallbacks still honour the requested time.
+  const time = imgSrc && PRE_TINTED_BGS.has(id) ? 'day' : requestedTime
 
   if (imgSrc) {
     return (

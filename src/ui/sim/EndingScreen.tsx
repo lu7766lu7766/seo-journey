@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { CgArt } from '@/art/cg'
 import { CHARACTERS } from '@/content/characters'
 import { KNOWLEDGE_IDS } from '@/content/knowledge'
@@ -24,6 +25,7 @@ const DOMAIN_TAG = {
 
 export function EndingScreen() {
   const s = useGame()
+  const [showReport, setShowReport] = useState(true)
   const eid = (s.endingsReached[s.endingsReached.length - 1] as keyof typeof ENDING_BY_ID | undefined) ?? determineEnding(s)
   const meta = ENDING_BY_ID[eid] ?? ENDING_BY_ID['end-normal']
   const sc = scores(s.stats, s.bond)
@@ -36,8 +38,16 @@ export function EndingScreen() {
   return (
     <div className="relative h-full w-full overflow-hidden" data-testid="ending-screen">
       <CgArt id={meta.cgId} />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#080b18]/92 via-[#080b18]/22 to-transparent" />
-      <div className="vn-box absolute bottom-6 left-1/2 flex w-[960px] -translate-x-1/2 flex-col items-center gap-3 rounded-3xl px-7 py-5 text-center text-white">
+      {showReport && <div className="absolute inset-0 bg-gradient-to-t from-[#080b18]/92 via-[#080b18]/22 to-transparent" />}
+      <button
+        className="btn-pastel absolute left-5 top-5 z-10 px-4 py-1.5 text-sm"
+        data-testid="ending-toggle-report"
+        aria-pressed={!showReport}
+        onClick={() => setShowReport((v) => !v)}
+      >
+        {showReport ? '只看 CG' : '顯示成果報告'}
+      </button>
+      <div className={`vn-box absolute bottom-6 left-1/2 flex w-[960px] -translate-x-1/2 flex-col items-center gap-3 rounded-3xl px-7 py-5 text-center text-white transition-opacity duration-300 ${showReport ? '' : 'pointer-events-none opacity-0'}`}>
         <div className="flex items-center gap-3">
           <span className="rounded-full border border-[#9fd3f0]/50 bg-[#1a2548] px-4 py-0.5 text-xs font-bold tracking-wider text-[#9fd3f0]">
             搜尋祭最終結果 · 學習成果報告

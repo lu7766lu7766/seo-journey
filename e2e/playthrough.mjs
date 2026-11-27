@@ -190,10 +190,29 @@ async function main() {
     }
 
     const startTime = Date.now()
-    while (Date.now() - startTime < 150000) {
+    // Generous overall limit (software rendering of the real art can be slow on busy machines), but a
+    // dialogue line that stays unchanged for 20s is a real hang and fails with a diagnostic.
+    let lastLine = ''
+    let lastLineChange = Date.now()
+    while (Date.now() - startTime < 420000) {
+      const lineNow = await page.locator('[data-testid="dialogue-text"]').innerText({ timeout: 50 }).catch(() => '')
+      if (lineNow !== lastLine) {
+        lastLine = lineNow
+        lastLineChange = Date.now()
+      } else if (lineNow && Date.now() - lastLineChange > 20000) {
+        await shot(page, 'stuck.png')
+        throw new Error(`Playthrough stuck on dialogue line for 20s: ${JSON.stringify(lineNow)}`)
+      }
+
       if (await page.locator('[data-testid="ending-screen"]').isVisible().catch(() => false)) {
         await page.waitForTimeout(200)
         await shot(page, 'ending-cg.png')
+        // the 「只看 CG」 toggle hides the report, then restores it
+        await page.locator('[data-testid="ending-toggle-report"]').click()
+        await page.waitForTimeout(450)
+        await shot(page, 'ending-cg-only.png')
+        await page.locator('[data-testid="ending-toggle-report"]').click()
+        await page.locator('[data-testid="ending-to-title"]').waitFor({ state: 'visible', timeout: 3000 })
         break
       }
 
