@@ -1,20 +1,18 @@
 import { bg, bgm, card, choice, effect, hide, opt, say, scene, sfx, show, when } from '@/engine'
-import { flag, or } from '@/engine/cond'
+import { bondIs, flag, or } from '@/engine/cond'
 
 export default scene('w6', [
   bgm('daily'),
   bg('clubroom', 'day', 'rain'),
-  say('narr', undefined, '第六週週一。天空像被打翻的墨水，雨聲大得蓋過了電腦風扇。'),
+  say('narr', undefined, '第六週週一。雨聲大得蓋過了電腦風扇，螢幕上的排名曲線像雲霄飛車。'),
   sfx('fail'),
   bg('clubroom', 'day', 'flash'),
   bg('clubroom', 'day', 'rain'),
-  say('narr', undefined, '螢幕上的排名曲線像雲霄飛車：猛然下墜、彈起、再下墜。核心更新來了。'),
-  say('me', undefined, '昨天還好好的……我們是被丟進洗衣機了嗎？！'),
+  say('me', undefined, '排名猛然下墜、彈起、再下墜……我們是被丟進洗衣機了嗎？！'),
   show('rin', 'left', 'normal'),
   show('hare', 'center', 'surprised'),
   show('mirai', 'right', 'normal'),
-  say('rin', 'normal', '冷靜。步驟一，確認不是我們網站壞了。步驟二，看官方公告。'),
-  say('rin', 'think', '步驟三，在釐清前，什麼都不要亂改。'),
+  say('rin', 'normal', '冷靜。步驟一，確認網站沒壞。步驟二，看官方公告。步驟三，先別亂改。'),
   say('hare', 'surprised', '完蛋了完蛋了！是我的標題太吵嗎？是我害的嗎？！'),
   say('rin', 'normal', '夏川同學。'),
   show('hare', 'center', 'think'),
@@ -22,17 +20,12 @@ export default scene('w6', [
   say('mirai', 'think', '已讀取公告。此次為全面性的核心更新，並非針對單一網站。'),
   say('mirai', 'sad', '數據只能告訴我這些。……還有，我有點不安。這個，沒有資料。'),
   show('sensei', 'center', 'normal'),
-  say('sensei', 'normal', '都到齊了。{name}，你想怎麼做？'),
-  say('me', undefined, '趕快把標題全部改一遍？'),
-  say('sensei', 'think', '每天改、每天看曲線，你猜會怎樣？'),
-  say('me', undefined, '最後連自己改對還是改錯都不知道。'),
-  say('sensei', 'smile', '排名波動像天氣，網站的品質才是氣候。更新來了，別追著雲跑。'),
+  say('sensei', 'smile', '都到齊了。別急著把標題全改一遍。排名像天氣，網站的品質才是氣候。'),
   say('sensei', 'normal', '官方的建議很樸素：專注做有幫助、以人為本的內容。'),
   card('core-update'),
   say('sensei', 'think', '所謂有幫助，先問自己：這是誰寫的？他真的做過這件事嗎？'),
   card('helpful-content'),
-  say('sensei', 'normal', 'E-E-A-T 是品質評分員指南的概念，不是單一排名分數。'),
-  say('sensei', 'smile', '經驗、專業、權威、信任。最後一個，最重要。'),
+  say('rin', 'think', 'E-E-A-T 是經驗、專業、權威、信任，不是單一排名分數。最後一個，最重要。'),
   card('eeat'),
   say('rin', 'smile', '作者頁的格式，我來整理。'),
   show('hare', 'center', 'happy'),
@@ -51,7 +44,6 @@ export default scene('w6', [
   ]),
 
   bg('gate', 'dusk', 'rain'),
-  say('narr', undefined, '放學時雨還在下，校門口的路燈下蹲著一個全身濕透的人影。'),
   show('kuro', 'center', 'sad'),
   say('kuro', 'sad', '哈……我的網站全軍覆沒。人工處罰，整個從搜尋消失。'),
   when(or(flag('kuroPending'), flag('blackhat', 'gte', 1)), [
@@ -81,9 +73,17 @@ export default scene('w6', [
       say('me', undefined, '學姊也會怕嗎？'),
       say('rin', 'blush', '怕。……所以才需要一個會問「規則能先看一下嗎」的人。'),
       say('narr', undefined, '她把毛巾輕輕蓋在我頭上，指尖停了一秒，又縮了回去。'),
-      say('rin', 'surprised', '剛、剛剛只是在確認毛巾的材質！不准說出去！'),
-      show('rin', 'center', 'smile'),
-      say('rin', 'smile', '搜尋祭那天，我在評審席等你的簡報。'),
+      when(
+        bondIs('rin', 'gte', 28),
+        [
+          say('rin', 'blush', '剛剛那個，不是在確認毛巾的材質。……是想多碰你一秒。'),
+          say('rin', 'smile', '搜尋祭那天，我在評審席等你的簡報。'),
+        ],
+        [
+          say('rin', 'surprised', '剛、剛剛只是在確認毛巾的材質！不准說出去！'),
+          say('rin', 'smile', '搜尋祭那天，我在評審席等你的簡報。'),
+        ],
+      ),
     ]),
     opt('去廣播室找晴', { flags: { w6Choice: 2 }, bond: { hare: 5 } }, [
       bg('broadcast', 'night', 'fade'),
@@ -95,9 +95,17 @@ export default scene('w6', [
       say('narr', undefined, '她把可可塞進我手心，杯子燙燙的，她的指尖卻有點涼。'),
       say('me', undefined, '手這麼涼，妳在發抖嗎？'),
       say('hare', 'surprised', '才沒有！是……麥克風的後座力！'),
-      say('hare', 'smile', '可是我想起來，這六週你每次都把我的話聽完。'),
-      show('hare', 'center', 'happy'),
-      say('hare', 'happy', '所以結論先說：搜尋祭那天，我要用一句話讓全場聽見我們！'),
+      when(
+        bondIs('hare', 'gte', 30),
+        [
+          say('hare', 'blush', '騙你的。……是因為你來了。所以，我現在不抖了。'),
+          say('hare', 'happy', '結論先說：搜尋祭那天，我要用一句話讓全場聽見我們！'),
+        ],
+        [
+          say('hare', 'smile', '可是我想起來，這六週你每次都把我的話聽完。'),
+          say('hare', 'happy', '所以結論先說：搜尋祭那天，我要用一句話讓全場聽見我們！'),
+        ],
+      ),
     ]),
     opt('去天台找未來', { flags: { w6Choice: 3 }, bond: { mirai: 5 } }, [
       bg('rooftop', 'night', 'rain'),
@@ -110,7 +118,15 @@ export default scene('w6', [
       say('me', undefined, '因為，我想讓妳讀到的，是真的我。'),
       show('mirai', 'center', 'blush'),
       say('mirai', 'blush', '資料庫沒教過我這種感覺。……我想把它存成：原創。'),
-      say('mirai', 'happy', '搜尋祭，我會用自己的意志評分。……你的未來，我也想參與。'),
+      when(
+        bondIs('mirai', 'gte', 28),
+        [
+          say('mirai', 'happy', '搜尋祭，我會用自己的意志評分。……還有，傘，可以靠近一點。'),
+        ],
+        [
+          say('mirai', 'happy', '搜尋祭，我會用自己的意志評分。……你的未來，我也想參與。'),
+        ],
+      ),
     ]),
   ]),
   hide('all'),

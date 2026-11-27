@@ -1,4 +1,5 @@
-import { bg, bgm, cg, hide, say, scene, show } from '@/engine'
+import { bg, bgm, cg, hide, say, scene, show, when } from '@/engine'
+import { flag } from '@/engine/cond'
 
 export default scene('end-mirai', [
   bgm('warm'),
@@ -24,6 +25,17 @@ export default scene('end-mirai', [
   say('mirai', 'normal', '根據我的資料，今天說出口的成功率，低於百分之十二。'),
   say('me', undefined, '那為什麼還要說？'),
   say('mirai', 'smile', '因為資料，不會替我做決定。'),
+  when(flag('w6Choice', 'eq', 3), [
+    say('mirai', 'blush', '那晚天台的雨聲，我存成了音檔。檔名，是你的名字。'),
+    say('mirai', 'smile', '它是我資料庫裡，唯一沒有來源的檔案。因為，它是原創。'),
+  ], [
+    when(flag('w6Choice', 'eq', 1), [
+      say('mirai', 'sad', '雨夜你去了學生會室，對吧？我在天台，待了四十七分鐘。'),
+    ], [
+      say('mirai', 'sad', '雨夜你去了廣播室，對吧？我在天台，待了四十七分鐘。'),
+    ]),
+    say('mirai', 'smile', '數據顯示，我不喜歡等待。……所以今天，換我先開口。'),
+  ]),
   cg('end-mirai'),
   say('mirai', 'blush', '我想成為被引用的來源，而不是被複製的內容。'),
   say('mirai', 'happy', '而你，是第一個想引用我、也願意署上我名字的人。'),

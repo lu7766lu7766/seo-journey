@@ -1,4 +1,5 @@
-import { bg, bgm, cg, hide, say, scene, show } from '@/engine'
+import { bg, bgm, cg, hide, say, scene, show, when } from '@/engine'
+import { flag } from '@/engine/cond'
 
 export default scene('end-normal', [
   bgm('daily'),
@@ -17,6 +18,13 @@ export default scene('end-normal', [
   say('mirai', 'smile', '三種評分，各看各的角度。你的網站，每一種都有分數。'),
   say('rin', 'think', '下個月起，我會再檢查你的收錄狀態。……別以為過關就能偷懶。'),
   say('me', undefined, '是！學姊的檢查，我當成新的連載。'),
+  when(flag('w6Choice', 'eq', 1), [
+    say('rin', 'blush', '雨夜的毛巾，記得洗乾淨還我。……這也是例行檢查。'),
+  ], [when(flag('w6Choice', 'eq', 2), [
+    say('hare', 'smile', '雨夜的熱可可，下次換你請！結論先說：一杯就好！'),
+  ], [when(flag('w6Choice', 'eq', 3), [
+    say('mirai', 'smile', '雨夜天台的紀錄，我沒刪。……未達最高分，但，不後悔。'),
+  ])])]),
   say('hare', 'smile', '那我負責幫你想更短的標題！三秒內能懂的那種！'),
   say('narr', undefined, '大家笑鬧了一陣，夕陽慢慢沉下去，人們一個接一個走出了社辦。'),
   hide('all'),

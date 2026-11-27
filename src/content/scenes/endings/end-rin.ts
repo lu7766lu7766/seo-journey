@@ -1,4 +1,5 @@
-import { bg, bgm, cg, hide, say, scene, show } from '@/engine'
+import { bg, bgm, cg, hide, say, scene, show, when } from '@/engine'
+import { flag } from '@/engine/cond'
 
 export default scene('end-rin', [
   bgm('warm'),
@@ -18,6 +19,14 @@ export default scene('end-rin', [
   say('narr', undefined, '風吹起她的紅色髮帶。她從口袋掏出那個貓咪鑰匙圈，輕輕放進我手心。'),
   cg('end-rin'),
   say('rin', 'blush', '這個不是學生會備品。是我的。……還有更丟臉的祕密，下次再說。'),
+  when(flag('w6Choice', 'eq', 1), [
+    say('rin', 'blush', '那晚下雨，你濕淋淋地跑來學生會室。……我其實，高興得不得了。'),
+    say('rin', 'smile', '毛巾是學生會備品。但想替你擦頭髮，是我自己的心意。'),
+  ], [when(flag('w6Choice', 'eq', 2), [
+    say('rin', 'think', '聽說雨夜你去了廣播室。……我只是確認社員行蹤！沒有在意！'),
+  ], [when(flag('w6Choice', 'eq', 3), [
+    say('rin', 'think', '聽說雨夜你去了天台。……星野同學的傘，比較大嗎？我沒有在意！'),
+  ])])]),
   say('rin', 'smile', '被你看見，我不討厭。{name}，以後也請你……繼續看著我。'),
   say('me', undefined, '好。不過先說好，我看得很仔細，連妳臉紅都看得見。'),
   say('rin', 'surprised', '我、我沒有臉紅！是夕陽！夕陽的問題！'),
