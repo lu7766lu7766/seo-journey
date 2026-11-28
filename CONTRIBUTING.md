@@ -17,7 +17,7 @@
 - 圖片覆蓋：以 WebP 為準（`public/art/<id>/<face>.webp`、`public/art/bg/<id>.webp`、`public/art/cg/<id>.webp`），由 `scripts/process-art.mjs` 處理並寫入 `public/art/manifest.json`（鍵 `"<id>/<face>"`、`"bg/<bgId>"`、`"cg/<cgId>"`，值為路徑字串）。製作規格與流程見 `docs/art-requests.md`；`npm run art:check` 檢查進度。
 - 圖片載入（避免「先閃 SVG 再換 WebP」）：`src/main.tsx` 先等 manifest ＋標題畫面圖（上限 6 秒，期間顯示 `index.html` 內的啟動畫面）；`startScene` 會先預載整個場景用到的 bg／立繪／CG（上限 4 秒，超過 200ms 顯示「讀取中…」覆蓋層）；非劇本畫面用 `<ArtGate>`。manifest 尚未載入完成或圖片尚在下載時，美術元件只畫透明／深色底，**不畫 SVG**；SVG 只在 manifest 確定沒有該條目或 `<img>` 載入失敗時才用。新增非劇本畫面或新的圖片用途時，把用到的圖加進 `src/art/specs.ts`。改動後用 `npm run check:flash`（Fast 3G 節流）驗證從未渲染 SVG。
 - `src/minigames/index.tsx`：`<MinigameHost id onResolve(won) />`
-- `src/audio/index.ts`：`audio.sfx(id)`、`audio.bgm(id)`
+- `src/audio/index.ts`：`audio.sfx(id)`、`audio.bgm(id)`、`audio.stopBgm()`、`audio.currentBgm`（簽名不變，見下方「音訊」）
 
 ## 劇本寫法
 - 一個檔案一個場景：`export default scene('<id>', [...])`，**檔名（不含 .ts）必須等於 scene id**，且全專案不可重名。
@@ -64,3 +64,22 @@
 - 劇本裡可用 `hasCard('<id>')` 判斷是否學過知識卡，或用 `seen('<sceneId>')` 判斷是否完成特定場景（例如搜尋祭簡報的進階選項依 `seen('sq-r3')`／`seen('sq-h3')`／`seen('sq-m3')` 出現）。
 - 小遊戲星等：3 顆＝第一次全對／零失誤／搜尋結果分數 ≥ 90；2 顆＝第一次過關；1 顆＝重試後過關。最高星等存在 `useGlobal.stars`。
 
+## 音訊
+`src/audio/` 是播放引擎：`manifest.ts`（解析／dB 換算／備援選擇）、`engine.ts`（可注入後端的狀態機，單元測試見 `tests/audio.test.ts`）、`webBackend.ts`（Web Audio：載入解碼、無縫循環、交叉淡化）、`synth.ts`（合成聲備援）。呼叫點只用 `audio.sfx(id)`／`audio.bgm(id)`／`audio.stopBgm()`／`audio.currentBgm`。
+
+**音檔契約**
+- 檔案：`public/audio/bgm/<id>.mp3`、`public/audio/sfx/<id>.mp3`。
+- `public/audio/manifest.json`：鍵為 `bgm/<id>` 或 `sfx/<id>`；沒有的條目就是沒有音檔（目前內容為 `{}`）。
+  ```json
+  {
+    "bgm/title": { "src": "/audio/bgm/title.mp3", "loopStart": 8.2, "loopEnd": 104.6, "gainDb": 0 },
+    "sfx/choice": { "src": "/audio/sfx/choice.mp3", "gainDb": -2 }
+  }
+  ```
+  `src` 必填；`loopStart`／`loopEnd`（秒，僅 BGM）省略時整首循環，兩者都給但 `loopEnd <= loopStart` 視為無效並整首循環；`gainDb` 省略＝0，限制在 −60～+12 dB。壞掉的條目會被忽略。
+- **BGM 狀態與銜接**：劇本的 `bgm(id)` 指令會同時記進舞台狀態 `stage.bgm`（隨存檔保存）；讀檔不會重播指令，所以 `loadPersisted` 會依 `resumeBgm()`（`src/store/save.ts`：存檔記錄 → 否則依週次／階段預設 `daily`／`festival`／`warm`）呼叫 `audio.bgm()`。`TitleScreen` 掛載時播 `title`、卸載時**不**淡出，由下一次 `audio.bgm()` 交叉淡化接手（新遊戲的序章 `bgm`、讀檔的恢復曲），所以標題曲會一直播到下一首被要求為止。非劇本畫面（排程、公佈欄、週末、週報）沿用上一個劇本的 BGM。
+- BGM id：`title`（標題畫面）、`daily`、`warm`、`festival`、`tense`；SFX id：`click blip choice card grow bond fail win`。新增 id 時同步更新 `src/audio/synth.ts` 的型別與合成備援。
+
+**備援規則**：manifest 沒有該 id、manifest 載入失敗、音檔下載或解碼失敗（含尚未下載完成的 SFX），一律沿用 `src/audio/synth.ts` 的合成聲，行為與沒有音檔時完全相同。
+
+**播放行為**：瀏覽器在使用者互動前不允許出聲，第一次互動（點擊／按鍵）才建立並 resume AudioContext，之後補播目前應播的 BGM 並預載所有 `sfx/*`；BGM 按需下載、解碼後快取，切曲約 1 秒等功率交叉淡化（新曲還在下載時舊曲繼續播），同一首重複呼叫不重啟，`stopBgm()` 淡出；SFX 同一個 id 最多同時 4 個聲部，`blip` 保留 65ms 節流。音量＝設定的 `bgmVolume`／`sfxVolume`（即時反映）× 基準 0.8 × `gainDb`；建議音檔先正規化（峰值約 −1 dBFS），再用 `gainDb` 微調。本機試聽可暫時放檔案並改 manifest，但交件前確認沒把臨時檔 commit 進來。

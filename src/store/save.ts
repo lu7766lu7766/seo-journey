@@ -4,7 +4,7 @@ import type { Bonds, Flags, HeroineId, RunnerSnapshot, StageState, Stats } from 
 import { scores } from '@/systems/score'
 import { safeGetJSON, safeRemove, safeSetJSON } from './storage'
 
-export const SAVE_VERSION = 3
+export const SAVE_VERSION = 4
 export type SlotId = 'auto' | 1 | 2 | 3 | 4 | 5 | 6
 export const SLOTS: SlotId[] = ['auto', 1, 2, 3, 4, 5, 6]
 const key = (slot: SlotId) => `seo-journey:save:${slot}`
@@ -69,6 +69,20 @@ export function defaultPersisted(playerName = '葉 搜一'): PersistedGame {
   }
 }
 
+function normalizeStage(raw: unknown, d: StageState): StageState {
+  const s = { ...d, ...(raw && typeof raw === 'object' ? (raw as Partial<StageState>) : {}) }
+  const bgm = (raw as { bgm?: unknown } | null | undefined)?.bgm
+  return { ...s, bgm: typeof bgm === 'string' && bgm ? bgm : null }
+}
+
+/** 讀檔後該播哪一首：存檔記錄的 BGM；沒有記錄（舊存檔、或尚未進過有 bgm 的場景）就依週次／階段挑預設 */
+export function resumeBgm(d: Pick<PersistedGame, 'stage' | 'week' | 'phase'>): string {
+  if (d.stage.bgm) return d.stage.bgm
+  if (d.phase === 'ending') return 'warm'
+  if (d.week >= 7) return 'festival'
+  return 'daily'
+}
+
 const VALID_PHASES: readonly Phase[] = ['story', 'schedule', 'board', 'weekend', 'report', 'ending']
 
 /** Fill any missing/invalid fields with defaults so old or hand-edited saves never crash. */
@@ -94,7 +108,7 @@ export function normalizeData(raw: unknown): PersistedGame {
     unlockedCards: arr(r.unlockedCards),
     endingsReached: arr(r.endingsReached),
     scene: scene && typeof scene.sceneId === 'string' && Array.isArray(scene.pc) ? { sceneId: scene.sceneId, pc: scene.pc.map(Number) } : null,
-    stage: obj(r.stage, d.stage),
+    stage: normalizeStage(r.stage, d.stage),
     backlog: Array.isArray(r.backlog)
       ? (r.backlog as Record<string, unknown>[])
           .filter((b) => b && typeof b.text === 'string')
@@ -152,6 +166,15 @@ export const migrations: Record<number, Migration> = {
         ...data,
         backlog: Array.isArray(data.backlog) ? data.backlog : [],
       },
+    }
+  },
+  3: (env) => {
+    const data = (env.data ?? {}) as Record<string, unknown>
+    const stage = (data.stage && typeof data.stage === 'object' ? data.stage : {}) as Record<string, unknown>
+    return {
+      ...env,
+      version: 4,
+      data: { ...data, stage: { ...stage, bgm: typeof stage.bgm === 'string' ? stage.bgm : null } },
     }
   },
 }

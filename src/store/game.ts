@@ -13,7 +13,7 @@ import { INFIRMARY_WEEK_FLAG, WEEKEND } from '@/systems/schedule'
 import { scores } from '@/systems/score'
 import { statSnapshotFlags } from '@/systems/siteMetrics'
 import { useGlobal } from './global'
-import { defaultPersisted, normalizeData, writeSave, type PersistedGame, type Phase } from './save'
+import { defaultPersisted, normalizeData, resumeBgm, writeSave, type PersistedGame, type Phase } from './save'
 
 export interface CardToast {
   id: string
@@ -66,8 +66,10 @@ export const useGame = create<GameStore>((set, get) => {
     applyEffects: (e) => get().applyEffects(e),
     onCmd: (cmd) => {
       if (cmd.k === 'card') get().unlockCard(cmd.id)
-      else if (cmd.k === 'bgm') audio.bgm(cmd.id)
-      else if (cmd.k === 'sfx') audio.sfx(cmd.id)
+      else if (cmd.k === 'bgm') {
+        audio.bgm(cmd.id)
+        set((s) => ({ stage: reduceStage(s.stage, cmd) }))
+      } else if (cmd.k === 'sfx') audio.sfx(cmd.id)
       else {
         if (cmd.k === 'cg' && cmd.id !== 'none') useGlobal.getState().unlockCg(cmd.id)
         set((s) => ({ stage: reduceStage(s.stage, cmd) }))
@@ -340,7 +342,10 @@ export const useGame = create<GameStore>((set, get) => {
       const scene = data.scene ? await loadScene(data.scene.sceneId) : null
       // a save resumes mid-scene: preload what is on stage now plus everything the rest of the scene can show
       await preloadSceneArt(scene?.cmds ?? [], data.stage)
-      set({ ...data, active: true, toastQueue: [], toast: null, pause: { kind: 'end' } })
+      // 讀檔從場景中間接續、不會重播 bgm 指令：依存檔記錄（或週次／階段預設）恢復背景音樂，並寫回舞台狀態讓之後的存檔保有它
+      const bgm = resumeBgm(data)
+      audio.bgm(bgm)
+      set({ ...data, stage: { ...data.stage, bgm }, active: true, toastQueue: [], toast: null, pause: { kind: 'end' } })
       if (data.scene && scene) {
         runner = new SceneRunner(scene, host, data.scene)
         sync(runner.start())

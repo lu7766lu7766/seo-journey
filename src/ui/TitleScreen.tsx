@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { audio } from '@/audio'
 import { Background } from '@/art/backgrounds'
 import { CharacterSprite } from '@/art/characters'
 import { useArtImage } from '@/art/hooks'
@@ -20,6 +21,12 @@ export function TitleScreen() {
   const [step, setStep] = useState<'menu' | 'name'>('menu')
   const [name, setName] = useState(DEFAULT_PLAYER_NAME)
   const latest = latestSave()
+
+  // 標題曲；離開標題時不淡出，由下一個 audio.bgm()（新遊戲的序章 bgm／讀檔的恢復曲）交叉淡化接手，
+  // 只開設定或圖鑑再回標題則一直播下去
+  useEffect(() => {
+    audio.bgm('title')
+  }, [])
 
   const start = async () => {
     if (busy) return

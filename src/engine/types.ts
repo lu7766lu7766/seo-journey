@@ -109,6 +109,8 @@ export interface StageState {
   rain: boolean
   chars: Partial<Record<Slot, { who: CharId; face: Face }>>
   cg: string | null
+  /** 目前場景指定的 BGM id（尚未指定為 null）；存檔／讀檔時用來恢復背景音樂 */
+  bgm: string | null
   /** increments on each flash bg-fx so the UI can replay the animation */
   flash: number
 }

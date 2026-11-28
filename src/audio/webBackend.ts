@@ -1,0 +1,158 @@
+/** 真正的 Web Audio 後端：載入／解碼、BufferSource 無縫循環、等功率交叉淡化，沒有檔案時走 synth。 */
+import type { AudioBackend, BgmFileOptions, BgmVoice } from './engine'
+import { playSynthSfx, startSynthBgm } from './synth'
+
+const MANIFEST_URL = '/audio/manifest.json'
+const CURVE_N = 48
+
+/** 等功率淡入／淡出曲線（0→1 / 1→0），乘上 peak */
+function curve(kind: 'in' | 'out', peak: number): Float32Array {
+  const a = new Float32Array(CURVE_N)
+  for (let i = 0; i < CURVE_N; i++) {
+    const x = i / (CURVE_N - 1)
+    a[i] = peak * (kind === 'in' ? Math.sin((x * Math.PI) / 2) : Math.cos((x * Math.PI) / 2))
+  }
+  return a
+}
+
+export function createWebBackend(): AudioBackend {
+  let ctx: AudioContext | null = null
+  let bus: GainNode | null = null
+  let bgmVol = 0.3
+
+  const ensureCtx = (): AudioContext | null => {
+    try {
+      if (!ctx && typeof AudioContext !== 'undefined') {
+        ctx = new AudioContext()
+        bus = ctx.createGain()
+        bus.gain.value = bgmVol
+        bus.connect(ctx.destination)
+      }
+      return ctx
+    } catch {
+      return null
+    }
+  }
+
+  const fileVoice = (c: AudioContext, buffer: AudioBuffer, o: BgmFileOptions): BgmVoice => {
+    const src = c.createBufferSource()
+    src.buffer = buffer
+    src.loop = true
+    if (o.loopStart !== undefined) src.loopStart = Math.min(o.loopStart, buffer.duration)
+    if (o.loopEnd !== undefined) src.loopEnd = Math.min(o.loopEnd, buffer.duration)
+    const g = c.createGain()
+    const t0 = c.currentTime
+    g.gain.setValueAtTime(0, t0)
+    g.gain.setValueCurveAtTime(curve('in', o.gain), t0 + 0.001, Math.max(0.05, o.fadeInSec))
+    src.connect(g).connect(bus!)
+    src.start(t0)
+    let done = false
+    const halt = () => {
+      if (done) return
+      done = true
+      try {
+        src.stop()
+      } catch {
+        /* already stopped */
+      }
+      try {
+        src.disconnect()
+        g.disconnect()
+      } catch {
+        /* ignore */
+      }
+    }
+    src.onended = halt
+    return {
+      fadeOut(sec) {
+        if (done) return
+        const t = c.currentTime
+        const cur = Math.max(0.0001, g.gain.value)
+        try {
+          g.gain.cancelScheduledValues(t)
+          g.gain.setValueAtTime(cur, t)
+          g.gain.setValueCurveAtTime(curve('out', cur), t + 0.001, Math.max(0.05, sec))
+          src.stop(t + sec + 0.05)
+        } catch {
+          halt()
+        }
+      },
+      stop: halt,
+    }
+  }
+
+  return {
+    async unlock() {
+      const c = ensureCtx()
+      if (!c) return false
+      if (c.state === 'running') return true
+      try {
+        // 沒有手勢時 resume() 的 promise 不會 resolve，所以限時等待，下次手勢再試
+        await Promise.race([c.resume(), new Promise((r) => setTimeout(r, 400))])
+      } catch {
+        /* ignore */
+      }
+      return (c.state as AudioContextState) === 'running'
+    },
+
+    async loadManifest() {
+      const res = await fetch(MANIFEST_URL, { cache: 'no-cache' })
+      if (!res.ok) return {}
+      return res.json()
+    },
+
+    async loadBuffer(src) {
+      const c = ensureCtx()
+      if (!c) return null
+      try {
+        const res = await fetch(src)
+        if (!res.ok) return null
+        return await c.decodeAudioData(await res.arrayBuffer())
+      } catch {
+        return null
+      }
+    },
+
+    playBgmFile(buffer, opts) {
+      return fileVoice(ensureCtx()!, buffer as AudioBuffer, opts)
+    },
+
+    playBgmSynth(id, fadeInSec) {
+      const c = ensureCtx()!
+      return startSynthBgm(c, bus!, id, fadeInSec, () => bgmVol)
+    },
+
+    playSfxFile(buffer, gain, onEnded) {
+      const c = ensureCtx()
+      if (!c) {
+        onEnded()
+        return
+      }
+      const src = c.createBufferSource()
+      src.buffer = buffer as AudioBuffer
+      const g = c.createGain()
+      g.gain.value = gain
+      src.connect(g).connect(c.destination)
+      src.onended = () => {
+        try {
+          src.disconnect()
+          g.disconnect()
+        } catch {
+          /* ignore */
+        }
+        onEnded()
+      }
+      src.start()
+    },
+
+    playSfxSynth(id, vol) {
+      const c = ensureCtx()
+      if (c) playSynthSfx(c, id, vol)
+    },
+
+    setBgmVolume(v) {
+      bgmVol = v
+      if (ctx && bus) bus.gain.setTargetAtTime(v, ctx.currentTime, 0.05)
+    },
+  }
+}
