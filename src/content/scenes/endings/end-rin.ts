@@ -25,7 +25,7 @@ export default scene('end-rin', [
   ),
   show('rin', 'center', 'blush'),
   say('rin', 'blush', '……！笨蛋。這種話，要事先預告。'),
-  say('narr', undefined, '風吹起她的紅色髮帶。她從口袋掏出那個貓咪鑰匙圈，輕輕放進我手心。'),
+  say('narr', undefined, '風吹起她的藍黑色長髮。她從口袋掏出那個貓咪鑰匙圈，輕輕放進我手心。'),
   cg('end-rin'),
   when(
     seen('sq-r3'),
@@ -51,7 +51,7 @@ export default scene('end-rin', [
   say('rin', 'smile', '規則第一條：回家的路，一起走。……這是新增條款。'),
   say('me', undefined, '收到。新增條款，我簽名。'),
   say('rin', 'blush', '不需要簽名。需要的是……明天你要準時。'),
-  say('narr', undefined, '她走在前面半步，髮帶隨風一晃一晃。那抹笑，早就超越了任何索引。'),
+  say('narr', undefined, '她走在前面半步，長髮隨風一晃一晃。那抹笑，早就超越了任何索引。'),
   hide('rin'),
   bg('clubroom', 'day', 'fade'),
   say('narr', undefined, '隔天，社辦電腦的桌面多了一個資料夾，上面貼著一張紙條：謝絕參觀。'),

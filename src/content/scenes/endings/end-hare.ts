@@ -15,7 +15,7 @@ export default scene('end-hare', [
   say('hare', 'blush', '我以前老怕講太少，大家會無聊，才一直繞遠路。'),
   when(
     seen('date-hare-3'),
-    [say('hare', 'blush', '上次在海邊說過一次，但今天我要對著麥克風再說一次。')],
+    [say('hare', 'blush', '上次在海邊差一點說出口，今天我要對著麥克風，說完整。')],
     [say('hare', 'think', '可是有一句話，我繞了整整六週，都沒說出口。')],
   ),
   say('me', undefined, '要講多久？我先去倒杯茶。'),

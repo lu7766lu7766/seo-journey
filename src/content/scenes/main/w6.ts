@@ -1,4 +1,4 @@
-import { bg, bgm, card, choice, effect, hide, opt, say, scene, sfx, show, when } from '@/engine'
+import { bg, bgm, card, choice, effect, hide, minigame, opt, say, scene, sfx, show, when } from '@/engine'
 import { bondIs, flag, or, seen } from '@/engine/cond'
 
 export default scene('w6', [
@@ -13,10 +13,11 @@ export default scene('w6', [
   show('hare', 'center', 'surprised'),
   show('mirai', 'right', 'normal'),
   say('rin', 'normal', '冷靜。步驟一，確認網站沒壞。步驟二，看官方公告。步驟三，先別亂改。'),
-  say('hare', 'surprised', '完蛋了完蛋了！是我的標題太吵嗎？是我害的嗎？！'),
-  say('rin', 'normal', '夏川同學。'),
+  say('hare', 'surprised', '完蛋了完蛋了！是標題太吵？還是重複內容被罰了？！'),
   show('hare', 'center', 'think'),
   say('hare', 'think', '……呼。結論先說：我們慌了，但網站還沒壞。'),
+  say('rin', 'think', '重複內容多半是整理問題，不是處罰。用 301、canonical 收斂。'),
+  card('duplicate-content'),
   say('mirai', 'think', '已讀取公告。此次為全面性的核心更新，並非針對單一網站。'),
   say('mirai', 'sad', '數據只能告訴我這些。……還有，我有點不安。這個，沒有資料。'),
   hide('hare'),
@@ -28,19 +29,19 @@ export default scene('w6', [
   card('helpful-content'),
   say('rin', 'think', 'E-E-A-T 是經驗、專業、權威、信任，不是單一排名分數。最後一個，最重要。'),
   card('eeat'),
-  say('rin', 'smile', '作者頁的格式，我來整理。'),
   hide('sensei'),
   show('hare', 'center', 'happy'),
   say('hare', 'happy', '作者簡介我來寫！三十字，結論先說！'),
   say('mirai', 'smile', '我負責核對，名字與頁面資料要一致。'),
   card('author-pages'),
+  minigame('w6-update', { stats: { tru: 4 } }, { stats: { tru: 1 } }),
   hide('all'),
 
   when(flag('blackhat', 'gte', 1), [
     bg('clubroom', 'day', 'flash'),
     bg('clubroom', 'day', 'rain'),
     show('rin', 'center', 'angry'),
-    say('rin', 'angry', '等等，站長工具有「人工處罰」通知。……這不是天氣，是我們種的因。'),
+    say('rin', 'angry', '等等，Search Console 有「人工處罰」通知。……這不是天氣，是我們種的因。'),
     effect({ stats: { con: -25, tec: -10, tru: -15 }, bond: { rin: -2, hare: -2, mirai: -2 } }),
     hide('rin'),
   ]),
@@ -53,9 +54,10 @@ export default scene('w6', [
     choice([
       opt('不要，我們一起堂堂正正重來吧', { bond: { rin: 1, hare: 1, mirai: 1 } }, [
         say('kuro', 'shock', '重來嗎……原來，流量並不是正義啊。'),
+        say('kuro', 'sad', '一直騙演算法，最後被淘汰的，是自己。'),
       ]),
       opt('好，趁最後賭一把', { inc: { blackhat: 1 }, stats: { con: -10, tru: -10 } }, [
-        say('kuro', 'sad', '……你竟然還敢跟著我跳火坑啊。'),
+        say('kuro', 'smug', '哈哈，夠種！……不過，為什麼我的手一直在抖？'),
       ]),
     ]),
   ], [
@@ -64,8 +66,8 @@ export default scene('w6', [
     ], [
       say('me', undefined, '先停手吧。真正的讀者，還在等你寫給人看的內容。'),
     ]),
+    say('kuro', 'sad', '一直騙演算法，最後被淘汰的，是自己。'),
   ]),
-  say('kuro', 'sad', '一直騙演算法，最後被淘汰的，是自己。'),
   hide('kuro'),
 
   bgm('warm'),
@@ -79,11 +81,10 @@ export default scene('w6', [
       say('rin', 'think', '這麼大的雨還跑來。……給，毛巾。淋濕會感冒。'),
       show('rin', 'center', 'blush'),
       say('rin', 'blush', '規則不能保證結果。但這六週，你每一步都照規則走，我都看見了。'),
-      say('me', undefined, '學姊也會怕嗎？'),
       when(
         flag('askedRules'),
-        [say('rin', 'blush', '怕。……所以才需要一個會問「規則能先看一下嗎」的人。')],
-        [say('rin', 'blush', '怕。……所以才需要一個陪我把規則走到最後的人。')],
+        [say('rin', 'blush', '其實我也會怕。……所以才需要一個會問「規則能先看一下嗎」的人。')],
+        [say('rin', 'blush', '其實我也會怕。……所以才需要一個陪我把規則走到最後的人。')],
       ),
       say('narr', undefined, '她把毛巾輕輕蓋在我頭上，指尖停了一秒，又縮了回去。'),
       when(
@@ -102,16 +103,14 @@ export default scene('w6', [
       bg('broadcast', 'night', 'fade'),
       say('narr', undefined, '廣播室只亮著 ON AIR 的紅燈，晴抱著膝蓋坐在調音台前。'),
       show('hare', 'center', 'normal'),
-      say('hare', 'normal', '哇，你濕答答的！結論先說：喝這杯熱可可！'),
+      say('hare', 'normal', '哇，你濕答答的！結論先說：快喝這杯熱可可，別感冒了！'),
       show('hare', 'center', 'blush'),
-      say('hare', 'blush', '我剛剛超怕的。排名一掉，就覺得之前講的全白講了。'),
-      say('narr', undefined, '她把可可塞進我手心，杯子燙燙的，她的指尖卻有點涼。'),
-      say('me', undefined, '手這麼涼，妳在發抖嗎？'),
-      say('hare', 'surprised', '才沒有！是……麥克風的後座力！'),
+      say('hare', 'blush', '我剛剛超怕的。排名一掉，就覺得之前講的全都白講了。'),
+      say('narr', undefined, '她把可可塞進我手心，杯子燙燙的，她的指尖卻微微發抖。'),
       when(
         bondIs('hare', 'gte', 28),
         [
-          say('hare', 'blush', '騙你的。……是因為你來了。所以，我現在不抖了。'),
+          say('hare', 'blush', '可是你來了，所以，我現在不抖了。'),
           say('hare', 'happy', '結論先說：搜尋祭那天，我要用一句話讓全場聽見我們！'),
         ],
         [
@@ -122,15 +121,14 @@ export default scene('w6', [
     ]),
     opt('去天台找未來', { flags: { w6Choice: 3 }, bond: { mirai: 5 } }, [
       bg('rooftop', 'night', 'rain'),
-      say('narr', undefined, '天台上沒有別人，只有雨聲，和一點微微發亮的青色。'),
+      say('narr', undefined, '天台上沒有別人，只有雨聲，和她髮夾一點微微發亮的青色。'),
       show('mirai', 'center', 'normal'),
-      say('mirai', 'normal', '雨聲的頻率，讓人平靜。你也是來吹風的嗎？'),
+      say('mirai', 'normal', '雨聲的頻率，讓人平靜。你也是來吹風的嗎？還是……來找我？'),
       show('mirai', 'center', 'smile'),
-      say('narr', undefined, '雨滴打在透明傘面上，每一滴，都有不同的音高。'),
       say('mirai', 'smile', '根據我的紀錄，這六週你好多次選了比較慢、但真實的做法。'),
       say('me', undefined, '因為，我想讓妳讀到的，是真的我。'),
       show('mirai', 'center', 'blush'),
-      say('mirai', 'blush', '資料庫沒教過我這種感覺。……我想把它存成：原創。'),
+      say('mirai', 'blush', '資料庫沒教過我這種感覺。……我想把它存成：原創，只屬於我。'),
       when(
         bondIs('mirai', 'gte', 28),
         [

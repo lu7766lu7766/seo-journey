@@ -18,7 +18,7 @@ const STAT_SHORT: Record<StatKey, string> = {
   con: '內容',
   tec: '技術',
   str: '結構',
-  ans: '可答',
+  ans: '解答',
   tru: '信任',
 }
 

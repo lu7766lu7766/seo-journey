@@ -1,4 +1,4 @@
-import { bg, bgm, card, choice, hide, opt, say, scene, show, when } from '@/engine'
+import { bg, bgm, card, choice, hide, minigame, opt, say, scene, show, when } from '@/engine'
 import { bondIs } from '@/engine/cond'
 
 export default scene('w5', [
@@ -9,7 +9,7 @@ export default scene('w5', [
   say('mirai', 'normal', '進入 GEO 課程。生成式搜尋會綜合多個來源寫答案，並附上引用。'),
   show('hare', 'right', 'think'),
   say('hare', 'think', '（小聲）結論先說：就是被當成「參考資料」對吧？'),
-  say('mirai', 'smile', '推論正確。學姊只會引用「別人沒有的東西」，例如原創資料。'),
+  say('mirai', 'smile', '推論正確。引用者只會引用「別人沒有的東西」，例如原創資料。'),
   say('mirai', 'normal', '再加上可查證的來源、清楚的作者。沒有任何方法能保證被引用。'),
   card('geo-citations'),
   say('hare', 'surprised', '那把 AI 爬蟲全擋在門外，不是比較安全嗎？'),
@@ -37,11 +37,9 @@ export default scene('w5', [
       say('mirai', 'normal', '結構清楚。機器與人類，都容易定位。'),
     ]),
   ]),
-  say('hare', 'normal', '小標寫成讀者會問的問題，答案放在下面第一句！'),
-  card('question-headings'),
   say('mirai', 'normal', '還有，原創、可查證、有署名。數據一旦造假，信任歸零。'),
   card('original-data'),
-  say('mirai', 'smile', '答案先行，人類好讀，機器也更容易讀對。這是 AEO 與 GEO 的交集。'),
+  minigame('w5-cite', { stats: { tru: 4 } }, { stats: { tru: 1 } }),
   hide('all'),
 
   bg('rooftop', 'dusk', 'fade'),

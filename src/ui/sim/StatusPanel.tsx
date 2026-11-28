@@ -11,13 +11,13 @@ const STAT_LABEL: Record<StatKey, string> = {
   con: '內容力',
   tec: '技術力',
   str: '結構力',
-  ans: '可答力',
+  ans: '解答力',
   tru: '信任力',
 }
 
 const HEROINE_HINT: Record<HeroineId, { domain: string; focus: string }> = {
   rin: { domain: 'SEO', focus: '技術力・內容力' },
-  hare: { domain: 'AEO', focus: '可答力・內容・結構' },
+  hare: { domain: 'AEO', focus: '解答力・內容・結構' },
   mirai: { domain: 'GEO', focus: '信任力・內容力' },
 }
 
