@@ -18,6 +18,7 @@ export default scene('w1', [
   minigame('w1-robots', { stats: { tec: 4 }, bond: { rin: 1 } }, { stats: { tec: 1 } }),
 
   show('rin', 'center', 'think'),
+  say('rin', 'think', '根目錄 Disallow: /，頁面還掛著 noindex。'),
   say('rin', 'normal', 'robots.txt 管能不能爬，noindex 管能不能收錄。'),
   say('rin', 'think', '被 robots.txt 擋住的頁面，爬蟲看不到它的 noindex。'),
   card('robots-vs-noindex'),
@@ -61,7 +62,8 @@ export default scene('w1', [
     [
       say('narr', undefined, '她轉身要走，貓咪鑰匙圈叮的一聲掉在地上。她撿起來，沒有急著藏。'),
       show('rin', 'center', 'blush'),
-      say('rin', 'blush', '……備品。你敢笑，就罰你抄規則三遍。今天做得很好。'),
+      say('rin', 'blush', '……備品。你敢笑，就罰你抄規則三遍。'),
+      say('rin', 'smile', '今天做得很好，{name}。明天，也這樣。'),
     ],
     [
       when(
@@ -72,7 +74,10 @@ export default scene('w1', [
         ],
         [
           say('narr', undefined, '她轉身要走，口袋裡的貓咪鑰匙圈叮的一聲掉在地上。'),
-          say('rin', 'surprised', '那、那是學生會備品！……總之，今天的你，做得不錯。'),
+          say('rin', 'surprised', '那、那是學生會備品！'),
+          say('me', undefined, '備品長這樣？'),
+          show('rin', 'center', 'blush'),
+          say('rin', 'blush', '……長這樣。總之，今天的你，做得不錯。'),
         ],
       ),
     ],

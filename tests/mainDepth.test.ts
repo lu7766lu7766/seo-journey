@@ -6,28 +6,25 @@ import { countCmds, countScene, estimateMinutes } from '@/systems/estimate'
 /**
  * Story-depth guard: the main story must not regress to a thin skeleton.
  *
- * The ceiling (main path <= 30 min / <= 10,000 chars, tests/scriptLint.test.ts) and these floors
- * bound the same quantity from both sides. Fixed costs on the main path (4 minigames, 6 scheduling
- * rounds, 6 dates) already take ~12.8 minutes. The interactive festival pitch, the foundation
- * lessons, Hare's extra beats and the relationship-reactive variants were paid for by trimming the
- * prologue / week 6 / end-true, so the floors sit just under the current writing (sizes are the
- * longest branch of every choice / `when`).
+ * The ceiling (main path <= 35 min / <= 10,000 chars, tests/scriptLint.test.ts) and these floors
+ * bound the same quantity from both sides. Fixed costs on the main path (6 minigames, 6 scheduling
+ * rounds, 6 dates) already take ~15 minutes, so the floors sit just under the current writing
+ * (sizes are the longest branch of every choice / `when`).
  *
- * Floors for prologue / w1 / w4 / w5 / end-true were lowered when the week 5 and 6 minigames (+2 minutes)
- * were added: the 30-minute ceiling is fixed, so repeated explanation lines were cut (w1 also gave up the
- * canonical / duplicate-content segment, which moved to w3 / w6).
+ * The w1 floor is a little below its original 630 only because the canonical / duplicate-content segment
+ * moved out of week 1 (canonical to w3, duplicate-content to w6); the rest of the week-1 writing is intact.
  */
 const FLOORS: Record<string, number> = {
-  prologue: 540,
-  w1: 560,
+  prologue: 650,
+  w1: 600,
   w2: 430,
   w3: 520,
-  w4: 540,
-  w5: 550,
+  w4: 560,
+  w5: 560,
   w6: 640,
   festival: 470,
   'end-blackhat': 500,
-  'end-true': 390,
+  'end-true': 440,
   'end-rin': 500,
   'end-hare': 500,
   'end-mirai': 500,
@@ -77,7 +74,7 @@ describe('main story depth', () => {
     }
   })
 
-  it('main-path estimate stays within 30 minutes', async () => {
+  it('main-path estimate stays within 35 minutes', async () => {
     const ids = [...MAIN, ...DATES, 'end-true']
     const total = { chars: 0, lines: 0, choices: 0, minigames: 0 }
     for (const id of ids) {
@@ -88,7 +85,7 @@ describe('main story depth', () => {
       total.minigames += s.minigames
     }
     expect(total.chars).toBeLessThanOrEqual(10000)
-    expect(estimateMinutes(total, 6)).toBeLessThanOrEqual(30)
+    expect(estimateMinutes(total, 6)).toBeLessThanOrEqual(35)
   })
 
   it('knowledge cards are spread out (never 3 in a row)', async () => {

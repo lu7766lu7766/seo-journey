@@ -6,7 +6,10 @@ export default scene('date-hare-3', [
   say('narr', undefined, '海風帶著鹹味，浪一層一層捲上沙灘。'),
   show('hare', 'center', 'happy'),
   say('hare', 'happy', '看！夕陽像一顆蛋黃！'),
+  say('me', undefined, '（她赤腳踩著浪花，裙襬被風吹得鼓鼓的。）'),
+  say('narr', undefined, '她忽然安靜下來，只剩浪聲。'),
   say('hare', 'normal', '我平常話很多，但有一句，一直講不出口。'),
+  say('hare', 'think', '想了很久，決定用一句話就好。'),
   choice([
     opt('我在聽，慢慢說', { bond: { hare: 9 } }, [
       say('hare', 'smile', '……嗯。你總是會等我。'),

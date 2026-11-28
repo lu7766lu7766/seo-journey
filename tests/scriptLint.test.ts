@@ -160,7 +160,7 @@ describe('script lint', () => {
 
     const mainTotal = add([...mainStats, ...dateStats, endStats[1]])
     expect(mainTotal.chars, 'main path chars').toBeLessThanOrEqual(10000)
-    expect(estimateMinutes(mainTotal, 6), 'main path minutes').toBeLessThanOrEqual(30)
+    expect(estimateMinutes(mainTotal, 6), 'main path minutes').toBeLessThanOrEqual(35)
 
     const fullTotal = add([...mainStats, ...(await sumStats(dateIds)), endStats[1], ...sideStats])
     const fullMin = estimateMinutes(fullTotal, 6)

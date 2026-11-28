@@ -7,6 +7,7 @@ export default scene('w4', [
   show('rin', 'left', 'think'),
   show('hare', 'right', 'surprised'),
   say('hare', 'surprised', '圖片還沒載完，按鈕又跳走！我想按「報名」，卻寄了空白信給索老師！'),
+  say('me', undefined, '難怪老師今天回我一個問號。'),
   say('rin', 'normal', 'Google 採行動版優先索引。手機體驗差，就是在拖累整個網站。'),
   card('mobile-first'),
   say('rin', 'think', '把網站想成餐廳：菜多久上桌，是 LCP；按服務鈴後有沒有人理你，是 INP。'),
@@ -23,6 +24,7 @@ export default scene('w4', [
   card('image-optimization'),
   show('hare', 'right', 'blush'),
   say('hare', 'blush', '我還替它寫了圖片說明：「社團 社辦 網站 SEO 最強」！'),
+  say('me', undefined, '念給看不到圖的人聽，他會以為我們在喊口號。'),
   say('rin', 'think', 'alt 要用自然的一句話描述圖片，給人讀，不是塞關鍵字。'),
   card('alt-text'),
   say('rin', 'normal', '時間只夠先修一處。{name}，你決定。'),
@@ -45,6 +47,7 @@ export default scene('w4', [
   show('kuro', 'center', 'smug'),
   say('kuro', 'smug', '喂，青葉的小弟！鄰校流量學院，黑川翔！'),
   say('kuro', 'smug', '流量就是正義！萬能流量包：千條外連加五百頁 AI 文，保證第一！'),
+  say('me', undefined, '（這個人的氣場，像一個關不掉的彈出視窗。）'),
   show('rin', 'left', 'angry'),
   say('rin', 'angry', '{name}，別理他。沒有任何人能「保證」排名。'),
   choice([
