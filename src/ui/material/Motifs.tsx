@@ -1,12 +1,27 @@
 import type { ReactNode } from 'react'
 
 /** 呼應標題 Logo 的四芒星光小母題。 */
-export function FourPointStar({ size = 16, color = '#79d8f4', className = '' }: { size?: number; color?: string; className?: string }) {
+export function FourPointStar({
+  size = 16,
+  color = '#79d8f4',
+  stroke,
+  strokeWidth = 1.2,
+  className = '',
+}: {
+  size?: number
+  color?: string
+  stroke?: string
+  strokeWidth?: number
+  className?: string
+}) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className={`pointer-events-none shrink-0 ${className}`}>
       <path
         d="M12 1.5 L14.6 9.4 L22.5 12 L14.6 14.6 L12 22.5 L9.4 14.6 L1.5 12 L9.4 9.4 Z"
         fill={color}
+        stroke={stroke}
+        strokeWidth={stroke ? strokeWidth : undefined}
+        strokeLinejoin="round"
       />
     </svg>
   )
@@ -61,7 +76,7 @@ export function SearchRule({ className = '', tone = 'ink' }: { className?: strin
 export function RoomBadge({ label = '404', className = '' }: { label?: string; className?: string }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-[3px] border border-[#c7a169]/70 bg-[#2d1a0d]/85 px-2 py-0.5 font-sans text-[13px] font-bold tracking-wider text-[#f3dfb8] shadow-xs ${className}`}
+      className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-[3px] border border-[#c7a169]/70 bg-[#2d1a0d]/85 px-2 py-0.5 font-sans text-[13px] font-bold tracking-wider text-[#f3dfb8] shadow-xs ${className}`}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-[#d8b173]" />
       {label}

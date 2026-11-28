@@ -45,7 +45,7 @@ export function MinigameHost({
 
   return (
     <div
-      className="absolute inset-0 z-30 flex items-center justify-center bg-ink/50"
+      className="absolute inset-0 z-30 flex items-center justify-center bg-[#120d16]/78 px-4 pb-3 pt-14 backdrop-blur-[2px]"
       data-testid="minigame"
       onClick={(e) => e.stopPropagation()}
     >

@@ -640,6 +640,150 @@ button { font-family: inherit; cursor: pointer; }
   .mat-polaroid {
     padding: 12px 12px 14px;
   }
+
+  /* 社辦舊 CRT 電腦：泛黃米白塑膠外殼、內凹框與顯像管螢幕 */
+  .mat-crt-bezel {
+    position: relative;
+    background-color: var(--color-crt-bezel);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='crtp'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.22 0 0 0 0.42  0.20 0 0 0 0.38  0.16 0 0 0 0.30  0 0 0 0.045 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23crtp)'/%3E%3C/svg%3E"),
+      linear-gradient(162deg, #e7dfd0 0%, var(--color-crt-bezel) 52%, #c3b8a1 100%);
+    background-size: 160px 160px, 100% 100%;
+    border: 2px solid #8a7f6c;
+    border-radius: 20px;
+    box-shadow:
+      0 26px 58px rgba(14, 10, 6, 0.58),
+      0 8px 18px rgba(38, 18, 6, 0.38),
+      inset 0 2px 1px rgba(255, 252, 244, 0.78),
+      inset 2px 0 1px rgba(255, 252, 244, 0.45),
+      inset 0 -4px 4px rgba(84, 72, 54, 0.38);
+  }
+
+  .mat-crt-recess {
+    background: linear-gradient(180deg, #4b463f 0%, #37332d 55%, #2b2723 100%);
+    border: 1.5px solid #26221e;
+    border-radius: 15px;
+    box-shadow:
+      inset 0 4px 10px rgba(10, 8, 6, 0.78),
+      inset 2px 0 6px rgba(10, 8, 6, 0.55),
+      inset -2px 0 6px rgba(10, 8, 6, 0.55),
+      inset 0 -1.5px 1px rgba(255, 250, 236, 0.16);
+  }
+
+  .mat-crt-screen {
+    position: relative;
+    background-color: var(--color-crt-screen);
+    border: 1.5px solid #162226;
+    border-radius: 11px;
+    box-shadow:
+      inset 0 0 22px rgba(4, 10, 14, 0.56),
+      inset 0 2px 6px rgba(0, 0, 0, 0.35);
+  }
+
+  .mat-crt-scanlines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.055) 3px,
+      rgba(0, 0, 0, 0.055) 4px
+    );
+  }
+
+  .mat-crt-glare {
+    background:
+      radial-gradient(ellipse 68% 30% at 18% 5%, rgba(255, 255, 255, 0.085) 0%, transparent 72%),
+      linear-gradient(130deg, rgba(255, 255, 255, 0.045) 0%, transparent 34%);
+  }
+
+  .mat-crt-led {
+    background: radial-gradient(circle at 35% 32%, #bbf7d0 0%, #22c55e 52%, #15803d 100%);
+    border: 1px solid #166534;
+    box-shadow:
+      0 0 7px rgba(74, 222, 128, 0.75),
+      inset 0 1px 1px rgba(255, 255, 255, 0.7);
+  }
+
+  /* 點陣印表機連續報表紙條（左右打孔撕邊 + 淡綠帳表紋） */
+  .mat-dotmatrix-slip {
+    position: relative;
+    background-color: #fbf8ef;
+    color: var(--color-ink-body);
+    background-image:
+      radial-gradient(circle at 12px 12px, #25343a 3.3px, rgba(112, 98, 76, 0.28) 3.7px, transparent 4.3px),
+      radial-gradient(circle at calc(100% - 12px) 12px, #25343a 3.3px, rgba(112, 98, 76, 0.28) 3.7px, transparent 4.3px),
+      linear-gradient(to right, transparent 23px, rgba(130, 152, 140, 0.38) 23px, rgba(130, 152, 140, 0.38) 24px, transparent 24px),
+      linear-gradient(to left, transparent 23px, rgba(130, 152, 140, 0.38) 23px, rgba(130, 152, 140, 0.38) 24px, transparent 24px),
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 28px,
+        rgba(134, 188, 160, 0.13) 28px,
+        rgba(134, 188, 160, 0.13) 56px
+      );
+    background-size:
+      100% 24px,
+      100% 24px,
+      100% 100%,
+      100% 100%,
+      100% 56px;
+    background-position: 0 4px, 0 4px, 0 0, 0 0, 0 0;
+    border: 1px solid #bcae92;
+    box-shadow:
+      0 10px 26px rgba(10, 16, 18, 0.42),
+      inset 0 4px 10px rgba(72, 60, 42, 0.12);
+  }
+
+  /* 收藏冊牛皮檔案夾與未取得知識卡卡背 */
+  .mat-folder-body {
+    position: relative;
+    background-color: #c7aa7c;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='fld'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' seed='13' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.28 0 0 0 0.34  0.20 0 0 0 0.24  0.10 0 0 0 0.12  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23fld)'/%3E%3C/svg%3E"),
+      linear-gradient(162deg, #d7be94 0%, #c4a373 54%, #ab8858 100%);
+    background-size: 160px 160px, 100% 100%;
+    border: 2px solid #6b4929;
+    border-radius: 0 10px 10px 10px;
+    box-shadow:
+      0 24px 56px rgba(12, 7, 3, 0.56),
+      0 8px 20px rgba(38, 18, 6, 0.38),
+      inset 0 1.5px 0 rgba(255, 240, 212, 0.45),
+      inset 0 -3px 5px rgba(54, 32, 12, 0.35);
+  }
+
+  .mat-folder-tab {
+    transition: transform 0.14s ease, background-color 0.14s ease, color 0.14s ease;
+  }
+  .mat-folder-tab:focus-visible {
+    outline: 3px solid #2b6ea8;
+    outline-offset: 2px;
+  }
+
+  .mat-card-back {
+    background-color: #eadcc4;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(138, 106, 68, 0.08) 0px, rgba(138, 106, 68, 0.08) 1px, transparent 1px, transparent 11px),
+      repeating-linear-gradient(-45deg, rgba(138, 106, 68, 0.08) 0px, rgba(138, 106, 68, 0.08) 1px, transparent 1px, transparent 11px),
+      linear-gradient(170deg, #efe4ce 0%, #e4d2b2 100%);
+  }
+
+  /* 社員學生手冊硬殼布面／皮革封皮 */
+  .mat-handbook-cover {
+    position: relative;
+    background-color: #192944;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='hb'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='21' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.14 0 0 0 0.08  0.18 0 0 0 0.12  0.28 0 0 0 0.22  0 0 0 0.14 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23hb)'/%3E%3C/svg%3E"),
+      linear-gradient(155deg, #253a5e 0%, #192944 55%, #111d32 100%);
+    background-size: 120px 120px, 100% 100%;
+    border: 2px solid #0e1626;
+    border-radius: 12px;
+    box-shadow:
+      0 26px 60px rgba(12, 8, 5, 0.6),
+      0 8px 20px rgba(38, 18, 6, 0.4),
+      inset 0 1px 0 rgba(210, 224, 246, 0.24),
+      inset 0 0 0 2px rgba(235, 206, 152, 0.24),
+      inset 0 -3px 4px rgba(8, 12, 22, 0.6);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -650,7 +794,7 @@ button { font-family: inherit; cursor: pointer; }
   .chibi-spin, .chibi-zzz, .chibi-sway, .chibi-orbit, .chibi-pop { animation: none !important; }
   .btn-pastel, .choice-btn, .hud-pill,
   .mat-paper, .mat-paper-curled::before, .mat-paper-curled::after,
-  .mat-paper-interactive, .mat-pass-btn, .mat-diecut-sticker, .mat-washi-btn { transition: none !important; }
+  .mat-paper-interactive, .mat-pass-btn, .mat-diecut-sticker, .mat-washi-btn, .mat-folder-tab { transition: none !important; }
   .mat-paper-interactive:hover:not(:disabled),
   .mat-paper-interactive:focus-visible,
   .mat-paper-interactive:active:not(:disabled),
