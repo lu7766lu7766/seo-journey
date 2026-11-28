@@ -1,17 +1,72 @@
 import { useState } from 'react'
 import { Background } from '@/art/backgrounds'
 import { CharacterSprite } from '@/art/characters'
+import { useArtImage } from '@/art/hooks'
+import { useArtManifest, useArtManifestStatus } from '@/art/manifest'
+import { resolveBgSrc } from '@/art/resolve'
 import { CHARACTERS } from '@/content/characters'
 import { HEROINES } from '@/engine/types'
 import { useGame } from '@/store/game'
-import { useUI } from '@/store/ui'
 import { getDateCount, pickDateScene } from '@/systems/ending'
 import { INFIRMARY_WEEK_FLAG, WEEKEND } from '@/systems/schedule'
 import { scoreParts } from '@/systems/score'
 
+/** Same-hue fallback when the manifest has no `bg/home` (or it fails to load): a soft morning gradient + a line of text. */
+function RestFallback() {
+  return (
+    <div
+      className="absolute inset-0 flex items-start justify-center pt-12 text-center"
+      style={{ background: 'linear-gradient(180deg, #ffe9c9 0%, #ffd9d2 55%, #cfe3f7 100%)' }}
+    >
+      <span className="font-title text-lg font-bold text-[#8a6a52]/80">週末的早晨，在家</span>
+    </div>
+  )
+}
+
+/**
+ * The 「在家休息」 card's picture: the protagonist's room artwork (`bg/home`), cropped with object-cover towards the
+ * window / desk side, under a soft warm morning-light gradient. Mirrors `Background`'s loading rule: nothing is drawn
+ * until the manifest is known and the image has loaded (WEEKEND_ART preloads it), then it fades in.
+ */
+function RestScene() {
+  const manifest = useArtManifest()
+  const status = useArtManifestStatus()
+  const src = resolveBgSrc(manifest, 'home')
+  const { loaded, failed, imgProps } = useArtImage(src)
+  if (status === 'loading') return null
+  if (!src || failed) return <RestFallback />
+  return (
+    <div
+      className="absolute inset-0 overflow-hidden"
+      style={{
+        background: '#f5e3cf',
+        WebkitMaskImage: 'linear-gradient(180deg, #000 0%, #000 78%, transparent 100%)',
+        maskImage: 'linear-gradient(180deg, #000 0%, #000 78%, transparent 100%)',
+      }}
+    >
+      <div className="art-fade absolute inset-0" style={{ opacity: loaded ? 1 : 0 }}>
+        <img
+          {...imgProps}
+          src={src}
+          alt=""
+          draggable={false}
+          className="h-full w-full object-cover"
+          style={{ objectPosition: '18% 50%' }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(255, 236, 196, 0.42) 0%, rgba(255, 214, 190, 0.16) 55%, rgba(255, 255, 255, 0) 100%)',
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+
 export function WeekendMenu() {
   const s = useGame()
-  const setOverlay = useUI((u) => u.setOverlay)
   const [busy, setBusy] = useState(false)
   // collapsing in the infirmary this week costs the weekend: only resting at home is possible
   const locked = s.flags[INFIRMARY_WEEK_FLAG] === true
@@ -37,10 +92,10 @@ export function WeekendMenu() {
   }
 
   return (
-    <div className="relative flex h-full w-full flex-col justify-between overflow-hidden p-8" data-testid="weekend-menu">
+    <div className="relative flex h-full w-full flex-col overflow-hidden px-8 pb-6 pt-14" data-testid="weekend-menu">
       <Background id="street" time="day" />
       <div className="pointer-events-none absolute inset-0 bg-[#0d1430]/45 backdrop-blur-[2px]" />
-      <div className="vn-box relative z-10 flex items-center justify-between gap-4 rounded-2xl px-6 py-4 text-white">
+      <div className="vn-box relative z-10 rounded-2xl px-6 py-4 text-white">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="font-title text-3xl font-bold text-white">第 {s.week} 週 · 週末自由行動</h2>
@@ -58,20 +113,10 @@ export function WeekendMenu() {
           ) : (
             <p className="text-base text-[#d5e3ff]">邀請一位夥伴出門（不耗體力、壓力 {WEEKEND.dateStress}），或留在家裡好好休息</p>
           )}
-          <p className="text-sm text-[#b9cdf2]">
-            在家休息：體力 +{WEEKEND.rest.stamina}、壓力 {WEEKEND.rest.stress}
-          </p>
-        </div>
-        <div className="flex shrink-0 items-center gap-2">
-          <button type="button" className="hud-pill" onClick={() => setOverlay('status')}>狀態</button>
-          <button type="button" className="hud-pill" onClick={() => setOverlay('menu')}>選單 (Esc)</button>
-          <button disabled={busy} className="btn-pastel px-6 py-2.5 text-lg disabled:opacity-50" data-testid="weekend-rest" onClick={() => void pickRest()}>
-            在家休息
-          </button>
         </div>
       </div>
 
-      <div className="relative z-10 grid flex-1 grid-cols-3 gap-6 py-6">
+      <div className="relative z-10 grid min-h-0 flex-1 grid-cols-4 gap-4 pt-4">
         {HEROINES.map((h) => {
           const c = CHARACTERS[h]
           const count = getDateCount(h, s)
@@ -89,7 +134,7 @@ export function WeekendMenu() {
               onClick={() => void pickDate(h)}
               className={`glass group relative flex flex-col items-center justify-end overflow-hidden rounded-3xl p-5 text-center transition hover:ring-2 hover:ring-sakura disabled:opacity-60 ${locked ? 'grayscale' : ''}`}
             >
-              <div className="pointer-events-none absolute inset-x-0 top-2 flex h-[340px] justify-center opacity-95 transition group-hover:scale-105">
+              <div className="pointer-events-none absolute inset-x-0 top-2 flex h-[300px] justify-center opacity-95 transition group-hover:scale-105">
                 <CharacterSprite id={h} face="smile" />
               </div>
               <div className="relative z-10 w-full rounded-2xl bg-white/92 p-4 shadow-md">
@@ -117,6 +162,28 @@ export function WeekendMenu() {
             </button>
           )
         })}
+
+        <button
+          type="button"
+          disabled={busy}
+          data-testid="weekend-rest"
+          onClick={() => void pickRest()}
+          className={`glass group relative flex flex-col items-center justify-end overflow-hidden rounded-3xl p-5 text-center transition hover:ring-2 hover:ring-sakura disabled:opacity-60 ${locked ? 'ring-2 ring-[#9fd3f0]' : ''}`}
+        >
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[68%] overflow-hidden rounded-t-3xl">
+            <div className="h-full w-full transition duration-300 group-hover:scale-105">
+              <RestScene />
+            </div>
+          </div>
+          <div className="relative z-10 w-full rounded-2xl bg-white/92 p-4 shadow-md">
+            <p className="font-title text-2xl font-bold text-[#3b5a8a]">在家休息</p>
+            <p className="mt-1 text-sm font-bold text-ink/80" data-testid="weekend-rest-effect">
+              體力 +{WEEKEND.rest.stamina}、壓力 {WEEKEND.rest.stress < 0 ? '−' : '+'}{Math.abs(WEEKEND.rest.stress)}
+            </p>
+            <p className="mt-0.5 text-xs font-bold text-ink/70">不出門，好好充電</p>
+            <p className="mt-1 text-xs text-ink/65">{locked ? '這週只能選這個' : '留在家裡補充體力、舒緩壓力'}</p>
+          </div>
+        </button>
       </div>
     </div>
   )
