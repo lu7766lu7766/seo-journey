@@ -354,3 +354,97 @@ RUN_VOX=1 scripts/colab/voice/r2/run_colab_r2.sh   # 同上，接著在同一 VM
 ```
 
 補測（晴 C／D）、第一輪重測（`eval_r1.py`）、SenseVoice 檢查（`eval_sensevoice.py`）是我在同一個 session 內手動接續執行的，沒有包進 `run_colab_r2.sh`；指令見各檔案開頭的說明。聲音全部由文字描述設計，沒有使用任何真人聲音或外部參考音。
+
+## 10. 第三輪：守門校準、晴／翔／成年女性重跑與量產腳本
+
+> 腳本：[`scripts/colab/voice/r3/`](../scripts/colab/voice/r3/)（共用函式庫、守門、重跑）與 [`scripts/colab/voice/produce/`](../scripts/colab/voice/produce/)（量產，說明見該資料夾 README）。試聽頁在 `/tmp/seo-journey-audio/voice-r3/index.html`（不進版控）。
+> 起因：Gemini 實聽第二輪——Qwen3-TTS 粵語 0/206；VoxCPM2 明顯較差（淘汰）；口音提示 **A 最好**、B≈C，量產一律用 A、設計模式（不用複製）。凜、未來、千尋、NPC 沉穩少女、NPC 少年已定案；晴、翔、NPC 成年女性要輕量第三輪。
+
+### 10.1 送進 TTS 的文字（`r3_common.prep_text`，量產也用）
+
+遊戲顯示文字不變。依序：**妳→你**（OpenCC t2s 不會轉）→ 「……」「——」：**句首（含句號後）移除、句末改「。」、句中改「，」**（後面緊跟標點或收尾引號時直接吃掉，避免「，。」）→ 結巴「別、別」→「別，別」→ 阿拉伯數字轉中文（1985→一九八五、82→八十二；3 位數以上逐字讀，1～2 位數用一般數字讀法）→ 去掉中文字之間的空白 → t2s。破折號「——」是我順手加的，與省略號同規則（劇本有 16 句）。`tests_r3_common.py` 有 17 個文字案例。
+
+### 10.2 守門（`r3_common.gate`，量產也用）
+
+| 守門 | 規則 |
+| --- | --- |
+| 語種 | **SenseVoiceSmall 是必要守門**：載入失敗直接中止（不再默默退回只用 Whisper）；標籤必須是 `zh`（`yue`、其他語種、解析不到都淘汰）。Whisper 的 yue 判斷保留當輔助。生成當下就判，不是事後檢查 |
+| 雜訊事件 | SenseVoice 事件標籤 `Breath／Cough／Sneeze／BGM／Applause` 淘汰（對應 Gemini 說的「喘氣與雜訊多」）。**未經耳驗校準**：本輪重跑 74 個、煙霧測試 26 + 16 個 take 的標籤全是 `Speech`，所以不知道它會不會誤殺或漏殺 |
+| CER | Paraformer-zh，**≤ 0.08**；≤ 4 字的短句與口頭禪 = 0。≤ 12 字的句子等於一個字都不能錯（1/12 = 0.083），13 字起容許 1 個錯字。含 SEO／FAQ／Disallow 這類英文詞的句子：TTS 用英文念，ASR 會轉成中文亂字（Disallow→「第四捞」），所以改成「參考文字在英文詞處切成中文片段，各自在轉寫裡找最佳子字串對齊」再算錯字數 |
+| 必須出現的口頭禪 | 句中含「結論先說」「已讀取」時，轉寫必須含該詞（經白名單換算後），否則 `phrase` 失敗 |
+| F0 | yin 中位數；凜／NPC 少女 170–270、**晴 200–320**、未來 190–290、千尋 140–235、**翔 105–235**、**NPC 少年 105–225**、NPC 成年女性 140–235 |
+| 起音延遲 | 上限 **1.0 s（NPC 成年女性 1.2 s）**；千尋也是成年女性但你只點名 npc_woman_A，所以她維持 1.0（要改只需 `voices_r3.json` 的 `lead_s_max`） |
+| 長度、尾端 | 同第二輪：時長 ≤ 1.5 s + 0.8 s × 字數；尾端能量比 ≤ 0.7 |
+
+**ASR 等價轉寫白名單**（`asr_equiv.json`）：Gemini 實聽確認「結論先說！」念得正確，Paraformer 卻轉成「杰倫先說」（語速快時「論」四聲被輕讀＋語言模型偏見）。規則：**只有當參考文字含「結論先說」或「結論」時**，才把轉寫裡的 {傑倫、杰倫、傑樂、杰樂（＋先說）、傑輪先說…} 換回正規詞再算 CER；不在清單內的詞一律不放寬，換算有沒有發生都記在每個 take 的 `equiv_applied`。新增詞要先人耳確認念得正確並在這裡寫理由。實測：「杰伦先说」「杰勒先说」之類被換回；但「杰恶先说」「结伦先说」「极乐先说」不在清單，照常失敗（這幾個有可能真的念歪）。
+
+**ASR 首字時間戳判定起音延遲：本輪做不到。** HF 的 `funasr/paraformer-zh` 不輸出 token 時間戳（`timestamp` 為空，加 `fsmn-vad` 也只給整句 0–end）。程式保留「有時間戳就用」的路徑，目前一律退回 pyin 啟發式（有聲幀 < 15 就是 `None`，**男聲幾乎都是 None，所以翔、NPC 少年實際上沒有起音延遲守門**）。若要時間戳，需改用 ModelScope 的 paraformer 版本（沒測，下載慢）。
+
+### 10.3 重跑結果（口音 A、設計模式；L4、bf16、一批 12 句；4 個 take/句首輪，不足 2 個通過再補抽到最多 10 個）
+
+| 聲音 | 首輪 take 通過率 | 逐句 ≤ 6 個 take 內通過 | 首輪失敗原因（take 數） |
+| --- | --- | --- | --- |
+| hare_D 晴（4 句＋口頭禪） | **8/24（33%）** | 4/5（**hare_3 十個 take 全失敗**） | f0_high 10、cer 7、phrase 5、lead 5 |
+| kuro_A 翔（4 句） | 12/16（75%） | 4/4（kuro_2 第 4 個才過） | cer 3、f0_high 2 |
+| npc_woman_A 成年女性（4 句） | 12/16（75%） | 4/4 | lead 4、cer 1、f0_low 1 |
+
+- 語種：74 個 take 的 SenseVoice 全是 `zh`、事件全是 `Speech`，yue 為 0。
+- **晴仍是瓶頸**：F0 中位數 337 Hz（p10–p90 = 265–405），上限 320 以上的 take 佔 10/24 首輪。拿掉「帶氣音／破音／極快／響亮」之後情緒是比較穩，但音高沒有被壓下來；把上限放寬到 350／380 也只讓通過 take 從 8 → 9／13（共 36 個），因為還有 CER 與起音延遲在擋。hare_3「別、別突然講這麼溫柔的話啦！」另有一個固定問題：ASR 把句尾「啦」聽成「了」，12 字句 1 個錯字 = 0.083 > 0.08；這是 ASR 的同音虛詞偏差，**要不要把句尾「啦／了」也放進白名單由你決定**（我沒擅自加，白名單規則是「只限已確認的詞」）。
+- 翔 kuro_2（驚慌急喊）首輪只過 1/4：F0 偏高（上限 235，常見 280–340）。其餘三句首輪 75–100%。
+- NPC 成年女性：換成「五十歲左右中年、低沉溫潤」後 F0 中位數 181 Hz（148–205），穩；失敗幾乎都是起音延遲（> 1.2 s 的 4 個）。**npc_woman_4 兩個通過 take 的說話人相似度只有 0.61**，同一句兩次抽樣像不同人，請聽頁面上這句的兩個 take。
+- 同句兩個通過 take 的說話人相似度：晴 0.82–0.95、翔 0.92–0.97、成年女性 0.93–0.97（npc_woman_4 除外）。
+
+### 10.4 量產腳本（`produce/`）
+
+- **聲音對應**：說話者 rin→rin_A、hare→hare_D、mirai→mirai_A、sensei→sensei_A、kuro→kuro_A；NPC 依名牌（`speaker_map.json`）：
+
+| NPC 名牌 | 句數 | 聲音 | 理由 |
+| --- | --- | --- | --- |
+| 料理社社長 | 14 | npc_girl_A | 沉穩平實；對女主角稱「妳」 |
+| 圖書館員 | 13 | npc_woman_A | 「哎呀」、「第一屆畢業生都當阿公了」 |
+| 籃球社隊長 | 12 | npc_boy_A | 極簡短的運動社團隊長 |
+| 天文社社長 | 10 | npc_boy_A | 激動多話；與籃球社隊長共用少年聲音，靠情緒指令區分 |
+
+  目前劇本只有這 4 位 NPC（共 49 句），沒有未列名的。之後出現新名牌會暫用 npc_girl_A 並列在報告的 `unmapped_npc`。
+- **情緒指令**（`emotion_map.json`，可讀）＝ 說話者×表情的基底句 ＋ 依台詞文字符合的修飾片語（最多 2 個，依優先序：口頭禪念法、句首／句中遲疑、疑問句尾、驚嘆句尾、極短句、長句、英文縮寫）。晴／翔沿用本輪製作人指定的穩定音高措辭；「結論先說」整句單獨出現時用口頭禪專用句。所有字串都過禁用字眼檢查（`tests_emotion.py`）。798 句 → 36 種「說話者×表情」組合。
+- **流程**：12 句一批（VRAM 不夠時自動減為 8／4）→ 全守門 → 失敗的句子下一輪重抽，最多 6 次 → 每 72 句一個 chunk，完成就打包下載。**連續 3 次失敗且其中有 `f0_high` 的句子，之後改用「收斂版」情緒指令**（normal 表情＋「整體情緒收斂，音量適中，音高保持穩定的中低音域」），仍套同一套守門；sidecar 與報告標記 `softened`。實測 smoke 的 kuro_2 就是這樣才過的。
+- **斷點續跑**：本機 `raw/wav/**.json` 是完成記錄；重跑時已完成的 id 以 `done.json` 上傳讓 VM 跳過，失敗的用新 seed 再試。已用實機驗證：第二次煙霧測試在全新 VM 上「已完成 7、待做 3」。最多損失一個 chunk。
+- **ASR 權重**：改走 Hugging Face（`hub="hf"`）後 Paraformer 載入 8 秒、SenseVoice 6 秒（第二輪 ModelScope 約 16 分鐘）。仍保留 ModelScope 退路與可選的快取（`PACK_ASR_CACHE=1` 打包成 `~/.cache/seo-journey-voice/asr-weights.tar` 下次上傳）；但快取 tar 有 1.8 GB，HF 路徑既然只要 14 秒，**預設關閉**。
+- **輸出**：`public/audio/voice/<sceneId>/<key>.mp3` ＋ `manifest.json`（`{"src","duration"}`）。key 在本機用 `voiceKey.ts` 的規則重算驗證（798/798 一致）。後處理沿用第二輪：去頭尾靜音、−16 LUFS、TP −2 dBTP、前後 12 ms 淡入淡出、單聲道 24 kHz MP3 48 kbps。煙霧測試 8 個 MP3 是 −21.1～−16.0 LUFS（−21.1 是 0.5 秒的「搜不到。」，被 TP 上限卡住），最高 true peak −2.1 dBTP。
+- **自動換卡**（`colab_session.sh`）：`COLAB_GPU_FALLBACK`（預設 `L4,A100,T4`）；同一張卡連續 2 次沒卡（約 10 分鐘）就換下一張；TooManyAssignments 不算沒卡，不換卡、不重複開機（開機前先確認自己的 session 是否已存在）。`tests_colab_session.sh` 用假的 `colab` 驗證 7 種情境，且在實機走過 L4 → A100 → T4。精度與批次不寫死卡名：`is_bf16_supported(including_emulation=False)` 決定 bf16／fp16，fp16 若出現 NaN／全零／削波就整批改 fp32 重載；一批幾句看載入後剩餘 VRAM。
+
+### 10.5 煙霧測試（10 句，跨 8 個聲音、含 NPC、數字、英文詞、省略號開頭、口頭禪）
+
+- **8/10 通過**。第一次（L4）7/10、26 個 take（2.6/句）；失敗的 3 句在第二次（全新 T4 VM，續跑）補做，kuro_2 靠收斂版情緒指令通過。
+- 仍失敗 2 句：rin 的「……貓咪部落格那套圖片最佳化與 LCP，用得真好。滿分。」（cer 6、f0_high 4／6 個 take）、天文社社長的「我決定了！全擋！Disallow 到底！」（轉寫「全打」「第四次我」：cer 6、f0_high 5）。兩句都含英文詞。失敗句的最接近 take 在 `raw/failed/`，頁面最下面列出。
+- 速度（**L4 實測**，一批 12 句）：生成 2.0–3.1 秒／take、評測 0.75–1.0 秒／take。
+
+### 10.6 量產估算與卡型選擇
+
+798 句、約 16,000 字。每句平均 take 數：smoke 是 2.6（挑的是難句）；晴首輪僅 33%（198 句，約佔 1/4）、其餘聲音 75% 上下 → 估 **約 2.5 個 take／句，約 2,000 個 take**；預期仍有 5～10% 的晴與翔驚慌句會 6 次內過不了（失敗清單由報告列出，要人工決定放寬或改句）。
+
+| 卡 | 速度（秒／take，生成＋評測） | CU／小時 | 全量產 | 依據 |
+| --- | --- | --- | --- | --- |
+| **L4** | 約 3.0–3.9（一批 12） | **2.33（`colab usage` 實測）** | 約 2.0–2.5 小時，**約 4.5–6 CU**（含環境準備 3 分鐘） | 實測 |
+| T4 | 約 8.7（一批 4，VRAM 只剩 3.6 GB；fp16，無 NaN） | 約 1.7（本輪 session 的 CU 差額粗估） | 約 5 小時，**約 8–9 CU** | 實測 16 個 take／3 句，樣本小 |
+| A100 | 沒開到（L4、A100 都沒卡） | 沒量到 | 推測 1.0–1.5 小時，約 8 CU 上下 | **只是推測**：速度假設 L4 的 1.5–2.5 倍；CU 率取社群量測的 A100／L4 ≈ 3.2 倍（[McCormick 2026-03](https://mccormickml.com/2024/04/23/colab-gpus-features-and-pricing/)：T4 1.19、L4 1.71、A100 5.40），與本帳號 L4 實測 2.33 的絕對值不同，僅取比例 |
+
+結論：**L4 最省 CU；A100 最快但推測要多花約 3 成～1 倍的 CU；T4 又慢又不省，只當備援。** 量產要確認 A100 的實際速度與費率，請在開機第一分鐘 `colab usage` 看 Usage rate，跑 10 句煙霧測試再決定。檔案大小：MP3 約 6 KB／秒，全部約 3,000 秒 → **約 17–20 MB**。
+
+### 10.7 已知限制
+
+- **我聽不到聲音**。晴的音高壓不下來、翔的驚慌句常過高，這類「是否難聽」只能人耳判斷；守門只能擋明顯壞掉的。
+- 雜訊事件、起音延遲（pyin）、F0 區間的新值都沒有耳驗校準。男聲沒有起音延遲守門。
+- SenseVoice 的情緒標籤（HAPPY／ANGRY／SURPRISED…）有記錄但沒用來守門。
+- 第二輪定案的 5 個聲音沒有用新守門重跑，只在量產時才會被新守門檢查；新守門比第二輪嚴（CER 0.2→0.08），可能讓這 5 個聲音的重抽次數多於第二輪。
+- A100 沒實測；T4 只跑了 3 句。
+
+### 10.8 重現
+
+```bash
+scripts/colab/voice/r3/run_colab_r3.sh                    # 3 個角色重跑（可 KEEP_SESSION=1 接著跑量產）
+PRODUCE_SMOKE=1 scripts/colab/voice/produce/run_produce.sh  # 煙霧測試（10 句，輸出到 /tmp，不動 public/）
+scripts/colab/voice/produce/run_produce.sh                  # 量產 → public/audio/voice/
+python3 scripts/colab/voice/r3/build_page_r3.py --r3 /tmp/seo-journey-audio/voice-r3 --smoke /tmp/seo-journey-audio/voice-produce-smoke
+bash scripts/colab/voice/r3/tests_colab_session.sh && python3 scripts/colab/voice/r3/tests_r3_common.py && python3 scripts/colab/voice/produce/tests_emotion.py
+```

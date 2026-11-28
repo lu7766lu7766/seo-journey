@@ -1,0 +1,11 @@
+{
+  "_note": "說話者／NPC 名牌 → 定案聲音。聲音設定（base 描述、F0 區間）在 ../r3/voices_r3.json。NPC 的對應依 docs/voice-casting.md §3「NPC 的通用聲音依劇本身分決定」；本劇本目前只有 4 位 NPC 名牌（共 49 句），全部已列名，沒有需要我自行判斷的未列名 NPC。",
+  "speakers": {"rin": "rin_A", "hare": "hare_D", "mirai": "mirai_A", "sensei": "sensei_A", "kuro": "kuro_A"},
+  "npcs": {
+    "料理社社長": {"voice": "npc_girl_A", "lines": 14, "reason": "口吻「別急。麵團要醒」沉穩平實，對女主角稱「妳」→ 沉穩少女"},
+    "圖書館員": {"voice": "npc_woman_A", "lines": 13, "reason": "「哎呀」、「第一屆畢業生都當阿公了」→ 年長女性；r3 基底改為五十歲左右溫潤慈祥"},
+    "籃球社隊長": {"voice": "npc_boy_A", "lines": 12, "reason": "極簡短、話少的運動社團隊長 → 少年；與天文社社長共用同一個少年聲音，靠情緒指令區分"},
+    "天文社社長": {"voice": "npc_boy_A", "lines": 10, "reason": "激動多話、「宇宙都向我們敞開了」→ 少年（同一個聲音，情緒指令偏熱情有勁、音高保持穩定）"}
+  },
+  "npc_fallback": {"voice": "npc_girl_A", "reason": "之後劇本出現未列名的 NPC 名牌時暫用；produce.py 會在報告中把這類行列為 unmapped_npc，請人工確認對應"}
+}
