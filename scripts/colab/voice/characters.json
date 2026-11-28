@@ -1,0 +1,421 @@
+{
+  "language": "Chinese",
+  "ref_text": "大家好，今天天氣很好，我們一起把這件事做完吧。",
+  "ref_emotion_instruct": "平穩自然的語氣，不誇張。",
+  "characters": [
+    {
+      "id": "rin",
+      "name": "白鷺 凜",
+      "role": "三年級、學生會長（SEO）",
+      "profile": "嚴謹、重規則、外冷內熱；講話簡潔有條理、句子短，偶爾說溜嘴露出可愛的一面。",
+      "voices": [
+        {
+          "id": "rin_A",
+          "label": "A．清冷端正",
+          "seed": 1100,
+          "design": "十七歲左右的日系動漫風少女聲，中音偏低，音色清亮乾淨，語速中等偏穩，咬字俐落，語氣冷靜、嚴謹、略帶距離感，句尾收得乾脆，不撒嬌、不嗲。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        },
+        {
+          "id": "rin_B",
+          "label": "B．低冷沉穩",
+          "seed": 1200,
+          "design": "十八歲左右的少女聲，音域偏低的中音，聲線冷冽而端正，像冷靜自持的學生會長；語速稍慢、停頓分明，吐字清楚有力，語氣嚴肅卻藏著一絲溫度，不嗲。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        }
+      ],
+      "lines": [
+        {
+          "id": "rin_1",
+          "text": "你來得正好。公告要在明天前全部更新。",
+          "face": "normal",
+          "emotion": "平常",
+          "emotion_instruct": "平常的語氣，冷靜、公事公辦。",
+          "source": "dates/date-rin-2.ts"
+        },
+        {
+          "id": "rin_2",
+          "text": "三項評分全數通過。網站研究社正式保留。……太好了！",
+          "face": "happy",
+          "emotion": "開心",
+          "emotion_instruct": "努力壓抑卻藏不住的開心，最後一句鬆了一口氣、聲音上揚。",
+          "source": "endings/end-true.ts"
+        },
+        {
+          "id": "rin_3",
+          "text": "不准笑。我只是……想讓社團的文章更好懂。",
+          "face": "blush",
+          "emotion": "害羞",
+          "emotion_instruct": "害羞又慌張、嘴上逞強，語速略快、聲音略小，停頓處帶氣音。",
+          "source": "dates/date-rin-1.ts"
+        },
+        {
+          "id": "rin_4",
+          "text": "會長不能出錯。一個錯字，大家就不再相信公告。",
+          "face": "sad",
+          "emotion": "難過嚴肅",
+          "emotion_instruct": "嚴肅而低落，帶著自責，語速放慢、聲音壓低。",
+          "source": "dates/date-rin-2.ts"
+        }
+      ]
+    },
+    {
+      "id": "hare",
+      "name": "夏川 晴",
+      "role": "二年級、廣播問答社社長（AEO）",
+      "profile": "元氣、熱血、話多，口頭禪「結論先說！」。",
+      "voices": [
+        {
+          "id": "hare_A",
+          "label": "A．明亮主持",
+          "seed": 2100,
+          "design": "十六七歲的少女聲，音調明亮偏高，活力十足，語速偏快，笑意明顯，帶著校園廣播主持人般的熱情與節奏感，咬字清晰，句尾常上揚。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        },
+        {
+          "id": "hare_B",
+          "label": "B．爽朗脆亮",
+          "seed": 2200,
+          "design": "十七歲少女聲，聲音爽朗脆亮、元氣滿滿，說話節奏輕快跳躍，像熱血的廣播社社長，感染力強，音量偏大但不尖銳。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        }
+      ],
+      "lines": [
+        {
+          "id": "hare_1",
+          "text": "結論先說：今天要吃遍整條街！",
+          "face": "happy",
+          "emotion": "開心興奮",
+          "emotion_instruct": "興奮開心，語速很快、聲音響亮。",
+          "source": "dates/date-hare-1.ts"
+        },
+        {
+          "id": "hare_2",
+          "text": "打擾了！結論先說：我帶了炸雞排，還有，舊公告頁搬家了！",
+          "face": "surprised",
+          "emotion": "驚訝慌忙",
+          "emotion_instruct": "衝進門的驚訝與慌忙，語速極快、氣勢十足。",
+          "source": "main/w1.ts"
+        },
+        {
+          "id": "hare_3",
+          "text": "別、別突然講這麼溫柔的話啦！",
+          "face": "blush",
+          "emotion": "害羞",
+          "emotion_instruct": "害羞結巴、手忙腳亂，聲音變小又急促。",
+          "source": "dates/date-hare-2.ts"
+        },
+        {
+          "id": "hare_4",
+          "text": "其實我一直在想，你是不是覺得我很吵……",
+          "face": "sad",
+          "emotion": "難過",
+          "emotion_instruct": "失落低聲，勉強擠出笑意，語速明顯變慢、音量變小。",
+          "source": "endings/end-hare.ts"
+        }
+      ]
+    },
+    {
+      "id": "mirai",
+      "name": "星野 未來",
+      "role": "一年級、資訊科學會特邀評審（GEO）",
+      "profile": "神秘、講話像 AI（「已讀取。」「根據我的資料……」），其實怕自己只是複製品。",
+      "voices": [
+        {
+          "id": "mirai_A",
+          "label": "A．輕柔空靈",
+          "seed": 3100,
+          "design": "十五六歲的少女聲，音色輕柔，語調平穩、起伏很小，略帶空靈與距離感，像說話精準的人工智慧助理；語速平緩，咬字清楚，音量偏小。情緒流露時，才浮現細微的起伏與氣聲。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        },
+        {
+          "id": "mirai_B",
+          "label": "B．透明氣聲",
+          "seed": 3200,
+          "design": "十六歲左右的少女聲，聲線輕、薄、透明，帶一點氣音與夢幻的空靈感，語速偏慢，語氣平靜近乎機械卻很溫柔，情緒變化極其細微。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        }
+      ],
+      "lines": [
+        {
+          "id": "mirai_1",
+          "text": "已讀取。你比預約時間早到三分鐘。",
+          "face": "normal",
+          "emotion": "平常",
+          "emotion_instruct": "平穩精準、起伏極小，像在讀取資料。",
+          "source": "dates/date-mirai-1.ts"
+        },
+        {
+          "id": "mirai_2",
+          "text": "星座，就像知識圖譜。星與星之間，有連線。",
+          "face": "smile",
+          "emotion": "淡淡愉悅",
+          "emotion_instruct": "輕微的喜悅，像在娓娓說一個自己喜歡的事實，語速緩慢。",
+          "source": "dates/date-mirai-1.ts"
+        },
+        {
+          "id": "mirai_3",
+          "text": "……這句話，沒有任何來源。只屬於你。",
+          "face": "blush",
+          "emotion": "害羞",
+          "emotion_instruct": "細微的害羞，聲音更輕、帶氣音，句中停頓。",
+          "source": "dates/date-mirai-3.ts"
+        },
+        {
+          "id": "mirai_4",
+          "text": "我一直怕，自己只是別人內容的複製品。",
+          "face": "sad",
+          "emotion": "不安脆弱",
+          "emotion_instruct": "不安而脆弱，聲音很輕、很慢，尾音微微顫抖。",
+          "source": "dates/date-mirai-3.ts"
+        }
+      ]
+    },
+    {
+      "id": "sensei",
+      "name": "索 千尋",
+      "role": "網站研究社顧問老師",
+      "profile": "慵懶、愛喝咖啡、關鍵時刻很可靠；負責教學說明。",
+      "voices": [
+        {
+          "id": "sensei_A",
+          "label": "A．慵懶磁性",
+          "seed": 4100,
+          "design": "三十歲左右的成熟女性聲，略低沉的女中音，慵懶放鬆、帶一點沙啞的磁性，語速悠閒，語氣溫柔可靠，像愛喝咖啡的年輕老師。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        },
+        {
+          "id": "sensei_B",
+          "label": "B．溫暖低語",
+          "seed": 4200,
+          "design": "三十多歲的成年女性，聲音低而溫暖，吐字柔和，慢條斯理，帶著輕鬆的調侃感與包容，關鍵時刻語氣沉穩。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        }
+      ],
+      "lines": [
+        {
+          "id": "sensei_1",
+          "text": "體力和壓力要顧好。咖啡可以續杯，人不行。",
+          "face": "normal",
+          "emotion": "慵懶調侃",
+          "emotion_instruct": "慵懶隨性，帶一點調侃的笑意。",
+          "source": "main/prologue.ts"
+        },
+        {
+          "id": "sensei_2",
+          "text": "歡迎來到網站研究社。我是顧問索千尋，咖啡續杯中，請見諒。",
+          "face": "smile",
+          "emotion": "親切",
+          "emotion_instruct": "溫柔親切，帶笑意，像在迎接新生。",
+          "source": "main/prologue.ts"
+        },
+        {
+          "id": "sensei_3",
+          "text": "所謂有幫助，先問自己：這是誰寫的？他真的做過這件事嗎？",
+          "face": "think",
+          "emotion": "認真教導",
+          "emotion_instruct": "認真而沉穩，循循善誘，語速放慢、吐字清楚。",
+          "source": "main/w6.ts"
+        },
+        {
+          "id": "sensei_4",
+          "text": "抱歉啊。是我這個顧問，沒有撐到最後。",
+          "face": "sad",
+          "emotion": "歉疚低落",
+          "emotion_instruct": "歉疚而低落，真誠，聲音變輕。",
+          "source": "endings/end-bad.ts"
+        }
+      ]
+    },
+    {
+      "id": "kuro",
+      "name": "黑川 翔",
+      "role": "鄰校「流量學院」學生・黑帽反派（可救贖）",
+      "profile": "輕浮、推銷員口吻，「流量就是正義！」；失落時轉為真誠低落。",
+      "voices": [
+        {
+          "id": "kuro_A",
+          "label": "A．油滑叫賣",
+          "seed": 5100,
+          "design": "十七八歲的年輕男性聲音，音調偏高的男中音，油滑浮誇的推銷員腔，語速快、語氣誇張，愛吆喝，帶著嘻皮笑臉的輕浮感，句尾上挑。失落時能轉為真誠低落的聲線。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        },
+        {
+          "id": "kuro_B",
+          "label": "B．夜市少年",
+          "seed": 5200,
+          "design": "十八歲的青年男聲，嗓音略沙、輕佻自信，像在夜市叫賣的少年，說話節奏跳躍、愛拉長尾音；情緒低落時語速放慢、聲音變小而真誠。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        }
+      ],
+      "lines": [
+        {
+          "id": "kuro_1",
+          "text": "流量就是正義！萬能流量包：千條外連加五百頁 AI 文，保證第一！",
+          "face": "smug",
+          "emotion": "得意叫賣",
+          "emotion_instruct": "浮誇得意的推銷叫賣，語速快、聲音響亮、尾音上挑。",
+          "source": "main/w4.ts"
+        },
+        {
+          "id": "kuro_2",
+          "text": "連我的備用網域也被一起拔掉了！我錯了啦！",
+          "face": "shock",
+          "emotion": "驚慌",
+          "emotion_instruct": "驚慌失措地大叫，語速急促、聲音破音般慌亂。",
+          "source": "endings/end-blackhat.ts"
+        },
+        {
+          "id": "kuro_3",
+          "text": "我作文從沒及格過。捷徑，是我唯一的路。",
+          "face": "normal",
+          "emotion": "難得認真",
+          "emotion_instruct": "難得認真、略帶自嘲的低聲，語速放慢。",
+          "source": "side/sq-x1.ts"
+        },
+        {
+          "id": "kuro_4",
+          "text": "一直騙演算法，最後被淘汰的，是自己。",
+          "face": "sad",
+          "emotion": "真誠低落",
+          "emotion_instruct": "失落低沉、真誠反省，聲音很小、語速很慢。",
+          "source": "main/w6.ts"
+        }
+      ]
+    },
+    {
+      "id": "npc_girl",
+      "name": "NPC・沉穩少女",
+      "role": "料理社社長（sq-h1）等",
+      "profile": "沉穩、平實、略帶冷面幽默的少女。",
+      "voices": [
+        {
+          "id": "npc_girl_A",
+          "label": "沉穩少女",
+          "seed": 6100,
+          "design": "十七歲左右的少女聲，音色溫潤沉穩，語速偏慢，說話平實簡短，像穩重耐心的料理社社長，帶一點乾乾的幽默。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        }
+      ],
+      "lines": [
+        {
+          "id": "npc_girl_1",
+          "text": "別急。麵團要醒，人也要。",
+          "face": "normal",
+          "emotion": "沉穩",
+          "emotion_instruct": "沉穩平靜、慢條斯理。",
+          "source": "side/sq-h1.ts"
+        },
+        {
+          "id": "npc_girl_2",
+          "text": "松露？社費只買得起麵粉。",
+          "face": "normal",
+          "emotion": "冷面幽默",
+          "emotion_instruct": "淡淡的、乾乾的幽默，不帶笑聲。",
+          "source": "side/sq-h1.ts"
+        },
+        {
+          "id": "npc_girl_3",
+          "text": "有。三級。你吃的是二級。",
+          "face": "normal",
+          "emotion": "一本正經",
+          "emotion_instruct": "一本正經地糾正，簡短平淡。",
+          "source": "side/sq-h1.ts"
+        },
+        {
+          "id": "npc_girl_4",
+          "text": "妳的聲音，剛好讓麵團醒了。",
+          "face": "smile",
+          "emotion": "溫暖",
+          "emotion_instruct": "溫柔帶一點笑意，語速放慢。",
+          "source": "side/sq-h1.ts"
+        }
+      ]
+    },
+    {
+      "id": "npc_boy",
+      "name": "NPC・少年",
+      "role": "籃球社隊長（sq-h2）、天文社社長（sq-m2）等",
+      "profile": "話少直率的運動少年；激動時轉為高昂有勁。",
+      "voices": [
+        {
+          "id": "npc_boy_A",
+          "label": "少年",
+          "seed": 6200,
+          "design": "十七歲左右的少年聲音，音色偏低而乾淨，話少、直率，運動社團隊長般乾脆；激動時可轉為高昂有勁的聲音。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        }
+      ],
+      "lines": [
+        {
+          "id": "npc_boy_1",
+          "text": "週六。兩點。體育館。",
+          "face": "normal",
+          "emotion": "簡短",
+          "emotion_instruct": "簡短、平淡、低聲，每個詞之間停頓。",
+          "source": "side/sq-h2.ts"
+        },
+        {
+          "id": "npc_boy_2",
+          "text": "……謝了。",
+          "face": "normal",
+          "emotion": "靦腆",
+          "emotion_instruct": "略微靦腆、不好意思，聲音很低。",
+          "source": "side/sq-h2.ts"
+        },
+        {
+          "id": "npc_boy_3",
+          "text": "宇宙都向我們敞開了，這些訪客是怎麼回事！",
+          "face": "surprised",
+          "emotion": "激動",
+          "emotion_instruct": "激動又困惑，聲音高昂有勁、語速快。",
+          "source": "side/sq-m2.ts"
+        },
+        {
+          "id": "npc_boy_4",
+          "text": "看吧！該被看見的光，擋不住！",
+          "face": "happy",
+          "emotion": "得意",
+          "emotion_instruct": "興奮得意，聲音響亮。",
+          "source": "side/sq-m2.ts"
+        }
+      ]
+    },
+    {
+      "id": "npc_woman",
+      "name": "NPC・成年女性",
+      "role": "圖書館員（sq-m1）等",
+      "profile": "溫和慈祥、愛說「哎呀」的長輩口吻。",
+      "voices": [
+        {
+          "id": "npc_woman_A",
+          "label": "成年女性",
+          "seed": 6300,
+          "design": "五十歲左右的成年女性聲音，溫和慈祥，語速緩慢，帶著親切的長輩口吻，聲音柔軟，略帶沙啞。發音為標準台灣華語（臺灣國語）的自然口語腔調，不帶中國大陸播音腔，也不加兒化音。"
+        }
+      ],
+      "lines": [
+        {
+          "id": "npc_woman_1",
+          "text": "哎呀，來了來了。這位是……機器人嗎？",
+          "face": "surprised",
+          "emotion": "驚訝好奇",
+          "emotion_instruct": "慈祥中帶一點意外的驚呼，語氣好奇。",
+          "source": "side/sq-m1.ts"
+        },
+        {
+          "id": "npc_woman_2",
+          "text": "第一屆畢業生，現在都當阿公了呢。",
+          "face": "normal",
+          "emotion": "笑呵呵",
+          "emotion_instruct": "笑呵呵地懷舊，語速緩慢。",
+          "source": "side/sq-m1.ts"
+        },
+        {
+          "id": "npc_woman_3",
+          "text": "哎呀……英文頁那個，是我翻的。",
+          "face": "normal",
+          "emotion": "不好意思",
+          "emotion_instruct": "不好意思、略微害羞地承認，聲音變輕。",
+          "source": "side/sq-m1.ts"
+        },
+        {
+          "id": "npc_woman_4",
+          "text": "哎呀，這下我敢抬頭見老同事了。",
+          "face": "smile",
+          "emotion": "釋懷",
+          "emotion_instruct": "釋懷安心，帶著笑意與輕鬆。",
+          "source": "side/sq-m1.ts"
+        }
+      ]
+    }
+  ]
+}
