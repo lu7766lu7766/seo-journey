@@ -169,3 +169,4 @@
   - 美術：`sensei/sad`、`sensei/think` 重繪因出圖配額耗盡（約 98 小時後重置）未完成，原圖未動；`docs/art-requests.md` §8.1 已補完整人工出圖提示詞與驗收檢查表。
   - 結果：測試 137 項全過、e2e 通關 0 錯誤、主線估算 32.3 分鐘、全收集約 76 分鐘、首包 194.8KB gzip，結局分布與前一輪相同。
   - 待辦：`sensei/sad`、`sensei/think` 重繪。
+- 2026-11-28（索老師表情重繪）：Gemini 4 Neon 以 Google Colab CLI（L4、`cagliostrolab/animagine-xl-4.0` SDXL 臉部 inpainting，眼鏡框鎖定沿用原圖）重繪 `sensei/sad`、`sensei/think`。第一版驗收退回（think 嘴角下垂像 sad、視線未偏移；sad 眼鏡框變淺變細），修正版通過：sad 八字眉＋嘴角下垂、think 平直嘴型＋視線看向斜上方，四表情眼鏡框一致、外框 0px 偏移。共花費約 1.08 compute units，Colab session 皆已停止。`art:check` 71/71、測試 137 項全過。
