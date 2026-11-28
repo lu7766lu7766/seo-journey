@@ -1,3 +1,4 @@
+import { isVoicedSpeaker, voiceKey } from '@/audio/voiceKey'
 import { evalCond } from './cond'
 import { subst } from './text'
 import type { Cmd, CondState, Effects, Pause, RunnerSnapshot, Scene } from './types'
@@ -47,6 +48,30 @@ export class SceneRunner {
   /** Run until the first pause. Call once after construction / resume. */
   start(): Pause {
     return this.settle()
+  }
+
+  /**
+   * 接下來（不分支的範圍內）最多 `max` 行有語音的台詞，供預載語音用：遇到選項或條件分歧就停（走向未定）。
+   * 不會執行任何指令、不改變狀態。
+   */
+  upcomingVoiced(max: number): { who: Extract<Cmd, { k: 'say' }>['who']; name?: string; text: string }[] {
+    const out: { who: Extract<Cmd, { k: 'say' }>['who']; name?: string; text: string }[] = []
+    const pc = [...this.pc]
+    pc[pc.length - 1]++
+    for (let guard = 0; guard < 10000 && out.length < max; guard++) {
+      for (;;) {
+        const b = this.block(pc)
+        if (pc[pc.length - 1] < b.length) break
+        if (pc.length === 1) return out
+        pc.length -= 2
+        pc[pc.length - 1]++
+      }
+      const cmd = this.block(pc)[pc[pc.length - 1]]
+      if (cmd.k === 'choice' || cmd.k === 'if' || cmd.k === 'minigame') break
+      if (cmd.k === 'say' && isVoicedSpeaker(cmd.who)) out.push({ who: cmd.who, name: cmd.name, text: cmd.text })
+      pc[pc.length - 1]++
+    }
+    return out
   }
 
   /** Continue after a `say` or `wait` pause. */
@@ -127,6 +152,7 @@ export class SceneRunner {
             face: cmd.face,
             ...(cmd.name !== undefined ? { name: subst(cmd.name, { name: st.playerName }) } : {}),
             text: subst(cmd.text, { name: st.playerName }),
+            ...(isVoicedSpeaker(cmd.who) ? { voice: voiceKey(cmd.who, cmd.text, cmd.name) } : {}),
           })
         case 'choice': {
           const options = cmd.options

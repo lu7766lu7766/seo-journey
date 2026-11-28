@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { bg, choice, effect, minigame, npc, opt, say, scene, show, wait, when, card } from '@/engine'
+import { voiceKey } from '@/audio/voiceKey'
 import { flag, bondIs } from '@/engine/cond'
 import { SceneRunner } from '@/engine/runner'
 import { makeHost } from './helpers'
@@ -15,7 +16,7 @@ describe('SceneRunner', () => {
     expect(p1).toMatchObject({ kind: 'say', lineId: 't#1', text: '你好，小明' })
     expect(emitted.map((c) => c.k)).toEqual(['bg', 'say'])
     const p2 = r.advance()
-    expect(p2).toEqual({ kind: 'say', lineId: 't#2', who: 'npc', face: undefined, name: '料理社社長', text: '別急，小明。' })
+    expect(p2).toEqual({ kind: 'say', lineId: 't#2', who: 'npc', face: undefined, name: '料理社社長', text: '別急，小明。', voice: voiceKey('npc', '別急，{name}。', '料理社社長') })
     const p3 = r.advance()
     expect(p3).toMatchObject({ kind: 'say', lineId: 't#3', who: 'rin' })
     expect(r.advance()).toEqual({ kind: 'end' })

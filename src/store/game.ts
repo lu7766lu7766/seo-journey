@@ -1,5 +1,7 @@
 import { create } from 'zustand'
-import { audio } from '@/audio'
+import { audio, audioVoice } from '@/audio'
+import { voiceKey } from '@/audio/voiceKey'
+import { VOICE_PREFETCH } from '@/audio/voicePlayer'
 import { preloadSceneArt, warmSimScreenArt } from '@/art/preload'
 import { applyEffects as applyCore } from '@/engine/effects'
 import { SceneRunner, type RunnerHost } from '@/engine/runner'
@@ -13,7 +15,7 @@ import { INFIRMARY_WEEK_FLAG, WEEKEND } from '@/systems/schedule'
 import { scores } from '@/systems/score'
 import { statSnapshotFlags } from '@/systems/siteMetrics'
 import { useGlobal } from './global'
-import { defaultPersisted, normalizeData, resumeBgm, writeSave, type PersistedGame, type Phase } from './save'
+import { defaultPersisted, normalizeData, resumeBgm, writeSave, type BacklogEntry, type PersistedGame, type Phase } from './save'
 
 export interface CardToast {
   id: string
@@ -25,6 +27,8 @@ export interface CardToast {
 export interface GameStore extends PersistedGame {
   active: boolean
   pause: Pause
+  /** 目前這行之後、可預測的有語音台詞的語音鍵（預載用；不存檔） */
+  voiceAhead: string[]
   /** queued knowledge card toasts; `toast` mirrors `toastQueue[0] ?? null` */
   toastQueue: CardToast[]
   toast: CardToast | null
@@ -82,11 +86,15 @@ export const useGame = create<GameStore>((set, get) => {
   const sync = (pause: Pause) => {
     if (!runner) return
     set((s) => {
-      const patch: Partial<GameStore> = { pause, scene: runner!.snapshot() }
+      const patch: Partial<GameStore> = {
+        pause,
+        scene: runner!.snapshot(),
+        voiceAhead: pause.kind === 'say' ? runner!.upcomingVoiced(VOICE_PREFETCH).map((l) => voiceKey(l.who, l.text, l.name)) : [],
+      }
       if (pause.kind === 'say' && !s.backlog.some((b) => b.lineId === pause.lineId)) {
-        const entry = pause.name
-          ? { lineId: pause.lineId, who: pause.who, name: pause.name, text: pause.text }
-          : { lineId: pause.lineId, who: pause.who, text: pause.text }
+        const entry: BacklogEntry = { lineId: pause.lineId, who: pause.who, text: pause.text }
+        if (pause.name) entry.name = pause.name
+        if (pause.voice) entry.voice = pause.voice
         patch.backlog = [...s.backlog, entry].slice(-300)
       }
       if (pause.kind === 'end' && !s.seenScenes.includes(runner!.scene.id)) patch.seenScenes = [...s.seenScenes, runner!.scene.id]
@@ -118,6 +126,7 @@ export const useGame = create<GameStore>((set, get) => {
     ...defaultPersisted(),
     active: false,
     pause: { kind: 'end' },
+    voiceAhead: [],
     toastQueue: [],
     toast: null,
 
@@ -132,12 +141,14 @@ export const useGame = create<GameStore>((set, get) => {
 
     advance: () => {
       if (!runner) return
+      audioVoice.stop() // 推進就停止目前的語音（不等畫面更新）
       const p = get().pause
       if (p.kind === 'say') useGlobal.getState().markRead(p.lineId)
       sync(runner.advance())
     },
     choose: (i) => {
       if (!runner) return
+      audioVoice.stop()
       audio.sfx('choice')
       sync(runner.choose(i))
     },
@@ -353,6 +364,7 @@ export const useGame = create<GameStore>((set, get) => {
     },
 
     quitToTitle: () => {
+      audioVoice.stop()
       runner = null
       clearTimeout(autosaveTimer)
       set({ active: false, pause: { kind: 'end' }, stage: initialStage() })
