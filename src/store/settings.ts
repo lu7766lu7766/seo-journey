@@ -6,14 +6,26 @@ export interface Settings {
   textSpeed: number
   /** extra delay after a line finishes before auto-advance (ms) */
   autoDelayMs: number
-  bgmVolume: number
-  sfxVolume: number
+  /** 音樂開關（引擎音量用固定基準值） */
+  musicOn: boolean
+  /** 音效開關 */
+  sfxOn: boolean
+  /** 角色語音開關；關閉時完全不載入語音檔 */
+  voiceOn: boolean
   skipUnreadAllowed: boolean
   /** 每個 BGM／SFX 採用的版本，鍵為 `bgm/<id>`／`sfx/<id>`；沒有的用 manifest 的 default */
   audioVariants: Record<string, string>
 }
 
-export const DEFAULT_SETTINGS: Settings = { textSpeed: 40, autoDelayMs: 1500, bgmVolume: 0.3, sfxVolume: 0.6, skipUnreadAllowed: true, audioVariants: {} }
+export const DEFAULT_SETTINGS: Settings = {
+  textSpeed: 40,
+  autoDelayMs: 1500,
+  musicOn: true,
+  sfxOn: true,
+  voiceOn: true,
+  skipUnreadAllowed: true,
+  audioVariants: {},
+}
 const KEY = 'seo-journey:settings'
 
 const AUDIO_KEY_RE = /^(bgm|sfx)\/[A-Za-z0-9_-]+$/
@@ -29,6 +41,28 @@ export function sanitizeAudioVariants(raw: unknown): Record<string, string> {
   return out
 }
 
+const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v)
+const bool = (v: unknown, fallback: boolean) => (typeof v === 'boolean' ? v : fallback)
+
+/**
+ * 讀回的設定正規化：只保留已知欄位、型別不對的用預設。
+ * 舊版的 `bgmVolume`／`sfxVolume`（數值）遷移成開關：> 0 視為開、0 視為關（沒有舊值就用預設）。
+ */
+export function normalizeSettings(raw: unknown): Settings {
+  const r: Record<string, unknown> = raw && typeof raw === 'object' && !Array.isArray(raw) ? (raw as Record<string, unknown>) : {}
+  const d = DEFAULT_SETTINGS
+  const legacy = (v: unknown, fallback: boolean) => (isNum(v) ? v > 0 : fallback)
+  return {
+    textSpeed: isNum(r.textSpeed) ? r.textSpeed : d.textSpeed,
+    autoDelayMs: isNum(r.autoDelayMs) ? r.autoDelayMs : d.autoDelayMs,
+    musicOn: bool(r.musicOn, legacy(r.bgmVolume, d.musicOn)),
+    sfxOn: bool(r.sfxOn, legacy(r.sfxVolume, d.sfxOn)),
+    voiceOn: bool(r.voiceOn, d.voiceOn),
+    skipUnreadAllowed: bool(r.skipUnreadAllowed, d.skipUnreadAllowed),
+    audioVariants: sanitizeAudioVariants(r.audioVariants),
+  }
+}
+
 interface SettingsStore extends Settings {
   set: (patch: Partial<Settings>) => void
   /** 設定某個 id 採用哪一版（`key` 如 `bgm/title`） */
@@ -36,12 +70,10 @@ interface SettingsStore extends Settings {
   reset: () => void
 }
 
-const persisted = safeGetJSON<Partial<Settings>>(KEY)
+const persisted = safeGetJSON<unknown>(KEY)
 
 export const useSettings = create<SettingsStore>((set, get) => ({
-  ...DEFAULT_SETTINGS,
-  ...persisted,
-  audioVariants: sanitizeAudioVariants(persisted?.audioVariants),
+  ...normalizeSettings(persisted),
   set: (patch) => {
     set(patch)
     const { set: _s, reset: _r, setAudioVariant: _v, ...rest } = get()

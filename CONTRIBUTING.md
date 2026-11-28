@@ -17,7 +17,7 @@
 - 圖片覆蓋：以 WebP 為準（`public/art/<id>/<face>.webp`、`public/art/bg/<id>.webp`、`public/art/cg/<id>.webp`），由 `scripts/process-art.mjs` 處理並寫入 `public/art/manifest.json`（鍵 `"<id>/<face>"`、`"bg/<bgId>"`、`"cg/<cgId>"`，值為路徑字串）。製作規格與流程見 `docs/art-requests.md`；`npm run art:check` 檢查進度。
 - 圖片載入（避免「先閃 SVG 再換 WebP」）：`src/main.tsx` 先等 manifest ＋標題畫面圖（上限 6 秒，期間顯示 `index.html` 內的啟動畫面）；`startScene` 會先預載整個場景用到的 bg／立繪／CG（上限 4 秒，超過 200ms 顯示「讀取中…」覆蓋層）；非劇本畫面用 `<ArtGate>`。manifest 尚未載入完成或圖片尚在下載時，美術元件只畫透明／深色底，**不畫 SVG**；SVG 只在 manifest 確定沒有該條目或 `<img>` 載入失敗時才用。新增非劇本畫面或新的圖片用途時，把用到的圖加進 `src/art/specs.ts`。改動後用 `npm run check:flash`（Fast 3G 節流）驗證從未渲染 SVG。
 - `src/minigames/index.tsx`：`<MinigameHost id onResolve(won) />`
-- `src/audio/index.ts`：`audio.sfx(id)`、`audio.bgm(id)`、`audio.stopBgm()`、`audio.currentBgm`（簽名不變，見下方「音訊」）
+- `src/audio/index.ts`：`audio.sfx(id)`、`audio.bgm(id)`、`audio.stopBgm()`、`audio.currentBgm`（簽名不變，見下方「音訊」）；角色語音另有 `audioVoice`（見「音訊 → 角色語音」）
 
 ## 系統列（右上角）
 遊戲中所有畫面（劇本、排程、公佈欄、週末、週報、結局、小遊戲）的「狀態／圖鑑／選單 (Esc)」都由 `src/ui/SystemBar.tsx` 統一渲染（掛在 `VNStage`，舞台座標右上角）；劇本畫面另有「自動／快轉／紀錄／隱藏」，小遊戲只顯示「選單」。**各畫面不要再自己放系統按鈕**；非劇本畫面的內容面板上緣保留 56px（`pt-14`）給系統列。Esc 快捷鍵由 `useVNInput`（在 `VNStage` 掛載）處理，所有遊戲中畫面都有效。e2e 的 `assertSystemBar` 會檢查每個畫面只有一條系統列、內容區沒有殘留系統按鈕。
@@ -30,7 +30,7 @@
 - `npm test` 內含 `tests/scriptLint.test.ts` 與 `src/systems/estimate.ts` 時長估算。
 
 ## 狀態與存檔
-- 遊戲狀態：`useGame`（`src/store/game.ts`）；設定：`useSettings`；跨存檔資料（圖鑑/結局/CG/已讀）：`useGlobal`；UI 狀態：`useUI`。
+- 遊戲狀態：`useGame`（`src/store/game.ts`）；設定：`useSettings`（欄位與舊設定遷移見「音訊」）；跨存檔資料（圖鑑/結局/CG/已讀）：`useGlobal`；UI 狀態：`useUI`。
 - 要存進存檔的欄位加在 `PersistedGame`（`src/store/save.ts`），**並**：升 `SAVE_VERSION`、新增 `migrations[n]`、補 `normalizeData` 預設值、補測試。
 - 所有 localStorage 存取只能透過 `src/store/storage.ts`。
 
@@ -100,4 +100,18 @@
 
 **備援規則**：manifest 沒有該 id、manifest 載入失敗、採用的版本音檔下載或解碼失敗（含尚未下載完成的 SFX），一律沿用 `src/audio/synth.ts` 的合成聲，行為與沒有音檔時完全相同。
 
-**播放行為**：瀏覽器在使用者互動前不允許出聲，第一次互動（點擊／按鍵）才建立並 resume AudioContext，之後補播目前應播的 BGM 並預載所有 `sfx/*`；BGM 按需下載、解碼後快取，切曲約 1 秒等功率交叉淡化（新曲還在下載時舊曲繼續播），同一首重複呼叫不重啟，`stopBgm()` 淡出；SFX 同一個 id 最多同時 4 個聲部，`blip` 保留 65ms 節流。音量＝設定的 `bgmVolume`／`sfxVolume`（即時反映）× 基準 0.8 × `gainDb`；建議音檔先正規化（峰值約 −1 dBFS），再用 `gainDb` 微調。
+**播放行為**：瀏覽器在使用者互動前不允許出聲，第一次互動（點擊／按鍵）才建立並 resume AudioContext，之後補播目前應播的 BGM 並預載所有 `sfx/*`；BGM 按需下載、解碼後快取，切曲約 1 秒等功率交叉淡化（新曲還在下載時舊曲繼續播），同一首重複呼叫不重啟，`stopBgm()` 淡出；SFX 同一個 id 最多同時 4 個聲部，`blip` 保留 65ms 節流。音量＝固定基準值（BGM 匯流排 0.3、音效 0.6，見 `engine.ts` 的 `BGM_VOLUME`／`SFX_VOLUME`）× 檔案基準 0.8 × `gainDb`；建議音檔先正規化（峰值約 −1 dBFS），再用 `gainDb` 微調。
+
+**音樂／音效／語音開關**（設定面板，`src/ui/Switch.tsx`：`role="switch"`＋`aria-checked`、ON／OFF 文字、Tab 聚焦 Space／Enter 切換）
+- 設定存布林值 `musicOn`／`sfxOn`／`voiceOn`（預設全開，經 `storage.ts` 持久化，`恢復預設`全開），**不再有音量滑桿**。舊設定的 `bgmVolume`／`sfxVolume`（數值）在讀取時遷移（`normalizeSettings`）：> 0 → 開、0 → 關；下次儲存時舊欄位就消失。新增設定欄位請一併補進 `normalizeSettings` 與 `tests/settings.test.ts`。
+- 關閉音樂：目前的 BGM 淡出（約 1 秒），`bgm(id)` 只記下「應播」的曲目、不載入也不播放；重新打開時恢復應播的那首。音樂鑑賞畫面在音樂（或音效）關閉時顯示「音樂已關閉／音效已關閉」並提供就地開啟的按鈕（關閉時試聽是靜音的）。關閉音效：`audio.sfx()` 直接略過。
+- 引擎吃設定的入口是 `AudioEngine.settingsChanged()`（`audio/index.ts` 訂閱 store 後呼叫）。
+
+**角色語音**（`voicePlayer.ts`、`voiceKey.ts`、`voiceManifest.ts`、`voiceText.ts`；UI 端 `src/ui/useVoice.ts`、`autoAdvance.ts`）
+- **誰有語音**：凜 `rin`、晴 `hare`、未來 `mirai`、索老師 `sensei`、黑川 `kuro`，以及無立繪 NPC（`npc(name, text)`）。**主角 `me` 與旁白 `narr` 沒有語音。**
+- **檔案契約**：`public/audio/voice/<sceneId>/<key>.mp3`，`public/audio/voice/manifest.json` 以 `"<sceneId>/<key>": { "src": "/audio/voice/<sceneId>/<key>.mp3", "duration": 秒 }` 對應（`duration` 選填；目前沒有音檔時整份是 `{}`）。manifest 沒有條目＝這行沒有語音，行為與沒有語音機制時完全相同；下載失敗、逾時（4 秒）一樣退回無語音。`tests/voiceAssets.test.ts` 檢查 manifest 與檔案一致。**只放成品 MP3。**
+- **key 規則**（`voiceKey(who, text, npcName?)`）：`SHA-1("<說話者 id>\n<台詞原文>")` 的前 12 碼（小寫十六進位）。台詞原文是劇本裡的字串，**保留 `{name}` 佔位符、不代入玩家名字**；NPC 的說話者部分是 `npc:<名牌>`（不同 NPC 說同一句可以配不同聲音）。因為只看「說話者＋原文」，調整台詞順序、在場景別處插入台詞，語音都還對得上；台詞文字（含標點）一改，key 就變、舊語音自然失效（退回無語音，重新產生即可）。runner 在每個有語音的 `say` Pause 上帶 `voice`（key），對話紀錄存檔也記它（`BacklogEntry.voice`，舊存檔沒有也能讀）。
+- **產生流程**：`node scripts/list-voice-lines.mjs` 列出所有需要配音的台詞，寫入 `scripts/audio/voice-lines.json`（決定性輸出，劇本改了就重跑並一起提交）。每筆有 `sceneId`、`key`、`speaker`（NPC 另有 `name`）、`face`、`text`（原文）、`voiceText`（**配音用文字**）、`hasName`、`lineIds`（同場景同說話者同原文的行共用一個 key／一個音檔）；`nameInline: true` 表示 `{name}` 夾在句中（例如「和{name}在天台」），去掉後不通順，請劇本作者改寫；配音用文字為空的行放在 `skipped`、不配音；`stats` 有各說話者的行數統計。
+- **配音用文字規則**（`voiceText(text)`，有單元測試 `tests/voiceText.test.ts`）：① 去掉 `{name}`（主角名字可自訂，語音唸不出來）並收乾淨多出的標點——「{name}，謝謝你」→「謝謝你」、「謝謝你，{name}。」→「謝謝你。」、「結論先說：{name}，我喜歡你」→「結論先說：我喜歡你」；名字兩側都有標點時留下較強的那個（句末 > 逗號類）；② 去掉括號內的舞台指示：「（小聲）謝謝你」→「謝謝你」（全形／半形括號、可巢狀）；③ 處理後為空字串或只剩標點（例如「{name}！」「……」「（嘆氣）」）→ 回傳 `null`，該行不配音。其餘文字（含開頭的「……」、「！」）原樣保留。
+- **播放行為**：顯示有語音的一行時播放（`useVoicePlayback`，掛在 `useVNInput`）；推進（`useGame.advance` 同步停止）、跳過、選項出現、開任何覆蓋畫面（選單／紀錄／存讀檔／設定…）、快轉（Ctrl）、關閉語音、離開遊戲回標題時停止（約 0.12 秒淡出）；快轉期間不播。自動播放模式等語音播完（`autoAdvanceDelay`：語音載入／播放中不計時）再加上原本的自動間隔才前進，沒有語音的行照原本邏輯。播放語音時 BGM 自動壓低 −6 dB（匯流排後的 ducking 節點，0.15 秒壓低、0.5 秒回復），連續兩行有語音時保持壓低不會忽大忽小。**語音關閉時完全不載入**（連 manifest 都不抓）；語音檔按需載入，並預載接下來 3 行（只看不分歧的範圍：遇到選項或 `when` 就停），解碼緩衝最多 24 筆（LRU）。對話紀錄（Backlog）中有語音的行旁邊有重播按鈕（再按一次停止；語音關閉時不顯示）。
+- 呼叫點只用 `audioVoice.play／stop／prefetch／manifest／getState／subscribe`（`src/audio/index.ts`）。

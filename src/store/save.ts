@@ -18,6 +18,8 @@ export interface BacklogEntry {
   /** custom display name for portraitless NPC lines (`who === 'npc'`) */
   name?: string
   text: string
+  /** 語音鍵（有語音的說話者才有；對話紀錄用它查語音 manifest 做重播）。舊存檔沒有這個欄位也能讀。 */
+  voice?: string
 }
 
 /** Everything that goes into a save slot. Keep JSON-serializable. */
@@ -119,6 +121,7 @@ export function normalizeData(raw: unknown): PersistedGame {
               text: b.text as string,
             }
             if (typeof b.name === 'string' && b.name.trim()) entry.name = b.name
+            if (typeof b.voice === 'string' && /^[0-9a-f]{12}$/.test(b.voice)) entry.voice = b.voice
             return entry
           })
       : [],

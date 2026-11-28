@@ -199,8 +199,8 @@ export function MusicGallery() {
   const [manifest, setManifest] = useState<AudioManifest | null>(null)
   const chosen = useSettings((s) => s.audioVariants)
   const setAudioVariant = useSettings((s) => s.setAudioVariant)
-  const bgmVolume = useSettings((s) => s.bgmVolume)
-  const sfxVolume = useSettings((s) => s.sfxVolume)
+  const musicOn = useSettings((s) => s.musicOn)
+  const sfxOn = useSettings((s) => s.sfxOn)
   const close = () => useUI.getState().setOverlay(null)
 
   // 進入時遊戲 BGM（標題曲）淡出，離開時依採用的版本恢復
@@ -226,7 +226,7 @@ export function MusicGallery() {
   }, [])
 
   const adoptedOf = (type: 'bgm' | 'sfx', id: string, item: ManifestItem) => resolveVariant(item, chosen[`${type}/${id}`])
-  const muted = tab === 'bgm' ? bgmVolume <= 0 : sfxVolume <= 0
+  const muted = tab === 'bgm' ? !musicOn : !sfxOn
 
   const tabBtn = (t: Tab, label: string) => (
     <button
@@ -261,7 +261,19 @@ export function MusicGallery() {
         <div className="mb-2.5 flex items-center gap-2">
           {tabBtn('bgm', '背景音樂')}
           {tabBtn('sfx', '音效')}
-          {muted && <span className="ml-3 text-sm text-[#f7b8c8]">{tab === 'bgm' ? 'BGM' : '音效'}音量目前為 0，請到「設定」調高才聽得到。</span>}
+          {muted && (
+            <span className="ml-3 flex items-center gap-2 text-sm text-[#f7b8c8]" data-testid="music-muted-hint">
+              {tab === 'bgm' ? '音樂' : '音效'}已關閉，聽不到試聽。
+              <button
+                type="button"
+                className="rounded-full border border-[#f7b8c8]/60 bg-[#f7b8c8]/15 px-3 py-0.5 text-sm font-bold text-[#ffd9e3] hover:bg-[#f7b8c8]/30"
+                data-testid="music-muted-enable"
+                onClick={() => useSettings.getState().set(tab === 'bgm' ? { musicOn: true } : { sfxOn: true })}
+              >
+                開啟{tab === 'bgm' ? '音樂' : '音效'}
+              </button>
+            </span>
+          )}
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto pr-1" data-testid={`music-section-${tab}`}>

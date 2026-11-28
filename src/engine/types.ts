@@ -98,7 +98,7 @@ export interface RunnerSnapshot {
 }
 
 export type Pause =
-  | { kind: 'say'; lineId: string; who: SpeakerId; face?: Face; name?: string; text: string }
+  | { kind: 'say'; lineId: string; who: SpeakerId; face?: Face; name?: string; text: string; /** 語音鍵（只有有語音的說話者才有；見 src/audio/voiceKey.ts） */ voice?: string }
   | { kind: 'choice'; lineId: string; options: { index: number; text: string }[] }
   | { kind: 'minigame'; lineId: string; id: MinigameId }
   | { kind: 'wait'; lineId: string; ms: number }

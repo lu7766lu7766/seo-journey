@@ -27,6 +27,20 @@ describe('save/load', () => {
     expect(readSave(1)).toBeNull()
     expect(listSaves().map((s) => !!s.env)).toEqual([false, false, true, false, false, false, false])
   })
+  it('對話紀錄的語音鍵會存檔；舊存檔（沒有語音鍵）與壞掉的語音鍵都能讀', () => {
+    const d = defaultPersisted('小明')
+    d.backlog = [
+      { lineId: 's#1', who: 'rin', text: '嗨', voice: 'a6f9021fcbb7' },
+      { lineId: 's#2', who: 'me', text: '嗨' },
+    ]
+    writeSave(1, d, 1)
+    expect(readSave(1)!.data.backlog).toEqual(d.backlog)
+    const raw = JSON.parse(safeGet('seo-journey:save:1')!)
+    raw.data.backlog[1].voice = 'not-a-key'
+    raw.data.backlog.push({ lineId: 's#3', who: 'hare', text: 'x', voice: 123 })
+    setStorage({ getItem: () => JSON.stringify(raw), setItem: () => {}, removeItem: () => {} })
+    expect(readSave(1)!.data.backlog.map((b) => b.voice)).toEqual(['a6f9021fcbb7', undefined, undefined])
+  })
   it('latestSave picks the newest', () => {
     writeSave(1, defaultPersisted('a'), 10)
     writeSave('auto', defaultPersisted('b'), 99)
