@@ -1,5 +1,5 @@
 import type { Cmd, HeroineId } from '@/engine'
-import { bg, bgm, choice, hide, opt, say, scene, sfx, show, wait, when } from '@/engine'
+import { bg, bgm, choice, hide, opt, say, scene, show, wait, when } from '@/engine'
 import { scoreIs, seen } from '@/engine/cond'
 
 /** three tiers (>= 65 / 40-64 / < 40): nested `when` so exactly one tier plays */
@@ -14,7 +14,6 @@ export default scene('festival', [
   say('sensei', 'smile', '輪到我們了，{name}。我的咖啡緊張到沒喝完，這很稀有，請珍惜。'),
   hide('sensei'),
 
-  sfx('choice'),
   show('rin', 'left', 'normal'),
   show('hare', 'center', 'normal'),
   show('mirai', 'right', 'normal'),

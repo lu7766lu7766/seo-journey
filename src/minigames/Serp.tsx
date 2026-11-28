@@ -38,7 +38,7 @@ export function Serp({
   const finishOnce = (passed: boolean, stars: Stars) => {
     if (resolvedRef.current) return
     resolvedRef.current = true
-    audio.sfx(passed ? 'card' : 'click')
+    audio.sfx(passed ? 'win' : 'fail')
     onResolve(passed, stars)
   }
 

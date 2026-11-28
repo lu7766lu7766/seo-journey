@@ -2,6 +2,7 @@
 import type { AudioBackend, BgmFileOptions, BgmVoice } from './engine'
 import { loopPosition } from './manifest'
 import { playSynthSfx, startSynthBgm } from './synth'
+import { VOICE_MANIFEST_URL } from './voiceManifest'
 
 const MANIFEST_URL = '/audio/manifest.json'
 const CURVE_N = 48
@@ -19,7 +20,10 @@ function curve(kind: 'in' | 'out', peak: number): Float32Array {
 export function createWebBackend(): AudioBackend {
   let ctx: AudioContext | null = null
   let bus: GainNode | null = null
+  /** BGM ducking（語音播放時把 BGM 壓低）：bus → duck → destination */
+  let duck: GainNode | null = null
   let bgmVol = 0.3
+  let duckGain = 1
 
   const ensureCtx = (): AudioContext | null => {
     try {
@@ -27,7 +31,9 @@ export function createWebBackend(): AudioBackend {
         ctx = new AudioContext()
         bus = ctx.createGain()
         bus.gain.value = bgmVol
-        bus.connect(ctx.destination)
+        duck = ctx.createGain()
+        duck.gain.value = duckGain
+        bus.connect(duck).connect(ctx.destination)
       }
       return ctx
     } catch {
@@ -105,6 +111,12 @@ export function createWebBackend(): AudioBackend {
       return res.json()
     },
 
+    async loadVoiceManifest() {
+      const res = await fetch(VOICE_MANIFEST_URL, { cache: 'no-cache' })
+      if (!res.ok) return {}
+      return res.json()
+    },
+
     async loadBuffer(src) {
       const c = ensureCtx()
       if (!c) return null
@@ -152,6 +164,47 @@ export function createWebBackend(): AudioBackend {
     playSfxSynth(id, vol) {
       const c = ensureCtx()
       if (c) playSynthSfx(c, id, vol)
+    },
+
+    playVoiceFile(buffer, gain, onEnded) {
+      const c = ensureCtx()
+      if (!c) {
+        onEnded()
+        return { stop() {} }
+      }
+      const src = c.createBufferSource()
+      src.buffer = buffer as AudioBuffer
+      const g = c.createGain()
+      g.gain.value = gain
+      src.connect(g).connect(c.destination)
+      src.onended = () => {
+        try {
+          src.disconnect()
+          g.disconnect()
+        } catch {
+          /* ignore */
+        }
+        onEnded()
+      }
+      src.start()
+      return {
+        stop(fadeSec) {
+          const t = c.currentTime
+          try {
+            g.gain.cancelScheduledValues(t)
+            g.gain.setValueAtTime(g.gain.value, t)
+            g.gain.linearRampToValueAtTime(0, t + Math.max(0.02, fadeSec))
+            src.stop(t + Math.max(0.02, fadeSec) + 0.02)
+          } catch {
+            /* already stopped */
+          }
+        },
+      }
+    },
+
+    setBgmDuck(gain, rampSec) {
+      duckGain = gain
+      if (ctx && duck) duck.gain.setTargetAtTime(gain, ctx.currentTime, Math.max(0.01, rampSec / 3))
     },
 
     setBgmVolume(v) {

@@ -5,7 +5,7 @@ export default scene('prologue', [
   bg('gate', 'day'),
   say('narr', undefined, '四月，風把櫻花瓣一把一把灑進青葉學園的紅磚校門。'),
   say('me', undefined, '轉學第一天。目標：低調、安靜、不引人注目。'),
-  sfx('choice'),
+  sfx('fail'),
   bg('gate', 'day', 'flash'),
   show('hare', 'center', 'surprised'),
   say('hare', 'surprised', '讓一讓讓一讓——！結論先說：我煞不住！'),
@@ -55,6 +55,7 @@ export default scene('prologue', [
   ]),
   hide('all'),
 
+  bgm('theme_mirai'),
   bg('corridor', 'dusk', 'fade'),
   show('mirai', 'center', 'normal'),
   say('mirai', 'normal', '……已讀取。星野未來，搜尋祭的特邀評審。'),
@@ -63,6 +64,7 @@ export default scene('prologue', [
   say('me', undefined, '這間學園的女生，出場方式都不太正常耶。'),
   hide('mirai'),
 
+  bgm('daily'),
   bg('clubroom', 'dusk', 'fade'),
   show('sensei', 'center', 'smile'),
   say('sensei', 'smile', '規則很簡單：平日排程養成網站，放學接委託，週末約人出門。'),

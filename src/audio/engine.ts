@@ -4,6 +4,7 @@
  * 不直接碰 Web Audio——所有實際發聲都經過可注入的 `AudioBackend`，方便單元測試。
  */
 import { dbToGain, parseManifest, pickSource, type AudioManifest, type ManifestEntry } from './manifest'
+import { VoicePlayer, type VoiceBackend } from './voicePlayer'
 
 export interface BgmVoice {
   /** 以等功率曲線淡出後停止 */
@@ -26,7 +27,7 @@ export interface BgmFileOptions {
   offset?: number
 }
 
-export interface AudioBackend {
+export interface AudioBackend extends VoiceBackend {
   /** 建立／恢復 AudioContext；在使用者手勢內同步呼叫。回傳是否已在 running。 */
   unlock(): Promise<boolean>
   loadManifest(): Promise<unknown>
@@ -37,13 +38,17 @@ export interface AudioBackend {
   /** 播放音效檔；`onEnded` 在播完時呼叫 */
   playSfxFile(buffer: unknown, gain: number, onEnded: () => void): void
   playSfxSynth(id: string, vol: number): void
-  /** 即時設定 BGM 主音量（bgmVolume） */
+  /** 設定 BGM 匯流排音量（0..1） */
   setBgmVolume(v: number): void
 }
 
 export interface EngineSettings {
-  bgmVolume: number
-  sfxVolume: number
+  /** 音樂開關：關閉時目前的 BGM 淡出、不再載入或播放 BGM（`desired` 仍記著，重新打開時恢復） */
+  musicOn: boolean
+  /** 音效開關 */
+  sfxOn: boolean
+  /** 語音開關：關閉時完全不載入語音檔 */
+  voiceOn: boolean
   /** `bgm/<id>`／`sfx/<id>` → 採用的版本 id；沒有的用 manifest 的 default */
   audioVariants?: Record<string, string>
 }
@@ -68,7 +73,11 @@ export const PREVIEW_FADE_SEC = 0.3
 /** 單一音效最多同時發聲數 */
 export const MAX_SFX_VOICES = 4
 export const BLIP_MIN_GAP_MS = 65
-/** 音檔的基準音量（再乘上 gainDb 與使用者音量），避免滿刻度檔案過響 */
+/** BGM 匯流排的固定音量（音樂開關為「開」時） */
+export const BGM_VOLUME = 0.3
+/** 音效的固定音量（音效開關為「開」時） */
+export const SFX_VOLUME = 0.6
+/** 音檔的基準音量（再乘上 gainDb 與匯流排音量），避免滿刻度檔案過響 */
 export const BGM_FILE_BASE = 0.8
 export const SFX_FILE_BASE = 0.8
 /** 同時保留在記憶體的 BGM 解碼緩衝上限（一首約 40MB） */
@@ -111,11 +120,31 @@ export class AudioEngine {
 
   private lastBlipAt = -Infinity
   private sfxActive = new Map<string, number>()
+  private musicWasOn: boolean
+
+  /** 角色語音（與 BGM／SFX 共用解鎖狀態與 BGM 匯流排的 ducking） */
+  readonly voice: VoicePlayer
 
   constructor(deps: EngineDeps) {
     this.backend = deps.backend
     this.getSettings = deps.getSettings
     this.now = deps.now ?? (() => Date.now())
+    this.musicWasOn = this.getSettings().musicOn
+    this.voice = new VoicePlayer({
+      backend: deps.backend,
+      getVoiceOn: () => this.getSettings().voiceOn,
+      unlock: () => this.unlock(),
+      isUnlocked: () => this.unlocked,
+    })
+  }
+
+  private get musicOn() {
+    return this.getSettings().musicOn
+  }
+
+  /** BGM 匯流排音量：平常固定；只有鑑賞畫面在音樂關閉時保持靜音（遊戲 BGM 關閉時是淡出而不是直接截斷）。 */
+  private busVolume() {
+    return this.previewMode && !this.musicOn ? 0 : BGM_VOLUME
   }
 
   get currentBgm(): string | null {
@@ -159,9 +188,9 @@ export class AudioEngine {
 
   private onUnlocked() {
     this.unlocked = true
-    this.backend.setBgmVolume(this.getSettings().bgmVolume)
+    this.backend.setBgmVolume(this.busVolume())
     void this.preloadSfx()
-    if (this.desired && !this.playing && !this.previewMode) void this.startBgm(this.desired, ++this.token)
+    if (this.desired && !this.playing && !this.previewMode && this.musicOn) void this.startBgm(this.desired, ++this.token)
   }
 
   /** 只預載「目前採用的版本」，不載其他候選 */
@@ -213,8 +242,27 @@ export class AudioEngine {
     return p
   }
 
-  setBgmVolume(v: number) {
-    this.backend.setBgmVolume(v)
+  /**
+   * 設定改變（音樂／音效／語音開關）。音樂關閉：目前的 BGM 淡出（`desired` 保留）；重新打開：恢復應播的曲目。
+   * 語音關閉：立刻停止目前語音。
+   */
+  settingsChanged() {
+    this.backend.setBgmVolume(this.busVolume())
+    const on = this.musicOn
+    if (on !== this.musicWasOn) {
+      this.musicWasOn = on
+      if (!this.previewMode) {
+        const token = ++this.token // 取消任何尚在下載的請求
+        if (!on) {
+          const p = this.playing
+          this.playing = null
+          p?.voice.fadeOut(FADE_SEC)
+        } else if (this.desired && this.unlocked) {
+          void this.startBgm(this.desired, token)
+        }
+      }
+    }
+    this.voice.settingsChanged()
   }
 
   /** 設定中的版本選擇改變：預載新採用的音效；若該首 BGM 正在播，交叉淡化到新版本。 */
@@ -231,8 +279,8 @@ export class AudioEngine {
   sfx(id: string) {
     void this.unlock()
     void this.init()
-    const vol = this.getSettings().sfxVolume
-    if (vol <= 0) return
+    if (!this.getSettings().sfxOn) return
+    const vol = SFX_VOLUME
     if (id === 'blip') {
       const t = this.now()
       if (t - this.lastBlipAt < BLIP_MIN_GAP_MS) return
@@ -271,8 +319,8 @@ export class AudioEngine {
     if (this.playing?.id === id) return // 切回正在播的那首：保持不動
     void this.init()
     // 不在這裡 unlock：瀏覽器要求 AudioContext 在使用者手勢內建立，手勢監聽（index.ts）與 sfx() 會負責
-    if (this.unlocked) void this.startBgm(id, token)
-    // 未解鎖：等 onUnlocked 補播
+    if (this.unlocked && this.musicOn) void this.startBgm(id, token)
+    // 未解鎖：等 onUnlocked 補播；音樂關閉：只記下，重新打開時補播
   }
 
   stopBgm() {
@@ -340,6 +388,7 @@ export class AudioEngine {
     const old = this.playing
     this.playing = null
     old?.voice.fadeOut(FADE_SEC)
+    this.backend.setBgmVolume(this.busVolume())
   }
 
   /** 離開鑑賞：試聽淡出，並依目前採用的版本恢復遊戲的 BGM。 */
@@ -351,7 +400,8 @@ export class AudioEngine {
     const old = this.playing
     this.playing = null
     old?.voice.fadeOut(PREVIEW_FADE_SEC)
-    if (this.desired && this.unlocked) void this.startBgm(this.desired, token)
+    this.backend.setBgmVolume(this.busVolume())
+    if (this.desired && this.unlocked && this.musicOn) void this.startBgm(this.desired, token)
   }
 
   /** 試聽某首 BGM 的某個版本（無縫循環）。一次只播一首：會取代正在試聽的那首。`resume` 從上次暫停處繼續。 */
@@ -433,9 +483,8 @@ export class AudioEngine {
         const entry = m[`sfx/${id}`]?.variants[variant]
         if (!entry) return
         const [buf] = await Promise.all([this.buffer(entry.src), unlocking])
-        const vol = this.getSettings().sfxVolume
-        if (!buf || vol <= 0) return
-        this.playSfxBuffer(`${id}:${variant}`, buf, vol, entry)
+        if (!buf || !this.getSettings().sfxOn) return
+        this.playSfxBuffer(`${id}:${variant}`, buf, SFX_VOLUME, entry)
       } catch {
         /* ignore audio errors */
       }

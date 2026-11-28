@@ -1,6 +1,7 @@
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { BGM_IDS, SFX_IDS } from '@/audio/synth'
 import { BG_IDS } from '@/content/backgrounds'
 import { CG_IDS } from '@/content/cgs'
 import { CHARACTERS, FACES, SPRITE_IDS, SPEAKER_IDS } from '@/content/characters'
@@ -55,6 +56,12 @@ export function lintScene(s: Scene): string[] {
         break
       case 'bg':
         if (!BG_IDS.includes(cmd.id)) E(path, `unknown bg ${cmd.id}`)
+        break
+      case 'bgm':
+        if (!(BGM_IDS as readonly string[]).includes(cmd.id)) E(path, `unknown bgm ${cmd.id}`)
+        break
+      case 'sfx':
+        if (!(SFX_IDS as readonly string[]).includes(cmd.id)) E(path, `unknown sfx ${cmd.id}`)
         break
       case 'card':
         if (!KNOWLEDGE_IDS.includes(cmd.id)) E(path, `unknown card ${cmd.id}`)

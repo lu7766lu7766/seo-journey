@@ -1,7 +1,7 @@
 import { bg, bgm, cg, choice, hide, opt, say, scene, show } from '@/engine'
 
 export default scene('date-hare-3', [
-  bgm('warm'),
+  bgm('theme_hare'),
   bg('beach', 'dusk'),
   say('narr', undefined, '海風帶著鹹味，浪一層一層捲上沙灘。'),
   show('hare', 'center', 'happy'),
@@ -19,6 +19,7 @@ export default scene('date-hare-3', [
     ]),
   ]),
   hide('hare'),
+  bgm('warm'),
   cg('date-hare-3'),
   say('narr', undefined, '她站在金色的浪裡，把耳機輕輕戴到我的耳朵上。'),
   say('hare', 'blush', '結論先說。我想說的是……我……'),

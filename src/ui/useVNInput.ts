@@ -4,6 +4,8 @@ import { useGame } from '@/store/game'
 import { useGlobal } from '@/store/global'
 import { useSettings } from '@/store/settings'
 import { useUI } from '@/store/ui'
+import { autoAdvanceDelay, isVoiceBusy } from './autoAdvance'
+import { useVoicePlayback, useVoiceState } from './useVoice'
 
 const isCtrlKey = (e: KeyboardEvent) =>
   e.key === 'Control' || e.code === 'ControlLeft' || e.code === 'ControlRight'
@@ -29,6 +31,7 @@ export function requestAdvance() {
 
 export function useVNInput() {
   const ctrlHeldRef = useRef(false)
+  useVoicePlayback()
 
   // keyboard
   useEffect(() => {
@@ -49,7 +52,11 @@ export function useVNInput() {
       if (isTextInputFocused()) return
       if (e.key.toLowerCase() === 'l') return ui.setOverlay(ui.overlay === 'backlog' ? null : ui.overlay ? ui.overlay : 'backlog')
       if (ui.overlay) return
-      if (e.key.toLowerCase() === 'h') return ui.set({ hidden: !ui.hidden })
+      // 小遊戲進行中不允許隱藏介面：隱藏會卸載 MinigameHost，作答進度會遺失
+      if (e.key.toLowerCase() === 'h') {
+        if (useGame.getState().pause.kind === 'minigame') return
+        return ui.set({ hidden: !ui.hidden })
+      }
       if (e.key.toLowerCase() === 'a') return ui.set({ auto: !ui.auto })
       const p = useGame.getState().pause
       if (p.kind === 'choice' && /^[1-9]$/.test(e.key)) {
@@ -93,6 +100,8 @@ export function useVNInput() {
   const skipping = useUI((s) => s.skipping)
   const overlay = useUI((s) => s.overlay)
   const autoDelay = useSettings((s) => s.autoDelayMs)
+  const voice = useVoiceState()
+  const voiceBusy = pause.kind === 'say' && isVoiceBusy(voice, pause.lineId)
 
   useEffect(() => {
     if (pause.kind !== 'wait' || overlay) return
@@ -101,10 +110,15 @@ export function useVNInput() {
   }, [pause, overlay])
 
   useEffect(() => {
-    if (!auto || !typed || pause.kind !== 'say' || overlay || skipping) return
-    const t = setTimeout(() => useGame.getState().advance(), autoDelay + pause.text.length * 15)
+    // 有語音的行：等語音播完（voiceBusy 變成 false）才開始計原本的自動間隔
+    const delay = autoAdvanceDelay({
+      auto, typed, isSay: pause.kind === 'say', overlay: !!overlay, skipping, voiceBusy, autoDelayMs: autoDelay,
+      textLength: pause.kind === 'say' ? pause.text.length : 0,
+    })
+    if (delay === null) return
+    const t = setTimeout(() => useGame.getState().advance(), delay)
     return () => clearTimeout(t)
-  }, [auto, typed, pause, overlay, skipping, autoDelay])
+  }, [auto, typed, pause, overlay, skipping, autoDelay, voiceBusy])
 
   useEffect(() => {
     if (!skipping) return

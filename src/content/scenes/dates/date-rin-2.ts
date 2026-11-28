@@ -1,7 +1,7 @@
 import { bg, bgm, choice, hide, opt, say, scene, show } from '@/engine'
 
 export default scene('date-rin-2', [
-  bgm('daily'),
+  bgm('theme_rin'),
   bg('council', 'dusk'),
   say('narr', undefined, '週末加班的學生會室，夕陽把文件堆染成橘色。'),
   show('rin', 'center', 'normal'),

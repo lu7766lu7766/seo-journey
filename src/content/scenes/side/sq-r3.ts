@@ -1,7 +1,7 @@
 import { bg, bgm, card, choice, hide, minigame, opt, say, scene, show } from '@/engine'
 
 export default scene('sq-r3', [
-  bgm('warm'),
+  bgm('theme_rin'),
   bg('gate', 'dusk'),
   say('narr', undefined, '校門口的櫻花瓣落了一地。凜蹲在花圃邊，掌心攤著一小把貓飼料。'),
   say('me', undefined, '學姊？'),

@@ -1,7 +1,7 @@
 import { bg, bgm, choice, flag, hide, opt, say, scene, show, when } from '@/engine'
 
 export default scene('date-mirai-casual', [
-  bgm('warm'),
+  bgm('theme_mirai'),
   when(
     flag('dateCount.mirai', 'gte', 3),
     [

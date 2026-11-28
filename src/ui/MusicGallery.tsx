@@ -6,11 +6,18 @@ import { useUI } from '@/store/ui'
 
 /** 背景音樂：曲名與用途（順序即畫面順序） */
 const BGM_TRACKS: { id: string; name: string; usage: string }[] = [
-  { id: 'title', name: '直到你找到我', usage: '標題曲' },
+  { id: 'title', name: '直到你找到我', usage: '標題曲、真結局收尾' },
   { id: 'daily', name: '404 號社辦的日常', usage: '校園日常' },
+  { id: 'sim', name: '本週企劃中！', usage: '排程、公佈欄、週末、週報' },
+  { id: 'minigame', name: '實戰演練！', usage: '小遊戲' },
   { id: 'warm', name: '放學後的晚霞', usage: '溫馨心動' },
-  { id: 'tense', name: '演算法的大雨', usage: '緊張' },
-  { id: 'festival', name: '搜尋祭', usage: '祭典' },
+  { id: 'melancholy', name: '404 的雨夜', usage: '低落、脆弱' },
+  { id: 'tense', name: '演算法的大雨', usage: '輕度懸疑、危機' },
+  { id: 'comedy', name: '黑帽推銷中！', usage: '搞笑吐槽' },
+  { id: 'festival', name: '青葉搜尋祭', usage: '學園祭' },
+  { id: 'theme_rin', name: '規則與貓咪', usage: '白鷺凜主題' },
+  { id: 'theme_hare', name: '結論先說！', usage: '夏川晴主題' },
+  { id: 'theme_mirai', name: '星光資料庫', usage: '星野未來主題' },
 ]
 
 /** 音效：中文名與觸發情境 */
@@ -23,6 +30,7 @@ const SFX_SOUNDS: { id: string; name: string; usage: string }[] = [
   { id: 'bond', name: '好感上升', usage: '好感度增加' },
   { id: 'fail', name: '失誤／倒下', usage: '小遊戲失誤、體力歸零' },
   { id: 'win', name: '小遊戲過關', usage: '小遊戲完成' },
+  { id: 'shock', name: '危機衝擊', usage: '演算法暴雨等嚴肅轉折' },
 ]
 
 type Tab = 'bgm' | 'sfx'
@@ -199,8 +207,8 @@ export function MusicGallery() {
   const [manifest, setManifest] = useState<AudioManifest | null>(null)
   const chosen = useSettings((s) => s.audioVariants)
   const setAudioVariant = useSettings((s) => s.setAudioVariant)
-  const bgmVolume = useSettings((s) => s.bgmVolume)
-  const sfxVolume = useSettings((s) => s.sfxVolume)
+  const musicOn = useSettings((s) => s.musicOn)
+  const sfxOn = useSettings((s) => s.sfxOn)
   const close = () => useUI.getState().setOverlay(null)
 
   // 進入時遊戲 BGM（標題曲）淡出，離開時依採用的版本恢復
@@ -226,7 +234,7 @@ export function MusicGallery() {
   }, [])
 
   const adoptedOf = (type: 'bgm' | 'sfx', id: string, item: ManifestItem) => resolveVariant(item, chosen[`${type}/${id}`])
-  const muted = tab === 'bgm' ? bgmVolume <= 0 : sfxVolume <= 0
+  const muted = tab === 'bgm' ? !musicOn : !sfxOn
 
   const tabBtn = (t: Tab, label: string) => (
     <button
@@ -261,7 +269,19 @@ export function MusicGallery() {
         <div className="mb-2.5 flex items-center gap-2">
           {tabBtn('bgm', '背景音樂')}
           {tabBtn('sfx', '音效')}
-          {muted && <span className="ml-3 text-sm text-[#f7b8c8]">{tab === 'bgm' ? 'BGM' : '音效'}音量目前為 0，請到「設定」調高才聽得到。</span>}
+          {muted && (
+            <span className="ml-3 flex items-center gap-2 text-sm text-[#f7b8c8]" data-testid="music-muted-hint">
+              {tab === 'bgm' ? '音樂' : '音效'}已關閉，聽不到試聽。
+              <button
+                type="button"
+                className="rounded-full border border-[#f7b8c8]/60 bg-[#f7b8c8]/15 px-3 py-0.5 text-sm font-bold text-[#ffd9e3] hover:bg-[#f7b8c8]/30"
+                data-testid="music-muted-enable"
+                onClick={() => useSettings.getState().set(tab === 'bgm' ? { musicOn: true } : { sfxOn: true })}
+              >
+                開啟{tab === 'bgm' ? '音樂' : '音效'}
+              </button>
+            </span>
+          )}
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto pr-1" data-testid={`music-section-${tab}`}>

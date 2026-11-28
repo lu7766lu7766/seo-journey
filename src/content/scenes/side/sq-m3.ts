@@ -1,7 +1,7 @@
 import { bg, bgm, card, choice, hide, minigame, opt, say, scene, show } from '@/engine'
 
 export default scene('sq-m3', [
-  bgm('warm'),
+  bgm('melancholy'),
   bg('planetarium', 'night'),
   say('narr', undefined, '天文館的圓頂空蕩蕩的，人造星空正緩緩旋轉。'),
   show('mirai', 'center', 'sad'),
@@ -61,12 +61,13 @@ export default scene('sq-m3', [
   say('mirai', 'normal', '但它呼應「有幫助的內容」：提供原創資訊，超越顯而易見。'),
   say('me', undefined, '所以不是為了分數，是為了讓人多知道一件事。'),
   card('information-gain'),
+  bgm('theme_mirai'),
   say('narr', undefined, '她抱緊平板，抬頭看圓頂的星空。'),
   say('mirai', 'normal', '請出題。我想知道，自己能不能被引用。'),
   minigame('sq-m3', { stats: { con: 6, tru: 4 }, bond: { mirai: 4 } }, { stats: { con: 3, tru: 2 }, bond: { mirai: 4 } }),
 
   show('mirai', 'center', 'think'),
-  say('mirai', 'think', '我想補一段：和{name}在天台，實測的一夜。'),
+  say('mirai', 'think', '我想補一段：和你一起在天台，實測的一夜。'),
   say('mirai', 'think', '署名……要用「星野未來」嗎？'),
   choice([
     opt('當然，那是妳寫的', { bond: { mirai: 1 } }, [

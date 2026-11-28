@@ -1,7 +1,7 @@
 import { bg, bgm, cg, choice, hide, opt, say, scene, show } from '@/engine'
 
 export default scene('date-mirai-3', [
-  bgm('warm'),
+  bgm('theme_mirai'),
   bg('rooftop', 'night'),
   say('narr', undefined, '夜裡的天台，風很涼，城市燈火在腳下閃爍。'),
   show('mirai', 'center', 'normal'),
@@ -19,6 +19,7 @@ export default scene('date-mirai-3', [
     ]),
   ]),
   hide('mirai'),
+  bgm('warm'),
   cg('date-mirai-3'),
   say('narr', undefined, '星空下，她轉過身，髮夾像一顆小小的星。'),
   say('mirai', 'blush', '我想成為被引用的來源，而不是被複製的內容。'),

@@ -10,9 +10,9 @@ const engine = new AudioEngine({
 })
 
 if (typeof window !== 'undefined') {
-  // 音量滑桿即時反映
+  // 音樂／音效／語音開關即時反映
   useSettings.subscribe((s, prev) => {
-    engine.setBgmVolume(s.bgmVolume)
+    if (s.musicOn !== prev.musicOn || s.sfxOn !== prev.sfxOn || s.voiceOn !== prev.voiceOn) engine.settingsChanged()
     // 換了採用的版本：預載新音效，正在播的 BGM 交叉淡化到新版本
     if (s.audioVariants !== prev.audioVariants) engine.variantsChanged()
   })
@@ -37,6 +37,20 @@ export const audio = {
   get currentBgm() {
     return engine.currentBgm
   },
+}
+
+/** 角色語音（播放機制見 `voicePlayer.ts`）。 */
+export const audioVoice = {
+  /** 播放某行語音（沒有語音時狀態為 `none`）；會先停掉目前的語音。 */
+  play: (lineId: string, sceneId: string, key: string) => engine.voice.play(lineId, sceneId, key),
+  /** 停止目前語音（短淡出）並恢復 BGM。 */
+  stop: () => engine.voice.stop(),
+  /** 預載接下來幾行。 */
+  prefetch: (sceneId: string, keys: string[]) => engine.voice.prefetch(sceneId, keys),
+  getState: engine.voice.getState,
+  subscribe: engine.voice.subscribe,
+  /** 語音 manifest（語音關閉時為 {}，不下載）。 */
+  manifest: () => engine.voice.manifest(),
 }
 
 /** 音樂鑑賞畫面用的預覽 API（一次只播一首；進入時遊戲 BGM 淡出，離開時依採用的版本恢復）。 */

@@ -2,7 +2,7 @@ import { bg, bgm, card, choice, hide, minigame, opt, say, scene, show, when } fr
 import { bondIs } from '@/engine/cond'
 
 export default scene('w5', [
-  bgm('warm'),
+  bgm('daily'),
   bg('library', 'day'),
   say('narr', undefined, '第五週週一。圖書館午後安靜得能聽見翻頁聲，我和未來並肩坐著。'),
   show('mirai', 'center', 'normal'),
@@ -43,6 +43,7 @@ export default scene('w5', [
   say('mirai', 'smile', '答案先行，人類好讀，機器也更容易讀對。這是 AEO 與 GEO 的交集。'),
   hide('all'),
 
+  bgm('melancholy'),
   bg('rooftop', 'dusk', 'fade'),
   say('narr', undefined, '傍晚，天台的風把雲吹成一條條粉橘色的絲。未來獨自倚著欄杆。'),
   show('mirai', 'center', 'sad'),
@@ -50,6 +51,7 @@ export default scene('w5', [
   say('mirai', 'sad', '有時候我會想，我是不是也只是一個「複製品」？'),
   say('me', undefined, '複製品不會悄悄站在我背後，還嚇我一跳。'),
   say('me', undefined, '妳會提問、會挑剔、會笑。未來是未來，不是誰的副本。'),
+  bgm('theme_mirai'),
   show('mirai', 'center', 'surprised'),
   when(
     bondIs('mirai', 'gte', 20),

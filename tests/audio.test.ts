@@ -182,8 +182,9 @@ interface FakeVoice extends BgmVoice {
   stopped?: boolean
 }
 
-function setup(manifest: unknown, opts: { unlock?: boolean; sfxVolume?: number; failSrc?: string[]; variants?: Record<string, string> } = {}) {
+function setup(manifest: unknown, opts: { unlock?: boolean; sfxOn?: boolean; musicOn?: boolean; failSrc?: string[]; variants?: Record<string, string> } = {}) {
   let variants: Record<string, string> = opts.variants ?? {}
+  const flags = { musicOn: opts.musicOn ?? true, sfxOn: opts.sfxOn ?? true, voiceOn: true }
   const log: string[] = []
   const voices: FakeVoice[] = []
   const sfxFiles: { src: string; gain: number; end: () => void }[] = []
@@ -239,10 +240,16 @@ function setup(manifest: unknown, opts: { unlock?: boolean; sfxVolume?: number; 
     setBgmVolume: (v) => {
       bgmVolume = v
     },
+    loadVoiceManifest: () => Promise.resolve({}),
+    playVoiceFile: (_b, _g, end) => {
+      end()
+      return { stop() {} }
+    },
+    setBgmDuck: () => {},
   }
   const engine = new AudioEngine({
     backend,
-    getSettings: () => ({ bgmVolume: 0.3, sfxVolume: opts.sfxVolume ?? 0.6, audioVariants: variants }),
+    getSettings: () => ({ ...flags, audioVariants: variants }),
     now: () => t,
   })
   const tick = async (n = 6) => {
@@ -266,6 +273,11 @@ function setup(manifest: unknown, opts: { unlock?: boolean; sfxVolume?: number; 
     },
     setVariants: (v: Record<string, string>) => {
       variants = v
+    },
+    /** 改設定並通知引擎（與 audio/index.ts 的訂閱一致） */
+    setFlags: (p: Partial<typeof flags>) => {
+      Object.assign(flags, p)
+      engine.settingsChanged()
     },
     failManifest: () => {
       loadManifestImpl = () => Promise.reject(new Error('404'))
@@ -411,6 +423,16 @@ describe('AudioEngine：BGM 狀態機', () => {
     expect(s.voices[0]).toMatchObject({ kind: 'synth', id: 'title' })
   })
 
+  it('新增的 BGM id（manifest 沒有條目）一律退回合成聲、不報錯', async () => {
+    const s = setup(MANIFEST)
+    await s.engine.unlock()
+    for (const id of ['sim', 'minigame', 'melancholy', 'comedy', 'theme_rin', 'theme_hare', 'theme_mirai']) {
+      s.engine.bgm(id)
+      await s.tick()
+      expect(s.voices.at(-1)).toMatchObject({ kind: 'synth', id })
+    }
+  })
+
   it('manifest 載入失敗或為 {} → 全部合成', async () => {
     const s = setup({})
     await s.engine.unlock()
@@ -423,6 +445,68 @@ describe('AudioEngine：BGM 狀態機', () => {
     f.engine.bgm('daily')
     await f.tick()
     expect(f.voices[0].kind).toBe('synth')
+  })
+})
+
+describe('AudioEngine：音樂開關', () => {
+  it('關閉：目前的 BGM 淡出、之後的 bgm() 只記下不播；重新打開：恢復應播的曲目', async () => {
+    const s = setup(MANIFEST)
+    await s.engine.unlock()
+    s.engine.bgm('title')
+    await s.tick()
+    expect(s.voices).toHaveLength(1)
+    s.setFlags({ musicOn: false })
+    expect(s.voices[0].fadedOut).toBe(FADE_SEC) // 淡出而不是直接截斷
+    expect(s.bgmVolume).toBe(0.3) // 匯流排維持固定音量，淡出才聽得到
+    s.engine.bgm('daily') // 關閉期間換曲：只記下
+    await s.tick()
+    expect(s.engine.currentBgm).toBe('daily')
+    expect(s.voices).toHaveLength(1)
+    s.setFlags({ musicOn: true })
+    await s.tick()
+    expect(s.voices).toHaveLength(2)
+    expect(s.voices[1].src).toBe('/audio/bgm/daily.mp3') // 恢復的是「應播」的曲目，不是關閉當時那首
+  })
+
+  it('關閉後再重複打開／關閉，不會同時有兩首；關閉時載入中的請求被取消', async () => {
+    const s = setup(MANIFEST)
+    await s.engine.unlock()
+    s.hold('/audio/bgm/title.mp3')
+    s.engine.bgm('title')
+    await s.tick()
+    s.setFlags({ musicOn: false })
+    s.release('/audio/bgm/title.mp3')
+    await s.tick()
+    expect(s.voices).toHaveLength(0)
+    s.setFlags({ musicOn: true })
+    await s.tick()
+    expect(s.voices.filter((v) => !v.fadedOut)).toHaveLength(1)
+  })
+
+  it('音樂關閉啟動：解鎖後不播 BGM，打開才播', async () => {
+    const s = setup(MANIFEST, { musicOn: false })
+    s.engine.bgm('title')
+    await s.engine.unlock()
+    await s.tick()
+    expect(s.voices).toHaveLength(0)
+    s.setFlags({ musicOn: true })
+    await s.tick()
+    expect(s.voices).toHaveLength(1)
+  })
+
+  it('鑑賞畫面：音樂關閉時匯流排靜音，打開後恢復；離開鑑賞音樂關閉就不恢復遊戲 BGM', async () => {
+    const s = setup(MANIFEST, { musicOn: false })
+    await s.engine.unlock()
+    s.engine.bgm('title')
+    s.engine.beginPreview()
+    expect(s.bgmVolume).toBe(0)
+    s.setFlags({ musicOn: true })
+    expect(s.bgmVolume).toBe(0.3)
+    s.setFlags({ musicOn: false })
+    s.engine.endPreview()
+    await s.tick()
+    expect(s.bgmVolume).toBe(0.3)
+    expect(s.voices).toHaveLength(0)
   })
 })
 
@@ -450,7 +534,7 @@ describe('AudioEngine：SFX', () => {
     expect(s.sfxFiles).toHaveLength(MAX_SFX_VOICES + 1)
   })
 
-  it('blip 節流 65ms（檔案與合成皆然）；sfxVolume 0 靜音', async () => {
+  it('blip 節流 65ms（檔案與合成皆然）；音效關閉時靜音', async () => {
     const s = setup({ 'sfx/blip': { src: '/b.mp3' } })
     await s.engine.unlock()
     await s.tick()
@@ -465,7 +549,7 @@ describe('AudioEngine：SFX', () => {
     m.engine.sfx('blip')
     m.engine.sfx('blip')
     expect(m.synthSfx).toEqual(['blip'])
-    const q = setup({}, { sfxVolume: 0 })
+    const q = setup({}, { sfxOn: false })
     q.engine.sfx('click')
     expect(q.synthSfx).toEqual([])
   })
@@ -653,7 +737,7 @@ describe('AudioEngine：鑑賞預覽', () => {
     s.engine.previewSfx('click', 'c9')
     await s.tick()
     expect(s.sfxFiles).toHaveLength(1)
-    const q = setup(MULTI_MANIFEST, { sfxVolume: 0 })
+    const q = setup(MULTI_MANIFEST, { sfxOn: false })
     await q.engine.unlock()
     q.engine.previewSfx('click', 'c1')
     await q.tick()
