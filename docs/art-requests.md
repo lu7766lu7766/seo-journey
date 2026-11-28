@@ -331,8 +331,8 @@ Image edit. Keep the character IDENTICAL to the reference image: same pose, same
 | Key（manifest） | 輸出檔 | 來源圖建議檔名 | 尺寸 | 劇本 say/show 次數 |
 |---|---|---|---|---|
 | `sensei/smile` 微笑 | `public/art/sensei/smile.webp` | `sensei-smile.png` | 600×1000 RGBA（來源 2:3，建議 1024×1536） | 17 |
-| `sensei/think` 思考（⚠️ 待重繪，見 §8） | `public/art/sensei/think.webp` | `sensei-think.png` | 600×1000 RGBA（來源 2:3，建議 1024×1536） | 4 |
-| `sensei/sad` 難過（⚠️ 待重繪，見 §8） | `public/art/sensei/sad.webp` | `sensei-sad.png` | 600×1000 RGBA（來源 2:3，建議 1024×1536） | 3 |
+| `sensei/think` 思考（✅ 2026-11-28 重繪完成，見 §8.1） | `public/art/sensei/think.webp` | `sensei-think.png` | 600×1000 RGBA（來源 2:3，建議 1024×1536） | 4 |
+| `sensei/sad` 難過（✅ 2026-11-28 重繪完成，見 §8.1） | `public/art/sensei/sad.webp` | `sensei-sad.png` | 600×1000 RGBA（來源 2:3，建議 1024×1536） | 3 |
 
 **`sensei/smile`（微笑）提示詞**
 
@@ -951,7 +951,7 @@ a promotional key visual for a Japanese school romance simulation game, three hi
 ### 8.1 2026-11-28：索 千尋 老師（`sensei/sad`、`sensei/think`）表情區辨度重繪
 
 - **日期**：2026-11-28
-- **狀態**：⏸️ **待人工出圖**（本次自動產圖因影像生成模型配額用盡 `HTTP 429 RESOURCE_EXHAUSTED` 而無法產圖，依約定不覆蓋原檔、不以程式拼貼替代，先補齊人工出圖提示詞與驗收檢查表）。
+- **狀態**：✅ **已完成**（2026-11-28 以 Google Colab L4 GPU + SDXL 局部臉部 inpainting 重新產出 `sensei/sad.webp` 與 `sensei/think.webp`，已通過並排審查、`art:check`、`typecheck` 與單元測試；下方保留原始人工出圖提示詞供後續參考）。
 - **重繪原因**：
   - 既有 `public/art/sensei/` 的 `normal`、`smile`、`think`、`sad` 四張表情幾乎共用同一張微笑嘴型，並排檢視時難以一眼區分。
   - `sensei/sad.webp`：僅眉毛略為上挑，嘴角仍明顯上揚微笑，導致壞結局（`end-bad`：「抱歉啊，{name}。是我這個顧問，沒有撐到最後。」）與黑帽結局（`end-blackhat`）出場時呈現「笑著道歉」的違和感。舊版提示詞誤寫了 `a faint sorry smile fading`，是造成微笑殘留的主因。
@@ -1050,12 +1050,28 @@ smiling, smirk, upturned mouth corners, happy expression, cheerful face, looking
 
    檢視 `/tmp/art-review/sprites-sensei.png`（由左至右為 `normal`、`smile`、`think`、`sad`）。
 
-#### 人工重繪驗收檢查表
+#### 重繪驗收檢查表
 
-- [ ] **四表情一眼可分**：並排檢視 `normal`／`smile`／`think`／`sad` 時，縮成小圖也能立刻辨識情緒差異。
-- [ ] **`sad` 嘴角不微笑**：眉尾下垂、視線略向下、嘴角平或明顯下垂（絕無微笑弧度），放進壞結局「抱歉啊，是我這個顧問，沒有撐到最後」不違和。
-- [ ] **`think` 視線與嘴型到位**：視線明確偏向一側、眉頭微收不顯兇、嘴型平直不微笑，與 `normal` 差異清楚。
-- [ ] **角色特徵與畫風一致**：維持棕色低馬尾、黑框長方眼鏡、白襯衫、棕黃開襟毛衣、深藍裙、陶製咖啡馬克杯、成年女性氣質，且柔和賽璐璐上色與 `rin`／`mirai` 等立繪一致。
-- [ ] **對位零跳動**：與 `sensei/normal.webp` 50% 疊圖時頭、肩、髮際線重合；`npm run art:check` 顯示 `0 broken` 且 `sensei/sad`、`sensei/think` **無** `WARN: crop differs from normal by up to ...px`。
-- [ ] **去背乾淨**：灰底與深色底檢視皆無白邊、無殘留綠點或綠色溢色，檔案為 `600×1000` 透明 WebP（單張約 50～100KB）。
-- [ ] **回歸檢查通過**：`npm run art:check && npm run typecheck && npm test` 全數通過。
+- [x] **四表情一眼可分**：並排檢視 `normal`／`smile`／`think`／`sad` 時，縮成小圖也能立刻辨識情緒差異。
+- [x] **`sad` 嘴角不微笑**：眉尾下垂、視線略向下、嘴角平或明顯下垂（絕無微笑弧度），放進壞結局「抱歉啊，是我這個顧問，沒有撐到最後」不違和。
+- [x] **`think` 視線與嘴型到位**：視線明確偏向一側、眉頭微收不顯兇、嘴型平直不微笑，與 `normal` 差異清楚。
+- [x] **角色特徵與畫風一致**：維持棕色低馬尾、黑框長方眼鏡、白襯衫、棕黃開襟毛衣、深藍裙、陶製咖啡馬克杯、成年女性氣質，且柔和賽璐璐上色與 `rin`／`mirai` 等立繪一致。
+- [x] **對位零跳動**：與 `sensei/normal.webp` 疊圖時頭、肩、眼鏡框、髮際線逐像素重合；`npm run art:check` 顯示 `71/71 assets done, 0 broken` 且 `sensei/sad`、`sensei/think` 外框與 `normal` 完全一致 `(20,77,579,999)`（0px 偏移）。
+- [x] **去背乾淨**：灰底與深色底檢視皆無白邊、無殘留綠點或綠色溢色，檔案為 `600×1000` 透明 WebP（`sad.webp` 62.9 KB、`think.webp` 63.0 KB）。
+- [x] **回歸檢查通過**：`npm run art:check && npm run typecheck && npm test` 全數通過。
+
+#### 完成紀錄（2026-11-28）
+
+- **完成日期**：2026-11-28（初版重繪後經總監驗收退回修正，同日完成二版定稿）
+- **執行環境與模型**：Google Colab L4 GPU（24 GB VRAM），`diffusers 0.42.1` `AutoPipelineForInpainting`（`StableDiffusionXLInpaintPipeline`）載入 `cagliostrolab/animagine-xl-4.0`（fp16）＋ `EulerAncestralDiscreteScheduler`。
+- **二版修正原因（退回驗收意見）**：
+  1. 初版 `think`（seed 503）嘴型呈現下垂弧線「︵」與 `sad` 過於接近、顯得悶悶不樂，且視線偏移不夠明確。
+  2. 初版 `sad`（seed 304）表情本身合格，但合成遮罩重疊到眼鏡框，導致黑框比 `normal` 變淺變細、鼻樑／鼻墊出現多餘反光，且嘴下有一個不自然的深色小色塊。
+- **二版生成與合成流程**：
+  1. 以現行 `public/art/sensei/normal.webp` 為唯一母圖，裁切臉部方形區塊 `(120, 60, 480, 420)`（360×360）並以 Lanczos 放大至 `1024×1024`。
+  2. 改採**精準排除眼鏡框、鼻樑、鼻墊與左側垂落細瀏海的雙重保護遮罩**（`frame_lock` 鎖定眼鏡外框至內框間全部像素與鼻墊，僅開放雙眉區、雙鏡片內側與嘴部），確保 `sad` 與 `think` 的眼鏡框粗細、顏色、反光與 `normal` 逐像素一致。
+  3. `think` 於 Colab L4 分兩批共產出 22 張不同 seed 候選圖（Batch 1 共 12 張、Batch 2 共 10 張），全數套用排除眼鏡框遮罩貼回 `normal` 並排放大比較後定稿；`sad` 保留初版 seed 304 表情，以相同 `frame_lock` 遮罩還原 `normal` 眼鏡框與鼻樑，並平滑修除嘴下不自然深色圓點為柔和下唇陰影。
+  4. 透過 `node scripts/process-art.mjs` 轉為 600×1000 透明 WebP（品質 0.88）覆蓋 `public/art/sensei/sad.webp` 與 `public/art/sensei/think.webp`。
+- **最終採用參數與 Seed**：
+  - `public/art/sensei/sad.webp`：保留初版 `seed = 304`、`strength = 0.76`、`guidance_scale = 6.5`、`num_inference_steps = 30` 之表情結果（八字眉、垂眼瞼、嘴角下垂），二版改以 `frame_lock` 排除眼鏡框遮罩重新合成還原 `normal` 原版粗黑鏡框與鼻樑，並將嘴下（`x=295..311, y=354..364`）深色色塊平滑化為自然下唇陰影。
+  - `public/art/sensei/think.webp`：二版重繪定稿（Batch 1 `C4`），`seed = 3044`、`strength = 0.84`、`guidance_scale = 7.0`、`num_inference_steps = 32`、排除眼鏡框遮罩 `mask_think_1024` + `comp_mask_clean`；正向提示詞強調 `thinking, pondering, looking to the side, glancing up and sideways, relaxed curious eyebrows, one eyebrow slightly higher, short straight closed mouth, neutral expression`，負向提示詞明確排除 `frown, downturned mouth, sad, depressed, gloomy, worried, worried eyebrows, troubled eyebrows, smile, smiling, smirk, happy, upturned mouth, open mouth, teeth, looking at viewer, cross-eyed, angry, extra glasses, deformed eyes`。
