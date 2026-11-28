@@ -509,33 +509,70 @@ button { font-family: inherit; cursor: pointer; }
     );
   }
 
-  /* 手帳模切貼紙按鈕 */
-  .mat-sticker {
+  /* 模切貼紙按鈕（外圈 3px 白邊＋有機不規則圓角＋捏起陰影） */
+  .mat-diecut-sticker {
     position: relative;
-    border: 2px solid #fffdf8;
-    border-radius: 5px;
+    border: 3px solid #fffdf9;
+    border-radius: var(--sticker-radius, 14px 16px 13px 15px / 13px 12px 15px 14px);
     color: var(--color-ink-body);
+    background-image: linear-gradient(
+      155deg,
+      rgba(255, 255, 255, 0.42) 0%,
+      rgba(255, 255, 255, 0) 48%,
+      rgba(110, 76, 38, 0.05) 100%
+    );
     transform: rotate(var(--mat-rot, 0deg));
     box-shadow:
-      0 3px 8px rgba(38, 18, 6, 0.2),
-      0 1px 2px rgba(38, 18, 6, 0.14),
-      inset 0 0 0 1px rgba(154, 126, 92, 0.28);
-    transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.16s ease, border-color 0.16s ease;
+      0 0 0 1px rgba(124, 96, 62, 0.25),
+      0 3px 7px rgba(42, 22, 6, 0.18),
+      0 1px 2px rgba(42, 22, 6, 0.14);
+    transition: transform 0.17s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.17s ease;
   }
-  .mat-sticker:hover:not(:disabled),
-  .mat-sticker:focus-visible {
-    transform: translateY(-2px) rotate(calc(var(--mat-rot, 0deg) * 0.4)) scale(1.01);
+  .mat-diecut-sticker:hover:not(:disabled),
+  .mat-diecut-sticker:focus-visible {
+    transform: translateY(-4px) rotate(calc(var(--mat-rot, 0deg) * 0.25)) scale(1.022);
     box-shadow:
-      0 8px 18px rgba(38, 18, 6, 0.26),
-      0 2px 6px rgba(38, 18, 6, 0.16),
-      inset 0 0 0 1px rgba(130, 92, 54, 0.46);
+      0 0 0 1px rgba(110, 78, 44, 0.34),
+      0 11px 22px rgba(42, 22, 6, 0.25),
+      0 4px 8px rgba(42, 22, 6, 0.16);
   }
-  .mat-sticker:active:not(:disabled) {
-    transform: translateY(0px) rotate(var(--mat-rot, 0deg));
+  .mat-diecut-sticker:active:not(:disabled) {
+    transform: translateY(-1px) rotate(var(--mat-rot, 0deg)) scale(1.005);
   }
-  .mat-sticker:focus-visible {
+  .mat-diecut-sticker:focus-visible {
     outline: 3px solid #2b6ea8;
-    outline-offset: 2px;
+    outline-offset: 3px;
+  }
+
+  /* 手帳方格進度條：色鉛筆與螢光筆斜紋筆觸 */
+  .mat-pencil-fill {
+    background-image: repeating-linear-gradient(
+      -52deg,
+      rgba(255, 253, 248, 0.24) 0px,
+      rgba(255, 253, 248, 0.24) 1.5px,
+      transparent 1.5px,
+      transparent 4px
+    );
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  }
+
+  .mat-highlighter-fill {
+    background-image: repeating-linear-gradient(
+      -38deg,
+      rgba(255, 255, 255, 0.36) 0px,
+      rgba(255, 255, 255, 0.36) 2px,
+      transparent 2px,
+      transparent 5px
+    );
+  }
+
+  /* 拍立得相片角貼 */
+  .mat-photo-corner {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+    z-index: 10;
   }
 
   /* 和紙／牛皮便箋次要按鈕 */
@@ -613,13 +650,13 @@ button { font-family: inherit; cursor: pointer; }
   .chibi-spin, .chibi-zzz, .chibi-sway, .chibi-orbit, .chibi-pop { animation: none !important; }
   .btn-pastel, .choice-btn, .hud-pill,
   .mat-paper, .mat-paper-curled::before, .mat-paper-curled::after,
-  .mat-paper-interactive, .mat-pass-btn, .mat-sticker, .mat-washi-btn { transition: none !important; }
+  .mat-paper-interactive, .mat-pass-btn, .mat-diecut-sticker, .mat-washi-btn { transition: none !important; }
   .mat-paper-interactive:hover:not(:disabled),
   .mat-paper-interactive:focus-visible,
   .mat-paper-interactive:active:not(:disabled),
-  .mat-sticker:hover:not(:disabled),
-  .mat-sticker:focus-visible,
-  .mat-sticker:active:not(:disabled),
+  .mat-diecut-sticker:hover:not(:disabled),
+  .mat-diecut-sticker:focus-visible,
+  .mat-diecut-sticker:active:not(:disabled),
   .mat-washi-btn:hover:not(:disabled),
   .mat-washi-btn:active:not(:disabled),
   .mat-pass-btn:hover:not(:disabled),

@@ -1,5 +1,6 @@
 export { Corkboard, type CorkboardProps } from './Corkboard'
 export { FourPointStar, RoomBadge, SakuraPetal, SearchRule, WoodPlaque } from './Motifs'
+export { NotebookGauge, type GaugeSegment, type GaugeThreshold, type NotebookGaugeProps } from './NotebookGauge'
 export { Paper, type PaperProps, type PaperRule, type PaperTone } from './Paper'
 export { Pin, type PinColor, type PinProps } from './Pin'
 export { PAPER_INK_ACCENT, paperInkFor, PolaroidAvatar, type PolaroidAvatarProps, type PolaroidSize } from './PolaroidAvatar'

@@ -11,6 +11,7 @@ import { scoreParts, scores } from '@/systems/score'
 import { readStatSnapshot } from '@/systems/siteMetrics'
 import {
   FourPointStar,
+  NotebookGauge,
   PAPER_INK_ACCENT,
   Paper,
   PolaroidAvatar,
@@ -32,6 +33,26 @@ const TIER_STAMP: Record<'low' | 'mid' | 'high', { label: string; color: StampCo
   low: { label: '初識階段', color: 'navy', shape: 'rect' },
   mid: { label: '漸入佳境', color: 'forest', shape: 'rect' },
   high: { label: '深度信賴', color: 'vermilion', shape: 'oval' },
+}
+
+/** 固定於成績單照片格對角的炭黑照片角貼（Photo Corners）。 */
+function PhotoCorners({ rotate }: { rotate: number }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0"
+      style={{ transform: `rotate(${rotate}deg)` }}
+    >
+      <svg viewBox="0 0 16 16" className="mat-photo-corner -left-1 -top-1">
+        <path d="M0 0 H15 L0 15 Z" fill="#3a332e" fillOpacity="0.88" />
+        <path d="M1 1 H12 L1 12 Z" fill="none" stroke="#a6957c" strokeWidth="0.6" strokeOpacity="0.6" />
+      </svg>
+      <svg viewBox="0 0 16 16" className="mat-photo-corner -bottom-1 -right-1">
+        <path d="M16 16 H1 L16 1 Z" fill="#3a332e" fillOpacity="0.88" />
+        <path d="M15 15 H4 L15 4 Z" fill="none" stroke="#a6957c" strokeWidth="0.6" strokeOpacity="0.6" />
+      </svg>
+    </div>
+  )
 }
 
 export function WeeklyReport() {
@@ -92,47 +113,55 @@ export function WeeklyReport() {
               <SearchRule className="my-2" />
             </div>
 
-            {/* 左側三位夥伴評測卡 + 右側網站數據列印表 */}
+            {/* 左側：成績單表格（相片角貼拍立得＋方格塗色條＋鋼筆評語） + 右側：網站數據列印表 */}
             <div className="grid min-h-0 flex-1 grid-cols-[1fr_458px] items-stretch gap-5">
-              <div className="flex min-h-0 flex-col justify-between gap-2.5">
-                {HEROINES.map((h: HeroineId, idx) => {
-                  const c = CHARACTERS[h]
-                  const prev = Math.round(s.prevScores[h] ?? 10)
-                  const parts = scoreParts(h, s.stats, s.bond)
-                  const now = Math.round(parts.total)
-                  const site = Math.round(parts.site)
-                  const bond = Math.round(parts.bond)
-                  const siteBar = Math.min(now, Math.max(0, site))
-                  const bondBar = Math.max(0, now - siteBar)
-                  const diff = now - prev
-                  const tier = tierFor(now)
-                  const stampMeta = TIER_STAMP[tier]
-                  const comments = WEEKLY_COMMENTS[h][tier]
-                  const line = comments[(s.week + idx) % comments.length]
+              <div className="flex min-h-0 flex-1 flex-col border-x border-y-[3px] border-x-[#c4b192]/75 border-y-[#786147]/75 border-double bg-[#fffdf7]/42">
+                {/* 成績單表頭列 */}
+                <div className="flex items-center border-b border-[#8f795c]/65 bg-[#efe3c8]/65 font-sans text-[13px] font-bold text-ink-muted">
+                  <span className="w-[88px] shrink-0 border-r border-[#cab799]/75 py-1 text-center">評測夥伴</span>
+                  <div className="flex flex-1 items-center justify-between px-3.5 py-1">
+                    <span>評等階段・網站與互動進度・夥伴親筆評語</span>
+                    <span>總評／週變動</span>
+                  </div>
+                </div>
 
-                  return (
-                    <motion.div
-                      key={h}
-                      initial={{ opacity: 0, x: -16 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.12 }}
-                      className="flex min-h-0 flex-1"
-                    >
-                      <Paper
-                        tone="white"
-                        rule="none"
-                        curled={false}
-                        className="relative flex w-full items-center gap-3.5 overflow-hidden px-4 py-2.5 pl-5"
+                {/* 三位女主角評測表格列 */}
+                <div className="flex min-h-0 flex-1 flex-col divide-y divide-[#b8a487]/80">
+                  {HEROINES.map((h: HeroineId, idx) => {
+                    const c = CHARACTERS[h]
+                    const prev = Math.round(s.prevScores[h] ?? 10)
+                    const parts = scoreParts(h, s.stats, s.bond)
+                    const now = Math.round(parts.total)
+                    const site = Math.round(parts.site)
+                    const bond = Math.round(parts.bond)
+                    const siteBar = Math.min(now, Math.max(0, site))
+                    const bondBar = Math.max(0, now - siteBar)
+                    const diff = now - prev
+                    const tier = tierFor(now)
+                    const stampMeta = TIER_STAMP[tier]
+                    const comments = WEEKLY_COMMENTS[h][tier]
+                    const line = comments[(s.week + idx) % comments.length]
+                    const photoRotate = idx === 1 ? 1.5 : -1.8
+                    const siteColor = `color-mix(in srgb, ${c.color} 46%, #f8f2e4)`
+
+                    return (
+                      <motion.div
+                        key={h}
+                        initial={{ opacity: 0, x: -14 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.12 }}
+                        className="flex min-h-0 flex-1 items-stretch"
                       >
-                        <span
-                          aria-hidden="true"
-                          className="pointer-events-none absolute inset-y-0 left-0 w-[4px]"
-                          style={{ backgroundColor: c.color }}
-                        />
+                        {/* 左格：以相片角貼固定在成績單上的拍立得頭像（角色色僅於拍立得邊框／姓名墨色呈現） */}
+                        <div className="flex w-[88px] shrink-0 items-center justify-center border-r border-[#cab799]/75 px-2">
+                          <div className="relative inline-block">
+                            <PolaroidAvatar id={h} size="md" rotate={photoRotate} />
+                            <PhotoCorners rotate={photoRotate} />
+                          </div>
+                        </div>
 
-                        <PolaroidAvatar id={h} size="md" rotate={idx === 1 ? 1.5 : -1.8} />
-
-                        <div className="min-w-0 flex-1">
+                        {/* 右格：姓名、印章、手寫鋼筆變動分、方格塗色條與評語 */}
+                        <div className="flex min-w-0 flex-1 flex-col justify-center px-3.5 py-1.5">
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2.5">
                               <span className="font-title text-[21px] font-bold" style={{ color: PAPER_INK_ACCENT[h] }}>
@@ -147,7 +176,7 @@ export function WeeklyReport() {
                               />
                             </div>
 
-                            <div className="flex items-center gap-2.5 font-title font-bold">
+                            <div className="flex items-baseline gap-3 font-title font-bold">
                               <span className="text-[21px] leading-none text-ink-body">
                                 ♥ {now}
                                 <span
@@ -160,59 +189,54 @@ export function WeeklyReport() {
                               </span>
 
                               {diff >= 8 ? (
-                                <span className="inline-flex items-center gap-1 rounded-[3px] border-2 border-[var(--color-stamp-green)] bg-[#e8f6ee] px-2 py-0.5 text-[15px] text-[var(--color-stamp-green)]">
-                                  <FourPointStar size={12} color="#2d7355" />
-                                  +{diff}
+                                <span className="inline-flex items-center gap-1.5 border-b-[3px] border-double border-[var(--color-stamp-green)]/85 pb-px text-[18px] leading-none text-[var(--color-stamp-green)]">
+                                  <span>+{diff}</span>
+                                  <FourPointStar size={13} color="#c97a16" />
                                 </span>
                               ) : diff > 0 ? (
-                                <span className="text-[16px] text-[var(--color-stamp-green)]">+{diff}</span>
+                                <span className="text-[17px] leading-none text-[var(--color-stamp-green)]">+{diff}</span>
                               ) : diff === 0 ? (
-                                <span className="text-[15px] text-ink-muted">±0</span>
+                                <span className="text-[15px] leading-none text-ink-muted">±0</span>
                               ) : (
-                                <span className="rounded-[3px] border border-[var(--color-stamp)]/80 bg-[#fdeceb] px-2 py-0.5 text-[15px] text-[var(--color-stamp)]">
+                                <span className="border-b-2 border-[var(--color-stamp)]/85 pb-px text-[17px] leading-none text-[var(--color-stamp)]">
                                   {diff}
                                 </span>
                               )}
                             </div>
                           </div>
 
-                          {/* 雙色進度尺（含 35 / 60 / 65 門檻刻度） */}
-                          <div
-                            className="relative mt-1.5 flex h-2.5 w-full overflow-hidden rounded-[2px] border border-[#d6c9b4] bg-[#f1e7d5]"
+                          {/* 手帳方格塗色進度條（含 35 / 60 / 65 門檻刻度） */}
+                          <NotebookGauge
+                            cells={20}
+                            height={12}
+                            animate
+                            className="mt-1.5"
                             title={`網站 ${site} / 互動 ${bond}`}
                             data-testid={`report-score-bar-${h}`}
-                          >
-                            <motion.div
-                              initial={{ width: `${Math.min(100, Math.min(prev, siteBar))}%` }}
-                              animate={{ width: `${Math.min(100, siteBar)}%` }}
-                              transition={{ duration: 0.55, delay: 0.15 + idx * 0.12, ease: 'easeOut' }}
-                              className="h-full"
-                              style={{ background: `color-mix(in srgb, ${c.color} 48%, #f8f2e4)` }}
-                            />
-                            {bondBar > 0 && (
-                              <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${Math.min(100 - siteBar, bondBar)}%` }}
-                                transition={{ duration: 0.55, delay: 0.22 + idx * 0.12, ease: 'easeOut' }}
-                                className="h-full"
-                                style={{ background: c.color }}
-                              />
-                            )}
-                            <span aria-hidden="true" className="absolute inset-y-0 left-[35%] z-10 w-px bg-[#5b4d3b]/55" />
-                            <span aria-hidden="true" className="absolute inset-y-0 left-[60%] z-10 w-px bg-[#5b4d3b]/55" />
-                            <span aria-hidden="true" className="absolute inset-y-0 left-[65%] z-10 w-px bg-[var(--color-stamp)]/65" />
-                          </div>
+                            segments={[
+                              { value: siteBar, color: siteColor, pattern: 'pencil' },
+                              ...(bondBar > 0 ? [{ value: bondBar, color: c.color, pattern: 'pencil' as const }] : []),
+                            ]}
+                            thresholds={[
+                              { at: 35, color: '#6b5a45' },
+                              { at: 60, color: '#6b5a45' },
+                              { at: 65, color: '#c6382b', prominent: true },
+                            ]}
+                          />
 
                           <div className="mt-1 flex items-center gap-4 font-sans text-[13px] font-semibold text-ink-muted">
                             <span className="flex items-center gap-1.5">
                               <span
-                                className="inline-block h-2.5 w-2.5 rounded-[1px]"
-                                style={{ background: `color-mix(in srgb, ${c.color} 48%, #f8f2e4)` }}
+                                className="mat-pencil-fill inline-block h-3 w-3 rounded-[1px] border border-[#a89578]"
+                                style={{ backgroundColor: siteColor }}
                               />
                               網站 {site}
                             </span>
                             <span className="flex items-center gap-1.5">
-                              <span className="inline-block h-2.5 w-2.5 rounded-[1px]" style={{ background: c.color }} />
+                              <span
+                                className="mat-pencil-fill inline-block h-3 w-3 rounded-[1px] border border-[#a89578]"
+                                style={{ backgroundColor: c.color }}
+                              />
                               互動 {bond}
                             </span>
                           </div>
@@ -221,10 +245,10 @@ export function WeeklyReport() {
                             「{line.text.replace(/\{name\}/g, s.playerName)}」
                           </p>
                         </div>
-                      </Paper>
-                    </motion.div>
-                  )
-                })}
+                      </motion.div>
+                    )
+                  })}
+                </div>
               </div>
 
               <div className="flex min-h-0 flex-col justify-center" data-testid="report-dashboard">
