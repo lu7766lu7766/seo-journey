@@ -1,4 +1,4 @@
-"""Prepare Google Colab VM for ACE-Step inference and audio post-processing."""
+"""Prepare Google Colab VM for ACE-Step 1.5 (and Stable Audio Open 1.0) inference and audio DSP."""
 
 import os
 import shutil
@@ -45,66 +45,74 @@ def main():
         run(["apt-get", "install", "-y", "-qq", "ffmpeg"])
     run(["ffmpeg", "-version"], check=True)
 
-    # Clone ACE-Step
-    repo_dir = "/content/ACE-Step"
+    # Clone ACE-Step 1.5
+    repo_dir = "/content/ACE-Step-1.5"
     if not os.path.exists(repo_dir):
-        run(["git", "clone", "--depth", "1", "https://github.com/ace-step/ACE-Step.git", repo_dir])
+        run(["git", "clone", "--depth", "1", "https://github.com/ace-step/ACE-Step-1.5.git", repo_dir])
     if repo_dir not in sys.path:
         sys.path.insert(0, repo_dir)
     sha = subprocess.check_output(["git", "-C", repo_dir, "rev-parse", "HEAD"], text=True).strip()
-    print(f"ACE-Step commit SHA: {sha}", flush=True)
+    print(f"ACE-Step 1.5 commit SHA: {sha}", flush=True)
 
-    # Editable install without overwriting Colab's preinstalled CUDA PyTorch stack
-    run([sys.executable, "-m", "pip", "install", "-q", "--no-deps", "-e", repo_dir])
+    # Register repo on Python path via .pth (avoids pyproject requires-python <3.13 pip block on Colab Py3.13)
+    import site
+    pth_targets = list(site.getsitepackages()) + ["/usr/local/lib/python3.13/dist-packages"]
+    for sp in pth_targets:
+        if os.path.isdir(sp):
+            pth_file = os.path.join(sp, "acestep_v15.pth")
+            with open(pth_file, "w", encoding="utf-8") as f:
+                f.write(repo_dir + "\n")
+            print(f"Registered {repo_dir} in {pth_file}", flush=True)
+            break
 
-    # Install runtime + DSP dependencies without touching torch/torchaudio/torchvision
+    # Install ACE-Step 1.5 + Stable Audio Open + DSP dependencies without touching torch/torchaudio/torchvision
     deps = [
-        "diffusers>=0.33.0",
-        "transformers==4.50.0",
-        "accelerate>=1.6.0",
-        "datasets>=3.4.1",
+        "transformers>=4.51.0,<4.58.0",
+        "diffusers>=0.37.0",
+        "accelerate>=1.12.0",
+        "huggingface_hub>=0.28.0",
         "loguru>=0.7.3",
+        "einops>=0.8.1",
         "librosa>=0.10.2",
         "soundfile>=0.12.1",
         "soxr>=0.3.7",
         "pyloudnorm>=0.1.1",
-        "pypinyin>=0.53.0",
-        "py3langid==0.2.2",
-        "hangul-romanize>=0.1.0",
-        "num2words>=0.5.14",
-        "spacy>=3.7.0",
-        "cutlet",
-        "fugashi[unidic-lite]",
-        "pytorch_lightning>=2.5.0",
-        "click",
-        "peft",
+        "numba>=0.60.0",
+        "vector-quantize-pytorch>=1.27.0",
+        "diskcache",
+        "toml",
+        "typer-slim>=0.15.0",
+        "pywavelets>=1.5.0",
+        "peft>=0.14.0",
         "openai-whisper",
         "tiktoken",
         "matplotlib>=3.8.0",
         "scipy>=1.11.0",
+        "torchsde",
+        "modelscope",
     ]
     pip_install(deps)
-
-    # Smoke-test ACE-Step imports; pin diffusers==0.33.1 if internal diffusers helpers moved
-    try:
-        from acestep.pipeline_ace_step import ACEStepPipeline  # noqa: F401
-    except Exception as exc:
-        print(f"Initial ACEStepPipeline import failed ({exc}); pinning diffusers==0.33.1...", flush=True)
-        pip_install(["diffusers==0.33.1"])
-        from acestep.pipeline_ace_step import ACEStepPipeline  # noqa: F401
 
     import torch as torch_after
     print("PyTorch after deps:", torch_after.__version__, "CUDA available:", torch_after.cuda.is_available(), flush=True)
     if not torch_after.cuda.is_available():
         raise RuntimeError("CUDA became unavailable after dependency installation")
 
+    # Smoke-test ACE-Step 1.5 imports
+    from acestep.constants import VALID_KEYSCALES, VALID_TIME_SIGNATURES
+    from acestep.handler import AceStepHandler
+    from acestep.inference import GenerationConfig, GenerationParams, generate_music
+    from acestep.llm_inference import LLMHandler
+    from acestep.model_downloader import download_main_model
+    from diffusers import StableAudioPipeline  # noqa: F401
     import librosa
     import matplotlib
     import pyloudnorm
     import soundfile
-    import torchaudio
     import whisper
 
+    print("VALID_TIME_SIGNATURES:", VALID_TIME_SIGNATURES, flush=True)
+    print("Sample VALID_KEYSCALES:", sorted(VALID_KEYSCALES)[:8], flush=True)
     print(
         "Package smoke-test OK:",
         f"librosa={librosa.__version__}",
@@ -114,19 +122,6 @@ def main():
         f"whisper={getattr(whisper, '__version__', 'ok')}",
         flush=True,
     )
-
-    # Check torchaudio.save compatibility (torchaudio >= 2.9 drops backend='soundfile')
-    test_wav = "/tmp/test_ta.wav"
-    try:
-        dummy = torch.zeros(2, 4800, dtype=torch.float32)
-        torchaudio.save(test_wav, dummy, sample_rate=48000, format="wav", backend="soundfile")
-        print("torchaudio.save(backend='soundfile'): OK", flush=True)
-    except Exception as exc:
-        print(f"torchaudio.save(backend='soundfile') unsupported ({exc}); soundfile.write patch required & enabled.", flush=True)
-    finally:
-        if os.path.exists(test_wav):
-            os.remove(test_wav)
-
     print("SETUP_VM_COMPLETE", flush=True)
 
 

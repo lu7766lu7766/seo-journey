@@ -8,9 +8,22 @@ const raw = JSON.parse(readFileSync(join(PUBLIC, 'audio/manifest.json'), 'utf8')
 const manifest = parseManifest(raw)
 
 describe('public/audio/manifest.json（隨遊戲出貨的音檔）', () => {
-  it('5 首 BGM × 3 版、8 種 SFX × 4 版，且沒有任何條目在解析時被丟棄', () => {
-    const bgm = ['title', 'daily', 'warm', 'tense', 'festival']
-    const sfx = ['click', 'blip', 'choice', 'card', 'grow', 'bond', 'fail', 'win']
+  it('12 首 BGM × 3 版、9 種 SFX × 4 版，且沒有任何條目在解析時被丟棄', () => {
+    const bgm = [
+      'title',
+      'daily',
+      'sim',
+      'minigame',
+      'warm',
+      'melancholy',
+      'tense',
+      'comedy',
+      'festival',
+      'theme_rin',
+      'theme_hare',
+      'theme_mirai',
+    ]
+    const sfx = ['click', 'blip', 'choice', 'card', 'grow', 'bond', 'fail', 'win', 'shock']
     expect(Object.keys(manifest)).toEqual([...bgm.map((i) => `bgm/${i}`), ...sfx.map((i) => `sfx/${i}`)])
     for (const i of bgm) expect(Object.keys(manifest[`bgm/${i}`].variants)).toEqual(['c1', 'c2', 'c3'])
     for (const i of sfx) expect(Object.keys(manifest[`sfx/${i}`].variants)).toEqual(['c1', 'c2', 'c3', 'c4'])

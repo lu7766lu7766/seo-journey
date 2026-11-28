@@ -13,88 +13,62 @@
       "name": "對白推進／按鈕輕點聲",
       "usage": "推進視覺小說對白、點擊介面與小遊戲按鈕（極高頻率觸發，必須柔和低調）",
       "trigger": "src/ui/useVNInput.ts（點擊/Space/Enter 推進對白）、src/minigames/Spot.tsx・Serp.tsx・Quiz.tsx（一般點擊）",
-      "target_duration_ms": [45, 115],
-      "target_duration_label": "≤ 120 ms",
+      "generation_mode": "local_synth",
+      "target_duration_ms": [45, 95],
+      "target_duration_label": "45–95 ms（4 kHz 低通）",
       "loudness_tier": "quiet_click",
       "audio_end_in_s": 1.5,
-      "prompts": [
-        {
-          "id": "p1",
-          "round": "r1",
-          "text": "Single soft wooden click sound effect, gentle warm woodblock tap, short dry tactile UI button press for cozy anime visual novel, clean isolated one-shot, no reverb",
-          "seeds": [1011, 1022, 1033, 1044]
-        },
-        {
-          "id": "p2",
-          "round": "r1",
-          "text": "Single gentle soft matte plastic button click, muted mechanical switch tap, subtle minimalist UI interface sound effect, very short dry studio recording",
-          "seeds": [1111, 1122, 1133, 1144]
-        },
-        {
-          "id": "p3",
-          "round": "r1",
-          "text": "Single soft muted marimba wood tap, delicate warm organic click sound effect, gentle UI dialogue advance sound, dry short clean one-shot",
-          "seeds": [1211, 1222, 1233, 1244]
-        }
-      ]
+      "prompts": []
     },
     {
       "id": "blip",
       "name": "打字機逐字「嘀」聲",
       "usage": "對白逐字顯示時的輕微打字音（每 3 個字觸發一次，冷卻 65ms，極頻繁）",
       "trigger": "src/ui/DialogueBox.tsx（每顯示 3 字元觸發一次）",
-      "target_duration_ms": [35, 56],
-      "target_duration_label": "≤ 60 ms",
+      "generation_mode": "local_synth",
+      "target_duration_ms": [38, 58],
+      "target_duration_label": "≤ 60 ms（4 kHz 低通）",
       "loudness_tier": "quiet_blip",
       "audio_end_in_s": 1.5,
-      "prompts": [
-        {
-          "id": "p1",
-          "round": "r1",
-          "text": "Single tiny soft pitched UI text blip sound effect, gentle short sine tone pop, cute anime visual novel dialogue typewriter tick, very brief clean dry one-shot",
-          "seeds": [2011, 2022, 2033, 2044]
-        },
-        {
-          "id": "p2",
-          "round": "r1",
-          "text": "Single ultra-short delicate soft kalimba pluck tick, tiny pitched wooden marimba pip, gentle visual novel text scroll sound effect, dry isolated clean",
-          "seeds": [2111, 2122, 2133, 2144]
-        },
-        {
-          "id": "p3",
-          "round": "r1",
-          "text": "Single very brief soft high pitched wooden pip, gentle quiet UI cursor blip, delicate anime game text sound, dry clean studio one-shot",
-          "seeds": [2211, 2222, 2233, 2244]
-        }
-      ]
+      "prompts": []
     },
     {
       "id": "choice",
       "name": "劇情選項／確認小鈴聲",
-      "usage": "選擇劇情分歧選項、小遊戲送出或切換選擇時的清亮提示",
-      "trigger": "src/store/game.ts（選擇選項）、src/content/scenes/main/prologue.ts・festival.ts、src/minigames/Spot.tsx・Serp.tsx・Quiz.tsx",
-      "target_duration_ms": [200, 350],
-      "target_duration_label": "200–350 ms",
+      "usage": "選擇劇情分歧選項、小遊戲送出或切換選擇時的清亮上行雙音提示",
+      "trigger": "src/store/game.ts（選擇選項）、src/minigames/Spot.tsx・Serp.tsx・Quiz.tsx",
+      "target_duration_ms": [320, 550],
+      "target_duration_label": "320–550 ms（上行雙音）",
       "loudness_tier": "standard",
-      "audio_end_in_s": 1.8,
+      "audio_end_in_s": 2.0,
       "prompts": [
         {
           "id": "p1",
-          "round": "r1",
-          "text": "Bright clean two-note ascending glockenspiel chime, crisp cheerful anime visual novel menu select sound effect, clear bell tones, short dry decay, studio recording",
-          "seeds": [3011, 3022, 3033, 3044]
+          "round": "r2",
+          "text": "Two distinct ascending notes played cleanly on warm celesta and soft marimba, C5 to G5 pleasant interval, Japanese visual novel menu confirm ding, warm studio tone, no harsh high metallic chime",
+          "negative_prompt": "single note, hotel desk bell, harsh piercing high pitch, cymbal, long reverb, background noise, ambient room tone, crowd, speech, voices, distorted, clipping, drums, bassline, static hiss",
+          "seeds": [3301, 3302, 3303, 3304]
         },
         {
           "id": "p2",
-          "round": "r1",
-          "text": "Sweet crisp two-note ascending music box bell chime, delicate Japanese school game choice confirmation sound effect, bright gentle sparkling, short clean one-shot",
-          "seeds": [3111, 3122, 3133, 3144]
+          "round": "r2",
+          "text": "Gentle crisp two-note upward chime on wooden marimba and warm acoustic piano, cute Japanese school visual novel choice confirmation sound effect, distinct ascending fifth interval, soft rounded decay",
+          "negative_prompt": "single note, hotel desk bell, harsh piercing high pitch, cymbal, long reverb, background noise, ambient room tone, speech, voices, distorted, clipping, drums, static hiss",
+          "seeds": [3311, 3312, 3313, 3314]
         },
         {
           "id": "p3",
-          "round": "r1",
-          "text": "Two-note ascending celesta chime, warm bright positive UI selection ding for anime visual novel, clear harmonic bells, concise clean decay",
-          "seeds": [3211, 3222, 3233, 3244]
+          "round": "r2",
+          "text": "Two-note ascending soft music box and warm glockenspiel confirmation ding, C5 then E5 clean melodic step, cozy anime game dialogue option select SFX, warm studio recording, natural ring out",
+          "negative_prompt": "single note, hotel desk bell, harsh piercing high pitch, cymbal, long reverb, background noise, speech, voices, distorted, clipping, drums, static hiss",
+          "seeds": [3321, 3322, 3323, 3324]
+        },
+        {
+          "id": "p4",
+          "round": "r2",
+          "text": "Warm polite ascending two-tone wooden xylophone and celesta UI select chime, clear rising interval, gentle campus slice of life visual novel sound effect, no harsh metallic ringing",
+          "negative_prompt": "single note, hotel desk bell, harsh piercing high pitch, cymbal, long reverb, background noise, speech, voices, distorted, clipping, drums, static hiss",
+          "seeds": [3331, 3332, 3333, 3334]
         }
       ]
     },
@@ -163,8 +137,8 @@
       "name": "好感度上升溫暖滑音",
       "usage": "角色好感度提升、互動小對話或週報呈現溫馨羈絆時播放",
       "trigger": "src/ui/sim/ScheduleScreen.tsx（角色互動對話）、src/ui/sim/WeeklyReport.tsx（週報）",
-      "target_duration_ms": [600, 1000],
-      "target_duration_label": "0.6–1.0 秒",
+      "target_duration_ms": [600, 1200],
+      "target_duration_label": "0.6–1.2 秒",
       "loudness_tier": "standard",
       "audio_end_in_s": 2.2,
       "prompts": [
@@ -191,30 +165,40 @@
     {
       "id": "fail",
       "name": "失誤／倒下輕喜感「噗咚」",
-      "usage": "排程訓練失敗、體力歸零送保健室或劇情突發失誤（輕鬆可愛不刺耳）",
-      "trigger": "src/ui/sim/ScheduleScreen.tsx（status === 'fail' / 'infirmary'）、src/content/scenes/main/w6.ts",
-      "target_duration_ms": [400, 800],
-      "target_duration_label": "0.4–0.8 秒",
+      "usage": "排程訓練失敗、體力歸零送保健室或小遊戲失敗（可愛兩音下行，輕鬆不刺耳）",
+      "trigger": "src/ui/sim/ScheduleScreen.tsx（status === 'fail' / 'infirmary'）、src/minigames/*.tsx",
+      "target_duration_ms": [500, 750],
+      "target_duration_label": "500–750 ms（可愛兩音下行）",
       "loudness_tier": "standard",
-      "audio_end_in_s": 2.0,
+      "audio_end_in_s": 2.2,
       "prompts": [
         {
           "id": "p1",
-          "round": "r1",
-          "text": "Lighthearted comedic descending two-note muted marimba and soft cartoon boing plop, gentle cute anime fail sound effect, playful clumsy thud, not harsh or scary, dry studio",
-          "seeds": [7011, 7022, 7033, 7044]
+          "round": "r2",
+          "text": "Warm gentle descending two-note muted marimba and soft plucked double bass interval, E4 down to C4, polite cute Japanese school anime puzzle mistake thud, rounded warm low-mids, clean decay",
+          "negative_prompt": "single knock, spring boing, rubber toy, slide whistle, buzzer, harsh horn, scary, horror, distorted, clipping, long reverb, drums, voices, static hiss",
+          "seeds": [7301, 7302, 7303, 7304]
         },
         {
           "id": "p2",
-          "round": "r1",
-          "text": "Playful descending pizzicato string and soft muted woodblock plop, gentle cute mishap sound effect for cozy anime slice of life game, lighthearted comedic, clean short decay",
-          "seeds": [7111, 7122, 7133, 7144]
+          "round": "r2",
+          "text": "Cute soft two-note downward wooden marimba and warm bassoon plop, gentle lighthearted blunder sound effect for anime visual novel, clear descending step, cozy non-harsh studio recording",
+          "negative_prompt": "single knock, spring boing, rubber toy, slide whistle, buzzer, harsh horn, scary, horror, distorted, clipping, long reverb, drums, voices, static hiss",
+          "seeds": [7311, 7312, 7313, 7314]
         },
         {
           "id": "p3",
-          "round": "r1",
-          "text": "Gentle comedic downward muted tuba and soft wooden plop sound effect, lighthearted cute anime stumble blunder SFX, warm non-harsh funny sound, clean dry one-shot",
-          "seeds": [7211, 7222, 7233, 7244]
+          "round": "r2",
+          "text": "Playful soft descending two-note pizzicato cello and muted kalimba thud, gentle school anime minigame wrong answer sound effect, warm rounded tone, natural short decay",
+          "negative_prompt": "single knock, spring boing, rubber toy, slide whistle, buzzer, harsh horn, scary, horror, distorted, clipping, long reverb, drums, voices, static hiss",
+          "seeds": [7321, 7322, 7323, 7324]
+        },
+        {
+          "id": "p4",
+          "round": "r2",
+          "text": "Gentle comedic two-note falling acoustic marimba and soft felt piano low chord, cute anime mishap cue, distinct descending pitch, warm clean dry one-shot",
+          "negative_prompt": "single knock, spring boing, rubber toy, slide whistle, buzzer, harsh horn, scary, horror, distorted, clipping, long reverb, drums, voices, static hiss",
+          "seeds": [7331, 7332, 7333, 7334]
         }
       ]
     },
@@ -222,7 +206,7 @@
       "id": "win",
       "name": "小遊戲過關歡樂小樂句",
       "usage": "SEO 互動小遊戲或活動驗收通關時的歡快慶祝短樂句",
-      "trigger": "小遊戲過關 / 驗收勝利事件（保留給新版音效系統接線）",
+      "trigger": "src/minigames/Spot.tsx・Serp.tsx・Quiz.tsx（過關勝利）",
       "target_duration_ms": [1000, 1800],
       "target_duration_label": "1.0–1.8 秒",
       "loudness_tier": "standard",
@@ -245,6 +229,46 @@
           "round": "r1",
           "text": "Short triumphant cute victory chime melody with glockenspiel, harp, and warm bright bells, cheerful puzzle clear jingle for anime visual novel, concise clean studio recording",
           "seeds": [8211, 8222, 8233, 8244]
+        }
+      ]
+    },
+    {
+      "id": "shock",
+      "name": "危機驚訝重音",
+      "usage": "演算法暴雨危機、排名暴跌閃白轉場等校園懸疑衝擊提示（戲劇化但不恐怖）",
+      "trigger": "src/content/scenes/main/w6.ts（演算法更新暴雨危機）",
+      "target_duration_ms": [500, 800],
+      "target_duration_label": "500–800 ms（校園懸疑不恐怖）",
+      "loudness_tier": "standard",
+      "audio_end_in_s": 2.2,
+      "prompts": [
+        {
+          "id": "p1",
+          "round": "r2",
+          "text": "Short dramatic low pizzicato bass impact with soft crisp digital notification chime accent, mild anime school mystery surprise sting, not horror scream, clean 0.6s tail",
+          "negative_prompt": "horror scream, monster, explosion, gunshot, distortion, harsh screech, dubstep drop, heavy metal, zombie, gore, long reverb, voices, static hiss",
+          "seeds": [9301, 9302, 9303, 9304]
+        },
+        {
+          "id": "p2",
+          "round": "r2",
+          "text": "Crisp dramatic anime visual novel shock sting, sudden minor piano low octave chord with taut plucked strings accent, school mystery plot twist sound effect, clean studio decay, not scary",
+          "negative_prompt": "horror scream, monster, explosion, gunshot, distortion, harsh screech, dubstep drop, heavy metal, zombie, gore, long reverb, voices, static hiss",
+          "seeds": [9311, 9312, 9313, 9314]
+        },
+        {
+          "id": "p3",
+          "round": "r2",
+          "text": "Short tense anime detective revelation chime, deep warm orchestral pizzicato pluck with subtle crisp glass bell alert, dramatic non-horror surprise cue, concise clean tail",
+          "negative_prompt": "horror scream, monster, explosion, gunshot, distortion, harsh screech, dubstep drop, heavy metal, zombie, gore, long reverb, voices, static hiss",
+          "seeds": [9321, 9322, 9323, 9324]
+        },
+        {
+          "id": "p4",
+          "round": "r2",
+          "text": "Sudden dramatic low cello staccato hit with clean bright minor harp chord, Japanese high school mystery crisis alert sound effect, focused shock without horror noise",
+          "negative_prompt": "horror scream, monster, explosion, gunshot, distortion, harsh screech, dubstep drop, heavy metal, zombie, gore, long reverb, voices, static hiss",
+          "seeds": [9331, 9332, 9333, 9334]
         }
       ]
     }

@@ -1,167 +1,289 @@
 {
   "project": "直到你找到我 ～青葉學園網站研究社～",
+  "version": "v2",
   "model": {
-    "repo": "https://github.com/ace-step/ACE-Step",
-    "huggingface_id": "ACE-Step/ACE-Step-v1-3.5B",
-    "license": "Apache-2.0"
+    "name": "ACE-Step 1.5",
+    "repo": "https://github.com/ace-step/ACE-Step-1.5",
+    "huggingface_id": "ACE-Step/Ace-Step1.5",
+    "dit_config": "acestep-v15-turbo",
+    "lm_model": "acestep-5Hz-lm-1.7B",
+    "license": "MIT"
   },
   "generation_defaults": {
-    "lyrics": "[instrumental]",
-    "audio_duration": 150.0,
-    "infer_step": 60,
-    "guidance_scale": 15.0,
-    "scheduler_type": "euler",
-    "cfg_type": "apg",
-    "omega_scale": 10.0,
-    "guidance_interval": 0.5,
-    "guidance_interval_decay": 0.0,
-    "min_guidance_scale": 3.0,
-    "use_erg_tag": true,
-    "use_erg_lyric": false,
-    "use_erg_diffusion": true
+    "dit_config": "acestep-v15-turbo",
+    "lm_model": "acestep-5Hz-lm-1.7B",
+    "lm_backend": "pt",
+    "thinking": true,
+    "use_cot_metas": false,
+    "use_cot_caption": false,
+    "use_cot_language": false,
+    "use_cot_lyrics": false,
+    "instrumental": true,
+    "lyrics": "[Instrumental]",
+    "vocal_language": "unknown",
+    "inference_steps": 8,
+    "guidance_scale": 7.0,
+    "shift": 3.0,
+    "infer_method": "ode",
+    "lm_temperature": 0.85,
+    "lm_cfg_scale": 2.2,
+    "lm_top_p": 0.9,
+    "duration": 82.0,
+    "batch_size": 1
   },
   "postprocess_defaults": {
     "target_sr": 44100,
-    "mp3_bitrate": "160k",
+    "mp3_bitrate": "128k",
     "target_lufs": -18.0,
     "lufs_tolerance": 1.0,
     "max_true_peak_dbtp": -1.0,
     "pre_mp3_ceiling_dbtp": -1.5,
-    "loop_min_sec": 60.0,
-    "loop_max_sec": 120.0,
-    "min_loop_end_sec": 100.0,
+    "loop_min_sec": 42.0,
+    "loop_max_sec": 68.0,
+    "min_loop_end_sec": 56.0,
+    "max_loop_end_sec": 74.0,
     "seam_preview_half_sec": 4.0,
-    "max_seam_jump_db": 3.5,
-    "bpm_tolerance_ratio": 0.15,
-    "silence_threshold_db": -45.0,
-    "max_silence_sec": 1.0,
-    "max_silence_ratio": 0.05
+    "max_seam_50ms_jump_db": 6.0,
+    "max_seam_500ms_jump_db": 1.5,
+    "min_seam_500ms_cosine": 0.72,
+    "max_sub_bass_ratio": 0.48,
+    "dialogue_max_lra_db": 7.5,
+    "dialogue_max_2s_jump_db": 4.0,
+    "showcase_max_lra_db": 9.5,
+    "showcase_max_2s_jump_db": 5.0,
+    "bpm_tolerance_ratio": 0.18,
+    "silence_threshold_db": -54.0,
+    "max_silence_sec": 2.5,
+    "max_silence_ratio": 0.12
   },
   "tracks": [
     {
       "id": "title",
-      "title_zh": "標題曲（直到你找到我）",
-      "usage_zh": "標題畫面與開場：玩家進入遊戲聽到的第一首曲子，帶一點思念與期待的青春感。",
-      "style_zh": "抒情、柔和鋼琴＋弦樂，約 75–85 BPM，純器樂無人聲、適合襯底。",
-      "target_bpm": [75, 85],
-      "candidates": [
-        {
-          "slot": "c1",
-          "seed": 10101,
-          "prompt": "anime visual novel title theme, lyrical soft piano and warm strings, nostalgic youthful longing and gentle hope, delicate arpeggios, mellow emotional soundtrack, steady gentle tempo, 80 bpm, instrumental, no vocals, no singing, background music"
-        },
-        {
-          "slot": "c2",
-          "seed": 20202,
-          "prompt": "japanese anime soundtrack, heartfelt acoustic piano melody with lush chamber strings and subtle celesta, bittersweet spring youth, dreamy warm atmosphere, calm steady flow, 78 bpm, instrumental, no vocals, no singing, background music"
-        },
-        {
-          "slot": "c3",
-          "seed": 30303,
-          "prompt": "visual novel opening BGM, tender solo piano leading into gentle legato violin and cello strings, sentimental hopeful sunrise mood, smooth uncluttered arrangement, 82 bpm, instrumental, no vocals, no singing, background music"
-        }
+      "role": "showcase",
+      "title_zh": "直到你找到我（標題曲／真結局收尾）",
+      "usage_zh": "標題畫面、真結局黃昏合照收尾、壞結局重生段：建立清新青春與微光思念印象。",
+      "style_zh": "抒情清澈鋼琴＋柔和室內樂弦樂＋微亮鋼片琴，約 78 BPM，無鼓無搖滾。",
+      "target_bpm": [74, 84],
+      "bpm": 78,
+      "keyscale": "D major",
+      "timesignature": "4",
+      "duration": 84.0,
+      "negative_prompt": "drums, drum kit, percussion, timpani, electric guitar, distortion, rock, metal, epic trailer brass, choir, vocals, singing, humming, sudden crescendo, EDM, dubstep",
+      "prompts": [
+        "japanese visual novel piano and chamber strings, delicate lyrical upright piano arpeggio, warm legato violin and cello ensemble, subtle celesta sparkle, nostalgic spring morning, clear uncluttered mix, soft gentle dynamics, acoustic chamber music, purely instrumental, no drums",
+        "tender anime school romance opening theme, clean acoustic piano melody supported by soft chamber string quartet, airy warm morning sunlight feeling, steady calm dynamic flow without loud buildup, purely instrumental, no percussion, no vocals"
       ],
-      "backup_seeds": [40404, 50505, 60606, 70707, 80808, 90909]
+      "seeds": [10111, 10112, 10113, 10114, 10115, 10116, 10117, 10118],
+      "backup_seeds": [10121, 10122, 10123, 10124, 10125, 10126]
     },
     {
       "id": "daily",
-      "title_zh": "日常（校園與社辦）",
-      "usage_zh": "社辦、教室、商店街與日常育成排程對話襯底，輕快明亮而不搶戲。",
-      "style_zh": "輕快校園日常：木吉他、鐘琴、撥弦、輕打擊，約 105–115 BPM，純器樂無人聲。",
-      "target_bpm": [105, 115],
-      "candidates": [
-        {
-          "slot": "c1",
-          "seed": 11101,
-          "prompt": "anime slice of life school BGM, cheerful bright acoustic guitar, sparkling glockenspiel, playful pizzicato strings, soft shaker and light brushed drums, sunny afternoon clubroom atmosphere, 110 bpm, instrumental, no vocals, no singing, background music"
-        },
-        {
-          "slot": "c2",
-          "seed": 22202,
-          "prompt": "japanese visual novel daily theme, breezy fingerpicked acoustic guitar, delicate xylophone and glockenspiel, warm upright bass, light tambourine percussion, cozy campus classroom mood, steady groove, 108 bpm, instrumental, no vocals, no singing, background music"
-        },
-        {
-          "slot": "c3",
-          "seed": 33303,
-          "prompt": "upbeat pastel anime town soundtrack, strummed acoustic guitar, cute marimba and bells, plucked strings, gentle clap and light snare rhythm, lively shopping street daytime vibe, unobtrusive loopable background music, 112 bpm, instrumental, no vocals, no singing"
-        }
+      "role": "dialogue",
+      "title_zh": "404 號社辦的日常（平日校園／社辦）",
+      "usage_zh": "社辦、教室、商店街與日常劇情對白襯底，輕快明朗且留白不搶戲。",
+      "style_zh": "清脆指彈木吉他＋鐘琴＋木琴＋輕微撥弦與極輕沙鈴，約 112 BPM，嚴禁佛朗明哥掃弦與搖滾鼓。",
+      "target_bpm": [105, 118],
+      "bpm": 112,
+      "keyscale": "C major",
+      "timesignature": "4",
+      "duration": 82.0,
+      "negative_prompt": "flamenco, spanish guitar, aggressive strumming, latin percussion, conga, heavy drums, drum kit, electric guitar, distortion, rock band, EDM, vocals, singing, humming",
+      "prompts": [
+        "japanese slice of life anime BGM, light playful acoustic chamber ensemble, gentle fingerstyle steel-string acoustic guitar arpeggios, cute glockenspiel and marimba melody, soft pizzicato strings, tiny soft shaker, sunny school clubroom afternoon, sparse dialogue-friendly arrangement, purely instrumental",
+        "cheerful pastel japanese school visual novel daily theme, soft marimba and glockenspiel duet with delicate clean acoustic piano and pizzicato cello bass, airy open mix for reading text, steady gentle tempo, no rock drums, purely instrumental"
       ],
-      "backup_seeds": [44404, 55505, 66606, 77707, 88808, 99909]
+      "seeds": [11111, 11112, 11113, 11114, 11115, 11116, 11117, 11118],
+      "backup_seeds": [11121, 11122, 11123, 11124, 11125, 11126]
+    },
+    {
+      "id": "sim",
+      "role": "dialogue",
+      "title_zh": "本週企劃中！（養成排程／公佈欄／週末／週報）",
+      "usage_zh": "排程、委託公佈欄、週末選單、週報與在家休息，清爽從容久聽不膩。",
+      "style_zh": "柔和 Rhodes 電鋼琴＋尼龍吉他＋原聲貝斯撥奏＋極輕刷鈸，約 100 BPM。",
+      "target_bpm": [94, 106],
+      "bpm": 100,
+      "keyscale": "F major",
+      "timesignature": "4",
+      "duration": 78.0,
+      "negative_prompt": "vinyl crackle, distorted electric guitar, heavy kick drum, sidechain EDM, dramatic climax, rock, choir, saxophone, vocals, singing, humming",
+      "prompts": [
+        "cozy lo-fi rhodes electric piano and soft nylon acoustic guitar, gentle upright bass pluck, barely-there light brushed percussion, subtle marimba accents, relaxed afternoon planning menu BGM for japanese school life sim, steady mellow uncluttered loop, purely instrumental",
+        "warm clean Rhodes electric piano chords with delicate fingerpicked nylon guitar and soft woodblock ticks, calm productive japanese visual novel schedule screen background music, flat steady gentle dynamics, purely instrumental"
+      ],
+      "seeds": [12111, 12112, 12113, 12114, 12115, 12116, 12117, 12118],
+      "backup_seeds": [12121, 12122, 12123, 12124, 12125, 12126]
+    },
+    {
+      "id": "minigame",
+      "role": "dialogue",
+      "title_zh": "實戰演練！（SEO 互動小遊戲專用）",
+      "usage_zh": "Quiz / Spot / Serp 全部 17 關挑戰，專注思考帶輕快趣味而不焦慮。",
+      "style_zh": "馬林巴＋弦樂撥奏＋清脆電鋼琴＋高音鐘琴＋輕巧木塊節拍，約 118 BPM。",
+      "target_bpm": [112, 124],
+      "bpm": 118,
+      "keyscale": "G major",
+      "timesignature": "4",
+      "duration": 78.0,
+      "negative_prompt": "countdown alarm, dubstep, EDM bass drop, aggressive synth lead, distorted guitar, rock drums, war drums, heavy metal, vocals, singing",
+      "prompts": [
+        "bright playful japanese puzzle game thinking BGM, marimba and pizzicato strings ostinato, crisp electric piano chords, subtle bell arpeggio, light woodblock tick beat, curious focused study mood, steady non-intrusive loop, purely instrumental",
+        "clean upbeat educational quiz game background loop, bouncy wooden marimba melody with pizzicato violin and soft clavi electric piano, gentle steady pulse without stressful tension, purely instrumental"
+      ],
+      "seeds": [13111, 13112, 13113, 13114, 13115, 13116, 13117, 13118],
+      "backup_seeds": [13121, 13122, 13123, 13124, 13125, 13126]
     },
     {
       "id": "warm",
-      "title_zh": "溫馨（心動與約會）",
-      "usage_zh": "約會、告白前、夕陽天台等溫柔心動時刻，讓對白自然浮現。",
-      "style_zh": "溫柔心動：鋼琴＋柔和弦樂，約 70–80 BPM，純器樂無人聲、旋律留白。",
-      "target_bpm": [70, 80],
-      "candidates": [
-        {
-          "slot": "c1",
-          "seed": 12101,
-          "prompt": "anime romance visual novel BGM, tender warm felt piano and soft legato strings, golden hour sunset rooftop atmosphere, intimate gentle emotion, calm sparse melody for dialogue, 74 bpm, instrumental, no vocals, no singing, background music"
-        },
-        {
-          "slot": "c2",
-          "seed": 23202,
-          "prompt": "japanese anime heartfelt confession scene music, soothing acoustic piano chords with airy warm string pad and subtle acoustic guitar harmonics, affectionate peaceful mood, smooth sustained phrasing, 76 bpm, instrumental, no vocals, no singing, background music"
-        },
-        {
-          "slot": "c3",
-          "seed": 34303,
-          "prompt": "gentle visual novel date theme, delicate music-box-like piano with lush soft cello and warm violin swell, sweet nostalgic evening glow, serene steady flow, unobtrusive background music, 72 bpm, instrumental, no vocals, no singing"
-        }
+      "role": "dialogue",
+      "title_zh": "放學後的晚霞（心動告白與夕陽天台）",
+      "usage_zh": "共用心動時刻、雨夜談心、CG 告白與個人結局深情段，極高留白讓對白自然浮現。",
+      "style_zh": "Felt 柔音鋼琴＋大提琴獨奏＋柔弦樂墊底＋少量豎琴泛音，約 72 BPM，嚴禁鼓組、電吉他與薩克斯風。",
+      "target_bpm": [68, 78],
+      "bpm": 72,
+      "keyscale": "A major",
+      "timesignature": "4",
+      "duration": 82.0,
+      "negative_prompt": "drums, percussion, drum kit, rock, distorted electric guitar, electric guitar, saxophone, smooth jazz, power ballad, sudden loud buildup, vocals, singing, humming",
+      "prompts": [
+        "intimate felt piano and warm soft solo cello, gentle sustained chamber strings pad, subtle acoustic harp harmonics, golden hour sunset romance visual novel BGM, tender peaceful space, sparse slow melody with breathing room for dialogue, zero percussion, purely instrumental",
+        "quiet emotional japanese anime love confession background music, muted felt upright piano slow gentle chords and warm cello whisper, flat intimate calm dynamics from start to end, strictly no drums, no guitar, purely instrumental"
       ],
-      "backup_seeds": [45404, 56505, 67606, 78707, 89808, 91909]
+      "seeds": [14111, 14112, 14113, 14114, 14115, 14116, 14117, 14118],
+      "backup_seeds": [14121, 14122, 14123, 14124, 14125, 14126]
+    },
+    {
+      "id": "melancholy",
+      "role": "dialogue",
+      "title_zh": "404 的雨夜（低落／脆弱／壞結局前半）",
+      "usage_zh": "壞結局廢社還鑰匙、未來「複製品」自白、雨夜獨行，孤寂但不恐怖絕望。",
+      "style_zh": "稀疏延音 Felt 鋼琴＋低聲量孤獨大提琴長音，約 64 BPM，絕對無鼓無尖銳恐怖音效。",
+      "target_bpm": [58, 70],
+      "bpm": 64,
+      "keyscale": "E minor",
+      "timesignature": "4",
+      "duration": 82.0,
+      "negative_prompt": "horror, dissonant drone, jumpscare, heavy sub-bass, drums, percussion, electric guitar, gothic organ, trailer boom, vocals, singing, humming",
+      "prompts": [
+        "melancholic solo felt piano in E minor, sparse delicate notes with gentle decay, soft distant solo cello sigh, quiet rainy night school room atmosphere, bittersweet tender sadness with faint hope, minimal acoustic visual novel BGM, zero drums, purely instrumental",
+        "gentle sad anime visual novel piano ballad without vocals, quiet unhurried acoustic piano and soft cello harmony, peaceful nocturnal rain reflection mood, calm flat quiet dynamics, strictly no percussion, purely instrumental"
+      ],
+      "seeds": [15111, 15112, 15113, 15114, 15115, 15116, 15117, 15118],
+      "backup_seeds": [15121, 15122, 15123, 15124, 15125, 15126]
     },
     {
       "id": "tense",
-      "title_zh": "緊張（黑川登場與演算法危機）",
-      "usage_zh": "黑帽反派登場、演算法大雨、網站排名暴跌等危機事件；營造輕度緊張與懸疑感。",
-      "style_zh": "輕度緊張與不安（非恐怖片）：撥弦、合成器脈衝、低音，約 95–105 BPM，純器樂無人聲。",
-      "target_bpm": [95, 105],
-      "candidates": [
-        {
-          "slot": "c1",
-          "seed": 13101,
-          "prompt": "anime mystery visual novel tension BGM, crisp pizzicato strings, steady subtle analog synth pulse, taut deep bassline, light ticking percussion, mild suspense and intrigue, not horror, clean modern soundtrack, 100 bpm, instrumental, no vocals, no singing, background music"
-        },
-        {
-          "slot": "c2",
-          "seed": 24202,
-          "prompt": "japanese detective game thinking theme, rhythmic plucked cello and violin, soft pulsing arpeggiated synthesizer, muted electronic bass, cool focused uneasiness, steady moderate drive, non-scary suspense, 98 bpm, instrumental, no vocals, no singing, background music"
-        },
-        {
-          "slot": "c3",
-          "seed": 35303,
-          "prompt": "anime rival confrontation background music, driving staccato strings, understated dark synth pulse, tight low bass groove, gentle rimshot beat, serious dramatic tension without horror or jumpscares, dialogue-friendly, 102 bpm, instrumental, no vocals, no singing"
-        }
+      "role": "dialogue",
+      "title_zh": "演算法的大雨（輕度校園科技懸疑）",
+      "usage_zh": "黑川威脅、演算法更新危機與排名下滑調查，需要冷靜排查感，嚴禁動作大片與 EDM。",
+      "style_zh": "斷奏撥弦（小提琴／大提琴）＋低音鋼琴八分反覆動機＋柔和類比合成脈衝＋輕木塊，約 100 BPM。",
+      "target_bpm": [94, 106],
+      "bpm": 100,
+      "keyscale": "D minor",
+      "timesignature": "4",
+      "duration": 78.0,
+      "negative_prompt": "EDM kick, rave drop, sidechain, dubstep, trailer braaam, taiko war drums, industrial metal, distortion, screeching synth, electric guitar, horror scream, vocals",
+      "prompts": [
+        "light anime school mystery suspense BGM, crisp staccato pizzicato violin and cello, subtle muted analog synth pluck pulse, soft tense piano ostinato, light woodblock tick, focused investigation intrigue without horror or action trailer drops, dialogue-friendly, purely instrumental",
+        "japanese detective visual novel thinking suspense loop, rhythmic plucked pizzicato strings with clean low piano motif and soft gentle marimba pulse, calm focused tension, no rock drums, no EDM drop, purely instrumental"
       ],
-      "backup_seeds": [46404, 57505, 68606, 79707, 81808, 92909]
+      "seeds": [16111, 16112, 16113, 16114, 16115, 16116, 16117, 16118],
+      "backup_seeds": [16121, 16122, 16123, 16124, 16125, 16126]
+    },
+    {
+      "id": "comedy",
+      "role": "dialogue",
+      "title_zh": "黑帽推銷中！（輕鬆校園喜劇／黑川擺攤／罰坐結局）",
+      "usage_zh": "黑川推銷黑帽套餐、凜帶鹽驅鬼與罰坐抄寫政策喜劇結尾，俏皮滑稽不喧鬧。",
+      "style_zh": "跳音低音管／單簧管對話＋撥弦＋輕巧木琴與鋼琴＋極輕沙鈴，約 116 BPM。",
+      "target_bpm": [110, 122],
+      "bpm": 116,
+      "keyscale": "F major",
+      "timesignature": "4",
+      "duration": 76.0,
+      "negative_prompt": "sad music, dark suspense, epic brass fanfare, heavy rock drums, electric guitar, trombone slide overuse, distortion, vocals, singing",
+      "prompts": [
+        "playful comedic japanese slice of life anime BGM, bouncy bassoon and clarinet staccato duet, mischievous pizzicato strings, lighthearted xylophone and jaunty piano chords, cute clumsy school comedy mood, steady light acoustic rhythm, purely instrumental",
+        "quirky lighthearted anime visual novel mischief theme, playful staccato woodwinds with cute pizzicato violin and xylophone hops, cheerful cartoon-lite school banter background music, uncluttered mix, purely instrumental"
+      ],
+      "seeds": [17111, 17112, 17113, 17114, 17115, 17116, 17117, 17118],
+      "backup_seeds": [17121, 17122, 17123, 17124, 17125, 17126]
     },
     {
       "id": "festival",
-      "title_zh": "搜尋祭（學園祭與頒獎）",
-      "usage_zh": "青葉學園祭典活動、SEO 成果發表與高潮頒獎時刻，氣氛熱鬧歡騰。",
-      "style_zh": "熱鬧歡騰：銅管、拍手、太鼓或打擊、明亮合成器，約 125–135 BPM，純器樂無人聲。",
-      "target_bpm": [125, 135],
-      "candidates": [
-        {
-          "slot": "c1",
-          "seed": 14101,
-          "prompt": "anime school festival celebration BGM, joyful bright brass section, lively hand claps, festive taiko drums and crisp snare percussion, sparkling bright synth melody, triumphant cheerful atmosphere, 130 bpm, instrumental, no vocals, no singing, background music"
-        },
-        {
-          "slot": "c2",
-          "seed": 25202,
-          "prompt": "japanese campus festival parade soundtrack, celebratory trumpets and horns, upbeat energetic taiko and tambourine rhythm, rhythmic handclaps, shiny synth chords, sunny awards ceremony excitement, 128 bpm, instrumental, no vocals, no singing, background music"
-        },
-        {
-          "slot": "c3",
-          "seed": 36303,
-          "prompt": "vibrant anime game event theme, jubilant brass fanfare motifs, bright cheerful synthesizer lead, bouncy bass, festive percussion with claps and taiko accents, energetic happy crowd celebration vibe without harshness, 132 bpm, instrumental, no vocals, no singing"
-        }
+      "role": "showcase",
+      "title_zh": "青葉搜尋祭（第 7 週學園祭典與揭曉瞬間）",
+      "usage_zh": "搜尋祭攤位熱鬧氣氛與成果揭曉瞬間，陽光青春歡慶而非軍樂打仗。",
+      "style_zh": "明亮長笛與節制小號點綴＋活潑鋼琴＋鐘琴＋清脆拍手與輕巧節慶打擊，約 128 BPM。",
+      "target_bpm": [122, 134],
+      "bpm": 128,
+      "keyscale": "Bb major",
+      "timesignature": "4",
+      "duration": 82.0,
+      "negative_prompt": "war drums, dark minor key, cinematic battle orchestra, heavy distortion guitar, electric guitar, intense combat, boss fight, choir, vocals, singing",
+      "prompts": [
+        "cheerful sunny japanese high school cultural festival BGM, bright upbeat flute and light acoustic brass melody, joyful glockenspiel, crisp handclaps and light festive tambourine percussion, bouncy acoustic piano and upright bass, warm daytime joy without battle tension, purely instrumental",
+        "happy daytime anime school festival parade background music, lively acoustic piano with bright glockenspiel chimes, joyful woodwinds, gentle handclaps and cheerful light snare groove, festive celebratory mood, purely instrumental"
       ],
-      "backup_seeds": [47404, 58505, 69606, 80808, 82808, 93909]
+      "seeds": [18111, 18112, 18113, 18114, 18115, 18116, 18117, 18118],
+      "backup_seeds": [18121, 18122, 18123, 18124, 18125, 18126]
+    },
+    {
+      "id": "theme_rin",
+      "role": "dialogue",
+      "title_zh": "規則與貓咪（白鷺凜專用主題）",
+      "usage_zh": "白鷺凜約會、貓咪部落格支線與凜個人結局，端莊知性又藏著軟萌反差。",
+      "style_zh": "清亮古典鋼琴＋優雅弦樂四重奏＋輕點撥弦，約 94 BPM，無鼓無電音。",
+      "target_bpm": [88, 100],
+      "bpm": 94,
+      "keyscale": "G major",
+      "timesignature": "4",
+      "duration": 82.0,
+      "negative_prompt": "drums, drum kit, heavy bass, rock, electric guitar, jazz sax, electronic synth lead, gloomy sadness, vocals, singing",
+      "prompts": [
+        "elegant neat classical-pop anime heroine theme, crisp classical piano melody with refined string quartet accompaniment, gentle pizzicato accents, dignified yet secretly sweet and shy mood, warm afternoon student council room, clean transparent chamber sound, zero drums, purely instrumental",
+        "refined graceful japanese visual novel character theme, clear delicate classical piano with light chamber violin and cello dialogue, poised warm sunlit school atmosphere, gentle unobtrusive dynamics, strictly no percussion, purely instrumental"
+      ],
+      "seeds": [19111, 19112, 19113, 19114, 19115, 19116, 19117, 19118],
+      "backup_seeds": [19121, 19122, 19123, 19124, 19125, 19126]
+    },
+    {
+      "id": "theme_hare",
+      "role": "dialogue",
+      "title_zh": "結論先說！（夏川晴專用主題）",
+      "usage_zh": "夏川晴約會、廣播社播報突破與晴個人結局，陽光率真元氣滿滿。",
+      "style_zh": "清新烏克麗麗＋輕快指彈木吉他＋明亮長笛／口風琴＋原聲貝斯＋輕手拍沙鈴，約 120 BPM。",
+      "target_bpm": [114, 126],
+      "bpm": 120,
+      "keyscale": "C major",
+      "timesignature": "4",
+      "duration": 78.0,
+      "negative_prompt": "flamenco, distorted guitar, electric guitar, heavy rock drum kit, EDM, slow melancholy, brass battle, vocals, singing",
+      "prompts": [
+        "sunny energetic anime girl theme, cheerful bright ukulele and light fingerpicked acoustic guitar, playful sweet flute and melodica melody, bouncy upright bass, crisp light handclaps and soft shaker, radiant after-school radio club vibe, uncluttered dialogue background music, purely instrumental",
+        "bright cheerful japanese school heroine theme, upbeat ukulele chords with warm melodica and glockenspiel melody, gentle tambourine and pizzicato bass, carefree sunny afternoon feeling, no rock drums, purely instrumental"
+      ],
+      "seeds": [20111, 20112, 20113, 20114, 20115, 20116, 20117, 20118],
+      "backup_seeds": [20121, 20122, 20123, 20124, 20125, 20126]
+    },
+    {
+      "id": "theme_mirai",
+      "role": "dialogue",
+      "title_zh": "星光資料庫（星野未來專用主題）",
+      "usage_zh": "星野未來約會、天文館與未來個人結局，空靈澄澈星空感。",
+      "style_zh": "晶透高音域鋼琴＋鋼片琴＋柔和閃亮合成 Pad＋豎琴撥弦，約 84 BPM，無重鼓無尖嘯。",
+      "target_bpm": [78, 90],
+      "bpm": 84,
+      "keyscale": "Db major",
+      "timesignature": "4",
+      "duration": 82.0,
+      "negative_prompt": "cyberpunk industrial, glitch noise, heavy sub-bass, harsh lead synth, rock drums, drum kit, electric guitar, horror, vocals, singing",
+      "prompts": [
+        "ethereal crystal clear anime girl theme, delicate glass piano and sparkling celesta arpeggios, soft glowing ambient synth pad like distant stars, gentle plucked harp notes, calm curious serene planetarium night atmosphere, minimalist electronic-acoustic blend, zero heavy drums, purely instrumental",
+        "serene starry night sky japanese visual novel character theme, crystalline celesta and clean delicate piano with soft warm ambient string pad and gentle harp plucks, calm contemplative space for dialogue, no drums, purely instrumental"
+      ],
+      "seeds": [21111, 21112, 21113, 21114, 21115, 21116, 21117, 21118],
+      "backup_seeds": [21121, 21122, 21123, 21124, 21125, 21126]
     }
   ]
 }

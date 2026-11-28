@@ -126,7 +126,7 @@ export function TitleScreen() {
       </div>
 
       <p className="absolute bottom-3 left-16 z-10 text-[11px] leading-snug tracking-wide text-white/55" data-testid="title-credits">
-        背景音樂：ACE-Step 生成（Apache 2.0）<br />音效：Stable Audio Open 生成 — Powered by Stability AI
+        背景音樂：ACE-Step 1.5 生成（MIT）<br />音效：Stable Audio Open 生成 — Powered by Stability AI
       </p>
     </div>
   )

@@ -1,11 +1,23 @@
 {
-  "_note": "階段 0 過渡預設（docs/audio-review.md 第 3、4 章）：蓋過 candidates.json 的 recommended，直到新曲／新音效重產完成。重產並更新 candidates.json 後請清空 picks。鍵為 `bgm/<id>` 或 `sfx/<id>`，值為版本 id（不存在就警告並沿用 candidates 的建議首選）。",
+  "_note": "v2 實聽定案預設（2026-11-28）：所有 12 首 v2 BGM 與 5 種本機重製／新增 SFX（click/blip/choice/fail/shock）皆設為 c1；沿用舊檔的 win 維持實聽最佳的 c2（card/grow/bond 沿用 candidates 的 c1）。",
   "picks": {
-    "bgm/title": "c3",
-    "sfx/click": "c3",
-    "sfx/blip": "c4",
-    "sfx/choice": "c3",
-    "sfx/fail": "c4",
-    "sfx/win": "c2"
+    "bgm/title": "c1",
+    "bgm/daily": "c1",
+    "bgm/sim": "c1",
+    "bgm/minigame": "c1",
+    "bgm/warm": "c1",
+    "bgm/melancholy": "c1",
+    "bgm/tense": "c1",
+    "bgm/comedy": "c1",
+    "bgm/festival": "c1",
+    "bgm/theme_rin": "c1",
+    "bgm/theme_hare": "c1",
+    "bgm/theme_mirai": "c1",
+    "sfx/click": "c1",
+    "sfx/blip": "c1",
+    "sfx/choice": "c1",
+    "sfx/fail": "c1",
+    "sfx/win": "c2",
+    "sfx/shock": "c1"
   }
 }

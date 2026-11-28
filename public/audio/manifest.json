@@ -1,24 +1,24 @@
 {
   "bgm/title": {
-    "default": "c3",
+    "default": "c1",
     "variants": {
       "c1": {
         "src": "/audio/bgm/title_c1.mp3",
-        "loopStart": 14.013,
-        "loopEnd": 114.474,
-        "duration": 114.474
+        "loopStart": 15.441,
+        "loopEnd": 58.514,
+        "duration": 58.514
       },
       "c2": {
         "src": "/audio/bgm/title_c2.mp3",
-        "loopStart": 20.027,
-        "loopEnd": 110.713,
-        "duration": 110.713
+        "loopStart": 18.53,
+        "loopEnd": 67.756,
+        "duration": 67.756
       },
       "c3": {
         "src": "/audio/bgm/title_c3.mp3",
-        "loopStart": 18.611,
-        "loopEnd": 124.099,
-        "duration": 124.099
+        "loopStart": 12.353,
+        "loopEnd": 67.744,
+        "duration": 67.744
       }
     }
   },
@@ -27,44 +27,113 @@
     "variants": {
       "c1": {
         "src": "/audio/bgm/daily_c1.mp3",
-        "loopStart": 19.853,
-        "loopEnd": 107.218,
-        "duration": 107.218
+        "loopStart": 15.453,
+        "loopEnd": 66.432,
+        "duration": 66.432
       },
       "c2": {
         "src": "/audio/bgm/daily_c2.mp3",
-        "loopStart": 24.091,
-        "loopEnd": 131.1,
-        "duration": 131.1
+        "loopStart": 14.396,
+        "loopEnd": 73.863,
+        "duration": 73.863
       },
       "c3": {
         "src": "/audio/bgm/daily_c3.mp3",
-        "loopStart": 9.23,
-        "loopEnd": 102.725,
-        "duration": 102.725
+        "loopStart": 10.67,
+        "loopEnd": 61.637,
+        "duration": 61.637
+      }
+    }
+  },
+  "bgm/sim": {
+    "default": "c1",
+    "variants": {
+      "c1": {
+        "src": "/audio/bgm/sim_c1.mp3",
+        "loopStart": 19.261,
+        "loopEnd": 67.257,
+        "duration": 67.257
+      },
+      "c2": {
+        "src": "/audio/bgm/sim_c2.mp3",
+        "loopStart": 19.865,
+        "loopEnd": 68.151,
+        "duration": 68.151
+      },
+      "c3": {
+        "src": "/audio/bgm/sim_c3.mp3",
+        "loopStart": 13.862,
+        "loopEnd": 71.761,
+        "duration": 71.761
+      }
+    }
+  },
+  "bgm/minigame": {
+    "default": "c1",
+    "variants": {
+      "c1": {
+        "src": "/audio/bgm/minigame_c1.mp3",
+        "loopStart": 21.13,
+        "loopEnd": 65.875,
+        "duration": 65.875
+      },
+      "c2": {
+        "src": "/audio/bgm/minigame_c2.mp3",
+        "loopStart": 15.79,
+        "loopEnd": 63.855,
+        "duration": 63.855
+      },
+      "c3": {
+        "src": "/audio/bgm/minigame_c3.mp3",
+        "loopStart": 18.321,
+        "loopEnd": 67.141,
+        "duration": 67.14
       }
     }
   },
   "bgm/warm": {
-    "default": "c2",
+    "default": "c1",
     "variants": {
       "c1": {
         "src": "/audio/bgm/warm_c1.mp3",
-        "loopStart": 23.986,
-        "loopEnd": 133.654,
-        "duration": 133.654
+        "loopStart": 17.183,
+        "loopEnd": 69.927,
+        "duration": 69.927
       },
       "c2": {
         "src": "/audio/bgm/warm_c2.mp3",
-        "loopStart": 15.256,
-        "loopEnd": 117.656,
-        "duration": 117.656
+        "loopStart": 23.719,
+        "loopEnd": 70.635,
+        "duration": 70.635
       },
       "c3": {
         "src": "/audio/bgm/warm_c3.mp3",
-        "loopStart": 18.518,
-        "loopEnd": 123.751,
-        "duration": 123.751
+        "loopStart": 21.734,
+        "loopEnd": 68.406,
+        "duration": 68.406
+      }
+    }
+  },
+  "bgm/melancholy": {
+    "default": "c1",
+    "variants": {
+      "c1": {
+        "src": "/audio/bgm/melancholy_c1.mp3",
+        "loopStart": 9.009,
+        "loopEnd": 57.922,
+        "duration": 57.922
+      },
+      "c2": {
+        "src": "/audio/bgm/melancholy_c2.mp3",
+        "loopStart": 19.273,
+        "loopEnd": 64.284,
+        "duration": 64.284
+      },
+      "c3": {
+        "src": "/audio/bgm/melancholy_c3.mp3",
+        "loopStart": 15.058,
+        "loopEnd": 60.047,
+        "duration": 60.047
       }
     }
   },
@@ -73,55 +142,149 @@
     "variants": {
       "c1": {
         "src": "/audio/bgm/tense_c1.mp3",
-        "loopStart": 21.966,
-        "loopEnd": 101.97,
-        "duration": 101.97
+        "loopStart": 21.026,
+        "loopEnd": 68.72,
+        "duration": 68.719
       },
       "c2": {
         "src": "/audio/bgm/tense_c2.mp3",
-        "loopStart": 21.409,
-        "loopEnd": 131.112,
-        "duration": 131.111
+        "loopStart": 16.695,
+        "loopEnd": 59.745,
+        "duration": 59.745
       },
       "c3": {
         "src": "/audio/bgm/tense_c3.mp3",
-        "loopStart": 22.036,
-        "loopEnd": 126.433,
-        "duration": 126.433
+        "loopStart": 17.74,
+        "loopEnd": 65.736,
+        "duration": 65.736
+      }
+    }
+  },
+  "bgm/comedy": {
+    "default": "c1",
+    "variants": {
+      "c1": {
+        "src": "/audio/bgm/comedy_c1.mp3",
+        "loopStart": 13.746,
+        "loopEnd": 63.739,
+        "duration": 63.739
+      },
+      "c2": {
+        "src": "/audio/bgm/comedy_c2.mp3",
+        "loopStart": 19.331,
+        "loopEnd": 69.416,
+        "duration": 69.416
+      },
+      "c3": {
+        "src": "/audio/bgm/comedy_c3.mp3",
+        "loopStart": 18.263,
+        "loopEnd": 65.445,
+        "duration": 65.445
       }
     }
   },
   "bgm/festival": {
-    "default": "c2",
+    "default": "c1",
     "variants": {
       "c1": {
         "src": "/audio/bgm/festival_c1.mp3",
-        "loopStart": 27.272,
-        "loopEnd": 110.573,
-        "duration": 110.573
+        "loopStart": 11.285,
+        "loopEnd": 71.285,
+        "duration": 71.285
       },
       "c2": {
         "src": "/audio/bgm/festival_c2.mp3",
-        "loopStart": 18.634,
-        "loopEnd": 126.793,
-        "duration": 126.793
+        "loopStart": 10.995,
+        "loopEnd": 63.483,
+        "duration": 63.483
       },
       "c3": {
         "src": "/audio/bgm/festival_c3.mp3",
-        "loopStart": 23.51,
-        "loopEnd": 132.493,
-        "duration": 132.493
+        "loopStart": 19.215,
+        "loopEnd": 64.157,
+        "duration": 64.157
+      }
+    }
+  },
+  "bgm/theme_rin": {
+    "default": "c1",
+    "variants": {
+      "c1": {
+        "src": "/audio/bgm/theme_rin_c1.mp3",
+        "loopStart": 23.104,
+        "loopEnd": 68.58,
+        "duration": 68.58
+      },
+      "c2": {
+        "src": "/audio/bgm/theme_rin_c2.mp3",
+        "loopStart": 11.25,
+        "loopEnd": 62.45,
+        "duration": 62.45
+      },
+      "c3": {
+        "src": "/audio/bgm/theme_rin_c3.mp3",
+        "loopStart": 13.444,
+        "loopEnd": 69.3,
+        "duration": 69.3
+      }
+    }
+  },
+  "bgm/theme_hare": {
+    "default": "c1",
+    "variants": {
+      "c1": {
+        "src": "/audio/bgm/theme_hare_c1.mp3",
+        "loopStart": 8.046,
+        "loopEnd": 58.05,
+        "duration": 58.05
+      },
+      "c2": {
+        "src": "/audio/bgm/theme_hare_c2.mp3",
+        "loopStart": 21.711,
+        "loopEnd": 67.709,
+        "duration": 67.709
+      },
+      "c3": {
+        "src": "/audio/bgm/theme_hare_c3.mp3",
+        "loopStart": 20.213,
+        "loopEnd": 63.495,
+        "duration": 63.495
+      }
+    }
+  },
+  "bgm/theme_mirai": {
+    "default": "c1",
+    "variants": {
+      "c1": {
+        "src": "/audio/bgm/theme_mirai_c1.mp3",
+        "loopStart": 18.622,
+        "loopEnd": 67.199,
+        "duration": 67.199
+      },
+      "c2": {
+        "src": "/audio/bgm/theme_mirai_c2.mp3",
+        "loopStart": 17.775,
+        "loopEnd": 63.216,
+        "duration": 63.216
+      },
+      "c3": {
+        "src": "/audio/bgm/theme_mirai_c3.mp3",
+        "loopStart": 11.831,
+        "loopEnd": 60.221,
+        "duration": 60.221
       }
     }
   },
   "sfx/click": {
-    "default": "c3",
+    "default": "c1",
     "variants": {
       "c1": {
-        "src": "/audio/sfx/click_c1.mp3"
+        "src": "/audio/sfx/click_c1.mp3",
+        "synth": true
       },
       "c2": {
-        "src": "/audio/sfx/click_c2.mp3"
+        "src": "/audio/sfx/click_c2.mp3",
+        "synth": true
       },
       "c3": {
         "src": "/audio/sfx/click_c3.mp3",
@@ -134,16 +297,19 @@
     }
   },
   "sfx/blip": {
-    "default": "c4",
+    "default": "c1",
     "variants": {
       "c1": {
-        "src": "/audio/sfx/blip_c1.mp3"
+        "src": "/audio/sfx/blip_c1.mp3",
+        "synth": true
       },
       "c2": {
-        "src": "/audio/sfx/blip_c2.mp3"
+        "src": "/audio/sfx/blip_c2.mp3",
+        "synth": true
       },
       "c3": {
-        "src": "/audio/sfx/blip_c3.mp3"
+        "src": "/audio/sfx/blip_c3.mp3",
+        "synth": true
       },
       "c4": {
         "src": "/audio/sfx/blip_c4.mp3",
@@ -152,19 +318,23 @@
     }
   },
   "sfx/choice": {
-    "default": "c3",
+    "default": "c1",
     "variants": {
       "c1": {
-        "src": "/audio/sfx/choice_c1.mp3"
+        "src": "/audio/sfx/choice_c1.mp3",
+        "synth": true
       },
       "c2": {
-        "src": "/audio/sfx/choice_c2.mp3"
+        "src": "/audio/sfx/choice_c2.mp3",
+        "synth": true
       },
       "c3": {
-        "src": "/audio/sfx/choice_c3.mp3"
+        "src": "/audio/sfx/choice_c3.mp3",
+        "synth": true
       },
       "c4": {
-        "src": "/audio/sfx/choice_c4.mp3"
+        "src": "/audio/sfx/choice_c4.mp3",
+        "synth": true
       }
     }
   },
@@ -220,19 +390,23 @@
     }
   },
   "sfx/fail": {
-    "default": "c4",
+    "default": "c1",
     "variants": {
       "c1": {
-        "src": "/audio/sfx/fail_c1.mp3"
+        "src": "/audio/sfx/fail_c1.mp3",
+        "synth": true
       },
       "c2": {
-        "src": "/audio/sfx/fail_c2.mp3"
+        "src": "/audio/sfx/fail_c2.mp3",
+        "synth": true
       },
       "c3": {
-        "src": "/audio/sfx/fail_c3.mp3"
+        "src": "/audio/sfx/fail_c3.mp3",
+        "synth": true
       },
       "c4": {
-        "src": "/audio/sfx/fail_c4.mp3"
+        "src": "/audio/sfx/fail_c4.mp3",
+        "synth": true
       }
     }
   },
@@ -250,6 +424,27 @@
       },
       "c4": {
         "src": "/audio/sfx/win_c4.mp3"
+      }
+    }
+  },
+  "sfx/shock": {
+    "default": "c1",
+    "variants": {
+      "c1": {
+        "src": "/audio/sfx/shock_c1.mp3",
+        "synth": true
+      },
+      "c2": {
+        "src": "/audio/sfx/shock_c2.mp3",
+        "synth": true
+      },
+      "c3": {
+        "src": "/audio/sfx/shock_c3.mp3",
+        "synth": true
+      },
+      "c4": {
+        "src": "/audio/sfx/shock_c4.mp3",
+        "synth": true
       }
     }
   }

@@ -339,7 +339,7 @@ export function MusicGallery() {
         </div>
 
         <div className="mt-2 border-t border-white/15 pt-2 text-center text-xs leading-relaxed text-white/60" data-testid="music-credits">
-          背景音樂：ACE-Step 生成（Apache 2.0）　·　音效：Stable Audio Open 生成 — Powered by Stability AI
+          背景音樂：ACE-Step 1.5 生成（MIT）　·　音效：Stable Audio Open 生成 — Powered by Stability AI
         </div>
       </div>
     </div>
