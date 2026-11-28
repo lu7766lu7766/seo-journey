@@ -2,7 +2,7 @@ import { bg, bgm, cg, hide, say, scene, show, when } from '@/engine'
 import { flag, seen } from '@/engine/cond'
 
 export default scene('end-hare', [
-  bgm('warm'),
+  bgm('theme_hare'),
   bg('broadcast', 'dusk'),
   say('narr', undefined, '搜尋祭結束的黃昏，晴把我拉回熟悉的廣播社錄音室，門「喀」地鎖上。'),
   show('hare', 'center', 'surprised'),
@@ -22,6 +22,7 @@ export default scene('end-hare', [
   say('hare', 'think', '首先，故事要從轉學第一天的咖哩說起——'),
   say('me', undefined, '結論呢？'),
   say('hare', 'surprised', '啊！被反將一軍了！……好，深呼吸。'),
+  bgm('warm'),
   say('narr', undefined, '她伸手關掉調音台，紅色的 ON AIR 燈，緩緩暗了下去。'),
   say('hare', 'normal', '這段不播出去。只給你一個人聽。'),
   say('hare', 'sad', '其實我一直在想，你是不是覺得我很吵……'),
@@ -48,6 +49,7 @@ export default scene('end-hare', [
   hide('hare'),
   bg('street', 'dusk', 'fade'),
   say('narr', undefined, '回家的路上，她的耳機線纏在我們的手指之間，誰也沒有鬆開。'),
+  bgm('theme_hare'),
   bg('classroom', 'day', 'fade'),
   say('narr', undefined, '隔天早上，全校廣播傳來晴的聲音：「今日一問：誰是我最喜歡的人？」'),
   show('hare', 'center', 'smile'),

@@ -1,7 +1,7 @@
 import { bg, bgm, choice, hide, opt, say, scene, show } from '@/engine'
 
 export default scene('date-hare-1', [
-  bgm('daily'),
+  bgm('theme_hare'),
   bg('street', 'day'),
   say('narr', undefined, '週末的商店街，炸物的香味和叫賣聲混在一起。'),
   show('hare', 'center', 'happy'),

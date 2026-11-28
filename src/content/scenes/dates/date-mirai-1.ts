@@ -1,7 +1,7 @@
 import { bg, bgm, choice, hide, opt, say, scene, show } from '@/engine'
 
 export default scene('date-mirai-1', [
-  bgm('warm'),
+  bgm('theme_mirai'),
   bg('planetarium', 'night'),
   say('narr', undefined, '天文館的圓頂暗了下來，星星一顆顆浮現。'),
   show('mirai', 'center', 'normal'),

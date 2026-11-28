@@ -1,7 +1,7 @@
 import { bg, bgm, choice, flag, hide, opt, say, scene, show, when } from '@/engine'
 
 export default scene('date-rin-casual', [
-  bgm('warm'),
+  bgm('theme_rin'),
   when(
     flag('dateCount.rin', 'gte', 3),
     [

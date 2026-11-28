@@ -1,7 +1,7 @@
 import { bg, bgm, card, choice, hide, minigame, opt, say, scene, show } from '@/engine'
 
 export default scene('sq-h3', [
-  bgm('warm'),
+  bgm('melancholy'),
   bg('broadcast', 'dusk'),
   say('narr', undefined, '錄音室的紅燈亮著。晴對著麥克風，已經講了很久很久。'),
   show('hare', 'center', 'normal'),
@@ -51,6 +51,7 @@ export default scene('sq-h3', [
   say('sensei', 'smile', '結論是，妳不需要少愛說話。只需要先給結論。'),
   say('sensei', 'normal', '別太晚回家。'),
   hide('sensei'),
+  bgm('theme_hare'),
   show('hare', 'center', 'happy'),
   say('hare', 'happy', '懂了！來練習：社團經費怎麼申請！'),
   say('narr', undefined, '她戴上耳機，我把節目稿，拆成一道道問答。'),

@@ -73,13 +73,33 @@ describe('resumeBgm', () => {
     const d = base()
     expect(resumeBgm(d)).toBe('daily')
     d.week = 3
-    d.phase = 'schedule'
+    d.phase = 'story'
     expect(resumeBgm(d)).toBe('daily')
     d.week = 7
     d.phase = 'story'
     expect(resumeBgm(d)).toBe('festival')
     d.phase = 'ending'
     expect(resumeBgm(d)).toBe('warm')
+  })
+  it('sim screens (schedule / board / weekend / report with no scene running) resume as sim, even over a saved script bgm', () => {
+    for (const phase of ['schedule', 'board', 'weekend', 'report'] as const) {
+      const d = base()
+      d.week = 3
+      d.phase = phase
+      expect(resumeBgm(d)).toBe('sim')
+      d.stage.bgm = 'tense'
+      expect(resumeBgm(d)).toBe('sim')
+    }
+  })
+  it('a quest / date scene in progress on the board / weekend keeps its saved bgm', () => {
+    const d = base()
+    d.phase = 'board'
+    d.scene = { sceneId: 'sq-x1', pc: [3] }
+    d.stage.bgm = 'comedy'
+    expect(resumeBgm(d)).toBe('comedy')
+    d.phase = 'weekend'
+    d.stage.bgm = null
+    expect(resumeBgm(d)).toBe('daily')
   })
 })
 
@@ -91,14 +111,29 @@ describe('store integration', () => {
     expect(bgmCalls).toEqual(['warm'])
     expect(useGame.getState().stage.bgm).toBe('warm')
   })
-  it('loadPersisted of an old save without bgm picks a default so the title theme does not linger', async () => {
+  it('loadPersisted of an old story-phase save without bgm picks a default so the title theme does not linger', async () => {
     const d = defaultPersisted('舊存檔')
     d.week = 2
-    d.phase = 'schedule'
+    d.phase = 'story'
     await useGame.getState().loadPersisted(d)
     expect(bgmCalls).toEqual(['daily'])
     expect(useGame.getState().stage.bgm).toBe('daily')
     expect(useGame.getState().toPersisted().stage.bgm).toBe('daily')
+  })
+  it('loadPersisted on a sim screen plays sim but keeps stage.bgm as the last script bgm', async () => {
+    const d = defaultPersisted('養成中')
+    d.week = 3
+    d.phase = 'schedule'
+    d.stage.bgm = 'tense'
+    await useGame.getState().loadPersisted(d)
+    expect(bgmCalls).toEqual(['sim'])
+    expect(useGame.getState().stage.bgm).toBe('tense')
+    const old = defaultPersisted('舊存檔')
+    old.week = 2
+    old.phase = 'board'
+    await useGame.getState().loadPersisted(old)
+    expect(bgmCalls.at(-1)).toBe('sim')
+    expect(useGame.getState().stage.bgm).toBeNull()
   })
   it('a scene bgm command updates stage.bgm and the audio', async () => {
     useGame.getState().newGame('新玩家')

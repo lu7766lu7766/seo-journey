@@ -1,7 +1,7 @@
 import { bg, bgm, choice, flag, hide, opt, say, scene, show, when } from '@/engine'
 
 export default scene('date-hare-casual', [
-  bgm('warm'),
+  bgm('theme_hare'),
   when(
     flag('dateCount.hare', 'gte', 3),
     [

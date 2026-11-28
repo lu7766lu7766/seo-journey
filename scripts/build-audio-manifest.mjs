@@ -5,6 +5,7 @@
  * 資料來源是產製流程輸出的兩份 candidates.json（已複製進版控）：
  *   scripts/audio/bgm-candidates.json   — 背景音樂（loop 點、總長、建議首選 recommended_id）
  *   scripts/audio/sfx-candidates.json   — 音效（是否程式合成、建議首選 recommended_candidate）
+ *   scripts/audio/default-picks.json    — 過渡期的預設版本覆寫（蓋過上面兩份的建議首選；重產完成後清空）
  * 並檢查 `public/audio/{bgm,sfx}/` 的 mp3 都在、沒有多餘檔案。
  *
  * 用法：node scripts/build-audio-manifest.mjs [--check] [--bgm <candidates.json>] [--sfx <candidates.json>]
@@ -24,6 +25,8 @@ const opt = (name, fallback) => {
 const check = args.includes('--check')
 const bgmMeta = JSON.parse(readFileSync(opt('--bgm', join(root, 'scripts/audio/bgm-candidates.json')), 'utf8'))
 const sfxMeta = JSON.parse(readFileSync(opt('--sfx', join(root, 'scripts/audio/sfx-candidates.json')), 'utf8'))
+const picksPath = opt('--picks', join(root, 'scripts/audio/default-picks.json'))
+const picks = existsSync(picksPath) ? (JSON.parse(readFileSync(picksPath, 'utf8')).picks ?? {}) : {}
 const pubAudio = join(root, 'public/audio')
 const manifestPath = join(pubAudio, 'manifest.json')
 
@@ -33,6 +36,15 @@ const used = { bgm: new Set(), sfx: new Set() }
 const needFile = (type, file) => {
   used[type].add(file)
   if (!existsSync(join(pubAudio, type, file))) problems.push(`缺檔：public/audio/${type}/${file}`)
+}
+
+/** 預設版本：default-picks.json 有指定且存在就用它，否則沿用 candidates 的建議首選 */
+const pickDefault = (key, recommended, variants) => {
+  const want = picks[key]
+  if (want === undefined) return recommended
+  if (variants[want]) return want
+  console.warn(`default-picks.json：${key} 指定的版本 ${want} 不存在，沿用 ${recommended}`)
+  return recommended
 }
 
 const manifest = {}
@@ -52,7 +64,7 @@ for (const track of bgmMeta.tracks) {
   }
   const def = track.recommended_id?.split('_').pop()
   if (!def || !variants[def]) problems.push(`bgm/${track.id}：找不到建議首選 ${track.recommended_id}`)
-  manifest[`bgm/${track.id}`] = { default: def, variants }
+  manifest[`bgm/${track.id}`] = { default: pickDefault(`bgm/${track.id}`, def, variants), variants }
 }
 
 for (const sound of sfxMeta.sounds) {
@@ -62,7 +74,7 @@ for (const sound of sfxMeta.sounds) {
     variants[c.candidate_id] = { src: `/audio/sfx/${c.file}`, ...(c.source === 'synth' ? { synth: true } : {}) }
   }
   if (!variants[sound.recommended_candidate]) problems.push(`sfx/${sound.id}：找不到建議首選 ${sound.recommended_candidate}`)
-  manifest[`sfx/${sound.id}`] = { default: sound.recommended_candidate, variants }
+  manifest[`sfx/${sound.id}`] = { default: pickDefault(`sfx/${sound.id}`, sound.recommended_candidate, variants), variants }
 }
 
 for (const type of ['bgm', 'sfx']) {

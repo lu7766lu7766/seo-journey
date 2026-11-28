@@ -52,6 +52,7 @@ export default scene('w3', [
   ]),
   hide('hare'),
 
+  bgm('theme_mirai'),
   say('mirai', 'think', '疑問。AI 一鍵就能產生一百頁文章，為什麼不用？'),
   choice([
     opt('因為我想寫只有我們寫得出來的東西', { bond: { mirai: 2 } }, [

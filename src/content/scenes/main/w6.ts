@@ -5,7 +5,7 @@ export default scene('w6', [
   bgm('tense'),
   bg('clubroom', 'day', 'rain'),
   say('narr', undefined, '第六週週一。雨聲大得蓋過了電腦風扇，螢幕上的排名曲線像雲霄飛車。'),
-  sfx('fail'),
+  sfx('shock'),
   bg('clubroom', 'day', 'flash'),
   bg('clubroom', 'day', 'rain'),
   say('me', undefined, '排名猛然下墜、彈起、再下墜……我們是被丟進洗衣機了嗎？！'),
@@ -48,6 +48,7 @@ export default scene('w6', [
     hide('rin'),
   ]),
 
+  bgm('melancholy'),
   bg('gate', 'dusk', 'rain'),
   show('kuro', 'center', 'sad'),
   say('kuro', 'sad', '哈……我的網站全軍覆沒。人工處罰，整個從搜尋消失。'),
@@ -72,12 +73,12 @@ export default scene('w6', [
   ]),
   hide('kuro'),
 
-  bgm('warm'),
   bg('rain', 'night', 'rain'),
   say('narr', undefined, '夜裡的雨還沒停。離搜尋祭只剩幾天，我撐著傘，想去見一個人。'),
   choice([
     opt('去學生會室找凜', { flags: { w6Choice: 1 }, bond: { rin: 5 } }, [
       bg('council', 'night', 'fade'),
+      bgm('warm'),
       say('narr', undefined, '學生會室的燈還亮著，凜獨自對著堆成小山的文件。'),
       show('rin', 'center', 'think'),
       say('rin', 'think', '這麼大的雨還跑來。……給，毛巾。淋濕會感冒。'),
@@ -104,6 +105,7 @@ export default scene('w6', [
     ]),
     opt('去廣播室找晴', { flags: { w6Choice: 2 }, bond: { hare: 5 } }, [
       bg('broadcast', 'night', 'fade'),
+      bgm('warm'),
       say('narr', undefined, '廣播室只亮著 ON AIR 的紅燈，晴抱著膝蓋坐在調音台前。'),
       show('hare', 'center', 'normal'),
       say('hare', 'normal', '哇，你濕答答的！結論先說：快喝這杯熱可可，別感冒了！'),
@@ -126,6 +128,7 @@ export default scene('w6', [
     ]),
     opt('去天台找未來', { flags: { w6Choice: 3 }, bond: { mirai: 5 } }, [
       bg('rooftop', 'night', 'rain'),
+      bgm('warm'),
       say('narr', undefined, '天台上沒有別人，只有雨聲，和她髮夾上微微發亮的一點青色。'),
       show('mirai', 'center', 'normal'),
       say('mirai', 'normal', '雨聲的頻率，讓人平靜。你也是來吹風的嗎？還是……來找我？'),

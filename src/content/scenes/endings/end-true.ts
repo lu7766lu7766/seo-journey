@@ -15,6 +15,7 @@ export default scene('end-true', [
   say('me', undefined, '（接過晴遞來的麥克風）我們讓「404」，變成了一個找得到的地方。'),
   say('rin', 'smile', '……文句通順，語意清楚。採用。'),
 
+  bgm('title'),
   bg('festival', 'dusk', 'fade'),
   say('narr', undefined, '黃昏的廣場，燈籠剛亮起來。三個人在攤位前並肩站好，我舉起手機。'),
   cg('end-true'),

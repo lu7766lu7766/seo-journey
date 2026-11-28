@@ -1,3 +1,4 @@
+import { isSimScreen, SIM_BGM } from '@/audio/cues'
 import { initialCore } from '@/engine/effects'
 import { initialStage } from '@/engine/stage'
 import type { Bonds, Flags, HeroineId, RunnerSnapshot, StageState, Stats } from '@/engine/types'
@@ -77,8 +78,13 @@ function normalizeStage(raw: unknown, d: StageState): StageState {
   return { ...s, bgm: typeof bgm === 'string' && bgm ? bgm : null }
 }
 
-/** 讀檔後該播哪一首：存檔記錄的 BGM；沒有記錄（舊存檔、或尚未進過有 bgm 的場景）就依週次／階段挑預設 */
-export function resumeBgm(d: Pick<PersistedGame, 'stage' | 'week' | 'phase'>): string {
+/**
+ * 讀檔後該播哪一首：停在養成畫面（排程／公佈欄／週末／週報，沒有劇本在演）一律是 `sim`；
+ * 否則用存檔記錄的 BGM；沒有記錄（舊存檔、或尚未進過有 bgm 的場景）就依週次／階段挑預設。
+ * `scene` 省略時視為沒有劇本在演。
+ */
+export function resumeBgm(d: Pick<PersistedGame, 'stage' | 'week' | 'phase'> & { scene?: PersistedGame['scene'] }): string {
+  if (isSimScreen(d.phase, !!d.scene)) return SIM_BGM
   if (d.stage.bgm) return d.stage.bgm
   if (d.phase === 'ending') return 'warm'
   if (d.week >= 7) return 'festival'

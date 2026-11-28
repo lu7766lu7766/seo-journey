@@ -6,11 +6,18 @@ import { useUI } from '@/store/ui'
 
 /** 背景音樂：曲名與用途（順序即畫面順序） */
 const BGM_TRACKS: { id: string; name: string; usage: string }[] = [
-  { id: 'title', name: '直到你找到我', usage: '標題曲' },
+  { id: 'title', name: '直到你找到我', usage: '標題曲、真結局收尾' },
   { id: 'daily', name: '404 號社辦的日常', usage: '校園日常' },
+  { id: 'sim', name: '本週企劃中！', usage: '排程、公佈欄、週末、週報' },
+  { id: 'minigame', name: '實戰演練！', usage: '小遊戲' },
   { id: 'warm', name: '放學後的晚霞', usage: '溫馨心動' },
-  { id: 'tense', name: '演算法的大雨', usage: '緊張' },
-  { id: 'festival', name: '搜尋祭', usage: '祭典' },
+  { id: 'melancholy', name: '404 的雨夜', usage: '低落、脆弱' },
+  { id: 'tense', name: '演算法的大雨', usage: '輕度懸疑、危機' },
+  { id: 'comedy', name: '黑帽推銷中！', usage: '搞笑吐槽' },
+  { id: 'festival', name: '青葉搜尋祭', usage: '學園祭' },
+  { id: 'theme_rin', name: '規則與貓咪', usage: '白鷺凜主題' },
+  { id: 'theme_hare', name: '結論先說！', usage: '夏川晴主題' },
+  { id: 'theme_mirai', name: '星光資料庫', usage: '星野未來主題' },
 ]
 
 /** 音效：中文名與觸發情境 */
@@ -23,6 +30,7 @@ const SFX_SOUNDS: { id: string; name: string; usage: string }[] = [
   { id: 'bond', name: '好感上升', usage: '好感度增加' },
   { id: 'fail', name: '失誤／倒下', usage: '小遊戲失誤、體力歸零' },
   { id: 'win', name: '小遊戲過關', usage: '小遊戲完成' },
+  { id: 'shock', name: '危機衝擊', usage: '演算法暴雨等嚴肅轉折' },
 ]
 
 type Tab = 'bgm' | 'sfx'

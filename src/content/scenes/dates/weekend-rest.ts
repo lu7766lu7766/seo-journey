@@ -1,7 +1,7 @@
 import { and, bg, bgm, effect, say, scene, scoreIs, topHeroine, when } from '@/engine'
 
 export default scene('weekend-rest', [
-  bgm('warm'),
+  bgm('sim'),
   bg('home', 'day'),
   say('narr', undefined, '週末的早晨，窗簾縫裡漏進一道暖暖的光。'),
   say('me', undefined, '睡到自然醒、喝熱可可、什麼都不想。完美。'),

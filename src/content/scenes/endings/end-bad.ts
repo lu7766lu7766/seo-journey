@@ -1,7 +1,7 @@
 import { bg, bgm, cg, hide, say, scene, show } from '@/engine'
 
 export default scene('end-bad', [
-  bgm('warm'),
+  bgm('melancholy'),
   bg('clubroom', 'night'),
   say('narr', undefined, '結果公布欄上，「網站研究社」那一行，被紅筆輕輕劃了一條線。'),
   say('me', undefined, '……果然，還是差了一點。'),
@@ -38,6 +38,7 @@ export default scene('end-bad', [
   say('me', undefined, 'robots.txt 管能不能爬，noindex 管能不能收錄……我都還記得。'),
   say('me', undefined, '404 號社辦，暫時打烊。……但是，我還會再回來。'),
   cg('none'),
+  bgm('title'),
   bg('clubroom', 'day', 'fade'),
   say('narr', undefined, '新學期的早晨，社辦門口站著三個人，手裡各拿著一份申請書。'),
   show('rin', 'left', 'smile'),

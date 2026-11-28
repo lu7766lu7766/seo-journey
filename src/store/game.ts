@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { audio, audioVoice } from '@/audio'
+import { SIM_BGM } from '@/audio/cues'
 import { voiceKey } from '@/audio/voiceKey'
 import { VOICE_PREFETCH } from '@/audio/voicePlayer'
 import { preloadSceneArt, warmSimScreenArt } from '@/art/preload'
@@ -356,7 +357,8 @@ export const useGame = create<GameStore>((set, get) => {
       // 讀檔從場景中間接續、不會重播 bgm 指令：依存檔記錄（或週次／階段預設）恢復背景音樂，並寫回舞台狀態讓之後的存檔保有它
       const bgm = resumeBgm(data)
       audio.bgm(bgm)
-      set({ ...data, stage: { ...data.stage, bgm }, active: true, toastQueue: [], toast: null, pause: { kind: 'end' } })
+      // 養成畫面的 sim 不寫進舞台狀態：stage.bgm 維持「最後一段劇本的曲子」，小遊戲／下一段劇本都以它為準
+      set({ ...data, stage: { ...data.stage, bgm: bgm === SIM_BGM ? data.stage.bgm : bgm }, active: true, toastQueue: [], toast: null, pause: { kind: 'end' } })
       if (data.scene && scene) {
         runner = new SceneRunner(scene, host, data.scene)
         sync(runner.start())

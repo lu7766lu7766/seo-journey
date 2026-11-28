@@ -2,7 +2,7 @@ import { bg, bgm, cg, hide, say, scene, show, when } from '@/engine'
 import { flag } from '@/engine/cond'
 
 export default scene('end-mirai', [
-  bgm('warm'),
+  bgm('theme_mirai'),
   bg('planetarium', 'night'),
   say('narr', undefined, '搜尋祭後，未來約我到天文館。圓頂的燈一盞盞熄滅，星空升了起來。'),
   show('mirai', 'center', 'smile'),
@@ -36,6 +36,7 @@ export default scene('end-mirai', [
     ]),
     say('mirai', 'smile', '數據顯示，我不喜歡等待。……所以今天，換我先開口。'),
   ]),
+  bgm('warm'),
   cg('end-mirai'),
   say('mirai', 'blush', '從今天起，我不是任何資料庫的回聲。我想用自己的名字，站在你身邊。'),
   say('mirai', 'happy', '而你，是第一個願意署上我名字的人。'),
@@ -45,6 +46,7 @@ export default scene('end-mirai', [
   say('narr', undefined, '星形髮夾在星光下輕輕閃爍，把她溫柔而堅定的側臉照得發亮。'),
   cg('none'),
   hide('mirai'),
+  bgm('theme_mirai'),
   bg('clubroom', 'day', 'fade'),
   say('narr', undefined, '隔天，社團網站多了一篇新文章。作者欄第一次出現她的名字：星野未來。'),
   show('mirai', 'center', 'smile'),

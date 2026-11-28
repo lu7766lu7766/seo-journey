@@ -1,7 +1,7 @@
 import { bg, bgm, cg, choice, hide, opt, say, scene, show } from '@/engine'
 
 export default scene('date-rin-3', [
-  bgm('warm'),
+  bgm('theme_rin'),
   bg('street', 'night'),
   say('narr', undefined, '春季夜市的夜晚，紙燈籠沿著商店街一路亮起來。'),
   show('rin', 'center', 'blush'),
@@ -20,6 +20,7 @@ export default scene('date-rin-3', [
   say('rin', 'smile', '現在更想把重要的東西，讓人看見。'),
   say('narr', undefined, '第一發煙火拉著長長的哨音，升上夜空。'),
   hide('rin'),
+  bgm('warm'),
   cg('date-rin-3'),
   say('narr', undefined, '煙火在她的眼裡綻放，轟隆聲震動了胸口。'),
   say('rin', 'blush', '被看見……原來是這種感覺。'),

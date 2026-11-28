@@ -1,6 +1,6 @@
 {
   "bgm/title": {
-    "default": "c2",
+    "default": "c3",
     "variants": {
       "c1": {
         "src": "/audio/bgm/title_c1.mp3",
@@ -115,7 +115,7 @@
     }
   },
   "sfx/click": {
-    "default": "c1",
+    "default": "c3",
     "variants": {
       "c1": {
         "src": "/audio/sfx/click_c1.mp3"
@@ -134,7 +134,7 @@
     }
   },
   "sfx/blip": {
-    "default": "c1",
+    "default": "c4",
     "variants": {
       "c1": {
         "src": "/audio/sfx/blip_c1.mp3"
@@ -152,7 +152,7 @@
     }
   },
   "sfx/choice": {
-    "default": "c1",
+    "default": "c3",
     "variants": {
       "c1": {
         "src": "/audio/sfx/choice_c1.mp3"
@@ -220,7 +220,7 @@
     }
   },
   "sfx/fail": {
-    "default": "c1",
+    "default": "c4",
     "variants": {
       "c1": {
         "src": "/audio/sfx/fail_c1.mp3"
@@ -237,7 +237,7 @@
     }
   },
   "sfx/win": {
-    "default": "c1",
+    "default": "c2",
     "variants": {
       "c1": {
         "src": "/audio/sfx/win_c1.mp3"

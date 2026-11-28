@@ -52,7 +52,11 @@ export function useVNInput() {
       if (isTextInputFocused()) return
       if (e.key.toLowerCase() === 'l') return ui.setOverlay(ui.overlay === 'backlog' ? null : ui.overlay ? ui.overlay : 'backlog')
       if (ui.overlay) return
-      if (e.key.toLowerCase() === 'h') return ui.set({ hidden: !ui.hidden })
+      // 小遊戲進行中不允許隱藏介面：隱藏會卸載 MinigameHost，作答進度會遺失
+      if (e.key.toLowerCase() === 'h') {
+        if (useGame.getState().pause.kind === 'minigame') return
+        return ui.set({ hidden: !ui.hidden })
+      }
       if (e.key.toLowerCase() === 'a') return ui.set({ auto: !ui.auto })
       const p = useGame.getState().pause
       if (p.kind === 'choice' && /^[1-9]$/.test(e.key)) {
