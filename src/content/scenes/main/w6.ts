@@ -64,7 +64,7 @@ export default scene('w6', [
     ]),
   ], [
     when(seen('sq-x1'), [
-      say('me', undefined, '你商店街那張傳單，還貼在我們社辦牆上。'),
+      say('me', undefined, '你在商店街給我的那張傳單，還貼在社辦牆上。'),
     ], [
       say('me', undefined, '先停手吧。真正的讀者，還在等你寫給人看的內容。'),
     ]),
@@ -126,7 +126,7 @@ export default scene('w6', [
     ]),
     opt('去天台找未來', { flags: { w6Choice: 3 }, bond: { mirai: 5 } }, [
       bg('rooftop', 'night', 'rain'),
-      say('narr', undefined, '天台上沒有別人，只有雨聲，和她髮夾一點微微發亮的青色。'),
+      say('narr', undefined, '天台上沒有別人，只有雨聲，和她髮夾上微微發亮的一點青色。'),
       show('mirai', 'center', 'normal'),
       say('mirai', 'normal', '雨聲的頻率，讓人平靜。你也是來吹風的嗎？還是……來找我？'),
       show('mirai', 'center', 'smile'),

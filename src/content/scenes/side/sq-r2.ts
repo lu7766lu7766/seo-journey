@@ -51,7 +51,7 @@ export default scene('sq-r2', [
   show('rin', 'center', 'blush'),
   say('rin', 'blush', '我知道！我只是……測試你的反應速度。'),
   say('me', undefined, '結果呢？'),
-  say('rin', 'blush', '及格。……我坐近一點，是為了共看螢幕。'),
+  say('rin', 'blush', '及格。……我坐近一點，是為了方便看螢幕。'),
   say('me', undefined, '這盞燈，是不是該換了？'),
   say('rin', 'think', '已提出申請。第三次。'),
   say('narr', undefined, '我把筆電轉向她，我們一起，逐行揪出會生出分身的地方。'),

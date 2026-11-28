@@ -44,7 +44,7 @@ export default scene('end-true', [
   show('mirai', 'right', 'smile'),
   say('mirai', 'smile', '新社員申請表，已讀取。……三十七份。'),
   say('hare', 'happy', '結論先說：今天起，404 社辦要吵翻天啦！'),
-  say('rin', 'normal', '全部要審。規則是，不能偷懶。……尤其是對可愛的後輩們。'),
-  say('narr', undefined, '夕陽穿過百葉窗，把四個人的影子，疊成了同一個形狀。'),
+  say('rin', 'normal', '全部要審。規則是，不能偷懶。……尤其是對可愛的學弟妹們。'),
+  say('narr', undefined, '夕陽穿過白色窗簾，把四個人的影子，疊成了同一個形狀。'),
   hide('all'),
 ])

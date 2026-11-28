@@ -38,7 +38,7 @@ export default scene('sq-m1', [
   say('me', undefined, '未來？'),
   show('mirai', 'center', 'normal'),
   say('mirai', 'normal', '已讀取，無需回應。請繼續。'),
-  npc('圖書館員', '標準答案：青葉學園、1982、青葉區四丁目 12 號。'),
+  npc('圖書館員', '標準答案：青葉學園、1982、青葉區青葉路四段 12 號。'),
   say('me', undefined, '三張索引卡，要合成一張。'),
   say('mirai', 'normal', '合併。並保留一份「標準資料」，其餘都引用它。'),
   say('mirai', 'think', '請從官網原始碼，找出與紀錄不一致的三行。'),

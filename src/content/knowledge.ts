@@ -263,7 +263,7 @@ const BODY: Partial<Record<KnowledgeId, Pick<KnowledgeCard, 'summary' | 'detail'
   'url-parameters': {
     summary: '參數會生出同內容網址，要收斂回乾淨本尊。',
     detail:
-      '排序、追蹤、篩選參數會產生大量同內容網址。Search Console 的「網址參數」工具已於 2022 年停用，改靠做法：內部連結一律用乾淨的標準網址，canonical 指向本尊，別用參數做追蹤；會無限組合的篩選網址，必要時用 robots.txt 限制以節省爬取。',
+      '排序、追蹤、篩選參數會產生大量同內容網址。Search Console 的「網址參數」工具已於 2022 年停用，改靠以下做法：內部連結一律用乾淨的標準網址，canonical 指向本尊，別用參數做追蹤；會無限組合的篩選網址，必要時用 robots.txt 限制以節省爬取。',
     misconception: '常見誤解：網址參數可以在 Search Console 設定處理方式。',
   },
   'responsive-images': {

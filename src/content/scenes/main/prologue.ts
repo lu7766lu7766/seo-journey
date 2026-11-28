@@ -16,7 +16,7 @@ export default scene('prologue', [
   hide('hare'),
 
   bg('classroom', 'day', 'fade'),
-  say('narr', undefined, '晨會鐘響，教室的廣播喇叭沙地一聲，傳來冷靜清晰的女聲。'),
+  say('narr', undefined, '晨會鐘響，教室的廣播喇叭沙沙響了一聲，傳來冷靜清晰的女聲。'),
   say('rin', 'normal', '我是學生會長白鷺凜，本次的 SEO 評審。'),
   say('rin', 'normal', '依社團整併令，六週後的「搜尋祭」將評 SEO、AEO、GEO。未達標者，廢社。'),
   show('hare', 'right', 'think'),
@@ -67,6 +67,6 @@ export default scene('prologue', [
   show('sensei', 'center', 'smile'),
   say('sensei', 'smile', '規則很簡單：平日排程養成網站，放學接委託，週末約人出門。'),
   say('sensei', 'normal', '體力和壓力要顧好。咖啡可以續杯，人不行。'),
-  say('narr', undefined, '窗外的櫻花落在「404」的門牌上，像在替我們倒數。'),
+  say('narr', undefined, '一片櫻花瓣從窗縫飄進來，落在「404」的門牌上，像在替我們倒數。'),
   hide('sensei'),
 ])

@@ -574,11 +574,11 @@ export const MINIGAME_DATA: Record<MinigameId, MinigameDef> = {
   'sq-m1': {
     kind: 'spot',
     title: '圖書館委託：消滅校史實體矛盾',
-    intro: '校史館紙本檔案確認的標準資料為：「青葉學園」、「1982 年創校」、「青葉區四丁目 12 號」。請找出網頁與頁尾中寫得不一致的 3 處錯誤！',
+    intro: '校史館紙本檔案確認的標準資料為：「青葉學園」、「1982 年創校」、「青葉區青葉路四段 12 號」。請找出網頁與頁尾中寫得不一致的 3 處錯誤！',
     hint: '索老師提示：把頁面上每個出現「學校名稱」、「創校年份」或「地址」的位置，逐一跟校史館標準檔案交叉核對看看！',
     filename: 'aoba-history.html',
     maxMistakes: 3,
-    wrongExplain: '這一行與校史館標準資料（青葉學園／1982 年／青葉區四丁目 12 號）完全一致！',
+    wrongExplain: '這一行與校史館標準資料（青葉學園／1982 年／青葉區青葉路四段 12 號）完全一致！',
     summary: '實體（Entity）在網頁標題、內文、頁尾與 JSON-LD 中的名稱、年份、地址必須一致，搜尋與生成式模型才不會把資訊混雜甚至張冠李戴。',
     targets: [1, 3, 6],
     lines: [
@@ -595,8 +595,8 @@ export const MINIGAME_DATA: Record<MinigameId, MinigameDef> = {
       { code: '<script type="application/ld+json">', explain: 'JSON-LD 標籤開頭。' },
       { code: '{"@context":"https://schema.org","@type":"School","name":"青葉學園","foundingDate":"1982"}</script>', explain: '這段 JSON-LD 的校名與創校年份都符合標準資料，寫法正確。' },
       {
-        code: '<footer>校址：山櫻區四段 12 號｜電話：(02) 2345-6789</footer>',
-        explain: '找到矛盾 3！正確校址應為「青葉區四丁目 12 號」，這裡寫成了錯誤的行政區與路名！',
+        code: '<footer>校址：山櫻區青葉路四段 12 號｜電話：(02) 2345-6789</footer>',
+        explain: '找到矛盾 3！正確校址應為「青葉區青葉路四段 12 號」，這裡的行政區寫錯了！',
       },
     ],
   },

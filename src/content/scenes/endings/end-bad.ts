@@ -33,7 +33,7 @@ export default scene('end-bad', [
   hide('all'),
 
   bg('clubroom', 'night', 'fade'),
-  say('narr', undefined, '最後一次關上舊電腦前，我把所有草稿備份進隨身碟。'),
+  say('narr', undefined, '最後一次關上舊電腦前，我把草稿備份進隨身碟。老師站在桌邊，輕輕拈起它。'),
   cg('end-bad'),
   say('me', undefined, 'robots.txt 管能不能爬，noindex 管能不能收錄……我都還記得。'),
   say('me', undefined, '404 號社辦，暫時打烊。……但是，我還會再回來。'),

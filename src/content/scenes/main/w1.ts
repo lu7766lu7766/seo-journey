@@ -4,7 +4,7 @@ import { bondIs } from '@/engine/cond'
 export default scene('w1', [
   bgm('daily'),
   bg('clubroom', 'day'),
-  say('narr', undefined, '第一週週一。老電腦的風扇呼呼轉，門外傳來三步、停頓、敲門兩下的腳步聲。'),
+  say('narr', undefined, '第一週週一。老電腦的風扇呼呼轉，門外傳來三步腳步聲，停頓，然後敲門兩下。'),
   show('rin', 'center', 'normal'),
   say('rin', 'normal', '例行檢查。……搜尋「青葉 網站研究社」，結果，零筆。'),
   say('me', undefined, '零筆？我們是網路上的透明人嗎？'),

@@ -4,7 +4,7 @@ export default scene('date-rin-1', [
   bgm('daily'),
   bg('street', 'day'),
   say('narr', undefined, '週末的商店街，書店門口的風鈴叮的一聲。'),
-  say('me', undefined, '（那頭藍黑色長髮的背影……是凜學姊？）'),
+  say('me', undefined, '（那頭藍色長髮的背影……是凜學姊？）'),
   show('rin', 'center', 'think'),
   say('rin', 'think', '《寫作風格指南》……作者的語氣，值得參考。'),
   say('me', undefined, '學姊也會逛書店啊。'),

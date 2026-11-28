@@ -21,7 +21,7 @@ export default scene('date-hare-1', [
       say('hare', 'happy', '就是這樣。有細節的答案，別人才記得住。'),
     ]),
   ]),
-  say('narr', undefined, '夕陽落在她的瀏海，小馬尾隨著笑聲一晃一晃。'),
+  say('narr', undefined, '午後的陽光落在她的瀏海，小馬尾隨著笑聲一晃一晃。'),
   say('hare', 'smile', '跟你說話，我就不會一直說個不停。……大概啦。'),
   hide('hare'),
 ])

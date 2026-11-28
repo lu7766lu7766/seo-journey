@@ -9,7 +9,7 @@ const tiers = (who: HeroineId, high: Cmd[], mid: Cmd[], low: Cmd[]): Cmd =>
 export default scene('festival', [
   bgm('festival'),
   bg('festival', 'day'),
-  say('narr', undefined, '搜尋祭開幕。太鼓咚咚震著地面，空氣裡有章魚燒和燈籠紙的味道。'),
+  say('narr', undefined, '搜尋祭開幕。鼓聲咚咚震著地面，空氣裡有章魚燒和燈籠紙的味道。'),
   show('sensei', 'center', 'smile'),
   say('sensei', 'smile', '輪到我們了，{name}。我的咖啡緊張到沒喝完，這很稀有，請珍惜。'),
   hide('sensei'),
@@ -73,7 +73,7 @@ export default scene('festival', [
     ]),
     opt('用問句標題搭一兩句直答，做 FAQ 求結構清楚、不迷信特效', { bond: { hare: 2 } }, [
       show('hare', 'center', 'blush'),
-      say('hare', 'blush', '廣播社的文字問答和 FAQ 正確期待全記住了！這句結論，超棒！'),
+      say('hare', 'blush', '廣播社的文字問答，連 FAQ 的真相都記住了！這句結論，超棒！'),
     ], seen('sq-h3')),
     opt('我們把原創資料與來源，整理成可被引用的樣子', undefined, [
       say('hare', 'smile', '好厲害！可是……答案在哪？下次請一句話講完！'),
@@ -140,7 +140,7 @@ export default scene('festival', [
     ],
   ),
 
-  say('narr', undefined, '三位評審低頭寫下最終分數。太鼓從慢到快，咚、咚、咚咚咚——'),
+  say('narr', undefined, '三位評審低頭寫下最終分數。鼓聲從慢到快，咚、咚、咚咚咚——'),
   wait(1200),
   say('narr', undefined, '全場屏息，燈光「唰」地聚向結果公布牌！'),
   hide('all'),

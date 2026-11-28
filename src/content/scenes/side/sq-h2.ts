@@ -21,7 +21,7 @@ export default scene('sq-h2', [
   npc('籃球社隊長', '櫻丘。'),
   say('hare', 'happy', '他是說：對手是櫻丘高中，上屆冠軍，超強的！'),
   say('me', undefined, '資訊量一樣，妳多用了十個驚嘆號。'),
-  say('hare', 'angry', '那是情緒價值！'),
+  say('hare', 'angry', '那是熱情加成啦！'),
   show('hare', 'center', 'think'),
   say('hare', 'think', '時間、地點，一句話全包。那就是搜尋的人要的答案。'),
   say('hare', 'normal', '搜「賽程」的人，只想知道：幾點、在哪、對誰。'),

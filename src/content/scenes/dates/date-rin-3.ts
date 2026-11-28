@@ -21,7 +21,7 @@ export default scene('date-rin-3', [
   say('narr', undefined, '第一發煙火拉著長長的哨音，升上夜空。'),
   hide('rin'),
   cg('date-rin-3'),
-  say('narr', undefined, '花火在她的眼裡綻放，轟隆聲震動了胸口。'),
+  say('narr', undefined, '煙火在她的眼裡綻放，轟隆聲震動了胸口。'),
   say('rin', 'blush', '被看見……原來是這種感覺。'),
   say('rin', 'blush', '{name}，謝謝你，看見了我。'),
   say('narr', undefined, '她的手背輕輕碰到我的，沒有收回去。'),

@@ -3,7 +3,7 @@ import { bg, bgm, card, choice, hide, minigame, opt, say, scene, show } from '@/
 export default scene('w4', [
   bgm('daily'),
   bg('corridor', 'day'),
-  say('narr', undefined, '第四週週一。校慶布條掛滿走廊，悶熱的空氣裡全是手機連網的轉圈圈。'),
+  say('narr', undefined, '第四週週一。校慶布條掛滿走廊，每支手機的畫面都在轉圈圈。'),
   show('rin', 'left', 'think'),
   show('hare', 'right', 'surprised'),
   say('hare', 'surprised', '圖片還沒載完，按鈕又跳走！我想按「報名」，卻寄了空白信給索老師！'),
@@ -43,7 +43,7 @@ export default scene('w4', [
 
   bgm('tense'),
   bg('gate', 'dusk', 'fade'),
-  say('narr', undefined, '傍晚，一個戴黑色棒球帽的男生攔住了抱著圖片檔的我。'),
+  say('narr', undefined, '傍晚，一個戴黑色棒球帽的男生攔住了抱著筆電的我。'),
   show('kuro', 'center', 'smug'),
   say('kuro', 'smug', '喂，青葉的小弟！鄰校流量學院，黑川翔！'),
   say('kuro', 'smug', '流量就是正義！萬能流量包：千條外連加五百頁 AI 文，保證第一！'),
