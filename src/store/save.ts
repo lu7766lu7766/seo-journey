@@ -4,7 +4,7 @@ import type { Bonds, Flags, HeroineId, RunnerSnapshot, StageState, Stats } from 
 import { scores } from '@/systems/score'
 import { safeGetJSON, safeRemove, safeSetJSON } from './storage'
 
-export const SAVE_VERSION = 2
+export const SAVE_VERSION = 3
 export type SlotId = 'auto' | 1 | 2 | 3 | 4 | 5 | 6
 export const SLOTS: SlotId[] = ['auto', 1, 2, 3, 4, 5, 6]
 const key = (slot: SlotId) => `seo-journey:save:${slot}`
@@ -15,6 +15,8 @@ export interface BacklogEntry {
   lineId: string
   /** speaker id, or 'choice' for a picked option */
   who: string
+  /** custom display name for portraitless NPC lines (`who === 'npc'`) */
+  name?: string
   text: string
 }
 
@@ -93,7 +95,19 @@ export function normalizeData(raw: unknown): PersistedGame {
     endingsReached: arr(r.endingsReached),
     scene: scene && typeof scene.sceneId === 'string' && Array.isArray(scene.pc) ? { sceneId: scene.sceneId, pc: scene.pc.map(Number) } : null,
     stage: obj(r.stage, d.stage),
-    backlog: Array.isArray(r.backlog) ? (r.backlog as BacklogEntry[]).filter((b) => b && typeof b.text === 'string') : [],
+    backlog: Array.isArray(r.backlog)
+      ? (r.backlog as Record<string, unknown>[])
+          .filter((b) => b && typeof b.text === 'string')
+          .map((b) => {
+            const entry: BacklogEntry = {
+              lineId: typeof b.lineId === 'string' ? b.lineId : '',
+              who: typeof b.who === 'string' ? b.who : 'narr',
+              text: b.text as string,
+            }
+            if (typeof b.name === 'string' && b.name.trim()) entry.name = b.name
+            return entry
+          })
+      : [],
     questsDoneThisWeek: num(r.questsDoneThisWeek, 0),
     prevScores: obj(r.prevScores, d.prevScores),
     activeQuestId: typeof r.activeQuestId === 'string' ? r.activeQuestId : null,
@@ -126,6 +140,17 @@ export const migrations: Record<number, Migration> = {
         activeQuestId: null,
         activeDateHeroine: null,
         ...data,
+      },
+    }
+  },
+  2: (env) => {
+    const data = (env.data ?? {}) as Record<string, unknown>
+    return {
+      ...env,
+      version: 3,
+      data: {
+        ...data,
+        backlog: Array.isArray(data.backlog) ? data.backlog : [],
       },
     }
   },

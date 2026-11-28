@@ -8,7 +8,7 @@ import { WEEKLY_COMMENTS } from '@/content/flavor'
 import { HEROINES, type HeroineId } from '@/engine/types'
 import { useGame } from '@/store/game'
 import { useUI } from '@/store/ui'
-import { scores } from '@/systems/score'
+import { scoreParts } from '@/systems/score'
 import { readStatSnapshot } from '@/systems/siteMetrics'
 import { SiteDashboard } from './SiteDashboard'
 
@@ -27,7 +27,6 @@ const TIER_LABEL: Record<'low' | 'mid' | 'high', { text: string; cls: string }> 
 export function WeeklyReport() {
   const s = useGame()
   const ui = useUI.getState()
-  const cur = scores(s.stats, s.bond)
   // stats at the start of this week (stored in flags by the store); old saves simply show no deltas
   const weekStart = readStatSnapshot(s.flags)
 
@@ -57,7 +56,12 @@ export function WeeklyReport() {
           {HEROINES.map((h: HeroineId, idx) => {
             const c = CHARACTERS[h]
             const prev = Math.round(s.prevScores[h] ?? 10)
-            const now = Math.round(cur[h])
+            const parts = scoreParts(h, s.stats, s.bond)
+            const now = Math.round(parts.total)
+            const site = Math.round(parts.site)
+            const bond = Math.round(parts.bond)
+            const siteBar = Math.min(now, Math.max(0, site))
+            const bondBar = Math.max(0, now - siteBar)
             const diff = now - prev
             const tier = tierFor(now)
             const tierMeta = TIER_LABEL[tier]
@@ -73,7 +77,7 @@ export function WeeklyReport() {
               >
                 <CharacterAvatar id={h} size={60} />
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5">
                       <span className="font-title text-2xl font-bold" style={{ color: c.color }}>
                         {c.name}
@@ -82,23 +86,51 @@ export function WeeklyReport() {
                         {tierMeta.text}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2.5 font-title text-xl font-bold">
-                      <span>♥ {now}</span>
+                    <div className="flex items-center gap-2 font-title font-bold">
+                      <span className="text-xl">
+                        ♥ {now}
+                        <span className="ml-1 font-sans text-xs font-semibold text-ink/70" data-testid={`report-score-parts-${h}`}>
+                          （網站 {site}{bond >= 0 ? `＋互動 ${bond}` : `－互動 ${Math.abs(bond)}`}）
+                        </span>
+                      </span>
                       <span className={`rounded-full px-2.5 py-0.5 text-sm ${diff >= 0 ? 'bg-emerald-50 text-[#2b8a57]' : 'bg-rose-50 text-[#d6334a]'}`}>
                         {diff >= 0 ? `+${diff}` : diff}
                       </span>
                     </div>
                   </div>
-                  <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-ink/10">
+                  <div
+                    className="mt-2 flex h-2.5 w-full overflow-hidden rounded-full bg-ink/10"
+                    title={`網站 ${site} / 互動 ${bond}`}
+                    data-testid={`report-score-bar-${h}`}
+                  >
                     <motion.div
-                      initial={{ width: `${Math.min(100, prev)}%` }}
-                      animate={{ width: `${Math.min(100, now)}%` }}
+                      initial={{ width: `${Math.min(100, Math.min(prev, siteBar))}%` }}
+                      animate={{ width: `${Math.min(100, siteBar)}%` }}
                       transition={{ duration: 0.55, delay: 0.15 + idx * 0.12, ease: 'easeOut' }}
-                      className="h-full rounded-full"
-                      style={{ background: `linear-gradient(90deg, ${c.color}, ${c.accent})` }}
+                      className="h-full"
+                      style={{ background: `color-mix(in srgb, ${c.color} 45%, white)` }}
                     />
+                    {bondBar > 0 && (
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.min(100 - siteBar, bondBar)}%` }}
+                        transition={{ duration: 0.55, delay: 0.22 + idx * 0.12, ease: 'easeOut' }}
+                        className="h-full"
+                        style={{ background: c.color }}
+                      />
+                    )}
                   </div>
-                  <p className="mt-1.5 font-title text-base leading-snug text-[#251e38]">「{line.text.replace(/\{name\}/g, s.playerName)}」</p>
+                  <div className="mt-1 flex items-center gap-3 text-[11px] text-ink/60">
+                    <span className="flex items-center gap-1">
+                      <span className="inline-block h-2 w-2 rounded-full" style={{ background: `color-mix(in srgb, ${c.color} 45%, white)` }} />
+                      網站 {site}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="inline-block h-2 w-2 rounded-full" style={{ background: c.color }} />
+                      互動 {bond}
+                    </span>
+                  </div>
+                  <p className="mt-1 font-title text-base leading-snug text-[#251e38]">「{line.text.replace(/\{name\}/g, s.playerName)}」</p>
                 </div>
               </motion.div>
             )

@@ -55,6 +55,14 @@ describe('schedule & quests & ending systems', () => {
       stats: { con: 100, tec: 100, str: 100, ans: 100, tru: 100 },
       bond: { rin: 12, hare: 12, mirai: 12 },
     }
-    expect(determineEnding(tiedSingle)).toBe('end-rin')
+    // Without 3rd date or week 6 choice for the top heroine, falls back to normal ending
+    expect(determineEnding(tiedSingle)).toBe('end-normal')
+
+    // Tie-breaker picks rin; passing her emotional gate via 3rd date or w6Choice unlocks end-rin
+    expect(determineEnding({ ...tiedSingle, flags: { 'dateCount.rin': 3 } })).toBe('end-rin')
+    expect(determineEnding({ ...tiedSingle, flags: { w6Choice: 1 } })).toBe('end-rin')
+
+    // Only the top heroine is checked: runner-up meeting the gate does NOT steal the ending
+    expect(determineEnding({ ...tiedSingle, flags: { 'dateCount.hare': 3, w6Choice: 2 } })).toBe('end-normal')
   })
 })

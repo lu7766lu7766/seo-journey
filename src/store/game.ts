@@ -81,7 +81,10 @@ export const useGame = create<GameStore>((set, get) => {
     set((s) => {
       const patch: Partial<GameStore> = { pause, scene: runner!.snapshot() }
       if (pause.kind === 'say' && !s.backlog.some((b) => b.lineId === pause.lineId)) {
-        patch.backlog = [...s.backlog, { lineId: pause.lineId, who: pause.who, text: pause.text }].slice(-300)
+        const entry = pause.name
+          ? { lineId: pause.lineId, who: pause.who, name: pause.name, text: pause.text }
+          : { lineId: pause.lineId, who: pause.who, text: pause.text }
+        patch.backlog = [...s.backlog, entry].slice(-300)
       }
       if (pause.kind === 'end' && !s.seenScenes.includes(runner!.scene.id)) patch.seenScenes = [...s.seenScenes, runner!.scene.id]
       return patch

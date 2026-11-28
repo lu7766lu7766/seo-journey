@@ -7,7 +7,7 @@ import { useGame } from '@/store/game'
 import { useUI } from '@/store/ui'
 import { getDateCount, pickDateScene } from '@/systems/ending'
 import { INFIRMARY_WEEK_FLAG, WEEKEND } from '@/systems/schedule'
-import { score } from '@/systems/score'
+import { scoreParts } from '@/systems/score'
 
 export function WeekendMenu() {
   const s = useGame()
@@ -75,7 +75,10 @@ export function WeekendMenu() {
         {HEROINES.map((h) => {
           const c = CHARACTERS[h]
           const count = getDateCount(h, s)
-          const sc = Math.round(score(h, s.stats, s.bond))
+          const parts = scoreParts(h, s.stats, s.bond)
+          const sc = Math.round(parts.total)
+          const site = Math.round(parts.site)
+          const bond = Math.round(parts.bond)
           const pick = pickDateScene(h, s)
           const lockedStage3 = count === 2 && pick.stage === 'casual'
           return (
@@ -93,8 +96,11 @@ export function WeekendMenu() {
                 <p className="font-title text-2xl font-bold" style={{ color: c.color }}>
                   {c.name}
                 </p>
-                <p className="mt-1 text-sm font-bold text-ink/80">
-                  好感度 ♥ {sc} · 已約會 {count} 次
+                <p className="mt-1 text-sm font-bold text-ink/80" data-testid={`weekend-score-parts-${h}`}>
+                  ♥ {sc}（網站 {site}{bond >= 0 ? `＋互動 ${bond}` : `－互動 ${Math.abs(bond)}`}）
+                </p>
+                <p className="mt-0.5 text-xs font-bold text-ink/70">
+                  已約會 {count} 次
                 </p>
                 <p className="mt-1 text-xs text-ink/65">
                   {locked

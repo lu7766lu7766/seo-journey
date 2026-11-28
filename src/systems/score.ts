@@ -22,11 +22,28 @@ export const BOND_MIN = -20
 
 export const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 
-/** score_h = clamp( Σ w[h][s]·stat_s + bond_h, 0, 100 ) */
-export function score(who: HeroineId, stats: Stats, bond: Bonds): number {
+export interface ScoreParts {
+  /** weighted stats * statScale (clamped 0..100) */
+  site: number
+  /** bond * bondScale (may be negative) */
+  bond: number
+  /** final score clamped to 0..100, always identical to score() */
+  total: number
+}
+
+/** Split score into site contribution, interaction (bond) contribution, and clamped total (0..100). */
+export function scoreParts(who: HeroineId, stats: Stats, bond: Bonds): ScoreParts {
   let sum = 0
   for (const s of STAT_KEYS) sum += WEIGHTS[who][s] * stats[s]
-  return clamp(sum * TUNING.statScale + bond[who] * TUNING.bondScale, 0, 100)
+  const site = clamp(sum * TUNING.statScale, 0, 100)
+  const bondPart = bond[who] * TUNING.bondScale
+  const total = clamp(site + bondPart, 0, 100)
+  return { site, bond: bondPart, total }
+}
+
+/** score_h = clamp( Σ w[h][s]·stat_s + bond_h, 0, 100 ) */
+export function score(who: HeroineId, stats: Stats, bond: Bonds): number {
+  return scoreParts(who, stats, bond).total
 }
 
 export function scores(stats: Stats, bond: Bonds): Record<HeroineId, number> {

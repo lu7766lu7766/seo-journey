@@ -60,7 +60,7 @@ export type Cmd =
   | { k: 'bg'; id: BgId; time?: TimeOfDay; fx?: BgFx }
   | { k: 'show'; who: CharId; at?: Slot; face?: Face }
   | { k: 'hide'; who: CharId | 'all' }
-  | { k: 'say'; who: SpeakerId; face?: Face; text: string }
+  | { k: 'say'; who: SpeakerId; face?: Face; name?: string; text: string }
   | { k: 'choice'; options: ChoiceOpt[] }
   | { k: 'effect'; effects: Effects }
   | { k: 'if'; cond: Cond; then: Cmd[]; else?: Cmd[] }
@@ -98,7 +98,7 @@ export interface RunnerSnapshot {
 }
 
 export type Pause =
-  | { kind: 'say'; lineId: string; who: SpeakerId; face?: Face; text: string }
+  | { kind: 'say'; lineId: string; who: SpeakerId; face?: Face; name?: string; text: string }
   | { kind: 'choice'; lineId: string; options: { index: number; text: string }[] }
   | { kind: 'minigame'; lineId: string; id: MinigameId }
   | { kind: 'wait'; lineId: string; ms: number }

@@ -119,7 +119,7 @@ export function serpMock(stats: Stats): SerpMock {
     return {
       tier: 'bare',
       title: '404 號社辦',
-      url: 'club.example.jp › index',
+      url: 'aoba-web.club › index',
       description: '這個頁面沒有提供資訊描述。',
       sitelinks: [],
       aiChip: null,
@@ -129,7 +129,7 @@ export function serpMock(stats: Stats): SerpMock {
     return {
       tier: 'basic',
       title: '網站研究社｜新手也能懂的 SEO・AEO・GEO 入門',
-      url: 'club.example.jp › guide',
+      url: 'aoba-web.club › guide',
       description: '高中網站研究社的實作筆記：從被搜尋引擎找到，到被 AI 引用，一步步改善社團網站。',
       sitelinks: [],
       aiChip: null,
@@ -138,7 +138,7 @@ export function serpMock(stats: Stats): SerpMock {
   return {
     tier: 'rich',
     title: '網站研究社｜SEO・AEO・GEO 實作筆記（2026 更新）',
-    url: 'club.example.jp › guide',
+    url: 'aoba-web.club › guide',
     description: '結論先說：先讓頁面被找到、再寫清楚答案、最後累積可信的來源。附技術健檢清單與問答範例。',
     sitelinks: ['技術健檢｜Core Web Vitals', '問答整理｜結論先說', '作者與來源'],
     aiChip: stats.tru >= 55 ? '被 AI 回答引用：網站研究社' : null,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { score, scores, TUNING, WEIGHTS } from '@/systems/score'
-import { STAT_KEYS } from '@/engine/types'
+import { score, scoreParts, scores, TUNING, WEIGHTS } from '@/systems/score'
+import { HEROINES, STAT_KEYS } from '@/engine/types'
 
 const stats = (v: number) => ({ con: v, tec: v, str: v, ans: v, tru: v })
 
@@ -23,6 +23,33 @@ describe('score', () => {
     expect(score('rin', stats(0), { rin: -20, hare: 0, mirai: 0 })).toBe(0)
     const k = TUNING.statScale
     expect(scores(stats(10), { rin: 0, hare: 0, mirai: 0 })).toEqual({ rin: expect.closeTo(10 * k), hare: expect.closeTo(10 * k), mirai: expect.closeTo(10 * k) })
+  })
+  it('scoreParts splits site and bond consistently with score() and handles clamping', () => {
+    const k = TUNING.statScale
+    const st = { con: 50, tec: 80, str: 20, ans: 10, tru: 40 }
+    const b = { rin: 18, hare: -5, mirai: 40 }
+    for (const h of HEROINES) {
+      const p = scoreParts(h, st, b)
+      expect(p.total).toBeCloseTo(score(h, st, b))
+      expect(p.bond).toBeCloseTo(b[h] * TUNING.bondScale)
+      expect(p.total).toBeCloseTo(Math.min(100, Math.max(0, p.site + p.bond)))
+    }
+    // rin: weighted 52.5 * k + 18
+    const rin = scoreParts('rin', st, b)
+    expect(rin.site).toBeCloseTo(52.5 * k)
+    expect(rin.bond).toBe(18)
+
+    // clamps at 0 when negative bond exceeds site score
+    const floor = scoreParts('rin', stats(0), { rin: -20, hare: 0, mirai: 0 })
+    expect(floor.site).toBe(0)
+    expect(floor.bond).toBe(-20)
+    expect(floor.total).toBe(0)
+
+    // clamps total at 100 even if site + bond > 100
+    const ceil = scoreParts('rin', stats(100), { rin: 80, hare: 0, mirai: 0 })
+    expect(ceil.site).toBeCloseTo(100 * k)
+    expect(ceil.total).toBe(100)
+    expect(ceil.total).toBe(score('rin', stats(100), { rin: 80, hare: 0, mirai: 0 }))
   })
   it('keeps the balance knobs in a sane range (see tests/balance.test.ts for the real check)', () => {
     expect(TUNING.statScale).toBeGreaterThan(0.3)
