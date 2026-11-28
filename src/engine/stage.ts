@@ -5,6 +5,7 @@ export const initialStage = (): StageState => ({
   rain: false,
   chars: {},
   cg: null,
+  bgm: null,
   flash: 0,
 })
 
@@ -49,6 +50,8 @@ export function reduceStage(s: StageState, cmd: Cmd): StageState {
     }
     case 'cg':
       return { ...s, cg: cmd.id === 'none' ? null : cmd.id }
+    case 'bgm':
+      return s.bgm === cmd.id ? s : { ...s, bgm: cmd.id }
     default:
       return s
   }

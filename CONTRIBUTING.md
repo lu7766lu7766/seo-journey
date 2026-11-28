@@ -77,6 +77,7 @@
   }
   ```
   `src` 必填；`loopStart`／`loopEnd`（秒，僅 BGM）省略時整首循環，兩者都給但 `loopEnd <= loopStart` 視為無效並整首循環；`gainDb` 省略＝0，限制在 −60～+12 dB。壞掉的條目會被忽略。
+- **BGM 狀態與銜接**：劇本的 `bgm(id)` 指令會同時記進舞台狀態 `stage.bgm`（隨存檔保存）；讀檔不會重播指令，所以 `loadPersisted` 會依 `resumeBgm()`（`src/store/save.ts`：存檔記錄 → 否則依週次／階段預設 `daily`／`festival`／`warm`）呼叫 `audio.bgm()`。`TitleScreen` 掛載時播 `title`、卸載時**不**淡出，由下一次 `audio.bgm()` 交叉淡化接手（新遊戲的序章 `bgm`、讀檔的恢復曲），所以標題曲會一直播到下一首被要求為止。非劇本畫面（排程、公佈欄、週末、週報）沿用上一個劇本的 BGM。
 - BGM id：`title`（標題畫面）、`daily`、`warm`、`festival`、`tense`；SFX id：`click blip choice card grow bond fail win`。新增 id 時同步更新 `src/audio/synth.ts` 的型別與合成備援。
 
 **備援規則**：manifest 沒有該 id、manifest 載入失敗、音檔下載或解碼失敗（含尚未下載完成的 SFX），一律沿用 `src/audio/synth.ts` 的合成聲，行為與沒有音檔時完全相同。

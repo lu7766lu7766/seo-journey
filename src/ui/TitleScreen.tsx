@@ -22,12 +22,10 @@ export function TitleScreen() {
   const [name, setName] = useState(DEFAULT_PLAYER_NAME)
   const latest = latestSave()
 
-  // 標題曲；離開標題時若還在播標題曲就淡出（新遊戲／讀檔的劇本 bgm 會接手）
+  // 標題曲；離開標題時不淡出，由下一個 audio.bgm()（新遊戲的序章 bgm／讀檔的恢復曲）交叉淡化接手，
+  // 只開設定或圖鑑再回標題則一直播下去
   useEffect(() => {
     audio.bgm('title')
-    return () => {
-      if (audio.currentBgm === 'title') audio.stopBgm()
-    }
   }, [])
 
   const start = async () => {
