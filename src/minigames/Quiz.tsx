@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { audio } from '@/audio'
 import { scoreQuiz } from '@/content/minigames/scoring'
 import type { QuizGame } from '@/content/minigames/types'
+import { DotMatrixSlip, RetroMonitorFrame, Stamp } from '@/ui/material'
 import { StarRating } from './StarRating'
 import { canOfferRetry, quizStars, shuffledOrder, type Attempt, type Stars } from './stars'
 
@@ -59,32 +60,66 @@ export function Quiz({
     const result = scoreQuiz(game, answers)
     const stars = quizStars(result.correct, result.total, result.passed, attempt)
     const retryAvailable = canOfferRetry(result.passed, attempt) && !!onRetry
-    return (
-      <div className="glass flex max-h-[640px] w-[880px] flex-col rounded-3xl p-7 text-ink">
-        <div className="mb-4 flex items-center justify-between border-b border-ink/10 pb-3">
-          <div>
-            <span className="inline-block rounded-full bg-sakura/50 px-3 py-0.5 text-xs font-bold tracking-wide text-ink">
-              知識測驗結算
-            </span>
-            <h2 className="mt-1 font-title text-2xl font-bold">{game.title}</h2>
-          </div>
-          <span
-            className={`rounded-full px-4 py-1.5 text-sm font-bold ${
-              result.passed
-                ? 'border border-emerald-500 bg-emerald-100 text-emerald-900'
-                : 'border border-rose-400 bg-rose-100 text-rose-900'
-            }`}
-          >
-            {result.passed ? '挑戰通過' : '差一點點'}
-          </span>
-        </div>
 
-        <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
-          <div className="rounded-2xl border border-ink/15 bg-white/85 p-4 text-center">
-            <p className="text-3xl font-bold">
+    return (
+      <RetroMonitorFrame
+        programTitle="404 社團測驗系統 · 成績列印"
+        bezelLabel="AOBA-404 CRT · PRINT OUT"
+        screenTone="dark"
+        headerRight={<span className="font-sans text-[15px] font-bold text-[#d7ebe4]">知識測驗結算</span>}
+        footer={
+          <div className="flex items-center justify-end gap-3">
+            {retryAvailable && (
+              <button
+                type="button"
+                className="mat-pass-btn px-6 py-2 font-title text-[16px] font-bold"
+                data-testid="minigame-retry"
+                onClick={() => {
+                  audio.sfx('choice')
+                  onRetry?.()
+                }}
+              >
+                再挑戰一次（索老師會給提示）
+              </button>
+            )}
+            <button
+              type="button"
+              className={
+                retryAvailable
+                  ? 'mat-washi-btn px-6 py-2 font-title text-[16px] font-bold'
+                  : 'mat-pass-btn px-8 py-2 font-title text-[17px] font-bold'
+              }
+              data-testid="minigame-done"
+              onClick={() => finishOnce(result.passed, stars)}
+            >
+              {retryAvailable ? '放棄並繼續' : '完成並繼續'}
+            </button>
+          </div>
+        }
+      >
+        <DotMatrixSlip>
+          <div className="flex items-start justify-between gap-4 border-b border-dashed border-[#968971] pb-3">
+            <div>
+              <p className="font-sans text-[15px] font-bold tracking-wider text-ink-muted">
+                *** 404 網站研究社 · 知識測驗成績條 ***
+              </p>
+              <h2 className="mt-1 font-title text-[22px] font-bold leading-snug text-ink-body">{game.title}</h2>
+            </div>
+            <Stamp
+              label={result.passed ? '挑戰通過' : '差一點點'}
+              color={result.passed ? 'forest' : 'vermilion'}
+              shape={result.passed ? 'oval' : 'rect'}
+              size="md"
+              rotate={-6}
+              className="shrink-0"
+            />
+          </div>
+
+          <div className="mt-3 border-y border-dashed border-[#b0a287] bg-[#fffdf8]/75 px-4 py-3 text-center">
+            <p className="font-title text-[24px] font-bold text-ink-body">
               答對 {result.correct} / {result.total} 題
             </p>
-            <p className="mt-1 text-sm text-ink/75">
+            <p className="mt-1 font-sans text-[15px] text-ink-muted">
               過關門檻：至少答對 {game.passCount} 題。
               {result.passed
                 ? ' 觀念相當清楚，繼續推進劇情吧！'
@@ -92,78 +127,49 @@ export function Quiz({
                   ? ' 沒關係，先看看下方整理的重點，再挑戰一次吧！'
                   : ' 沒關係，重點已經整理在下方，之後也可在圖鑑練習重玩。'}
             </p>
-            <div className="mt-3 border-t border-ink/10 pt-3">
+            <div className="mt-2.5 border-t border-dashed border-[#c6b99f] pt-2.5">
               <StarRating stars={stars} attempt={attempt} retryAvailable={retryAvailable} />
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="mt-3 divide-y divide-dashed divide-[#bfb197]">
             {game.questions.map((q, idx) => {
               const ok = answers[idx] === q.correct
               const hideAnswerForRetry = !ok && retryAvailable
               if (hideAnswerForRetry) {
                 return (
-                  <div key={idx} className="rounded-xl border border-amber-300 bg-amber-50/85 px-4 py-3 text-sm">
-                    <div className="flex items-start justify-between gap-2 font-bold">
+                  <div key={idx} className="py-2.5 text-[15px]">
+                    <div className="flex items-start justify-between gap-3 font-bold text-ink-body">
                       <span>
                         Q{idx + 1}. {q.prompt}
                       </span>
-                      <span className="shrink-0 text-amber-800">未答對 · 重新挑戰時再想想</span>
+                      <span className="shrink-0 text-[#96540c]">… 未答對 · 重新挑戰時再想想</span>
                     </div>
                   </div>
                 )
               }
               return (
-                <div
-                  key={idx}
-                  className={`rounded-xl border px-4 py-3 text-sm ${
-                    ok ? 'border-emerald-300 bg-emerald-50/80' : 'border-rose-300 bg-rose-50/80'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-2 font-bold">
+                <div key={idx} className="py-2.5 text-[15px]">
+                  <div className="flex items-start justify-between gap-3 font-bold text-ink-body">
                     <span>
                       Q{idx + 1}. {q.prompt}
                     </span>
-                    <span className={ok ? 'shrink-0 text-emerald-700' : 'shrink-0 text-rose-700'}>
-                      {ok ? '正確' : '錯誤'}
+                    <span className={`shrink-0 ${ok ? 'text-[#1e6645]' : 'text-[var(--color-stamp)]'}`}>
+                      {ok ? '✓ 正確' : '✕ 錯誤'}
                     </span>
                   </div>
                   {!ok && (
-                    <p className="mt-1 text-xs font-semibold text-ink/75">
+                    <p className="mt-1 font-sans text-[15px] font-semibold text-[#8c361d]">
                       你的選擇：{q.options[answers[idx]] ?? '未作答'} ｜ 正確答案：{q.options[q.correct]}
                     </p>
                   )}
-                  <p className="mt-1 text-ink/85">{q.explain}</p>
+                  <p className="mt-1 leading-relaxed text-ink-muted">{q.explain}</p>
                 </div>
               )
             })}
           </div>
-        </div>
-
-        <div className="mt-5 flex items-center justify-end gap-3 border-t border-ink/10 pt-4">
-          {retryAvailable && (
-            <button
-              type="button"
-              className="btn-pastel px-6 py-2.5 text-base"
-              data-testid="minigame-retry"
-              onClick={() => {
-                audio.sfx('choice')
-                onRetry?.()
-              }}
-            >
-              再挑戰一次（索老師會給提示）
-            </button>
-          )}
-          <button
-            type="button"
-            className={retryAvailable ? 'rounded-full border border-ink/25 bg-white/70 px-6 py-2.5 text-base font-semibold text-ink/80 transition hover:bg-white' : 'btn-pastel px-8 py-2.5 text-base'}
-            data-testid="minigame-done"
-            onClick={() => finishOnce(result.passed, stars)}
-          >
-            {retryAvailable ? '放棄並繼續' : '完成並繼續'}
-          </button>
-        </div>
-      </div>
+        </DotMatrixSlip>
+      </RetroMonitorFrame>
     )
   }
 
@@ -173,51 +179,80 @@ export function Quiz({
   const hint = game.hint ?? DEFAULT_HINT
 
   return (
-    <div className="glass flex max-h-[640px] w-[880px] flex-col rounded-3xl p-7 text-ink">
-      <div className="mb-3 flex items-center justify-between border-b border-ink/10 pb-3">
-        <div>
-          <span className="inline-block rounded-full bg-sky/50 px-3 py-0.5 text-xs font-bold text-ink">
-            選擇題測驗
-          </span>
-          <h2 className="mt-1 font-title text-2xl font-bold">{game.title}</h2>
-        </div>
-        <div className="text-right text-sm font-semibold text-ink/80">
+    <RetroMonitorFrame
+      programTitle="404 社團測驗系統"
+      bezelLabel="AOBA-404 CRT · QUIZ"
+      screenTone="light"
+      headerRight={
+        <span className="font-sans text-[15px] font-bold text-[#f7f3e8]">
           第 {step + 1} / {game.questions.length} 題
+        </span>
+      }
+      stickyNote={
+        attempt === 2
+          ? {
+              testId: 'quiz-hint',
+              title: '索老師提示',
+              content: hint,
+            }
+          : null
+      }
+      footer={
+        <div className="flex items-center justify-between gap-3">
+          <span className="font-sans text-[15px] font-semibold text-ink-muted">
+            過關條件：答對至少 {game.passCount} 題
+          </span>
+          <button
+            type="button"
+            disabled={!hasPicked}
+            data-testid="quiz-next"
+            onClick={handleNext}
+            className="mat-pass-btn px-7 py-2 font-title text-[17px] font-bold disabled:cursor-not-allowed disabled:opacity-45"
+          >
+            {step + 1 < game.questions.length ? '下一題' : '查看結果'}
+          </button>
+        </div>
+      }
+    >
+      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[#cfc1a5] bg-[#efe7d3] px-5 py-2">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2.5">
+            <span className="border border-[#2f5d8c] px-2 py-0.5 font-title text-[15px] font-bold leading-tight text-[#2f5d8c]">
+              選擇題測驗
+            </span>
+            <h2 className="font-title text-[21px] font-bold leading-snug text-ink-body">{game.title}</h2>
+          </div>
+          <p className="mt-0.5 font-sans text-[15px] text-ink-muted">{game.intro}</p>
         </div>
       </div>
 
-      <p className="mb-3 text-sm text-ink/80">{game.intro}</p>
-
-      {attempt === 2 && (
-        <div
-          data-testid="quiz-hint"
-          className="mb-3 rounded-xl border border-amber-300 bg-amber-50/95 px-4 py-2 text-xs font-semibold leading-relaxed text-amber-950"
-        >
-          💡 {hint}
-        </div>
-      )}
-
-      <div className="min-h-0 flex-1 overflow-y-auto pr-1">
-        <div className="mb-4 rounded-2xl border border-ink/15 bg-white/85 p-4">
-          <p className="text-lg font-bold leading-relaxed">{question.prompt}</p>
+      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-2.5">
+        <div className="mb-2.5 rounded-[4px] border border-[#b5a484] bg-[#fffdf8] px-4 py-2.5 shadow-[0_2px_6px_rgba(38,18,6,0.08)]">
+          <p className="font-title text-[18px] font-bold leading-relaxed text-ink-body">{question.prompt}</p>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="space-y-2">
           {order.map((authoredIdx, i) => {
             const optText = question.options[authoredIdx]
             const isPicked = selected === authoredIdx
             const isAnswer = authoredIdx === question.correct
             let cls =
-              'border-ink/15 bg-white/90 text-ink hover:border-sakura hover:bg-white'
+              'border-[#bcae92] bg-[#fffdf8] text-ink-body hover:border-[#2f5d8c] hover:bg-[#f2f6fa]'
+            let keycapCls = 'border-[#9e8d70] bg-[#efe5cf] text-ink-body'
             if (hasPicked) {
               if (isAnswer && revealImmediately) {
-                cls = 'border-emerald-500 bg-emerald-50 text-emerald-950 font-semibold'
+                cls = 'border-[#2d7355] bg-[#e6f4ec] text-[#174632] font-semibold'
+                keycapCls = 'border-[#2d7355] bg-[#2d7355] text-white'
               } else if (isPicked) {
                 cls = isCorrect
-                  ? 'border-emerald-500 bg-emerald-50 text-emerald-950 font-semibold'
-                  : 'border-rose-500 bg-rose-50 text-rose-950'
+                  ? 'border-[#2d7355] bg-[#e6f4ec] text-[#174632] font-semibold'
+                  : 'border-[#c6382b] bg-[#fae9e7] text-[#7a1e16]'
+                keycapCls = isCorrect
+                  ? 'border-[#2d7355] bg-[#2d7355] text-white'
+                  : 'border-[#c6382b] bg-[#c6382b] text-white'
               } else {
-                cls = 'border-ink/10 bg-white/55 text-ink/60'
+                cls = 'border-[#d4c8b1] bg-[#f4efe1] text-ink-muted'
+                keycapCls = 'border-[#c2b59c] bg-[#e8dec9] text-ink-muted'
               }
             }
             return (
@@ -227,17 +262,19 @@ export function Quiz({
                 disabled={hasPicked}
                 data-testid={`quiz-opt-${i}`}
                 onClick={() => pickOption(authoredIdx)}
-                className={`flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3 text-left text-base transition ${cls}`}
+                className={`flex w-full items-center gap-3 rounded-[4px] border-2 px-3.5 py-2 text-left text-[15.5px] transition focus-visible:outline-3 focus-visible:outline-[#2b6ea8] focus-visible:outline-offset-2 ${cls}`}
               >
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink/10 text-sm font-bold">
+                <span
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-[3px] border font-sans text-[15px] font-bold ${keycapCls}`}
+                >
                   {LETTERS[i] ?? i + 1}
                 </span>
                 <span className="flex-1 leading-snug">{optText}</span>
                 {hasPicked && isAnswer && revealImmediately && (
-                  <span className="shrink-0 text-xs font-bold text-emerald-700">正確答案</span>
+                  <span className="shrink-0 font-title text-[15px] font-bold text-[#1e6645]">〔正確答案〕</span>
                 )}
                 {hasPicked && isPicked && !isAnswer && (
-                  <span className="shrink-0 text-xs font-bold text-rose-700">你的選擇</span>
+                  <span className="shrink-0 font-title text-[15px] font-bold text-[var(--color-stamp)]">〔你的選擇〕</span>
                 )}
               </button>
             )
@@ -246,14 +283,14 @@ export function Quiz({
 
         {hasPicked && (
           <div
-            className={`mt-4 rounded-2xl border p-4 text-sm leading-relaxed ${
+            className={`mt-2.5 rounded-[4px] border-2 px-4 py-2.5 text-[15px] leading-relaxed ${
               isCorrect
-                ? 'border-emerald-400 bg-emerald-50/95 text-emerald-950'
-                : 'border-rose-400 bg-rose-50/95 text-rose-950'
+                ? 'border-[#2d7355] bg-[#e8f5ee] text-[#174632]'
+                : 'border-[#c6382b] bg-[#fbedeb] text-[#7a1e16]'
             }`}
           >
-            <p className="font-bold">{isCorrect ? '答對了！' : '答錯囉！'}</p>
-            <p className="mt-1">
+            <p className="font-title text-[16px] font-bold">{isCorrect ? '✓ 答對了！' : '✕ 答錯囉！'}</p>
+            <p className="mt-0.5">
               {revealImmediately
                 ? question.explain
                 : '先記下這一題的疑問！完成全部題目後若未達門檻，可免費重考並參考索老師提示。'}
@@ -261,19 +298,6 @@ export function Quiz({
           </div>
         )}
       </div>
-
-      <div className="mt-4 flex items-center justify-between border-t border-ink/10 pt-3">
-        <span className="text-xs text-ink/70">過關條件：答對至少 {game.passCount} 題</span>
-        <button
-          type="button"
-          disabled={!hasPicked}
-          data-testid="quiz-next"
-          onClick={handleNext}
-          className="btn-pastel px-7 py-2 text-base disabled:cursor-not-allowed disabled:opacity-45"
-        >
-          {step + 1 < game.questions.length ? '下一題' : '查看結果'}
-        </button>
-      </div>
-    </div>
+    </RetroMonitorFrame>
   )
 }
