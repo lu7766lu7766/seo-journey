@@ -88,6 +88,12 @@ def build_html(data: dict) -> str:
                 if rs
                 else "N/A（程式合成）"
             )
+            review_html = ""
+            if c.get("listening_score") is not None or c.get("listening_review"):
+                sc = c.get("listening_score")
+                sc_str = f"<strong>實聽評分：{sc} / 5.0</strong> — " if sc is not None else ""
+                rev = html.escape(str(c.get("listening_review", "")))
+                review_html = f'<p class="cand-review">{sc_str}{rev}</p>'
             note_html = (
                 f'<p class="cand-note">{html.escape(c["note"])}</p>'
                 if c.get("note")
@@ -108,6 +114,7 @@ def build_html(data: dict) -> str:
 
                   <audio controls preload="metadata" src="{html.escape(c['file'])}"></audio>
                   {burst_html}
+                  {review_html}
                   {note_html}
 
                   <dl class="metrics-grid">
@@ -384,6 +391,7 @@ def build_html(data: dict) -> str:
     .burst-btn.is-playing {{ background: #b91c1c; border-color: #ef4444; }}
     .burst-status {{ font-size: 0.78rem; color: var(--muted); font-family: ui-monospace, monospace; }}
     .cand-note {{ margin: 0; font-size: 0.82rem; color: #cbd5e1; }}
+    .cand-review {{ margin: 0; font-size: 0.84rem; color: #fde68a; background: rgba(251, 191, 36, 0.08); border-left: 3px solid var(--gold); padding: 6px 9px; border-radius: 6px; }}
     .metrics-grid {{
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));

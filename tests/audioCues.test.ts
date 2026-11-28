@@ -176,14 +176,15 @@ describe('小遊戲音效接線', () => {
   })
 })
 
-describe('階段 0 預設版本（manifest default）', () => {
+describe('v2 定案預設版本（manifest default）', () => {
   const m = parseManifest(JSON.parse(readFileSync(join(__dirname, '../public/audio/manifest.json'), 'utf8')))
-  it('title→c3、click→c3、blip→c4、choice→c3、fail→c4、win→c2', () => {
-    expect(m['bgm/title'].default).toBe('c3')
-    expect(m['sfx/click'].default).toBe('c3')
-    expect(m['sfx/blip'].default).toBe('c4')
-    expect(m['sfx/choice'].default).toBe('c3')
-    expect(m['sfx/fail'].default).toBe('c4')
+  it('全 12 首 BGM 與重製／新增 SFX 預設為 c1，沿用的 win 維持 c2', () => {
+    for (const id of ['title', 'daily', 'sim', 'minigame', 'warm', 'melancholy', 'tense', 'comedy', 'festival', 'theme_rin', 'theme_hare', 'theme_mirai']) {
+      expect(m[`bgm/${id}`].default, `bgm/${id}`).toBe('c1')
+    }
+    for (const id of ['click', 'blip', 'choice', 'card', 'grow', 'bond', 'fail', 'shock']) {
+      expect(m[`sfx/${id}`].default, `sfx/${id}`).toBe('c1')
+    }
     expect(m['sfx/win'].default).toBe('c2')
   })
 })

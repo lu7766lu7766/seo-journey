@@ -2,14 +2,15 @@
 
 本文件記錄遊戲背景音樂（BGM）與音效（SFX）候選的產製方式。腳本在 [`scripts/colab/bgm/`](../scripts/colab/bgm/)、[`scripts/colab/sfx/`](../scripts/colab/sfx/)；產製輸出（含試聽頁、波形／頻譜 PNG、原始 WAV）放在 `/tmp/seo-journey-audio/{bgm,sfx}/`，**不進版控**。
 
-> **已放入遊戲，玩家可在「音樂鑑賞」選版本。** 5 首 BGM × 3 個候選、8 種 SFX × 4 個候選的**成品 MP3 全部**放在 `public/audio/{bgm,sfx}/<id>_c<N>.mp3`，不事先替玩家決定只用哪一版：標題主選單的「音樂鑑賞」可逐一試聽，按「採用這版」後遊戲就改用那一版（記在玩家瀏覽器的設定裡；沒選過的用 manifest 的 `default`，也就是產製時資料建議的首選，未經人耳確認）。`public/audio/manifest.json` 由 [`scripts/build-audio-manifest.mjs`](../scripts/build-audio-manifest.mjs) 依 `scripts/audio/{bgm,sfx}-candidates.json` 產生；格式與引擎行為見 [`CONTRIBUTING.md`](../CONTRIBUTING.md) 的「音訊」。
+> **已放入遊戲，玩家可在「音樂鑑賞」選版本。** 12 首 BGM × 3 個候選、9 種 SFX × 4 個候選的**成品 MP3 全部**放在 `public/audio/{bgm,sfx}/<id>_c<N>.mp3`，標題主選單的「音樂鑑賞」可逐一試聽並採用；預設採用 `scripts/audio/default-picks.json` 指定的候選。`public/audio/manifest.json` 由 [`scripts/build-audio-manifest.mjs`](../scripts/build-audio-manifest.mjs) 依 `scripts/audio/{bgm,sfx}-candidates.json` 與 `scripts/audio/default-picks.json` 產生；格式與引擎行為見 [`CONTRIBUTING.md`](../CONTRIBUTING.md) 的「音訊」。
 
 ## 授權標示（必須保留）
 
-| 類別 | 模型 | 授權 | 標示 |
+| 類別 | 模型／合成方式 | 授權 | 標示 |
 | --- | --- | --- | --- |
-| 背景音樂 | ACE-Step v1 3.5B | Apache License 2.0 | 「背景音樂：ACE-Step 生成（Apache 2.0）」 |
-| 音效 | Stable Audio Open 1.0 | Stability AI Community License | 「音效：Stable Audio Open 生成 — **Powered by Stability AI**」（授權要求的標示） |
+| 背景音樂（v2 全 12 首） | ACE-Step 1.5（`ACE-Step/Ace-Step1.5`） | MIT License | 「背景音樂：ACE-Step 1.5 生成（MIT）」 |
+| 音效（`card`／`grow`／`bond`／`win`） | Stable Audio Open 1.0 | Stability AI Community License | 「音效：Stable Audio Open 生成 — **Powered by Stability AI**」（授權要求的標示） |
+| 音效（`click`／`blip`／`choice`／`fail`／`shock`） | 本機 Python 物理／加法／FM 合成（`scripts/colab/sfx/postprocess.py`） | 專案自研（無外部授權限制） | 已整合於整體音效標示內 |
 
 標示出現在：音樂鑑賞畫面底部、標題畫面左下角、設定面板底部。**改版面時不要拿掉**；若之後商用規模超出 Stability AI Community License 的年營收門檻，需另行取得授權。音效候選中標「合成」的是程式合成（非 AI 生成），不受該授權限制。
 
@@ -126,3 +127,48 @@ scripts/colab/bgm/run_colab.sh /tmp/seo-journey-audio
 ### 花費紀錄
 
 L4 約 2.3 CU／小時；單輪完整產製（15 個候選＋重試）約 1.5–2.5 CU。
+
+
+## 第二輪重產紀錄（v2：12 首 BGM ＋ 5 種重製／新增 SFX）
+
+本輪於 2026-11-28 完成全數 **12 首 BGM**（每首 3 版，共 36 檔）與 **5 種本機物理合成 SFX**（`click`、`blip`、`choice`、`fail`、`shock`，各 4 版共 20 檔）的產製、人工實聽篩選與遊戲整合；既有 `card`、`grow`、`bond`、`win` 維持不變（4 種 × 4 版 = 16 檔）。`public/audio/` 共計 **21 個 ID、72 個 MP3 檔案、36.51 MB**（符合 ≤ 45 MB 上限）。
+
+### 1. ACE-Step 1.5 授權核實
+
+已比對上游倉庫 [`LICENSE`](https://github.com/ace-step/ACE-Step-1.5/blob/main/LICENSE) 與 Hugging Face 模型卡 [`README.md`](https://huggingface.co/ACE-Step/Ace-Step1.5/blob/main/README.md)，確認 **ACE-Step 1.5** 採用 **MIT License**（有別於 v1 的 Apache 2.0）。因此同步將標題畫面（[`src/ui/TitleScreen.tsx`](../src/ui/TitleScreen.tsx)）、設定面板（[`src/ui/SettingsPanel.tsx`](../src/ui/SettingsPanel.tsx)）與音樂鑑賞（[`src/ui/MusicGallery.tsx`](../src/ui/MusicGallery.tsx)）的標示更新為「背景音樂：ACE-Step 1.5 生成（MIT）」，並保留沿用自 Stable Audio Open 1.0 之音效標示「音效：Stable Audio Open 生成 — Powered by Stability AI」。
+
+### 2. BGM（ACE-Step 1.5，Colab L4）
+
+- **模型與環境**：`ACE-Step/Ace-Step1.5`（`acestep-v15-turbo` ＋ `acestep-5Hz-lm-1.7B`，`thinking: true`、`instrumental: true`、`inference_steps: 8`、`guidance_scale: 7.0`、`shift: 3.0`、`infer_method: "ode"`、`duration: 82` 秒），於 Colab NVIDIA L4（22.03 GiB VRAM）產製，共耗費 **4 CU**。
+- **後製與自動 QA 規格**：44.1 kHz 立體聲、128 kbps MP3、目標響度 `-18 ± 1 LUFS`、True Peak `≤ -1.0 dBTP`（編碼前峰值上限 `-1.5 dBTP`）、無縫循環區間 `42–68 秒`（接縫 500ms 最大音量跳動 `≤ 1.5 dB`、cosine 相似度 `≥ 0.72`）。
+- **篩選結果（共 111 次生成 → 78 首過 QA → 36 首入選／42 首實聽淘汰）**：
+  - 自動 QA 淘汰 **33 首**（主要觸發接縫 500ms 跳動超標、長靜音／靜音比例過高或檢出疑似人聲標籤）。
+  - 人工逐首完整試聽（含正曲與 `_seam.mp3` 接縫試聽檔）共 **78 首**，依 [`docs/audio-review.md`](./audio-review.md) 硬性規則淘汰 42 首，12 首全數足額選出 `c1..c3`（無硬湊曲目）：
+    - `title`：QA 通過 6 ／ QA 淘汰 5 → 入選 `c1..c3`
+    - `daily`：QA 通過 7 ／ QA 淘汰 2 → 入選 `c1..c3`
+    - `sim`：QA 通過 7 ／ QA 淘汰 0 → 入選 `c1..c3`
+    - `minigame`：QA 通過 7 ／ QA 淘汰 1 → 入選 `c1..c3`
+    - `warm`：QA 通過 5 ／ QA 淘汰 5 → 入選 `c1..c3`
+    - `melancholy`：QA 通過 7 ／ QA 淘汰 2 → 入選 `c1..c3`
+    - `tense`：QA 通過 5 ／ QA 淘汰 7 → 入選 `c1..c3`
+    - `comedy`：QA 通過 7 ／ QA 淘汰 0 → 入選 `c1..c3`
+    - `festival`：QA 通過 7 ／ QA 淘汰 1 → 入選 `c1..c3`
+    - `theme_rin`：QA 通過 7 ／ QA 淘汰 2 → 入選 `c1..c3`
+    - `theme_hare`：QA 通過 7 ／ QA 淘汰 2 → 入選 `c1..c3`
+    - `theme_mirai`：QA 通過 6 ／ QA 淘汰 6 → 入選 `c1..c3`
+
+### 3. SFX（本機 Python 物理／加法／FM 合成 ＋ 舊檔沿用）
+
+為避免佔用同時段配音任務的 Colab GPU，`click`、`blip`、`choice`、`fail`、`shock` 全數於本機使用 [`scripts/colab/sfx/postprocess.py`](../scripts/colab/sfx/postprocess.py)（`numpy`／`scipy`／`pyloudnorm`）合成、後製並逐一實聽定案（0 Colab CU）：
+
+- `click`（51.9–65.4 ms，`-25.03`～`-26.35 LKFS`）：雪松木／木魚／鍵帽／毛氈等 4 種短瞬態點擊音。
+- `blip`（51.9–55.9 ms，`-26.45 LKFS`）：馬林巴／毛氈／木滴／氣泡上揚等 4 種輕巧對話氣泡音。
+- `choice`（477.0–497.4 ms，`-18.70`～`-19.51 LKFS`）：經高通濾除低頻濁感的鋼片琴／八音盒／拇指琴／馬林巴上行雙音。
+- `fail`（662.5–697.5 ms，`-18.71`～`-19.65 LKFS`）：校園日常感可愛兩音下行嘆氣音型（馬林巴、柔音毛氈鍵、低音木琴、巴松管＋馬林巴組合）。
+- `shock`（539.8–668.5 ms，`-18.94`～`-19.58 LKFS`）：暴雨危機事件專用「驚覺一跳」懸疑張力重音（弦樂撥奏、鋼琴弱拍重音、豎琴緊弦刺音、懸疑三全音和弦，不帶恐怖感或刺耳噪音）。
+- 沿用舊版 Stable Audio Open 1.0 音效：`card`、`grow`、`bond`、`win`（[`scripts/audio/default-picks.json`](../scripts/audio/default-picks.json) 維持 `sfx/win: c2`，其餘所有 BGM 與重製／新增 SFX 皆設為實聽首選 `c1`）。
+
+### 4. 候選清單與本地試聽頁
+
+- 所有保留候選的實聽評語、分數與淘汰摘要皆收錄於 [`scripts/audio/bgm-candidates.json`](../scripts/audio/bgm-candidates.json) 與 [`scripts/audio/sfx-candidates.json`](../scripts/audio/sfx-candidates.json)；執行 `node scripts/build-audio-manifest.mjs` 即可重建 [`public/audio/manifest.json`](../public/audio/manifest.json)。
+- 本機整合與試聽頁產出位置在 `/tmp/seo-journey-audio/v2/index.html`（不進版控），透過 [`scripts/colab/bgm/build_audition_page.py`](../scripts/colab/bgm/build_audition_page.py) 生成。
