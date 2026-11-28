@@ -15,9 +15,9 @@ export interface SiteMetrics {
   indexed: number
   /** 行動版載入時間 LCP（秒；技術力，越低越好） */
   lcp: number
-  /** 被搜尋點擊次數／週（內容力＋可答力） */
+  /** 被搜尋點擊次數／週（內容力＋解答力） */
   clicks: number
-  /** 被答案摘錄次數／週（可答力＋結構力） */
+  /** 被答案摘錄次數／週（解答力＋結構力） */
   snippets: number
   /** 被 AI 引用次數／週（信任力＋內容力） */
   aiCites: number

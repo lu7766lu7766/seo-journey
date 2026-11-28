@@ -494,8 +494,8 @@ Japanese visual novel event CG illustration in the same anime x manhwa style as 
 
 | Key | 輸出檔 | 來源建議檔名 | 角色 | 目前的頂替畫面 |
 |---|---|---|---|---|
-| `cg/date-rin-3` 夏夜煙火下的微笑 | `public/art/cg/date-rin-3.webp` | `cg-date-rin-3.png` | 凜（blush） | festival／night |
-| `cg/date-hare-3` 海風與一句話的告白 | `public/art/cg/date-hare-3.webp` | `cg-date-hare-3.png` | 晴（blush） | beach／dusk |
+| `cg/date-rin-3` 夜市煙火下的微笑 | `public/art/cg/date-rin-3.webp` | `cg-date-rin-3.png` | 凜（blush） | street／night |
+| `cg/date-hare-3` 海風與差一句的心意 | `public/art/cg/date-hare-3.webp` | `cg-date-hare-3.png` | 晴（blush） | beach／dusk |
 | `cg/date-mirai-3` 星光與被引用的來源 | `public/art/cg/date-mirai-3.webp` | `cg-date-mirai-3.png` | 未來（happy） | rooftop／night |
 | `cg/end-true` 搜尋祭的三重奏 | `public/art/cg/end-true.webp` | `cg-end-true.png` | 凜＋晴＋未來（皆 happy） | festival／day |
 | `cg/end-rin` 索引之外的心意 | `public/art/cg/end-rin.webp` | `cg-end-rin.png` | 凜（blush） | gate／dusk |
@@ -505,18 +505,18 @@ Japanese visual novel event CG illustration in the same anime x manhwa style as 
 | `cg/end-bad` 404 Not Found | `public/art/cg/end-bad.webp` | `cg-end-bad.png` | 索老師（sad） | clubroom／night |
 | `cg/end-blackhat` 人工處罰的代價 | `public/art/cg/end-blackhat.webp` | `cg-end-blackhat.png` | 黑川（shock）＋凜（smile／生氣皆可，現行 CG 設定為 smile） | council／dusk |
 
-### 5.1 `date-rin-3`《夏夜煙火下的微笑》
+### 5.1 `date-rin-3`《夜市煙火下的微笑》
 
 - **觸發場景**：週末約會：凜第 3 場（需凜好感 ≥ 55，否則播「普通相處」不會觸發）。scenes/dates/date-rin-3.ts 在選項後呼叫 cg('date-rin-3')，台詞「被看見……原來是這種感覺。」，同時解鎖回憶相簿。
 - **角色／表情**：凜（blush）
-- **場景描述**：夏日祭夜晚的神社階梯旁。凜穿著藍色浴衣、紅色髮帶仍在（劇本：紅色髮帶配上藍色浴衣），仰望夜空，煙火在她的眼睛裡映出光點，臉頰泛紅。她垂在身側的手背輕輕碰到畫面外玩家的手。
+- **場景描述**：春季夜市的夜晚。學生會巡場剛結束，凜仍穿著制服、戴著學生會臂章與紅色髮箍，仰望夜空，煙火在她的眼睛裡映出光點，臉頰泛紅。她垂在身側的手背輕輕碰到畫面外玩家的手。
 - **構圖／光影**：中景到近景、凜略偏右，臉部在畫面上 1/2 內；左側夜空有大朵煙火（粉、金、青），遠處一排紙燈籠；暖橘燈籠光＋冷藍夜色對比。第一人稱視角，玩家不入鏡（只有畫面左下角可露出一點點手）。
 
 ```text
 Japanese visual novel event CG. Shirasagi Rin (very long straight glossy dark navy-blue hair with a red hairband, sharp blue eyes) in a blue yukata, standing on shrine steps at a summer festival at night, looking up at huge fireworks (pink, gold, cyan) that reflect in her eyes, cheeks flushed pink, a soft embarrassed smile, strings of warm paper lanterns behind her, warm lantern glow versus cool deep-blue night sky, her hand hanging at her side near the viewer, romantic and emotional atmosphere, medium close-up, her face in the upper half, the bottom third calm and darker, Japanese visual novel event CG illustration in the same anime x manhwa style as the reference sprites, cinematic lighting, soft bloom, clean thin colored line art, soft cel shading, large glossy eyes, high detail, 16:9 landscape 1920x1080, keep each character's design identical to the attached reference sprites
 ```
 
-### 5.2 `date-hare-3`《海風與一句話的告白》
+### 5.2 `date-hare-3`《海風與差一句的心意》
 
 - **觸發場景**：週末約會：晴第 3 場（需晴好感 ≥ 55）。scenes/dates/date-hare-3.ts 呼叫 cg('date-hare-3')，台詞「結論先說。我喜歡你，{name}。」，同時解鎖。
 - **角色／表情**：晴（blush）

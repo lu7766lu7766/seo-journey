@@ -143,7 +143,7 @@ describe('main story flow', () => {
     }
   })
 
-  it('the festival pitch: 3 rounds, each with unconditional +2 basic answer, side-quest +3 advanced answer, distractor and fallback', async () => {
+  it('the festival pitch: 3 rounds, each with unconditional +2 basic answer, side-quest advanced answer (+2, recognition not extra weight), distractor and fallback', async () => {
     const fes = await loadScene('festival')
     const choices = [...walk(fes.cmds)].filter((c): c is Extract<Cmd, { k: 'choice' }> => c.k === 'choice')
     expect(choices).toHaveLength(3)
@@ -157,7 +157,7 @@ describe('main story flow', () => {
       expect(basic, `round ${i + 1} basic +2`).toHaveLength(1)
       const advanced = c.options.filter((o: ChoiceOpt) => o.cond?.t === 'seen' && o.cond.scene === finales[i])
       expect(advanced, `round ${i + 1} advanced gated on ${finales[i]}`).toHaveLength(1)
-      expect(advanced[0].effects?.bond?.[judges[i]], `round ${i + 1} advanced bonus`).toBe(3)
+      expect(advanced[0].effects?.bond?.[judges[i]], `round ${i + 1} advanced bonus`).toBe(2)
       for (const o of c.options) {
         const total = Object.values(o.effects?.bond ?? {}).reduce((a, b) => a + (b ?? 0), 0)
         expect(total, `round ${i + 1} option bond`).toBeLessThanOrEqual(3)

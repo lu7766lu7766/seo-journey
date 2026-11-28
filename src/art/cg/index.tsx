@@ -15,16 +15,16 @@ const CG_CONFIG: Record<
   }
 > = {
   'date-rin-3': {
-    bg: 'festival',
+    bg: 'street',
     time: 'night',
-    title: '夏夜煙火下的微笑',
+    title: '夜市煙火下的微笑',
     overlay: 'radial-gradient(circle at 50% 25%, rgba(255,190,210,0.32), transparent 65%)',
     chars: [{ id: 'rin', face: 'blush', x: 640, scale: 1.08 }],
   },
   'date-hare-3': {
     bg: 'beach',
     time: 'dusk',
-    title: '海風與一句話的告白',
+    title: '海風與差一句的心意',
     overlay: 'radial-gradient(circle at 60% 25%, rgba(255,210,130,0.35), transparent 65%)',
     chars: [{ id: 'hare', face: 'blush', x: 640, scale: 1.08 }],
   },

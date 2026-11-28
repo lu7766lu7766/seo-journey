@@ -36,6 +36,7 @@ export default scene('w4', [
       say('hare', 'happy', '太好了！我再也不會寄空白信了！'),
     ]),
   ]),
+  say('hare', 'normal', '對了，社團大調查明天開跑，下週公布結果！'),
   hide('all'),
 
   bgm('tense'),

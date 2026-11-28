@@ -35,7 +35,7 @@ export default scene('festival', [
       show('rin', 'left', 'smile'),
       say('rin', 'smile', '爬取、收錄與速度都顧到了，正確。……這份細心，我記下了。'),
     ]),
-    opt('主圖先到位、配角圖延遲並預留寬高，LCP 不再拖慢首屏', { bond: { rin: 3 } }, [
+    opt('主圖先到位、配角圖延遲並預留寬高，LCP 不再拖慢首屏', { bond: { rin: 2 } }, [
       show('rin', 'left', 'blush'),
       say('rin', 'blush', '……貓咪部落格那套圖片最佳化與 LCP，用得真好。滿分。'),
     ], seen('sq-r3')),
@@ -71,7 +71,7 @@ export default scene('festival', [
       show('hare', 'center', 'happy'),
       say('hare', 'happy', '就是這個！先講答案再補細節，超帥的！'),
     ]),
-    opt('用問句標題搭一兩句直答，做 FAQ 求結構清楚、不迷信特效', { bond: { hare: 3 } }, [
+    opt('用問句標題搭一兩句直答，做 FAQ 求結構清楚、不迷信特效', { bond: { hare: 2 } }, [
       show('hare', 'center', 'blush'),
       say('hare', 'blush', '廣播社的文字問答和 FAQ 正確期待全記住了！這句結論，超棒！'),
     ], seen('sq-h3')),
@@ -115,7 +115,7 @@ export default scene('festival', [
       show('mirai', 'right', 'happy'),
       say('mirai', 'happy', '原創、可查證、有署名。……我會引用它。'),
     ]),
-    opt('附實測紀錄與署名：讓讀者帶走別處沒有的資訊增益', { bond: { mirai: 3 } }, [
+    opt('附實測紀錄與署名：讓讀者帶走別處沒有的資訊增益', { bond: { mirai: 2 } }, [
       show('mirai', 'right', 'blush'),
       say('mirai', 'blush', '原創性與資訊增益，不是複製的總和。……這份證據，我會引用。'),
     ], seen('sq-m3')),

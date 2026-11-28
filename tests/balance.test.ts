@@ -69,7 +69,7 @@ describe('ending balance on real content', () => {
     expect((await batch('attentive-balanced')).pct['end-true']).toBeGreaterThanOrEqual(70)
     const decent = (await batch('decent')).pct['end-true']
     expect(decent).toBeGreaterThanOrEqual(45)
-    expect(decent).toBeLessThanOrEqual(98)
+    expect(decent).toBeLessThanOrEqual(90)
     expect((await batch('lazy-clicker')).pct['end-true']).toBeLessThanOrEqual(25)
   })
 
