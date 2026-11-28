@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { Background } from '@/art/backgrounds'
 import { CharacterSprite } from '@/art/characters'
+import { useArtImage } from '@/art/hooks'
+import { useArtManifest, useArtManifestStatus } from '@/art/manifest'
+import { resolveBgSrc } from '@/art/resolve'
 import { CHARACTERS } from '@/content/characters'
 import { HEROINES } from '@/engine/types'
 import { useGame } from '@/store/game'
@@ -8,22 +11,57 @@ import { getDateCount, pickDateScene } from '@/systems/ending'
 import { INFIRMARY_WEEK_FLAG, WEEKEND } from '@/systems/schedule'
 import { scoreParts } from '@/systems/score'
 
-/** a cozy house + moon, standing in for a character sprite on the 「在家休息」 card */
-function RestIllustration() {
+/** Same-hue fallback when the manifest has no `bg/home` (or it fails to load): a soft morning gradient + a line of text. */
+function RestFallback() {
   return (
-    <svg viewBox="0 0 200 200" className="h-full" aria-hidden="true">
-      <circle cx="150" cy="48" r="22" fill="#fff3c4" />
-      <g fill="#fff" opacity="0.9">
-        <circle cx="38" cy="40" r="2.5" /><circle cx="70" cy="24" r="2" /><circle cx="108" cy="52" r="2.5" /><circle cx="22" cy="78" r="2" />
-      </g>
-      <path d="M32 112 L100 56 L168 112 Z" fill="#e8a4ba" stroke="#b9708a" strokeWidth="3" strokeLinejoin="round" />
-      <rect x="46" y="110" width="108" height="64" rx="4" fill="#fff7ee" stroke="#c9a98a" strokeWidth="3" />
-      <rect x="86" y="132" width="28" height="42" rx="3" fill="#b98a62" />
-      <rect x="58" y="124" width="22" height="22" rx="2" fill="#ffe599" stroke="#c9a98a" strokeWidth="2" />
-      <rect x="120" y="124" width="22" height="22" rx="2" fill="#ffe599" stroke="#c9a98a" strokeWidth="2" />
-      <text x="146" y="104" fontSize="20" fontWeight="700" fill="#9fd3f0" fontFamily="sans-serif">z</text>
-      <text x="160" y="88" fontSize="14" fontWeight="700" fill="#9fd3f0" fontFamily="sans-serif">z</text>
-    </svg>
+    <div
+      className="absolute inset-0 flex items-start justify-center pt-12 text-center"
+      style={{ background: 'linear-gradient(180deg, #ffe9c9 0%, #ffd9d2 55%, #cfe3f7 100%)' }}
+    >
+      <span className="font-title text-lg font-bold text-[#8a6a52]/80">週末的早晨，在家</span>
+    </div>
+  )
+}
+
+/**
+ * The 「在家休息」 card's picture: the protagonist's room artwork (`bg/home`), cropped with object-cover towards the
+ * window / desk side, under a soft warm morning-light gradient. Mirrors `Background`'s loading rule: nothing is drawn
+ * until the manifest is known and the image has loaded (WEEKEND_ART preloads it), then it fades in.
+ */
+function RestScene() {
+  const manifest = useArtManifest()
+  const status = useArtManifestStatus()
+  const src = resolveBgSrc(manifest, 'home')
+  const { loaded, failed, imgProps } = useArtImage(src)
+  if (status === 'loading') return null
+  if (!src || failed) return <RestFallback />
+  return (
+    <div
+      className="absolute inset-0 overflow-hidden"
+      style={{
+        background: '#f5e3cf',
+        WebkitMaskImage: 'linear-gradient(180deg, #000 0%, #000 78%, transparent 100%)',
+        maskImage: 'linear-gradient(180deg, #000 0%, #000 78%, transparent 100%)',
+      }}
+    >
+      <div className="art-fade absolute inset-0" style={{ opacity: loaded ? 1 : 0 }}>
+        <img
+          {...imgProps}
+          src={src}
+          alt=""
+          draggable={false}
+          className="h-full w-full object-cover"
+          style={{ objectPosition: '18% 50%' }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(255, 236, 196, 0.42) 0%, rgba(255, 214, 190, 0.16) 55%, rgba(255, 255, 255, 0) 100%)',
+          }}
+        />
+      </div>
+    </div>
   )
 }
 
@@ -132,8 +170,10 @@ export function WeekendMenu() {
           onClick={() => void pickRest()}
           className={`glass group relative flex flex-col items-center justify-end overflow-hidden rounded-3xl p-5 text-center transition hover:ring-2 hover:ring-sakura disabled:opacity-60 ${locked ? 'ring-2 ring-[#9fd3f0]' : ''}`}
         >
-          <div className="pointer-events-none absolute inset-x-0 top-2 flex h-[300px] items-center justify-center transition group-hover:scale-105">
-            <RestIllustration />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[68%] overflow-hidden rounded-t-3xl">
+            <div className="h-full w-full transition duration-300 group-hover:scale-105">
+              <RestScene />
+            </div>
           </div>
           <div className="relative z-10 w-full rounded-2xl bg-white/92 p-4 shadow-md">
             <p className="font-title text-2xl font-bold text-[#3b5a8a]">在家休息</p>

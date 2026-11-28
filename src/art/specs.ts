@@ -18,7 +18,7 @@ export const SCHEDULE_ART: ArtSpec = {
   ui: [...ACTIVITY_IDS, 'fail', 'infirmary'].map((n) => `activity-${n}`),
 }
 export const BOARD_ART: ArtSpec = { bg: ['corridor'], sprites: AVATARS }
-export const WEEKEND_ART: ArtSpec = { bg: ['street'], sprites: [['rin', 'smile'], ['hare', 'smile'], ['mirai', 'smile']] }
+export const WEEKEND_ART: ArtSpec = { bg: ['street', 'home'], sprites: [['rin', 'smile'], ['hare', 'smile'], ['mirai', 'smile']] }
 export const REPORT_ART: ArtSpec = { bg: ['council'], sprites: AVATARS }
 
 /** All non-script screens, warmed in the background once the first scene is on screen. */
