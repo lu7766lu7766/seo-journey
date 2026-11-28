@@ -12,11 +12,23 @@ import { VNStage } from '@/ui/VNStage'
 
 const Gallery = lazy(() => import('@/ui/Gallery'))
 const MusicGallery = lazy(() => import('@/ui/MusicGallery'))
+const MaterialShowcase = import.meta.env.DEV ? lazy(() => import('@/ui/material/MaterialShowcase')) : null
 
 export function App() {
   const screen = useUI((s) => s.screen)
   const overlay = useUI((s) => s.overlay)
   const setOverlay = useUI((s) => s.setOverlay)
+
+  if (MaterialShowcase && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('dev') === 'materials') {
+    return (
+      <StageFrame>
+        <Suspense fallback={null}>
+          <MaterialShowcase />
+        </Suspense>
+      </StageFrame>
+    )
+  }
+
   return (
     <StageFrame>
       {screen === 'title' ? <TitleScreen /> : <VNStage />}
