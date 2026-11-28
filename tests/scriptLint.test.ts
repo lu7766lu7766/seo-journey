@@ -168,7 +168,7 @@ describe('script lint', () => {
     expect(fullMin, 'full collection max').toBeLessThanOrEqual(90)
   })
 
-  it('all 31 knowledge cards, 16 gameplay minigames, and 7 ending CGs are reachable', async () => {
+  it('all 38 knowledge cards, 16 gameplay minigames, and 7 ending CGs are reachable', async () => {
     const cards = new Set<string>()
     const mgs = new Set<string>()
     for (const id of SCENE_IDS) {

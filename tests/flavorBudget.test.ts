@@ -64,8 +64,8 @@ describe('flavor text', () => {
 })
 
 describe('knowledge cards', () => {
-  it('all 31 cards are filled within limits', () => {
-    expect(KNOWLEDGE_IDS.length).toBe(31)
+  it('all 38 cards are filled within limits', () => {
+    expect(KNOWLEDGE_IDS.length).toBe(38)
     for (const id of KNOWLEDGE_IDS) {
       const k = KNOWLEDGE[id]
       expect(k.summary.trim(), `${id} summary`).not.toBe('')
