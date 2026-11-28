@@ -1,7 +1,8 @@
 import type { CgId } from '@/content/cgs'
-import { Background } from '../backgrounds'
+import { Background, ART_PLACEHOLDER_BG } from '../backgrounds'
 import { CharacterSprite } from '../characters'
-import { useArtManifest } from '../manifest'
+import { useArtImage } from '../hooks'
+import { useArtManifest, useArtManifestStatus } from '../manifest'
 import { resolveCgSrc } from '../resolve'
 
 const CG_CONFIG: Record<
@@ -100,12 +101,23 @@ const CG_CONFIG: Record<
 export function CgArt({ id }: { id: CgId }) {
   const cfg = CG_CONFIG[id]
   const manifest = useArtManifest()
+  const status = useArtManifestStatus()
   const cgSrc = resolveCgSrc(manifest, id)
+  const { loaded, failed, imgProps } = useArtImage(cgSrc)
+  // a real CG is dark until it has loaded; the composed SVG scene is only for CGs without an image (or one that errors)
+  const useImage = !!cgSrc && !failed
 
   return (
-    <div className="relative h-full w-full overflow-hidden" data-testid={`cg-${id}`}>
-      {cgSrc ? (
-        <img src={cgSrc} alt={cfg.title} draggable={false} className="h-full w-full object-cover" />
+    <div className="relative h-full w-full overflow-hidden" style={{ background: ART_PLACEHOLDER_BG }} data-testid={`cg-${id}`}>
+      {status === 'loading' ? null : useImage ? (
+        <img
+          {...imgProps}
+          src={cgSrc}
+          alt={cfg.title}
+          draggable={false}
+          className="art-fade h-full w-full object-cover"
+          style={{ opacity: loaded ? 1 : 0 }}
+        />
       ) : (
         <>
           <Background id={cfg.bg} time={cfg.time} />

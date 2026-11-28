@@ -160,7 +160,14 @@ button { font-family: inherit; cursor: pointer; }
 .chibi-orbit { animation: chibi-orbit 1.4s ease-in-out infinite; }
 .chibi-pop { animation: chibi-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
+/* Real artwork fades in once its image has loaded (until then: transparent sprite / dark background). */
+.art-fade { transition: opacity 0.3s ease-out; }
+@keyframes art-gate-in { from { opacity: 0; } to { opacity: 1; } }
+.art-gate-in { animation: art-gate-in 0.35s ease-out both; }
+
 @media (prefers-reduced-motion: reduce) {
+  .art-fade { transition: none !important; }
+  .art-gate-in { animation: none !important; }
   .sakura-petal, .rain-layer, .char-breath,
   .chibi-bob, .chibi-float, .chibi-type-l, .chibi-type-r,
   .chibi-spin, .chibi-zzz, .chibi-sway, .chibi-orbit, .chibi-pop { animation: none !important; }
