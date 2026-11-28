@@ -68,7 +68,7 @@ export function buildChecklistMarkdown(
   const ids = Object.keys(CHECKLIST) as KnowledgeId[]
   const have = ids.filter((id) => learnedSet.has(id))
   const missing = ids.filter((id) => !learnedSet.has(id))
-  const lines: string[] = [`# 我的網站實戰檢查清單（搜尋戀曲 · 已學 ${have.length} / ${opts.total ?? ids.length} 張知識卡）`, '']
+  const lines: string[] = [`# 我的網站實戰檢查清單（直到你找到我 · 已學 ${have.length} / ${opts.total ?? ids.length} 張知識卡）`, '']
   if (opts.playerName) lines.push(`社員：${opts.playerName}`, '')
   lines.push('> 回到自己的真實網站逐項打勾。以下是通用的好做法，不保證排名或被 AI 引用。', '')
   for (const area of AREA_ORDER) {

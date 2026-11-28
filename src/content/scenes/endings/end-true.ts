@@ -18,7 +18,7 @@ export default scene('end-true', [
   bg('festival', 'dusk', 'fade'),
   say('narr', undefined, '黃昏的廣場，燈籠剛亮起來。三個人在攤位前並肩站好，我舉起手機。'),
   cg('end-true'),
-  say('rin', 'smile', '規則，是為了讓好東西被看見。現在被看見的，是我們。'),
+  say('rin', 'smile', '規則，是為了讓好東西被看見。我也是……直到你找到我，才真的被看見。'),
   say('hare', 'happy', '一句話結論：{name}，謝謝你，最棒的社長！'),
   say('mirai', 'blush', '我不是複製品。我是和你們一起寫下來的原創。'),
   when(flag('w6Choice', 'eq', 1), [
