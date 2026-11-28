@@ -143,22 +143,24 @@ describe('main story flow', () => {
     }
   })
 
-  it('the festival pitch: exactly 3 choices, each with an unconditional fallback and a +2 matching point', async () => {
+  it('the festival pitch: 3 rounds, each with unconditional +2 basic answer, side-quest +3 advanced answer, distractor and fallback', async () => {
     const fes = await loadScene('festival')
     const choices = [...walk(fes.cmds)].filter((c): c is Extract<Cmd, { k: 'choice' }> => c.k === 'choice')
     expect(choices).toHaveLength(3)
     const judges: HeroineId[] = ['rin', 'hare', 'mirai']
+    const finales = ['sq-r3', 'sq-h3', 'sq-m3']
     choices.forEach((c, i) => {
-      expect(c.options.length, `round ${i + 1}`).toBe(3)
-      expect(c.options.some((o) => !o.cond), `round ${i + 1} fallback`).toBe(true)
-      expect(c.options.some((o) => o.cond?.t === 'card'), `round ${i + 1} uses hasCard`).toBe(true)
-      const matches = c.options.filter((o: ChoiceOpt) => (o.effects?.bond?.[judges[i]] ?? 0) > 0)
-      expect(matches, `round ${i + 1} has one matching point`).toHaveLength(1)
-      expect(matches[0].effects?.bond?.[judges[i]], `round ${i + 1} bonus`).toBe(2)
-      expect(matches[0].cond, 'the matching point needs the topic to be learned').toBeDefined()
+      expect(c.options.length, `round ${i + 1}`).toBe(4)
+      const unconditional = c.options.filter((o) => !o.cond)
+      expect(unconditional.length, `round ${i + 1} unconditional`).toBe(3)
+      const basic = c.options.filter((o: ChoiceOpt) => !o.cond && (o.effects?.bond?.[judges[i]] ?? 0) === 2)
+      expect(basic, `round ${i + 1} basic +2`).toHaveLength(1)
+      const advanced = c.options.filter((o: ChoiceOpt) => o.cond?.t === 'seen' && o.cond.scene === finales[i])
+      expect(advanced, `round ${i + 1} advanced gated on ${finales[i]}`).toHaveLength(1)
+      expect(advanced[0].effects?.bond?.[judges[i]], `round ${i + 1} advanced bonus`).toBe(3)
       for (const o of c.options) {
         const total = Object.values(o.effects?.bond ?? {}).reduce((a, b) => a + (b ?? 0), 0)
-        expect(total, `round ${i + 1} option bond`).toBeLessThanOrEqual(2)
+        expect(total, `round ${i + 1} option bond`).toBeLessThanOrEqual(3)
         expect(o.then?.some((x) => x.k === 'say'), `round ${i + 1} reaction`).toBe(true)
       }
     })

@@ -43,7 +43,7 @@ export function DialogueBox({ line }: { line: Say }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finishSignal])
 
-  const name = displayName(line.who, playerName)
+  const name = displayName(line.who, playerName, line.name)
   const charDef = CHARACTERS[line.who]
   const color = charDef.color
   const accent = charDef.accent

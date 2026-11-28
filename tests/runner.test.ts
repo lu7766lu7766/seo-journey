@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bg, choice, effect, minigame, opt, say, scene, show, wait, when, card } from '@/engine'
+import { bg, choice, effect, minigame, npc, opt, say, scene, show, wait, when, card } from '@/engine'
 import { flag, bondIs } from '@/engine/cond'
 import { SceneRunner } from '@/engine/runner'
 import { makeHost } from './helpers'
@@ -7,12 +7,17 @@ import { makeHost } from './helpers'
 describe('SceneRunner', () => {
   it('steps through say lines with stable ids and {name} substitution', () => {
     const { host, emitted } = makeHost('小明')
-    const r = new SceneRunner(scene('t', [bg('gate'), say('narr', undefined, '你好，{name}'), say('rin', 'smile', '嗨')]), host)
+    const r = new SceneRunner(
+      scene('t', [bg('gate'), say('narr', undefined, '你好，{name}'), npc('料理社社長', '別急，{name}。'), say('rin', 'smile', '嗨')]),
+      host,
+    )
     const p1 = r.start()
     expect(p1).toMatchObject({ kind: 'say', lineId: 't#1', text: '你好，小明' })
     expect(emitted.map((c) => c.k)).toEqual(['bg', 'say'])
     const p2 = r.advance()
-    expect(p2).toMatchObject({ kind: 'say', lineId: 't#2', who: 'rin' })
+    expect(p2).toEqual({ kind: 'say', lineId: 't#2', who: 'npc', face: undefined, name: '料理社社長', text: '別急，小明。' })
+    const p3 = r.advance()
+    expect(p3).toMatchObject({ kind: 'say', lineId: 't#3', who: 'rin' })
     expect(r.advance()).toEqual({ kind: 'end' })
   })
 

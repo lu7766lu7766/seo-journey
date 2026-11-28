@@ -9,8 +9,8 @@ export type Face = (typeof FACES)[number]
 export const SPRITE_IDS = ['rin', 'hare', 'mirai', 'sensei', 'kuro'] as const
 export type CharId = (typeof SPRITE_IDS)[number]
 
-/** Anyone who can speak. `me` is the player (uses the player's name), `narr` is narration. */
-export const SPEAKER_IDS = ['me', 'narr', ...SPRITE_IDS] as const
+/** Anyone who can speak. `me` is the player (uses the player's name), `narr` is narration, `npc` is a portraitless speaker with a custom nameplate. */
+export const SPEAKER_IDS = ['me', 'narr', 'npc', ...SPRITE_IDS] as const
 export type SpeakerId = (typeof SPEAKER_IDS)[number]
 
 export interface CharacterDef {
@@ -27,6 +27,7 @@ export interface CharacterDef {
 export const CHARACTERS: Record<SpeakerId, CharacterDef> = {
   me: { id: 'me', name: '{name}', color: '#6fa8dc', accent: '#b5ead7', hasSprite: false },
   narr: { id: 'narr', name: null, color: '#8a8aa0', accent: '#d0d0e0', hasSprite: false },
+  npc: { id: 'npc', name: null, color: '#5c667a', accent: '#b8c2d6', hasSprite: false },
   rin: { id: 'rin', name: '白鷺 凜', color: '#1f3a6e', accent: '#d6334a', hasSprite: true },
   hare: { id: 'hare', name: '夏川 晴', color: '#f28c28', accent: '#ffd24a', hasSprite: true },
   mirai: { id: 'mirai', name: '星野 未來', color: '#9a8cd0', accent: '#3fd0d4', hasSprite: true },
@@ -36,8 +37,9 @@ export const CHARACTERS: Record<SpeakerId, CharacterDef> = {
 
 export const DEFAULT_PLAYER_NAME = '葉 搜一'
 
-/** Resolve a speaker's display name (null = no plate). */
-export function displayName(id: SpeakerId, playerName: string): string | null {
-  const n = CHARACTERS[id].name
+/** Resolve a speaker's display name (null = no plate). For `npc`, uses `speakerName`. */
+export function displayName(id: SpeakerId, playerName: string, speakerName?: string): string | null {
+  if (id === 'npc') return speakerName?.trim() ? speakerName : null
+  const n = CHARACTERS[id]?.name ?? null
   return n === null ? null : n.replace('{name}', playerName)
 }

@@ -14,7 +14,10 @@ describe('save/load', () => {
     d.flags = { blackhat: 1, ok: true }
     d.bond.rin = 12
     d.scene = { sceneId: 'demo', pc: [4, 1, 2] }
-    d.backlog = [{ lineId: 'demo#0', who: 'narr', text: 'hi' }]
+    d.backlog = [
+      { lineId: 'demo#0', who: 'narr', text: 'hi' },
+      { lineId: 'sq-h1#12', who: 'npc', name: '料理社社長', text: '別急。麵團要醒，人也要。' },
+    ]
     expect(writeSave(2, d, 1234)).toBe(true)
     const env = readSave(2)!
     expect(env.version).toBe(SAVE_VERSION)
@@ -29,7 +32,7 @@ describe('save/load', () => {
     writeSave('auto', defaultPersisted('b'), 99)
     expect(latestSave()!.slot).toBe('auto')
   })
-  it('migrates v0 and v1 and fills defaults', () => {
+  it('migrates v0, v1, and v2 and fills defaults', () => {
     const env0 = migrate({ version: 0, name: '舊玩家', savedAt: 5, state: { week: 2, stats: { con: 33 }, bond: { rin: 4 } } })!
     expect(env0.version).toBe(SAVE_VERSION)
     expect(env0.data.playerName).toBe('舊玩家')
@@ -46,6 +49,28 @@ describe('save/load', () => {
     expect(env1.data.week).toBe(4)
     expect(env1.data.activeQuestId).toBeNull()
     expect(env1.data.activeDateHeroine).toBeNull()
+
+    const env2 = migrate({
+      version: 2,
+      savedAt: 123,
+      label: 'v2',
+      data: {
+        playerName: '舊存檔',
+        week: 3,
+        backlog: [
+          { lineId: 'w3#1', who: 'rin', text: '早安' },
+          { lineId: 'sq-h1#12', who: 'npc', name: '料理社社長', text: '麵團要醒' },
+          { lineId: 'bad#1', who: 'npc', name: '   ', text: '空白名牌應被清掉' },
+        ],
+      },
+    })!
+    expect(env2.version).toBe(SAVE_VERSION)
+    expect(env2.data.playerName).toBe('舊存檔')
+    expect(env2.data.backlog).toEqual([
+      { lineId: 'w3#1', who: 'rin', text: '早安' },
+      { lineId: 'sq-h1#12', who: 'npc', name: '料理社社長', text: '麵團要醒' },
+      { lineId: 'bad#1', who: 'npc', text: '空白名牌應被清掉' },
+    ])
   })
   it('rejects garbage and future versions without throwing', () => {
     expect(migrate(null)).toBeNull()

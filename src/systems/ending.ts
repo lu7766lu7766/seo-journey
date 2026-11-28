@@ -31,21 +31,21 @@ export const ENDINGS_META: EndingMeta[] = [
     id: 'end-rin',
     title: '凜 END「索引之外的心意」',
     subtitle: '白鷺 凜 路線結局',
-    hint: '條件：凜的好感度為三人最高且達 60 以上（未同時滿足真結局）。',
+    hint: '條件：凜的好感度為三人最高且達 60 以上，且看過她的第 3 場約會或第 6 週雨夜選擇了她（未同時滿足真結局）。',
     cgId: 'end-rin',
   },
   {
     id: 'end-hare',
     title: '晴 END「一句話的告白」',
     subtitle: '夏川 晴 路線結局',
-    hint: '條件：晴的好感度為三人最高且達 60 以上（未同時滿足真結局）。',
+    hint: '條件：晴的好感度為三人最高且達 60 以上，且看過她的第 3 場約會或第 6 週雨夜選擇了她（未同時滿足真結局）。',
     cgId: 'end-hare',
   },
   {
     id: 'end-mirai',
     title: '未來 END「被你引用的我」',
     subtitle: '星野 未來 路線結局',
-    hint: '條件：未來的好感度為三人最高且達 60 以上（未同時滿足真結局）。',
+    hint: '條件：未來的好感度為三人最高且達 60 以上，且看過她的第 3 場約會或第 6 週雨夜選擇了她（未同時滿足真結局）。',
     cgId: 'end-mirai',
   },
   {
@@ -76,6 +76,12 @@ export const ENDING_BY_ID: Record<EndingId, EndingMeta> = Object.fromEntries(
 ) as Record<EndingId, EndingMeta>
 
 const HEROINE_PRIORITY: Record<HeroineId, number> = { rin: 3, hare: 2, mirai: 1 }
+const W6_CHOICE_FOR: Record<HeroineId, number> = { rin: 1, hare: 2, mirai: 3 }
+
+/** Emotional gate for a heroine's personal ending: saw her 3rd date OR chose her on week 6 rainy night. */
+export function hasRomanticGate(who: HeroineId, state: Pick<CoreState, 'flags'>): boolean {
+  return getDateCount(who, state) >= 3 || Number(state.flags.w6Choice ?? 0) === W6_CHOICE_FOR[who]
+}
 
 /** Determine ending according to plan §2.6 priority & tie-breakers. */
 export function determineEnding(state: CoreState): EndingId {
@@ -92,7 +98,7 @@ export function determineEnding(state: CoreState): EndingId {
     return HEROINE_PRIORITY[b] - HEROINE_PRIORITY[a]
   })
   const top = sorted[0]
-  if (sc[top] >= 60) return `end-${top}` as EndingId
+  if (sc[top] >= 60 && hasRomanticGate(top, state)) return `end-${top}` as EndingId
 
   const avg = (sc.rin + sc.hare + sc.mirai) / 3
   if (avg >= 35) return 'end-normal'

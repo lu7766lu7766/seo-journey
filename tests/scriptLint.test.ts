@@ -41,6 +41,10 @@ export function lintScene(s: Scene): string[] {
     switch (cmd.k) {
       case 'say':
         if (!SPEAKER_IDS.includes(cmd.who)) E(path, `unknown speaker ${cmd.who}`)
+        if (cmd.who === 'npc') {
+          if (!cmd.name || !cmd.name.trim()) E(path, 'npc without name')
+          if (cmd.face) E(path, 'npc cannot have face')
+        }
         if (cmd.face && !FACES.includes(cmd.face)) E(path, `unknown face ${cmd.face}`)
         if (!cmd.text.trim()) E(path, 'empty text')
         else if (textLength(cmd.text) > MAX_LINE) E(path, `line too long (${textLength(cmd.text)} > ${MAX_LINE})`)
@@ -104,14 +108,17 @@ describe('script lint', () => {
         { k: 'say', who: 'rin', text: ' ' },
         { k: 'say', who: 'rin', text: '字'.repeat(46) },
         { k: 'say', who: 'rin', text: '字'.repeat(45) },
+        { k: 'say', who: 'npc', name: '  ', text: '嗨' },
+        { k: 'say', who: 'npc', name: '料理社社長', text: '字'.repeat(46) },
+        { k: 'say', who: 'npc', name: '料理社社長', text: '別急。麵團要醒，人也要。' },
         { k: 'bg', id: 'nowhere' },
         { k: 'card', id: 'nope' },
         { k: 'choice', options: [{ text: '' }] },
       ],
     } as unknown as Scene
     const errs = lintScene(bad)
-    expect(errs).toHaveLength(5)
-    expect(errs.join('\n')).toMatch(/empty text[\s\S]*too long[\s\S]*unknown bg[\s\S]*unknown card[\s\S]*empty option/)
+    expect(errs).toHaveLength(7)
+    expect(errs.join('\n')).toMatch(/empty text[\s\S]*too long[\s\S]*npc without name[\s\S]*too long[\s\S]*unknown bg[\s\S]*unknown card[\s\S]*empty option/)
   })
 
   it('word budgets and duration estimates match plan §3.1', async () => {
@@ -135,7 +142,8 @@ describe('script lint', () => {
     expect(mainStats.find((x) => x.id === 'festival')!.st.chars).toBeLessThanOrEqual(1100)
     for (const e of endStats) expect(e.st.chars, e.id).toBeLessThanOrEqual(700)
     for (const sq of sideStats) {
-      expect(sq.st.chars, `${sq.id} min`).toBeGreaterThanOrEqual(900)
+      // Floor reflects real dialogue chars after moving NPC name prefixes out of text into npc() nameplates
+      expect(sq.st.chars, `${sq.id} min`).toBeGreaterThanOrEqual(800)
       expect(sq.st.chars, `${sq.id} max`).toBeLessThanOrEqual(1800)
     }
 

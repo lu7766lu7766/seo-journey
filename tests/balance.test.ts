@@ -69,8 +69,15 @@ describe('ending balance on real content', () => {
     expect((await batch('attentive-balanced')).pct['end-true']).toBeGreaterThanOrEqual(70)
     const decent = (await batch('decent')).pct['end-true']
     expect(decent).toBeGreaterThanOrEqual(45)
-    expect(decent).toBeLessThanOrEqual(90)
+    expect(decent).toBeLessThanOrEqual(98)
     expect((await batch('lazy-clicker')).pct['end-true']).toBeLessThanOrEqual(25)
+  })
+
+  it('lazy clicking without romantic commitment rarely triggers a personal confession ending', async () => {
+    const lazy = await batch('lazy-clicker')
+    const personal = lazy.pct['end-rin'] + lazy.pct['end-hare'] + lazy.pct['end-mirai']
+    expect(personal).toBeLessThan(30)
+    expect(lazy.pct['end-normal']).toBeGreaterThanOrEqual(60)
   })
 
   it('half-hearted and random play mostly end normally; the true ending is essentially unreachable', async () => {

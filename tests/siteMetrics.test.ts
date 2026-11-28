@@ -87,6 +87,7 @@ describe('siteMetrics (simulated dashboard numbers)', () => {
     const b = serpMock(flat(45))
     const c = serpMock(flat(85))
     expect([a.tier, b.tier, c.tier]).toEqual(['bare', 'basic', 'rich'])
+    expect([a.url, b.url, c.url]).toEqual(['aoba-web.club › index', 'aoba-web.club › guide', 'aoba-web.club › guide'])
     expect(a.title).toBe('404 號社辦')
     expect(a.sitelinks).toHaveLength(0)
     expect(b.title.length).toBeGreaterThan(a.title.length)

@@ -120,7 +120,14 @@ export class SceneRunner {
       switch (cmd.k) {
         case 'say':
           this.host.onCmd(cmd, id)
-          return (this.pause = { kind: 'say', lineId: id, who: cmd.who, face: cmd.face, text: subst(cmd.text, { name: st.playerName }) })
+          return (this.pause = {
+            kind: 'say',
+            lineId: id,
+            who: cmd.who,
+            face: cmd.face,
+            ...(cmd.name !== undefined ? { name: subst(cmd.name, { name: st.playerName }) } : {}),
+            text: subst(cmd.text, { name: st.playerName }),
+          })
         case 'choice': {
           const options = cmd.options
             .map((o, index) => ({ o, index }))

@@ -42,7 +42,7 @@ export function reduceStage(s: StageState, cmd: Cmd): StageState {
       return { ...s, chars }
     }
     case 'say': {
-      if (!cmd.face || cmd.who === 'me' || cmd.who === 'narr') return s
+      if (!cmd.face || cmd.who === 'me' || cmd.who === 'narr' || cmd.who === 'npc') return s
       const sl = findSlot(s, cmd.who)
       if (!sl) return s
       return { ...s, chars: { ...s.chars, [sl]: { who: cmd.who, face: cmd.face } } }

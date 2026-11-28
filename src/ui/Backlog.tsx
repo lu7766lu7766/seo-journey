@@ -21,7 +21,7 @@ export function Backlog() {
           ) : (
             <div key={b.lineId}>
               <div className="font-title text-base font-bold" style={{ color: CHARACTERS[b.who as SpeakerId]?.color }}>
-                {displayName(b.who as SpeakerId, playerName) ?? ''}
+                {displayName(b.who as SpeakerId, playerName, b.name) ?? ''}
               </div>
               <p className="text-lg leading-relaxed">{b.text}</p>
             </div>

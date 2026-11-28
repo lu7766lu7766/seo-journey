@@ -1,4 +1,4 @@
-import { bg, bgm, card, choice, hide, minigame, opt, say, scene, show } from '@/engine'
+import { bg, bgm, card, choice, hide, minigame, npc, opt, say, scene, show } from '@/engine'
 
 export default scene('sq-m2', [
   bgm('daily'),
@@ -8,9 +8,9 @@ export default scene('sq-m2', [
   say('mirai', 'normal', '{name}，天文社的伺服器日誌，近七日出現九百筆訪客。'),
   say('me', undefined, '九百人？天文社這麼紅？'),
   say('mirai', 'think', '並非人類。是爬蟲。'),
-  say('narr', undefined, '「天文社社長：『宇宙都向我們敞開了，這些訪客是怎麼回事！』」'),
-  say('narr', undefined, '「天文社社長：『我決定了！全擋！Disallow 到底！』」'),
-  say('narr', undefined, '「天文社社長：『連月亮也 Disallow！』」'),
+  npc('天文社社長', '宇宙都向我們敞開了，這些訪客是怎麼回事！'),
+  npc('天文社社長', '我決定了！全擋！Disallow 到底！'),
+  npc('天文社社長', '連月亮也 Disallow！'),
   say('mirai', 'normal', '無法。月亮不是爬蟲。反對全擋，決策依據不足。'),
   say('mirai', 'normal', '每個爬蟲，都有名牌，叫 User-agent。'),
   say('mirai', 'normal', '來訪的有 GPTBot、OAI-SearchBot、PerplexityBot。'),
@@ -29,12 +29,12 @@ export default scene('sq-m2', [
   say('mirai', 'think', '不會。它控制內容是否用於 Gemini 的訓練與 grounding。'),
   say('mirai', 'normal', '不影響 Google 搜尋的收錄與排名。'),
   card('ai-crawlers'),
-  say('narr', undefined, '「天文社社長：『所以我能拒絕被「學習」，但不必消失？』」'),
+  npc('天文社社長', '所以我能拒絕被「學習」，但不必消失？'),
   say('mirai', 'normal', '正確。另外，robots.txt 是請求，不是門鎖。'),
   say('mirai', 'think', '真正私密的資料，要靠登入權限保護。'),
   say('mirai', 'normal', '寫法很短：User-agent: GPTBot，換行，Disallow: /。'),
-  say('narr', undefined, '「天文社社長：『這麼簡單？我的望遠鏡設定，難一百倍！』」'),
-  say('narr', undefined, '「天文社社長：『那妳呢？妳是被誰「訓練」出來的？』」'),
+  npc('天文社社長', '這麼簡單？我的望遠鏡設定，難一百倍！'),
+  npc('天文社社長', '那妳呢？妳是被誰「訓練」出來的？'),
   show('mirai', 'center', 'sad'),
   say('mirai', 'sad', '……我是自學的。根據我的資料。'),
   say('me', undefined, '自學，也很厲害。'),
@@ -44,7 +44,7 @@ export default scene('sq-m2', [
   say('mirai', 'normal', '請審查天文社的 robots.txt 草案。'),
   minigame('sq-m2', { stats: { tec: 4, tru: 4 }, bond: { mirai: 2 } }, { stats: { tec: 2, tru: 2 }, bond: { mirai: 2 } }),
 
-  say('narr', undefined, '「天文社社長：『結論！筆記要被引用，照片集別被拿去訓練！』」'),
+  npc('天文社社長', '結論！筆記要被引用，照片集別被拿去訓練！'),
   choice([
     opt('擋訓練用爬蟲，放行搜尋用爬蟲', { bond: { mirai: 1 }, stats: { tru: 1 } }, [
       show('mirai', 'center', 'happy'),
@@ -57,8 +57,8 @@ export default scene('sq-m2', [
   ]),
   say('mirai', 'think', '新爬蟲，之後還會出現。規則，要定期檢查。'),
   say('narr', undefined, '暮色落下。第一顆亮起的，是金星。'),
-  say('narr', undefined, '「天文社社長：『看吧！該被看見的光，擋不住！』」'),
-  say('narr', undefined, '「天文社社長：『來，妳先看！金星，今天特別亮！』」'),
+  npc('天文社社長', '看吧！該被看見的光，擋不住！'),
+  npc('天文社社長', '來，妳先看！金星，今天特別亮！'),
   show('mirai', 'center', 'smile'),
   say('mirai', 'smile', '訓練用與搜尋用，要分開設定。擋錯對象，可能從 AI 搜尋裡消失。'),
   show('mirai', 'center', 'blush'),

@@ -1,6 +1,6 @@
 import type { Cmd, HeroineId } from '@/engine'
 import { bg, bgm, choice, hide, opt, say, scene, sfx, show, wait, when } from '@/engine'
-import { hasCard, scoreIs } from '@/engine/cond'
+import { scoreIs, seen } from '@/engine/cond'
 
 /** three tiers (>= 65 / 40-64 / < 40): nested `when` so exactly one tier plays */
 const tiers = (who: HeroineId, high: Cmd[], mid: Cmd[], low: Cmd[]): Cmd =>
@@ -30,11 +30,15 @@ export default scene('festival', [
   choice([
     opt('我們做了社團大調查，附上方法與樣本數', undefined, [
       say('rin', 'normal', '……資料很有價值。但，不是我問的。'),
-    ], hasCard('original-data')),
-    opt('我們解開了雙重上鎖：爬蟲進得來，頁面也收得進', { bond: { rin: 2 } }, [
+    ]),
+    opt('爬蟲進得來、頁面收得進，大圖壓縮也加快載入', { bond: { rin: 2 } }, [
       show('rin', 'left', 'smile'),
-      say('rin', 'smile', '爬取與收錄分開處理，正確。……這份細心，我記下了。'),
-    ], hasCard('robots-vs-noindex')),
+      say('rin', 'smile', '爬取、收錄與速度都顧到了，正確。……這份細心，我記下了。'),
+    ]),
+    opt('主圖先到位、配角圖延遲並預留寬高，LCP 不再拖慢首屏', { bond: { rin: 3 } }, [
+      show('rin', 'left', 'blush'),
+      say('rin', 'blush', '……貓咪部落格那套圖片最佳化與 LCP，用得真好。滿分。'),
+    ], seen('sq-r3')),
     opt('我們每週都有進步，也很努力！', undefined, [
       say('rin', 'normal', '努力，我看見了。具體內容，下次請補上。'),
     ]),
@@ -66,10 +70,14 @@ export default scene('festival', [
     opt('每頁先給結論再補細節，標題寫成讀者會問的話', { bond: { hare: 2 } }, [
       show('hare', 'center', 'happy'),
       say('hare', 'happy', '就是這個！先講答案再補細節，超帥的！'),
-    ], hasCard('answer-first')),
+    ]),
+    opt('用問句標題搭一兩句直答，做 FAQ 求結構清楚、不迷信特效', { bond: { hare: 3 } }, [
+      show('hare', 'center', 'blush'),
+      say('hare', 'blush', '廣播社的文字問答和 FAQ 正確期待全記住了！這句結論，超棒！'),
+    ], seen('sq-h3')),
     opt('我們把原創資料與來源，整理成可被引用的樣子', undefined, [
       say('hare', 'smile', '好厲害！可是……答案在哪？下次請一句話講完！'),
-    ], hasCard('geo-citations')),
+    ]),
     opt('我們的內容，都是用心寫的！', undefined, [
       say('hare', 'smile', '好感動！可是……可以更短嗎？一句話！'),
     ]),
@@ -99,14 +107,18 @@ export default scene('festival', [
   choice([
     opt('網站在手機上變快了：大圖壓縮，版面不再亂跳', undefined, [
       say('mirai', 'normal', '已讀取。改善屬實，但這是多數網站都有的證據。'),
-    ], hasCard('core-web-vitals')),
+    ]),
     opt('我們寫的每一句，都是自己的話。', undefined, [
       say('mirai', 'normal', '主張已記錄。證據欄位，目前為空白。'),
     ]),
     opt('學生社團大調查：附上方法、樣本與原始數據', { bond: { mirai: 2 } }, [
       show('mirai', 'right', 'happy'),
       say('mirai', 'happy', '原創、可查證、有署名。……我會引用它。'),
-    ], hasCard('original-data')),
+    ]),
+    opt('附實測紀錄與署名：讓讀者帶走別處沒有的資訊增益', { bond: { mirai: 3 } }, [
+      show('mirai', 'right', 'blush'),
+      say('mirai', 'blush', '原創性與資訊增益，不是複製的總和。……這份證據，我會引用。'),
+    ], seen('sq-m3')),
   ]),
   tiers(
     'mirai',
