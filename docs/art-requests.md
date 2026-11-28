@@ -1087,9 +1087,10 @@ smiling, smirk, upturned mouth corners, happy expression, cheerful face, looking
     - 主標「直到你找到我」以 **LXGW WenKai TC（Bold）** 單行寬字距排字，暖白填色搭配淡天藍與淡櫻粉柔和外光暈及細緻深藍投影，取消厚描邊與粉彩漸層。
     - 副標放入細線圓角半透明白框搜尋列，內含同色細線放大鏡圖示、「～青葉學園網站研究社～」與發光細直線文字游標 `|`，取代舊版放大鏡愛心徽章。
     - 右側以一顆呼應星野未來髮夾的青／淡天藍四芒星光與兩片無粗框柔和櫻花瓣點綴，保持克制與呼吸感。
-  - `public/og-image.jpg`（1200×630 JPEG，約 195 KB）：
+  - `public/og-image.jpg`（1200×630 JPEG，約 198 KB）：
     - 不在舊圖上塗改，改以 `public/art/bg/gate.webp` 搭配 `public/art/mirai/smile.webp`（左）、`public/art/rin/smile.webp`（中）、`public/art/hare/happy.webp`（右）重新合成，保留右側「青葉學園」門牌且不遮擋任何角色臉部。
     - 下方加深色漸層，置中疊放膠囊標籤「SEO・AEO・GEO 青春校園戀愛養成」與新版 `logo.webp`，縮至 400×210 小縮圖仍清晰可讀。
+    - **退回修正紀錄（2026-11-28）**：上一版 `og-image.jpg` 中凜的紅色學生會臂章高度與膠囊標籤重疊且緊貼晴的立繪而被遮蔽；本次微調三位女主角的站位、間距、縮放、圖層順序（凜置於最前）與下方漸層起點，使凜的紅色臂章完整清楚可見，同時維持三人臉部、右側「青葉學園」門牌、膠囊標籤與 Logo 位置不變（`logo.webp` 內容不變）。
   - `public/favicon.png` 與 `public/apple-touch-icon.png` 維持不變；未使用 Colab（純本機腳本向量／字型排版與素材合成）。
 - **腳本與字型授權**：
   - 腳本：`scripts/make-title-art.mjs`（執行 `node scripts/make-title-art.mjs` 即可重產兩張圖）。

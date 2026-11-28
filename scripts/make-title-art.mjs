@@ -407,40 +407,46 @@ function buildOgHtml({
     background:
       radial-gradient(ellipse 95% 80% at 50% 34%, rgba(255, 248, 244, 0.08) 0%, rgba(12, 20, 48, 0.28) 100%);
   }
-  /* Heroines trio — reference composition: Mirai left, Rin center front, Hare right (leaving "青葉學園" sign visible) */
+  /* Heroines trio — Mirai left, Rin center front (red armband fully clear above badge & left of Hare), Hare right (keeping "青葉學園" sign visible) */
   .sprite {
     position: absolute;
     height: auto;
     pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
   }
   .mirai {
-    left: 190px;
-    top: 32px;
-    width: 342px;
+    z-index: 1;
+    left: 196px;
+    top: 8px;
+    width: 314px;
     filter: drop-shadow(0 12px 24px rgba(8, 14, 38, 0.42));
   }
   .hare {
-    left: 656px;
-    top: 36px;
-    width: 332px;
+    z-index: 1;
+    left: 672px;
+    top: 12px;
+    width: 306px;
     filter: drop-shadow(0 12px 24px rgba(8, 14, 38, 0.42));
   }
   .rin {
-    left: 418px;
-    top: 12px;
-    width: 356px;
+    z-index: 2;
+    left: 432px;
+    top: -9px;
+    width: 326px;
     filter: drop-shadow(0 16px 32px rgba(6, 10, 32, 0.58));
   }
-  /* Deep lyrical navy bottom gradient: keeps faces bright, creates rich contrast for badge & logo */
+  /* Deep lyrical navy bottom gradient: keeps faces & Rin's red armband bright, creates rich contrast for badge & logo */
   .bottom-gradient {
     position: absolute;
+    z-index: 3;
     inset: 0;
     background: linear-gradient(
       180deg,
       rgba(9, 15, 38, 0.00) 0%,
-      rgba(9, 15, 38, 0.00) 39%,
-      rgba(10, 17, 44, 0.48) 56%,
-      rgba(9, 15, 40, 0.85) 73%,
+      rgba(9, 15, 38, 0.00) 47%,
+      rgba(10, 17, 44, 0.46) 58%,
+      rgba(9, 15, 40, 0.86) 73%,
       rgba(7, 12, 32, 0.95) 89%,
       rgba(6, 10, 28, 0.98) 100%
     );
@@ -448,6 +454,7 @@ function buildOgHtml({
   /* Subtle warm-sakura & sky-blue horizon mist near lower center */
   .mist-accent {
     position: absolute;
+    z-index: 4;
     left: 0;
     right: 0;
     bottom: 0;
@@ -459,6 +466,7 @@ function buildOgHtml({
   /* Lower title lockup */
   .lockup {
     position: absolute;
+    z-index: 5;
     left: 0;
     right: 0;
     bottom: 24px;
