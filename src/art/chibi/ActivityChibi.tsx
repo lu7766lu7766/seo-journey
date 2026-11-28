@@ -1,9 +1,9 @@
 import { motion } from 'motion/react'
 import { ACTIVITIES } from '@/content/activities'
 import type { ActivityId } from '@/content/activityIds'
-import { CHARACTERS, type SpeakerId } from '@/content/characters'
+import { CHARACTERS, type CharId, type SpeakerId } from '@/content/characters'
 import type { SlotOutcome } from '@/systems/schedule'
-import { CharacterAvatar } from '../characters/Avatar'
+import { PAPER_INK_ACCENT, PolaroidAvatar } from '@/ui/material'
 import { useArtManifest } from '../manifest'
 import { activityBannerName, resolveUiSrc } from '../resolve'
 
@@ -705,7 +705,7 @@ export function ActivityChibi({ outcome }: ActivityChibiProps) {
 
   return (
     <div
-      className="relative h-[202px] w-full overflow-hidden rounded-2xl border-2 border-white/85 shadow-inner"
+      className="relative h-[202px] w-full overflow-hidden rounded-[2px] border border-[#cbb99f] shadow-[inset_0_1px_4px_rgba(38,18,6,0.16)]"
       style={{ background: `linear-gradient(180deg, ${theme.bgFrom}, ${theme.bgTo})` }}
     >
       {bannerSrc ? (
@@ -773,50 +773,52 @@ export function ActivityChibi({ outcome }: ActivityChibiProps) {
       </svg>
       )}
 
-      {/* Top-left activity status badge */}
+      {/* 左上：紙質標籤條 */}
       <div className="pointer-events-none absolute left-3 top-2.5 flex items-center gap-2">
         <span
-          className="rounded-full px-3 py-0.5 text-xs font-bold text-white shadow-sm"
+          className="rounded-[2px] border border-white/55 px-3 py-0.5 font-title text-[13.5px] font-bold text-[#fffdf8] shadow-[0_2px_6px_rgba(38,18,6,0.28)]"
           style={{ backgroundColor: theme.accent }}
         >
           {theme.badge}
         </span>
       </div>
 
-      {/* Top-right theme / fatigue modifier badges */}
+      {/* 右上：手帳主題／疲勞貼標 */}
       <div className="pointer-events-none absolute right-3 top-2.5 flex items-center gap-1.5">
         {outcome.themed && outcome.status === 'ok' && (
-          <span className="rounded-full bg-gradient-to-r from-[#d6334a] to-[#f07b3f] px-3 py-0.5 text-xs font-bold text-white shadow-sm">
+          <span className="rounded-[2px] border border-[#fff2dc]/70 bg-[var(--color-stamp)] px-2.5 py-0.5 text-[13px] font-bold text-[#fffdf8] shadow-[0_2px_6px_rgba(38,18,6,0.28)]">
             ★ 本週主題 ×1.5
           </span>
         )}
         {outcome.halfTired && outcome.status === 'ok' && (
-          <span className="rounded-full bg-amber-500 px-3 py-0.5 text-xs font-bold text-white shadow-sm">
+          <span className="rounded-[2px] border border-[#fff2dc]/70 bg-[#b45309] px-2.5 py-0.5 text-[13px] font-bold text-[#fffdf8] shadow-[0_2px_6px_rgba(38,18,6,0.28)]">
             疲勞減半
           </span>
         )}
       </div>
 
-      {/* With a real illustration the drawn cameo is gone, so show the visitor's portrait instead */}
+      {/* 實圖模式下顯示拍立得來訪小頭像 */}
       {bannerSrc && hasSpriteChatter && chatterWho && (
         <motion.div
-          className="pointer-events-none absolute bottom-9 right-4"
+          className="pointer-events-none absolute bottom-10 right-4"
           initial={{ opacity: 0, scale: 0.7 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: 'spring', stiffness: 260, damping: 20 }}
         >
-          <CharacterAvatar id={chatterWho} size={64} />
+          <PolaroidAvatar id={chatterWho as CharId} size="md" rotate={3} />
           {outcome.chatter?.bond && (
-            <span className="absolute -right-2 -top-2 rounded-full border-2 border-[#f472b6] bg-white px-1.5 text-xs font-extrabold text-[#e11d48]">♥ +1</span>
+            <span className="absolute -right-2 -top-2 rounded-[2px] border border-[var(--color-stamp)] bg-[#fff8eb] px-1.5 py-0.5 text-[13px] font-extrabold text-[var(--color-stamp)] shadow-sm">
+              ♥ +1
+            </span>
           )}
         </motion.div>
       )}
 
-      {/* Optional cameos nameplate at bottom-right if chatter triggered */}
+      {/* 右下：紙質經過名牌 */}
       {hasSpriteChatter && chatterWho && (
         <div
-          className="pointer-events-none absolute bottom-2 right-3 rounded-full px-2.5 py-0.5 text-xs font-bold text-white shadow"
-          style={{ backgroundColor: CHARACTERS[chatterWho].color }}
+          className="pointer-events-none absolute bottom-2 right-3 rounded-[2px] border border-[#d6c7ae] bg-[#fffdf8]/95 px-2.5 py-0.5 font-title text-[13.5px] font-bold shadow-[0_2px_6px_rgba(38,18,6,0.22)]"
+          style={{ color: PAPER_INK_ACCENT[chatterWho as CharId] }}
         >
           {CHARACTERS[chatterWho].name} 經過！
         </div>

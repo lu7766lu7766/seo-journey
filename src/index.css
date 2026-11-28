@@ -367,36 +367,44 @@ button { font-family: inherit; cursor: pointer; }
     outline-offset: 4px;
   }
 
+  /* 便利貼定位與旋轉容器；背景色著色於 .mat-sticky-bg（z-index:-1），讓 .mat-sticky::after（z-index:-2）絕不滲入便利貼紙面內 */
   .mat-sticky {
     position: relative;
     z-index: 0;
     border-radius: 2px;
     color: var(--color-ink-body);
     transform: rotate(var(--mat-rot, 0deg));
-    box-shadow:
-      0 5px 12px rgba(40, 20, 6, 0.26),
-      0 1px 2px rgba(40, 20, 6, 0.16);
-    border: 1px solid rgba(145, 118, 66, 0.28);
   }
-  .mat-sticky::before {
+  .mat-sticky-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    border: 1px solid rgba(145, 118, 66, 0.28);
+    box-shadow:
+      0 5px 12px rgba(40, 20, 6, 0.24),
+      0 1px 2px rgba(40, 20, 6, 0.14);
+  }
+  .mat-sticky-bg::before {
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
-    height: 16px;
+    height: 15px;
     background: linear-gradient(180deg, rgba(90, 62, 18, 0.08) 0%, rgba(90, 62, 18, 0) 100%);
     pointer-events: none;
   }
   .mat-sticky::after {
     content: "";
     position: absolute;
-    right: 6px;
-    bottom: 5px;
-    width: 48%;
-    height: 12px;
-    z-index: -1;
-    background: rgba(34, 16, 4, 0.3);
+    right: 8px;
+    bottom: -3px;
+    width: 44%;
+    height: 11px;
+    z-index: -2;
+    background: rgba(34, 16, 4, 0.28);
     filter: blur(4px);
-    transform: rotate(2.4deg);
+    transform: rotate(2deg);
     pointer-events: none;
   }
 
@@ -471,6 +479,130 @@ button { font-family: inherit; cursor: pointer; }
     outline: 3px solid #7ee8fa;
     outline-offset: 3px;
   }
+
+  /* 學生手帳硬殼封皮與中縫 */
+  .mat-notebook-cover {
+    position: relative;
+    background-color: #462b18;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='nb'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.3 0 0 0 0.25  0.2 0 0 0 0.14  0.1 0 0 0 0.08  0 0 0 0.14 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23nb)'/%3E%3C/svg%3E"),
+      linear-gradient(155deg, #5d3d25 0%, #462b18 54%, #311c0e 100%);
+    background-size: 140px 140px, 100% 100%;
+    border: 2px solid #291509;
+    border-radius: 12px;
+    box-shadow:
+      0 24px 56px rgba(14, 7, 3, 0.56),
+      0 8px 20px rgba(38, 18, 6, 0.38),
+      inset 0 1px 0 rgba(255, 224, 184, 0.28),
+      inset 0 0 0 2px rgba(242, 223, 192, 0.14),
+      inset 0 -3px 4px rgba(20, 9, 3, 0.52);
+  }
+
+  .mat-notebook-spine {
+    background: linear-gradient(
+      90deg,
+      rgba(38, 18, 6, 0.3) 0%,
+      rgba(38, 18, 6, 0.09) 34%,
+      rgba(255, 238, 210, 0.22) 50%,
+      rgba(38, 18, 6, 0.09) 66%,
+      rgba(38, 18, 6, 0.32) 100%
+    );
+  }
+
+  /* 手帳模切貼紙按鈕 */
+  .mat-sticker {
+    position: relative;
+    border: 2px solid #fffdf8;
+    border-radius: 5px;
+    color: var(--color-ink-body);
+    transform: rotate(var(--mat-rot, 0deg));
+    box-shadow:
+      0 3px 8px rgba(38, 18, 6, 0.2),
+      0 1px 2px rgba(38, 18, 6, 0.14),
+      inset 0 0 0 1px rgba(154, 126, 92, 0.28);
+    transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.16s ease, border-color 0.16s ease;
+  }
+  .mat-sticker:hover:not(:disabled),
+  .mat-sticker:focus-visible {
+    transform: translateY(-2px) rotate(calc(var(--mat-rot, 0deg) * 0.4)) scale(1.01);
+    box-shadow:
+      0 8px 18px rgba(38, 18, 6, 0.26),
+      0 2px 6px rgba(38, 18, 6, 0.16),
+      inset 0 0 0 1px rgba(130, 92, 54, 0.46);
+  }
+  .mat-sticker:active:not(:disabled) {
+    transform: translateY(0px) rotate(var(--mat-rot, 0deg));
+  }
+  .mat-sticker:focus-visible {
+    outline: 3px solid #2b6ea8;
+    outline-offset: 2px;
+  }
+
+  /* 和紙／牛皮便箋次要按鈕 */
+  .mat-washi-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: linear-gradient(180deg, #f8edd9 0%, #ebd9b8 100%);
+    border: 1.5px solid #b59264;
+    border-radius: 4px;
+    color: var(--color-ink-body);
+    font-weight: 700;
+    box-shadow:
+      0 3px 8px rgba(38, 18, 6, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease;
+  }
+  .mat-washi-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+    box-shadow:
+      0 6px 14px rgba(38, 18, 6, 0.26),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  }
+  .mat-washi-btn:active:not(:disabled) {
+    transform: translateY(0px);
+  }
+  .mat-washi-btn:focus-visible {
+    outline: 3px solid #2b6ea8;
+    outline-offset: 2px;
+  }
+
+  /* 週報板夾底板與拉絲金屬夾頭 */
+  .mat-clipboard-board {
+    position: relative;
+    background-color: #543620;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cpath d='M0 24 Q40 20 80 25 T160 22' fill='none' stroke='%23261306' stroke-width='1.2' stroke-opacity='0.18'/%3E%3Cpath d='M0 64 Q50 69 100 62 T160 66' fill='none' stroke='%23261306' stroke-width='1.1' stroke-opacity='0.14'/%3E%3Cpath d='M0 108 Q45 103 95 110 T160 106' fill='none' stroke='%23f2c48c' stroke-width='0.9' stroke-opacity='0.09'/%3E%3Cpath d='M0 142 Q60 146 120 140 T160 144' fill='none' stroke='%23261306' stroke-width='1.2' stroke-opacity='0.15'/%3E%3C/svg%3E"),
+      linear-gradient(155deg, #6e482c 0%, #52331d 54%, #3c2312 100%);
+    background-size: 160px 160px, 100% 100%;
+    border: 2px solid #2b1709;
+    border-radius: 12px;
+    box-shadow:
+      0 24px 56px rgba(10, 5, 2, 0.56),
+      0 8px 20px rgba(38, 18, 6, 0.38),
+      inset 0 1px 0 rgba(255, 224, 184, 0.28),
+      inset 0 -2px 4px rgba(24, 10, 3, 0.45);
+  }
+
+  .mat-clipboard-clip {
+    position: relative;
+    background: linear-gradient(180deg, #edf1f5 0%, #c8d0da 36%, #959fab 72%, #6d7682 100%);
+    border: 1.5px solid #48505b;
+    border-radius: 7px 7px 5px 5px;
+    box-shadow:
+      0 6px 12px rgba(38, 18, 6, 0.36),
+      0 2px 3px rgba(38, 18, 6, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.88),
+      inset 0 -1.5px 2px rgba(38, 44, 52, 0.36);
+  }
+
+  /* 拍立得相紙卡片飾框（底色由 .mat-paper-white 控制，維持雙影不滲入紙內） */
+  .mat-polaroid {
+    padding: 12px 12px 14px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -481,10 +613,15 @@ button { font-family: inherit; cursor: pointer; }
   .chibi-spin, .chibi-zzz, .chibi-sway, .chibi-orbit, .chibi-pop { animation: none !important; }
   .btn-pastel, .choice-btn, .hud-pill,
   .mat-paper, .mat-paper-curled::before, .mat-paper-curled::after,
-  .mat-paper-interactive, .mat-pass-btn { transition: none !important; }
+  .mat-paper-interactive, .mat-pass-btn, .mat-sticker, .mat-washi-btn { transition: none !important; }
   .mat-paper-interactive:hover:not(:disabled),
   .mat-paper-interactive:focus-visible,
   .mat-paper-interactive:active:not(:disabled),
+  .mat-sticker:hover:not(:disabled),
+  .mat-sticker:focus-visible,
+  .mat-sticker:active:not(:disabled),
+  .mat-washi-btn:hover:not(:disabled),
+  .mat-washi-btn:active:not(:disabled),
   .mat-pass-btn:hover:not(:disabled),
   .mat-pass-btn:active:not(:disabled) {
     transform: rotate(var(--mat-rot, 0deg)) !important;

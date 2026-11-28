@@ -37,12 +37,12 @@ export function StickyNote({
       style={
         {
           '--mat-rot': `${rotate}deg`,
-          backgroundImage: STICKY_BG[color],
           ...style,
         } as CSSProperties
       }
       {...rest}
     >
+      <span aria-hidden="true" className="mat-sticky-bg" style={{ backgroundImage: STICKY_BG[color] }} />
       {attach === 'pin' && (
         <span className="pointer-events-none absolute -top-2.5 left-1/2 z-20 -translate-x-1/2">
           <Pin color={pinColor} size={22} />
