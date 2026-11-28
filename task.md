@@ -170,3 +170,4 @@
   - 結果：測試 137 項全過、e2e 通關 0 錯誤、主線估算 32.3 分鐘、全收集約 76 分鐘、首包 194.8KB gzip，結局分布與前一輪相同。
   - 待辦：`sensei/sad`、`sensei/think` 重繪。
 - 2026-11-28（索老師表情重繪）：Gemini 4 Neon 以 Google Colab CLI（L4、`cagliostrolab/animagine-xl-4.0` SDXL 臉部 inpainting，眼鏡框鎖定沿用原圖）重繪 `sensei/sad`、`sensei/think`。第一版驗收退回（think 嘴角下垂像 sad、視線未偏移；sad 眼鏡框變淺變細），修正版通過：sad 八字眉＋嘴角下垂、think 平直嘴型＋視線看向斜上方，四表情眼鏡框一致、外框 0px 偏移。共花費約 1.08 compute units，Colab session 皆已停止。`art:check` 71/71、測試 137 項全過。
+- 2026-11-28（改名與 Logo 重新設計）：遊戲由《搜尋戀曲》改名為《直到你找到我 ～青葉學園網站研究社～》（英文 Until You Find Me；「我被你找到」同時指社團網站被找到與女主角被看見）。Sonnet 更新網頁標題與 meta、標題畫面、檢查清單、README、plan.md，並在真結局以社辦字條「我在這裡。謝謝你，終於找到我了。——社辦」呼應片名（第一版讓凜單獨說出片名，偏向凜線而退回）。Gemini 4 Neon 重新設計標題 Logo（霞鶩文楷 TC、OFL；細緻光暈主標＋搜尋框副標，取代 emoji 風放大鏡愛心）與分享預覽圖（以既有背景與立繪重新合成；第一版凜的臂章被遮住而退回），兩張圖由 `node scripts/make-title-art.mjs` 以真實字型產生。repo 名、package 名與 localStorage 前綴 `seo-journey:` 保留以免存檔遺失。測試 137 項全過、`art:check` 71/71、e2e 通關 0 錯誤。
