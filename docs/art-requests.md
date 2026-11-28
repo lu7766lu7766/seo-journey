@@ -331,8 +331,8 @@ Image edit. Keep the character IDENTICAL to the reference image: same pose, same
 | Key（manifest） | 輸出檔 | 來源圖建議檔名 | 尺寸 | 劇本 say/show 次數 |
 |---|---|---|---|---|
 | `sensei/smile` 微笑 | `public/art/sensei/smile.webp` | `sensei-smile.png` | 600×1000 RGBA（來源 2:3，建議 1024×1536） | 17 |
-| `sensei/think` 思考 | `public/art/sensei/think.webp` | `sensei-think.png` | 600×1000 RGBA（來源 2:3，建議 1024×1536） | 2 |
-| `sensei/sad` 難過 | `public/art/sensei/sad.webp` | `sensei-sad.png` | 600×1000 RGBA（來源 2:3，建議 1024×1536） | 3 |
+| `sensei/think` 思考（⚠️ 待重繪，見 §8） | `public/art/sensei/think.webp` | `sensei-think.png` | 600×1000 RGBA（來源 2:3，建議 1024×1536） | 4 |
+| `sensei/sad` 難過（⚠️ 待重繪，見 §8） | `public/art/sensei/sad.webp` | `sensei-sad.png` | 600×1000 RGBA（來源 2:3，建議 1024×1536） | 3 |
 
 **`sensei/smile`（微笑）提示詞**
 
@@ -341,18 +341,18 @@ Image edit. Keep the character IDENTICAL to the reference image: same pose, same
 Image edit. Keep the character IDENTICAL to the reference image: same pose, same camera and framing, same body, uniform, hair silhouette, accessories, line art, colors and lighting, on a flat pure chroma-green (#00FF00) background with no shadow or gradient. Change ONLY the facial expression (eyes, eyebrows, mouth, blush): a relaxed, warm, slightly lazy smile with softly lowered eyelids behind the glasses; still holding the mug. Do not move, resize or retilt the head or body. Do not add props, hands or effects that extend outside the original silhouette. Character: Sou Chihiro, relaxed adult female teacher: brown hair in a low side ponytail over her left shoulder (viewer's left), thin black rectangular glasses, warm brown eyes, white collared shirt, mustard-brown open knit cardigan, holding a tan ceramic coffee mug in her hand.
 ```
 
-**`sensei/think`（思考）提示詞**
+**`sensei/think`（思考）提示詞（2026-11-28 修訂版，完整人工出圖指南見 §8）**
 
 ```text
 [Attach reference: sensei-normal-green.png]
-Image edit. Keep the character IDENTICAL to the reference image: same pose, same camera and framing, same body, uniform, hair silhouette, accessories, line art, colors and lighting, on a flat pure chroma-green (#00FF00) background with no shadow or gradient. Change ONLY the facial expression (eyes, eyebrows, mouth, blush): eyes glancing up and aside behind the glasses, one brow raised, lips pursed; curious and thinking. Do not move, resize or retilt the head or body. Do not add props, hands or effects that extend outside the original silhouette. Character: Sou Chihiro, relaxed adult female teacher: brown hair in a low side ponytail over her left shoulder (viewer's left), thin black rectangular glasses, warm brown eyes, white collared shirt, mustard-brown open knit cardigan, holding a tan ceramic coffee mug in her hand.
+Image edit. Keep the character IDENTICAL to the reference image: same pose, same camera and framing, same body, outfit, hair silhouette, glasses, coffee mug position, line art, colors and lighting, on a flat pure chroma-green (#00FF00) background with no shadow or gradient. Change ONLY the facial expression (eyes, eyebrows, mouth): deeply thoughtful and contemplative. Warm brown eyes clearly shifted to glance sideways and slightly upward (looking to the viewer's right behind the black rectangular glasses, NOT looking at the viewer); eyebrows gently drawn together in calm concentration (or one brow slightly raised, NOT angry); STRICTLY NO SMILE — closed mouth in a flat, straight, lightly pursed neutral line with zero upward curve at the corners. Do not move, resize or retilt the head or body. Do not change hand gestures or add props/effects that extend outside the original silhouette. Character: Sou Chihiro, relaxed adult female teacher: brown hair in a low side ponytail over her left shoulder (viewer's left), thin black rectangular glasses, warm brown eyes, white collared shirt, mustard-brown open knit cardigan, dark navy skirt, holding a tan ceramic coffee mug in her hand.
 ```
 
-**`sensei/sad`（難過）提示詞**
+**`sensei/sad`（難過）提示詞（2026-11-28 修訂版，完整人工出圖指南見 §8）**
 
 ```text
 [Attach reference: sensei-normal-green.png]
-Image edit. Keep the character IDENTICAL to the reference image: same pose, same camera and framing, same body, uniform, hair silhouette, accessories, line art, colors and lighting, on a flat pure chroma-green (#00FF00) background with no shadow or gradient. Change ONLY the facial expression (eyes, eyebrows, mouth, blush): a gentle apologetic expression: brows tilted, eyes lowered behind the glasses, a faint sorry smile fading; mild disappointment but still kind. Do not move, resize or retilt the head or body. Do not add props, hands or effects that extend outside the original silhouette. Character: Sou Chihiro, relaxed adult female teacher: brown hair in a low side ponytail over her left shoulder (viewer's left), thin black rectangular glasses, warm brown eyes, white collared shirt, mustard-brown open knit cardigan, holding a tan ceramic coffee mug in her hand.
+Image edit. Keep the character IDENTICAL to the reference image: same pose, same camera and framing, same body, outfit, hair silhouette, glasses, coffee mug position, line art, colors and lighting, on a flat pure chroma-green (#00FF00) background with no shadow or gradient. Change ONLY the facial expression (eyes, eyebrows, mouth, subtle face tone): unmistakably sad, guilty, and apologetic. Eyebrows clearly slanted upward at the inner ends and drooping downward at the outer ends; warm brown eyes behind the glasses lowered with heavy eyelids and a subtle melancholic glossy sheen; STRICTLY NO SMILE — corners of the mouth must NOT turn upward, lips closed and clearly downturned or pressed tightly in quiet regret. Mature adult woman's restrained sorrow, not cartoonish crying. Do not move, resize or retilt the head or body. Do not add props, hands or effects that extend outside the original silhouette. Character: Sou Chihiro, relaxed adult female teacher: brown hair in a low side ponytail over her left shoulder (viewer's left), thin black rectangular glasses, warm brown eyes, white collared shirt, mustard-brown open knit cardigan, dark navy skirt, holding a tan ceramic coffee mug in her hand.
 ```
 
 ### 3.5 黑川 翔（`kuro`）：3 張
@@ -943,3 +943,119 @@ a promotional key visual for a Japanese school romance simulation game, three hi
 
 - **主角立繪**：玩家分身「葉 搜一」目前只以名字出現，沒有立繪（劇情用內心獨白）。若想在標題或結局出現主角，再另外討論；目前沒有任何畫面需要它。
 - **主角 Q 版造型**會同時出現在 10 張活動插圖中，**建議先完成 `write` 一張定稿造型**，其餘用同一張當參考圖（img2img），避免 10 張臉不同。
+
+---
+
+## 8. 重繪紀錄與待人工重出清單
+
+### 8.1 2026-11-28：索 千尋 老師（`sensei/sad`、`sensei/think`）表情區辨度重繪
+
+- **日期**：2026-11-28
+- **狀態**：⏸️ **待人工出圖**（本次自動產圖因影像生成模型配額用盡 `HTTP 429 RESOURCE_EXHAUSTED` 而無法產圖，依約定不覆蓋原檔、不以程式拼貼替代，先補齊人工出圖提示詞與驗收檢查表）。
+- **重繪原因**：
+  - 既有 `public/art/sensei/` 的 `normal`、`smile`、`think`、`sad` 四張表情幾乎共用同一張微笑嘴型，並排檢視時難以一眼區分。
+  - `sensei/sad.webp`：僅眉毛略為上挑，嘴角仍明顯上揚微笑，導致壞結局（`end-bad`：「抱歉啊，{name}。是我這個顧問，沒有撐到最後。」）與黑帽結局（`end-blackhat`）出場時呈現「笑著道歉」的違和感。舊版提示詞誤寫了 `a faint sorry smile fading`，是造成微笑殘留的主因。
+  - `sensei/think.webp`：僅眉頭微皺，視線仍正視鏡頭且嘴角微揚，與 `normal.webp` 幾乎無法分辨（用於 `prologue`、`w6`、`sq-h3` 的講解與思考段落）。
+
+#### 事前準備：建立綠幕參考圖
+
+以現行 `public/art/sensei/normal.webp` 為唯一母圖，先墊上純綠幕 `#00FF00`：
+
+```bash
+magick public/art/sensei/normal.webp -background "#00FF00" -alpha remove -alpha off /tmp/sensei-normal-green.png
+```
+
+> **對位重點**：`scripts/process-art.mjs` 會依每張圖各自的不透明外框自動裁切並縮放至「寬 ≤ 560、高 ≤ 950、水平置中、貼底」。為了讓遊戲內切換表情時臉部與身體完全不跳動（`npm run art:check` 外框差需 ≤ 12px），**強烈建議只改臉部表情、保持姿勢／髮型外輪廓／手部與咖啡馬克杯位置完全不變**。若嘗試微調手勢（例如 `sad` 略放低馬克杯、`think` 以手指抵下巴或扶眼鏡），務必確認外框與肩膀／頭部位置沒有偏移。
+
+#### 人工出圖提示詞：`sensei/sad`（難過／歉疚）
+
+**英文提示詞（建議用於支援圖生圖／參考圖編輯的 AI 工具，附上 `sensei-normal-green.png`）：**
+
+```text
+[Attach reference: sensei-normal-green.png]
+Image edit. Keep the character IDENTICAL to the reference image: exact same pose, camera framing, canvas proportions, head position, brown hair with low side ponytail over her left shoulder (viewer's left), thin black rectangular glasses, white collared shirt, mustard-brown open knit cardigan, dark navy skirt, hand holding the tan ceramic coffee mug, thin dark-colored anime line art, soft cel shading, and lighting, on a flat pure chroma-green (#00FF00) background with no gradient or shadow.
+Change ONLY the facial expression (eyebrows, eyes, mouth, subtle face tone): unmistakably sad, guilty, and deeply apologetic.
+- Eyebrows: clearly slanted upward at the inner ends and drooping downward at the outer ends (worried, sorrowful adult brows).
+- Eyes: warm brown eyes behind the glasses looking slightly downward with slightly lowered upper eyelids and a faint melancholic glossy sheen (restrained adult sorrow, not cartoonish bawling).
+- Mouth: STRICTLY NO SMILE. Corners of the mouth must NOT curve upward. Draw a clearly downturned sad mouth or tightly pressed, apologetically downturned lips so sadness is unmistakable even at small thumbnail size.
+Keep her looking like a gentle, mature adult female teacher (not a teenager). Do not move, resize, or retilt the head or body. Do not add props, text, or effects outside the original silhouette.
+Style: Japanese high-school anime x Korean webtoon character illustration, clean thin dark-brown/navy line art, soft cel shading with one shadow layer and one highlight layer, matching the reference image exactly.
+```
+
+**中文提示詞（若使用支援中文指令的圖片編輯工具，同樣附上 `sensei-normal-green.png`）：**
+
+```text
+以附圖 sensei-normal-green.png 為基礎進行局部圖片編輯。完全維持原角色的構圖、比例、頭部角度、棕色低馬尾（垂在畫面左側肩上）、黑色細框長方形眼鏡、白襯衫、棕黃開襟毛衣、深藍裙、手拿咖啡色陶製馬克杯的姿勢、細膩深色動漫線條、柔和賽璐璐上色與光線，背景維持單一純綠幕 #00FF00（無漸層、無陰影、無綠反光）。
+僅修改臉部表情為「明顯的難過與歉疚」（對應壞結局向學生道歉的語境）：
+- 眉毛：眉頭明顯上揚、眉尾下垂，呈現內疚與憂傷的八字眉。
+- 眼神：眼鏡後的暖棕色雙眼視線略微向下，上眼瞼微垂，帶有一點微潤的失落與自責感（成年女性克制的難過，不要誇張大哭）。
+- 嘴巴：絕對不能微笑、嘴角不可上揚；畫成明顯微微下垂的閉合嘴型或歉疚抿嘴，讓玩家一眼就能看出她在難過。
+不要移動或縮放頭部與身體，不要在原本輪廓外增加手勢、道具或特效，以保持換表情時畫面完全對齊。
+```
+
+#### 人工出圖提示詞：`sensei/think`（思考／沉思）
+
+**英文提示詞（附上 `sensei-normal-green.png`）：**
+
+```text
+[Attach reference: sensei-normal-green.png]
+Image edit. Keep the character IDENTICAL to the reference image: exact same pose, camera framing, canvas proportions, head position, brown hair with low side ponytail over her left shoulder (viewer's left), thin black rectangular glasses, white collared shirt, mustard-brown open knit cardigan, dark navy skirt, hand holding the tan ceramic coffee mug, thin dark-colored anime line art, soft cel shading, and lighting, on a flat pure chroma-green (#00FF00) background with no gradient or shadow.
+Change ONLY the facial expression (eyebrows, eyes, mouth): clearly thoughtful, analytical, and contemplative ("hmm, let me think..."), immediately distinguishable from her smiling normal sprite.
+- Eyes: warm brown irises clearly shifted to glance off to the side and slightly upward (looking to the viewer's right behind her black rectangular glasses), NOT looking straight at the viewer.
+- Eyebrows: gently knit / drawn together in calm concentration (or one eyebrow subtly raised and the other slightly lowered — curious and analytical, NOT angry or glaring).
+- Mouth: STRICTLY NO SMILE. Closed mouth in a flat, straight, or slightly pursed neutral line with ZERO upward curve at the corners.
+Keep her looking like a calm, intelligent, slightly laid-back adult female teacher. Do not move, resize, or retilt the head or body. Do not change hand gestures or add props/effects outside the original silhouette.
+Style: Japanese high-school anime x Korean webtoon character illustration, clean thin dark-brown/navy line art, soft cel shading with one shadow layer and one highlight layer, matching the reference image exactly.
+```
+
+**中文提示詞（附上 `sensei-normal-green.png`）：**
+
+```text
+以附圖 sensei-normal-green.png 為基礎進行局部圖片編輯。完全維持原角色的構圖、比例、頭部角度、棕色低馬尾（垂在畫面左側肩上）、黑色細框長方形眼鏡、白襯衫、棕黃開襟毛衣、深藍裙、手拿咖啡色陶製馬克杯的姿勢、細膩深色動漫線條、柔和賽璐璐上色與光線，背景維持單一純綠幕 #00FF00（無漸層、無陰影、無綠反光）。
+僅修改臉部表情為「專注思考／推敲」（需與微笑的 normal 立繪一眼可分）：
+- 眼神：眼鏡後的暖棕色瞳孔明顯偏向一側（向右上方或右側微瞥），不要直視鏡頭，呈現正在思索與分析的感覺。
+- 眉毛：眉頭微收或一眉略揚、一眉微壓，呈現沉思與端詳的神情（溫和專注，不要畫成生氣或瞪人）。
+- 嘴巴：絕對不能微笑、嘴角不可上揚；嘴型平直閉合或極輕微抿起。
+為避免自動裁切造成畫面跳動，請維持原本握杯手勢不變、不要移動或縮放頭部與身體（若另外嘗試以手指抵下巴或輕推眼鏡，需自行驗證外框與 normal 對齊）。
+```
+
+#### 共通負面提示詞（Negative Prompt）
+
+```text
+smiling, smirk, upturned mouth corners, happy expression, cheerful face, looking straight at viewer (for think), angry glare, shouting, green clothing, green hair, green rim light, green reflections or green glow on the character, text, watermark, signature, extra fingers, deformed hands, cropped head, different hairstyle, different glasses, different outfit, different mug, changed pose, 3D render, photorealistic, heavy blur, cast shadow, floor, ground, background scenery, props, multiple characters, chibi, teenager face, low quality
+```
+
+#### 轉檔與驗證步驟（完成出圖後執行）
+
+1. 將產出的兩張來源圖存於專案外（例如 `/tmp/sensei-sad.png`、`/tmp/sensei-think.png`），並建立暫存對照檔（例如 `/tmp/sensei-sources.json`）：
+
+   ```json
+   {
+     "sensei/sad": "/tmp/sensei-sad.png",
+     "sensei/think": "/tmp/sensei-think.png"
+   }
+   ```
+
+2. 執行去背轉檔（覆蓋 `public/art/sensei/sad.webp` 與 `think.webp`，並保留 manifest 其餘項目）：
+
+   ```bash
+   node scripts/process-art.mjs /tmp/sensei-sources.json
+   ```
+
+3. 執行檢查並產生四表情並排對照圖：
+
+   ```bash
+   npm run art:check -- --sheet /tmp/art-review
+   ```
+
+   檢視 `/tmp/art-review/sprites-sensei.png`（由左至右為 `normal`、`smile`、`think`、`sad`）。
+
+#### 人工重繪驗收檢查表
+
+- [ ] **四表情一眼可分**：並排檢視 `normal`／`smile`／`think`／`sad` 時，縮成小圖也能立刻辨識情緒差異。
+- [ ] **`sad` 嘴角不微笑**：眉尾下垂、視線略向下、嘴角平或明顯下垂（絕無微笑弧度），放進壞結局「抱歉啊，是我這個顧問，沒有撐到最後」不違和。
+- [ ] **`think` 視線與嘴型到位**：視線明確偏向一側、眉頭微收不顯兇、嘴型平直不微笑，與 `normal` 差異清楚。
+- [ ] **角色特徵與畫風一致**：維持棕色低馬尾、黑框長方眼鏡、白襯衫、棕黃開襟毛衣、深藍裙、陶製咖啡馬克杯、成年女性氣質，且柔和賽璐璐上色與 `rin`／`mirai` 等立繪一致。
+- [ ] **對位零跳動**：與 `sensei/normal.webp` 50% 疊圖時頭、肩、髮際線重合；`npm run art:check` 顯示 `0 broken` 且 `sensei/sad`、`sensei/think` **無** `WARN: crop differs from normal by up to ...px`。
+- [ ] **去背乾淨**：灰底與深色底檢視皆無白邊、無殘留綠點或綠色溢色，檔案為 `600×1000` 透明 WebP（單張約 50～100KB）。
+- [ ] **回歸檢查通過**：`npm run art:check && npm run typecheck && npm test` 全數通過。
