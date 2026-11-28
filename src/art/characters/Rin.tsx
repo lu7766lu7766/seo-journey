@@ -12,7 +12,7 @@ import {
   useMouthSpeak,
 } from './shared'
 
-/** 白鷺 凜：黑長直髮（藍黑光澤）、紅色髮帶蝴蝶結、學生會臂章、深藍銳利眼眸 */
+/** 白鷺 凜：鮮明藍色長髮（SVG 備援版畫得偏深）、紅色髮箍與領口緞帶、學生會臂章、銳利藍眼 */
 export function RinSprite({ face, speaking }: { face: Face; speaking?: boolean }) {
   const blinking = useBlink(face === 'happy')
   const mouthOpen = useMouthSpeak(speaking)

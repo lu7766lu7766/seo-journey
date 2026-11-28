@@ -57,7 +57,7 @@ export default scene('sq-h3', [
   minigame('sq-h3', { stats: { ans: 8 }, bond: { hare: 4 } }, { stats: { ans: 4 }, bond: { hare: 4 } }),
 
   show('hare', 'center', 'normal'),
-  say('narr', undefined, '三十秒的插播時段。她按下碼表，唸完兩句話的答案。'),
+  say('narr', undefined, '三十秒的插播時段。她按下計時器，唸完兩句話的答案。'),
   say('narr', undefined, '十一秒。比她平常的開場白還短。'),
   say('hare', 'surprised', '十一秒！我居然……沒有一句廢話！'),
   say('hare', 'normal', '可是重點講完，還剩二十秒。要不要補點閒聊？'),

@@ -3,7 +3,7 @@ import { bg, bgm, card, choice, hide, minigame, npc, opt, say, scene, show } fro
 export default scene('sq-h1', [
   bgm('daily'),
   bg('classroom', 'dusk'),
-  say('narr', undefined, '借用的家政教室裡，烤箱叮了一聲。奶油的甜香一路飄到走廊。'),
+  say('narr', undefined, '借用的教室裡，烤箱叮了一聲。奶油的甜香一路飄到走廊。'),
   show('hare', 'center', 'happy'),
   say('hare', 'happy', '{name}！結論先說：料理社的餅乾，宇宙第一好吃！'),
   say('me', undefined, '那委託是？'),

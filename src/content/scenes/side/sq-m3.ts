@@ -16,7 +16,7 @@ export default scene('sq-m3', [
   say('me', undefined, '七個來源裡，哪一個最像妳？'),
   say('mirai', 'think', '第四個。作者在文末寫：「今天風大，望遠鏡差點被吹倒。」'),
   say('mirai', 'think', '那句，沒有資訊價值。我讀了三遍。'),
-  say('me', undefined, '那叫人味。'),
+  say('me', undefined, '那叫人情味。'),
   say('mirai', 'sad', '如果刪掉這篇，世界不會少任何資訊。'),
   say('me', undefined, '未來……'),
   say('mirai', 'sad', '校史出錯，是因為有人複製了錯誤。爬蟲取走內容，也是複製。'),

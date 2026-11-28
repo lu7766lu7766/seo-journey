@@ -38,7 +38,7 @@ export default scene('w2', [
   card('question-headings'),
   say('hare', 'happy', '以後我跑偏，你就比個「結論」的手勢！（雙手比出大大的圓）'),
 
-  say('narr', undefined, '夕陽把耳機線染成金色，晴忽然安靜下來，捏著領結的一角。'),
+  say('narr', undefined, '午後的光把耳機線染成金色，晴忽然安靜下來，捏著領結的一角。'),
   show('hare', 'center', 'sad'),
   say('hare', 'sad', '我想當能用一句話打動聽眾的主播……但我是不是總是很吵？'),
   choice([

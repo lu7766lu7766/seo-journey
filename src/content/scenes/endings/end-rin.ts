@@ -25,7 +25,7 @@ export default scene('end-rin', [
   ),
   show('rin', 'center', 'blush'),
   say('rin', 'blush', '……！笨蛋。這種話，要事先預告。'),
-  say('narr', undefined, '風吹起她的藍黑色長髮。她從口袋掏出那個貓咪鑰匙圈，輕輕放進我手心。'),
+  say('narr', undefined, '風吹起她的藍色長髮。她從口袋掏出那個貓咪鑰匙圈，輕輕放進我手心。'),
   cg('end-rin'),
   when(
     seen('sq-r3'),
