@@ -1,0 +1,97 @@
+{
+ "_note": "說話人錨點：每個聲音一個參考音檔（mp3 48 kbps、單檔 < 200 KB），量產時 take 的 WavLM x-vector 與錨點的餘弦相似度必須 ≥ voices_r3.json 的 anchor_sim_min。校準資料＝第二／三輪與煙霧測試的現有 take（已知正常），npc_woman_A__npc_woman_4__r0t1（Gemini 判定跑偏成大叔嗓）當作要擋的負例；錨點由使用者聽過後指定（見各聲音的 anchor_source）。門檻＝已知正常 take 的最小值 − 0.06，向下取到 0.02 的倍數。WavLM-base-plus-sv 區分相近的合成女聲能力有限（別的聲音的 take 與錨點相似度最高 0.97），所以這個守門只擋『同一個聲音設定下明顯跑偏』，不是身分辨識。",
+ "anchors": {
+  "hare_D": {
+   "anchor_source": "r3 hare_D__hare_2__r0t0（驚訝句、318 Hz，使用者選）",
+   "n_known_good": 17,
+   "min": 0.726,
+   "p10": 0.779,
+   "median": 0.861,
+   "max": 0.993,
+   "other_voices_max": 0.917,
+   "anchor_sim_min": 0.66,
+   "n_ge_threshold": 17
+  },
+  "kuro_A": {
+   "anchor_source": "r3 kuro_A__kuro_3__r0t1（「我作文從沒及格過」、107 Hz 偏低沉，使用者選）",
+   "n_known_good": 11,
+   "min": 0.745,
+   "p10": 0.769,
+   "median": 0.847,
+   "max": 0.977,
+   "other_voices_max": 0.942,
+   "anchor_sim_min": 0.68,
+   "n_ge_threshold": 11
+  },
+  "npc_woman_A": {
+   "anchor_source": "r3 npc_woman_A__npc_woman_3__r0t2（「哎呀……英文頁那個，是我翻的」、164 Hz，使用者選）",
+   "n_known_good": 8,
+   "min": 0.855,
+   "p10": 0.888,
+   "median": 0.936,
+   "max": 0.961,
+   "other_voices_max": 0.97,
+   "anchor_sim_min": 0.78,
+   "n_ge_threshold": 8
+  },
+  "rin_A": {
+   "anchor_source": "r2 r2_rin_A__rin_1",
+   "n_known_good": 4,
+   "min": 0.803,
+   "p10": 0.828,
+   "median": 0.888,
+   "max": 0.934,
+   "other_voices_max": 0.944,
+   "anchor_sim_min": 0.74,
+   "n_ge_threshold": 4
+  },
+  "mirai_A": {
+   "anchor_source": "r2 r2_mirai_A__mirai_4（「我一直怕，自己只是別人內容的複製品」，使用者選）",
+   "n_known_good": 6,
+   "min": 0.751,
+   "p10": 0.758,
+   "median": 0.825,
+   "max": 0.942,
+   "other_voices_max": 0.964,
+   "anchor_sim_min": 0.68,
+   "n_ge_threshold": 6
+  },
+  "sensei_A": {
+   "anchor_source": "r2 r2_sensei_A__sensei_3（「所謂有幫助，先問自己…」，使用者選）",
+   "n_known_good": 4,
+   "min": 0.899,
+   "p10": 0.905,
+   "median": 0.943,
+   "max": 0.979,
+   "other_voices_max": 0.975,
+   "anchor_sim_min": 0.82,
+   "n_ge_threshold": 4
+  },
+  "npc_girl_A": {
+   "anchor_source": "r2 r2_npc_girl_A__npc_girl_1",
+   "n_known_good": 4,
+   "min": 0.864,
+   "p10": 0.889,
+   "median": 0.947,
+   "max": 0.954,
+   "other_voices_max": 0.971,
+   "anchor_sim_min": 0.8,
+   "n_ge_threshold": 4
+  },
+  "npc_boy_A": {
+   "anchor_source": "r2 r2_npc_boy_A__npc_boy_1",
+   "n_known_good": 6,
+   "min": 0.725,
+   "p10": 0.766,
+   "median": 0.856,
+   "max": 0.987,
+   "other_voices_max": 0.918,
+   "anchor_sim_min": 0.66,
+   "n_ge_threshold": 6
+  }
+ },
+ "negative_example": {
+  "take": "npc_woman_A__npc_woman_4__r0t1",
+  "sim_to_npc_woman_A_anchor": 0.6982
+ }
+}

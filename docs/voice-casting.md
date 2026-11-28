@@ -448,3 +448,104 @@ scripts/colab/voice/produce/run_produce.sh                  # 量產 → public/
 python3 scripts/colab/voice/r3/build_page_r3.py --r3 /tmp/seo-journey-audio/voice-r3 --smoke /tmp/seo-journey-audio/voice-produce-smoke
 bash scripts/colab/voice/r3/tests_colab_session.sh && python3 scripts/colab/voice/r3/tests_r3_common.py && python3 scripts/colab/voice/produce/tests_emotion.py
 ```
+
+## 11. 第四輪：量產前管線修正與小規模驗證
+
+> 腳本：[`scripts/colab/voice/produce/`](../scripts/colab/voice/produce/)（守門、情緒指令、後處理、試聽頁）、[`scripts/colab/voice/r3/`](../scripts/colab/voice/r3/)（共用函式庫）、[`scripts/colab/voice/anchors/`](../scripts/colab/voice/anchors/)（說話人錨點）。試聽頁：`/tmp/seo-journey-audio/voice-r4/index.html`（單一檔案，音檔以 base64 內嵌 3.4 MB，不進版控）。
+> 起因：Gemini 逐檔聆聽第三輪樣本與 10 句煙霧測試。選角不變，8 個聲音照舊（Qwen3-TTS-12Hz-1.7B-VoiceDesign，Apache-2.0，全部由文字描述設計）。這一輪只修管線、做 34 項（29 句＋5 個 A/B）小規模驗證，**沒有跑全量 798 句**。
+
+### 11.1 修正清單
+
+| # | 問題 | 修法 | 驗證 |
+| --- | --- | --- | --- |
+| 1 | 「不刻意嘆氣」這類否定句反而誘發嘆氣 | `voices_r3.json`、`emotion_map.json`、r3 樣本句全部改正向（例：「語氣明朗親切、起音俐落平順」「吐字清楚流暢」「聲音集中穩定」）；口音「不過度捲舌」→「捲舌輕巧」；凜「不撒嬌、不甜膩」→「語氣端正利落、音色乾淨清冽」；未來「不帶過重喘氣聲」→「聲音乾淨平穩」；翔「而不低沉老成」→「聲線保持明亮的青春少年感」等。`banned_hits` 不再放行「不…破音」；新增 `negation_hits`（不／別／沒有／避免…，慣用情緒詞「不好意思、不耐煩、不悅…」放行） | 兩個測試會掃描全部描述與 798 句組合後的指令（含收斂版）：0 個否定句 |
+| 2 | 音高範圍 | 翔 **[95, 255]**（使用者選了 107 Hz 的低沉版）、NPC 成年女性 **[150, 235]**（錨點 164 Hz）、NPC 少年 [125, 225]、晴上限維持 320；「音高維持在穩定的中音域」只加在 hare.blush（surprised 不加，以免把晴壓太低） | 單元測試（邊界值與三個錨點的 F0 都能過） |
+| 3 | 收斂版降成 normal，翔的驚慌整個消失 | 改成「原本的表情基底＋修飾片語＋『維持原本的情緒與語速，只把音高壓在穩定的{音域}、音量適中』」；`kuro.shock` 用整句覆寫：「維持急促驚慌的語速與情緒，只把音高壓在穩定的男中音域、音量適中。」；NPC 依名牌決定音域 | 測試：798 句收斂版都以原表情基底開頭；驗證集有 2 句靠收斂版通過（kuro_1、kuro_2） |
+| 4 | acronym 規則把 Disallow 也當縮寫 | 縮寫 `(?<![A-Za-z])[A-Z]{2,}(?![A-Za-z])`；一般英文單字 `(?<![A-Za-z])(?=[A-Za-z]*[a-z])[A-Za-z]{2,}` 另給「英文單字以自然的英語發音念出。」 | 測試：SEO、LCP、FAQ、INP → 縮寫；Disallow、robots、noindex、GPTBot、Recipe → 一般英文 |
+| 5 | Paraformer 同音字誤殺（部落格→布洛格、用得→用的） | 守門 CER 改比**無聲調拼音**（pypinyin `Style.NORMAL`，已加進 VM 安裝清單，環境準備會 import 檢查）；字元 CER 只記在 `cer_char`。「結論先說」的必要詞檢查也比拼音。啦 la／了 le 刻意仍被擋（Paraformer 與 SenseVoice 兩個模型都聽成「了」，排除不了真的念錯）。杰倫→結論白名單保留（「杰倫」jie lun 在拼音下本來就等價；「杰樂」jie le 仍要靠白名單） | 測試：部落格≡布洛格、用得≡用的、啦≠了（12 字句 1 錯 = 0.083 > 0.08）、「別論先說」仍被擋；驗證集 festival（LCP＋部落格＋用得）第一個 take 就過，字元 CER 0.263 會誤殺、拼音 CER 0 |
+| 6 | 說話人一致性 | 每個聲音一個錨點（見 11.2），take 的 WavLM x-vector 與錨點的餘弦相似度須 ≥ `anchor_sim_min`，否則 `speaker` 失敗；< 0.5 秒的音檔不守（見 11.5） | 11.2 的校準；驗證集 `speaker` 擋了 1 個真的跑偏 take（Disallow #2，相似度 0.624） |
+| 7 | 短句響度 | `postprocess_r4.py`：預測以 TP 上限能達到的響度 < −17.0 LUFS 時，先過溫和壓縮＋軟限幅（acompressor → alimiter，三檔由輕到重，夠用就停），再以**編碼後實測**閉環調增益（MP3 48 kbps 會讓響度掉約 0.4 LU）。目標 −16.7，區間 −17.5～−16.0，TP ≤ −2 dBTP | 煙霧測試成品 8 個＋煙霧失敗 take 3 個＋第三輪樣本 23 個（共 34 個舊 WAV）全部落在區間；驗證集 29 個成品 −16.8～−16.6 LUFS、最高 −2.3 dBTP；「……搜不到。」0.45 秒：**−21.1 → −16.6 LUFS**（壓縮第 2 檔，TP −3.1） |
+| 8 | 保留失敗 take | 每句最多 3 個最接近通過的失敗 take（64 kbps mp3＋ASR 轉寫與各項指標），隨 chunk 下載到 `raw/review/`；`report.json` 的 `failed[]` 列出全部 take 失敗的句子與每個 take 的結果 | 驗證集共保留 36 個失敗版（29 句＋5 個 A/B 變體中有失敗過的句子）、試聽頁每句都聽得到（hare_3 只差「啦／了」的 take 也在） |
+| 9 | 「哎呀」開頭被念成長嘆氣 | 規則 `hey`（優先序 2）：「『哎呀』短促輕快、一帶而過。」；原本的「不拖長」是否定句，不用 | 驗證集 4 句「哎呀」第一個或第二個 take 就過，其中 3 句首 take 通過 |
+
+### 11.2 說話人錨點與校準
+
+錨點依使用者聽過後的選擇：
+
+| 聲音 | 錨點（來源 take） | 門檻 `anchor_sim_min` | 已知正常 take 的相似度（n／最小／中位／最大） |
+| --- | --- | --- | --- |
+| 晴 hare_D | r3 hare_2 r0t0（驚訝句、318 Hz） | 0.66 | 17／0.726／0.861／0.993 |
+| 翔 kuro_A | r3 kuro_3 r0t1（「我作文從沒及格過」、107 Hz，偏低沉成熟） | 0.68 | 11／0.745／0.847／0.977 |
+| NPC 成年女性 npc_woman_A | r3 npc_woman_3 r0t2（164 Hz） | 0.78 | 8／0.855／0.936／0.961 |
+| 凜 rin_A | r2 rin_1 | 0.74 | 4／0.803／0.888／0.934 |
+| 未來 mirai_A | r2 mirai_4 | 0.68 | 6／0.751／0.825／0.942 |
+| 千尋 sensei_A | r2 sensei_3 | 0.82 | 4／0.899／0.943／0.979 |
+| NPC 少女 npc_girl_A | r2 npc_girl_1 | 0.80 | 4／0.864／0.947／0.954 |
+| NPC 少年 npc_boy_A | r2 npc_boy_1 | 0.66 | 6／0.725／0.856／0.987 |
+
+錨點是 mp3（17～41 KB，每檔 < 200 KB），在 `scripts/colab/voice/anchors/`，量產時上傳到 VM 的 `/content/anchors/`；`anchors/anchors.json` 記錄來源與校準摘要。**校準方法**：用本機 CPU 對現有 take（第二輪 accent A、第三輪已下載的 23 個、煙霧測試 11 個，共 60 個；`calibrate_anchors.py`）算與各錨點的相似度，門檻＝該聲音「已知正常」take 的最小值 − 0.06，向下取到 0.02 的倍數。
+
+- **擋得掉 npc_woman_4 r0t1**：該 take（Gemini 判定跑偏成大叔嗓）與 npc_woman_A 錨點的相似度 **0.698**，其餘 npc_woman 正常 take 最低 0.855，門檻 0.78 夾在中間（兩邊餘裕 0.08）。以使用者最初建議的錨點（npc_woman_2 r0t0）校準時是 0.673 對 0.891、門檻 0.82，結論相同。
+- **翔：現有 kuro take 與新錨點的相似度幾乎都過門檻**。11 個已知 take：≥ 0.68 有 11 個、≥ 0.80 有 9 個、≥ 0.90 有 5 個、≥ 0.95 有 4 個。相似度和音高**幾乎沒關係**——F0 228 Hz 的 kuro_4 r0t1 與 107 Hz 的錨點相似度 0.957，F0 151 Hz 的 kuro_3 r0t0 是 0.977。所以這個守門無法逼出低沉的音色，只擋得住明顯跑偏。
+- **別的聲音的 take 與錨點的相似度最高 0.92～0.98**（例如 sensei 的 take 對 npc_woman 錨點 0.970）：WavLM-base-plus-sv 區分相近的合成女聲能力有限，這個守門是「同一個聲音設定下明顯跑偏」的偵測器，**不是身分辨識**。
+- 驗證集 80 個 take 的相似度：hare 最小 0.752、kuro 0.749、mirai 0.858、npc_woman 0.819、rin 0.836、sensei 0.912、npc_girl 0.865；npc_boy 的 0.013～0.46 全是 0.32 秒的「嗯。」（見 11.5）。通過的 take 沒有被 `speaker` 誤殺。
+
+### 11.3 驗證集結果（L4、bf16、一批 8 句、每句最多 6 個 take）
+
+驗證集 29 句（10 句煙霧＋hare_3、kuro_2…等高風險句；翔 5 句、NPC 成年女性 4 句、sensei sad 2 句、英文詞句、極短句），另有翔 5 句的 A/B 變體。
+
+| | 上一輪 | 第四輪 |
+| --- | --- | --- |
+| 煙霧測試 10 句 ≤ 6 個 take 內通過 | 8/10（26 個 take，2.6/句） | **9/10**（22 個 take，2.2/句；首 take 通過 6/10） |
+| 煙霧測試仍失敗 | LCP＋部落格那句（cer 6、f0_high 4）、Disallow | 只剩 Disallow（天文社社長，f0_high＋cer） |
+| 驗證集 29 句通過 | — | **24/29**；首 take 通過 13/29；take 通過率 24/74（32%）；2.55 take／句 |
+| 第三輪樣本句（逐句對照） | hare 4/5 句、kuro 4/4、npc_woman 4/4（首輪 take 通過率 33%／75%／75%） | hare_1 ✅（3 個 take）、**hare_2 ❌**、hare_3 ❌、kuro_1～4 ✅（4／4／1／1 個 take）、npc_woman_1／3／4 ✅（1／1／2 個 take） |
+| 響度 | −21.1～−16.0 LUFS | −16.8～−16.6 LUFS，TP ≤ −2.3 dBTP |
+
+各聲音（驗證集內，含重抽）：sensei 3/3（3 個 take）、npc_woman 4/4（5 個 take）、kuro 5/5（基準描述；13 個 take）、rin 2/2、mirai 2/2、npc_girl 2/2、npc_boy 3/5、hare 3/6（24 個 take）。
+
+**全部 take 失敗的 5 句**（試聽頁最上面有表，每句保留 3 個最接近的失敗版）：
+
+| id | 聲音 | 台詞 | 失敗原因（take 數） | 判讀 |
+| --- | --- | --- | --- | --- |
+| date-hare-2/faf5b6b172db | hare_D | 別、別突然講這麼溫柔的話啦！ | cer 5、f0_high 5、lead 3 | **只差「啦／了」**：6 個 take 有 5 個 ASR 聽成「了」，只有第 5 個轉寫正確「啦」但 F0 375 Hz／lead。請直接聽失敗版 f1～f3 決定要不要把句尾「啦／了」放進白名單 |
+| end-true/45a07461dbcf | hare_D | 結論先說：今天起，404 社辦要吵翻天啦！ | cer 5、f0_high 4 | 「社辦」被聽成「設班／設敗」、「吵翻天啦」→「了」；F0 300～372 |
+| w1/784e070e9823 | hare_D | 打擾了！結論先說：我帶了炸雞排，還有，舊公告頁搬家了！ | lead 6、f0_high 2 | 6 個 take 的 CER 幾乎都是 0，**只死在起音延遲**（pyin 啟發式 1.33～3.5 s，ASR 沒有時間戳、onset 0.0）。強烈懷疑是啟發式對高音晴誤判（第三輪 hare_2 r0t0 同一句通過），請聽失敗版 |
+| sq-m2/d26559546567 | npc_boy_A | 我決定了！全擋！Disallow 到底！ | f0_high 5、cer 4、speaker 1 | 激動句的音高常 260～360 Hz（上限 225）；Disallow 被轉成「弟子喽／迪斯佬」。第三輪、煙霧測試同樣失敗 |
+| sq-h2/d4e9eb68d7dc | npc_boy_A | 嗯。 | sv_lang 5、f0_low 4、speaker 6、yue 1 | 0.32 秒的單字：SenseVoice 判成 en／yue、F0 偵測不穩、x-vector 不可靠。守門不適用，建議這句人工指定或免守門 |
+
+### 11.4 翔的聲音描述 A/B（使用者選的錨點是 107 Hz 偏低沉）
+
+基準＝現行描述（「中等偏亮的青年男中音…」）；偏低沉＝「偏低沉、略帶沙啞的少年男中音，帶著輕佻自信的街頭推銷感…」（`voices_r3.json` 的 `design_variants.lowvoice`，**尚未採用**，等你聽過決定）。5 句各跑一次：
+
+| 指標 | 基準（13 個 take） | 偏低沉（6 個 take） |
+| --- | --- | --- |
+| F0 中位／最小／最大（Hz） | 242.6／130.9／326.9 | **191.4**／94.6／235.4 |
+| 與錨點相似度 中位 | 0.889 | 0.918 |
+| 5 句 ≤ 6 take 通過 | 5/5（共 13 個 take；2 句靠收斂版） | 5/5（共 6 個 take；4 句首 take 就過） |
+
+偏低沉描述平均降了約 50 Hz、通過所需的 take 也較少，但**仍遠不到 107 Hz**（通過 take 的 F0 為 152、174、210、234、235 Hz）。107 Hz 的錨點是個幸運的抽樣。若量產要穩定得到這個音色，需要「偏低沉描述＋翔的 F0 上限收到約 190～200 Hz」（本輪 6 個偏低沉 take 有 3 個 ≤ 200 Hz，預期每句約 2 個 take 才抽得到一個）；這會增加 take 數，且是否好聽要你聽。F0 區間我沒有擅自改，維持你指定的 [95, 255]。
+
+### 11.5 其他發現與限制
+
+- **晴的 F0 上限**：24 個 take 的 F0 中位 329 Hz（271～395）。上限 320／330／340／350 時 F0 在範圍內的 take 有 10／12／16／20 個，但「其他守門也全過」的只有 3／4／6／7 個。放寬到 330 只多 1 個、340 多 3 個，主要擋路的是 CER（啦／了、社辦）與起音延遲，所以**維持 320**。要放寬請先解決「啦／了」與 lead 的判定。
+- **起音延遲仍是未經耳驗的啟發式**（HF 的 paraformer 沒有時間戳，一律退回 pyin）。驗證集有 sensei（1.9 s）、kuro（1.3～1.5 s）、mirai（1.5～1.6 s）、hare（1.3～3.5 s）的 take 被它擋掉，**是否真的有長句首喘息請人耳確認**；hare_2 全軍覆沒就是它。
+- **說話人守門對 < 0.5 秒音檔不可靠**：「嗯。」6 個 take 相似度 0.01～0.46，而 0.64 秒的「……搜不到。」是 0.83。驗證之後我在 `gate()` 加了 `anchor_min_dur_s = 0.5`（短於 0.5 秒不守這一關，已有單元測試），**這個改動沒有在 Colab 重跑過**；「嗯。」仍會被 sv_lang／f0_low 擋。
+- 英文詞：LCP、INP、CLS、FAQ（縮寫）與 Recipe、robots.txt、Disallow（單字）第一或第二個 take 就過，除了天文社社長的 Disallow 句（上述音高問題）。ASR 把 Recipe 轉成「rec p」、robots.txt 轉成「robots d xt」，靠拉丁詞切段比對才不誤殺。
+- **聲音描述改寫的影響**：為了移除否定句，我改了凜、未來、千尋、NPC 少女、NPC 少年、翔、NPC 成年女性的基底描述與全體口音提示。驗證集這 5 個定案聲音（凜、未來、千尋、NPC 少女、NPC 少年）的 take 與第二輪錨點的相似度都 ≥ 0.83（凜 0.836～0.958、千尋 0.912～0.949、NPC 少女 0.865～0.975），沒有看到明顯漂移；但這只是 x-vector 的證據，**音色有沒有變請聽試聽頁每句下面的「上一輪同句」**（第二輪的 5 個聲音沒有同句樣本，只能和第三輪／煙霧測試對照）。
+- 我聽不到聲音。台灣腔、情緒、像不像角色、嘆氣是否真的消失，都要人耳；試聽頁每句都附上通過版、失敗版與上一輪版本。
+
+### 11.6 花費與環境
+
+- Colab 餘額 **269.78 → 269.00，共 0.78 CU**（兩個 L4 session：第一次在評測 0.32 秒的「嗯。」時 WavLM 丟例外而中止，約 0.34 CU；修好後第二次完整跑 5.6 分鐘，約 0.44 CU）。L4 第一次要不到卡，等了約 8～10 分鐘後取得；預算只有 1.5 CU，所以把 A100 從這次的備援拿掉（`COLAB_GPU_FALLBACK=L4,T4`，A100 每小時約 L4 的 3 倍（社群量測值），估計 12～15 分鐘就可能超支）。
+- 這次發現並修好的管線問題：x-vector 對 < 1 秒音檔會丟例外（現在重複鋪滿到 1 秒再算）；單一 take 評測例外不再中止整個 chunk（記錄後跳過）。
+- 沒有使用 HF token（所用模型皆公開）；結束時 `colab sessions` 為空，沒有背景程式。
+
+### 11.7 重現
+
+```bash
+PRODUCE_VALIDATE=1 REFRESH_LINES=0 COLAB_GPU_FALLBACK=L4,T4 scripts/colab/voice/produce/run_produce.sh   # 驗證集（validate_ids.json）→ /tmp/seo-journey-audio/voice-r4/work
+python3 scripts/colab/voice/produce/build_page_r4.py --work /tmp/seo-journey-audio/voice-r4/work --out /tmp/seo-journey-audio/voice-r4   # 單檔試聽頁
+python3 scripts/colab/voice/produce/calibrate_anchors.py --pool <pool.json> --anchors scripts/colab/voice/anchors --out calibration.json   # 本機校準（需 torch、transformers）
+python3 scripts/colab/voice/r3/tests_r3_common.py && python3 scripts/colab/voice/produce/tests_emotion.py && bash scripts/colab/voice/r3/tests_colab_session.sh
+```

@@ -21,6 +21,14 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
+def load_audio_16k(path):
+    """任何 ffmpeg 讀得動的檔（mp3／wav）→ 16 kHz 單聲道 float32。錨點與本機校準用。"""
+    import subprocess
+
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-ac", "1", "-ar", "16000", "-f", "f32le", "-"], capture_output=True, check=True).stdout
+    return np.frombuffer(raw, dtype=np.float32).copy()
+
+
 def log(msg):
     print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
 
@@ -121,13 +129,23 @@ def prep_instruct(s):
 
 
 def banned_hits(instruct, banned):
-    """情緒指令中的禁用字眼（氣音／破音／極快／響亮…）。前 4 個字內有「不」的否定用法（「不結巴破音」「不破音不尖叫」）放行。"""
-    hits = []
-    for w in banned:
-        for m in re.finditer(re.escape(w), instruct):
-            if "不" not in instruct[max(0, m.start() - 4) : m.start()]:
-                hits.append(w)
-    return hits
+    """情緒指令中的禁用字眼（氣音／破音／極快／響亮…）。第四輪起不再放行「不…破音」這類否定用法：否定句也會讓模型去做那件事，一律改寫成正向描述。"""
+    return [w for w in banned if w in instruct]
+
+
+# 否定詞 lint（第四輪）：「不刻意嘆氣」「不結巴破音」這類否定句會誘發模型真的去做；描述一律寫成正向。
+# 放行的是情緒／慣用詞本身（不好意思、不耐煩、不悅、不安、不滿、不服氣、不愛），不是對聲音的否定要求。
+_NEG_IDIOMS = ("不好意思", "不耐煩", "不悅", "不安", "不滿", "不服氣", "不愛", "不同")
+_NEG_RE = re.compile(r"不|沒有|避免|禁止|切勿|勿|別")
+
+
+def negation_hits(text):
+    """回傳句中的否定用法（排除慣用情緒詞）。空清單 = 乾淨。"""
+    t = text
+    for idiom in _NEG_IDIOMS:
+        t = t.replace(idiom, "□" * len(idiom))
+    t = t.replace("特別", "□□").replace("分別", "□□").replace("區別", "□□").replace("告別", "□□")
+    return [m.group(0) for m in _NEG_RE.finditer(t)]
 
 
 def build_instruct(design, accent, emotion):
@@ -208,6 +226,42 @@ def cer_equiv(ref, hyp):
     return edit_distance(r, h) / len(r), applied, h
 
 
+# ---- 無聲調拼音 CER（第四輪）：Paraformer 會把同音字聽成別的字（部落格→布洛格、用得→用的），字元 CER 因此誤擋念對的句子。
+# 守門改比「無聲調拼音」序列（pypinyin Style.NORMAL）；字元 CER 只留作參考紀錄。
+# 啦 la／了 le 的拼音不同，所以仍會被擋——這是刻意的：Paraformer 與 SenseVoice 兩個模型都聽成「了」，無法排除真的念錯。
+def to_pinyin(s):
+    """已正規化（簡體、無標點）的字串 → 無聲調拼音音節清單；非中文字元逐字原樣保留。"""
+    from pypinyin import Style, lazy_pinyin
+
+    return lazy_pinyin(s, style=Style.NORMAL, errors=lambda x: list(x))
+
+
+def cer_pinyin(ref, hyp):
+    """(無聲調拼音 CER, 白名單替換清單, 正規化後的 hyp)。拉丁字母句的處理方式同 cer_equiv（在拉丁詞處切成中文片段各自對齊）。"""
+    r, h = norm_text(ref), norm_text(hyp)
+    h, applied = apply_equiv(r, h)
+    hp = to_pinyin(h)
+    if re.search(r"[A-Z]", r):
+        segs = [x for x in re.split(r"[A-Z0-9]+", r) if x]
+        total = sum(len(x) for x in segs)
+        if not total:
+            return 0.0, applied, h
+        return sum(_substring_errors(to_pinyin(x), hp) for x in segs) / total, applied, h
+    rp = to_pinyin(r)
+    if not rp:
+        return 0.0, applied, h
+    return edit_distance(rp, hp) / len(rp), applied, h
+
+
+def phrase_present(phrase, hyp_n):
+    """必須出現的口頭禪是否在轉寫裡：字面包含，或無聲調拼音序列包含（杰伦先说≡结论先说）。hyp_n 已正規化。"""
+    p = norm_text(phrase)
+    if p in hyp_n:
+        return True
+    pp, hp = to_pinyin(p), to_pinyin(hyp_n)
+    return any(hp[i : i + len(pp)] == pp for i in range(len(hp) - len(pp) + 1))
+
+
 def cos(a, b):
     return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-9))
 
@@ -264,6 +318,7 @@ class Evaluator:
         log("載入 WavLM x-vector …")
         self.fe = AutoFeatureExtractor.from_pretrained("microsoft/wavlm-base-plus-sv")
         self.sv = WavLMForXVector.from_pretrained("microsoft/wavlm-base-plus-sv").cuda().eval()
+        self.anchors = {}
 
     @staticmethod
     def to16k(wav, sr):
@@ -309,8 +364,27 @@ class Evaluator:
         emo = next((t for t in tags if t in SV_EMOTIONS), None)
         return lang, event, emo, re.sub(r"<\|[^|]*\|>", "", raw)
 
+    def load_anchors(self, voices, anchor_dir):
+        """每個聲音一個參考錨點音檔（mp3，`anchors/<voice_id>.mp3`）→ 說話人嵌入。voices 裡有 `anchor` 欄位的都必須載得到，否則直接中止。"""
+        self.anchors = {}
+        for v in voices:
+            if not v.get("anchor"):
+                continue
+            path = os.path.join(anchor_dir, v["anchor"])
+            if not os.path.exists(path):
+                raise FileNotFoundError(f"聲音 {v['id']} 的錨點 {path} 不存在")
+            self.anchors[v["id"]] = self.embed(load_audio_16k(path))
+        log(f"錨點載入：{sorted(self.anchors)}")
+
+    def anchor_sim(self, voice_id, emb):
+        a = self.anchors.get(voice_id)
+        return None if a is None else round(cos(a, emb), 4)
+
     def embed(self, w16):
         torch = self.torch
+        w16 = np.asarray(w16, dtype=np.float32)
+        if len(w16) < 16000:  # WavLM x-vector 的 TDNN 輸入太短會直接丟例外（第四輪驗證：「嗯。」0.32 秒）→ 重複鋪滿到 1 秒再算
+            w16 = np.tile(w16, int(np.ceil(16000 / max(1, len(w16)))))[:16000]
         with torch.no_grad():
             inp = self.fe(w16, sampling_rate=16000, return_tensors="pt", padding=True)
             e = self.sv(**{k: v.cuda() for k, v in inp.items()}).embeddings[0]
@@ -347,15 +421,17 @@ class Evaluator:
         tail_ratio = float(np.mean(rms[-3:]) / (np.median(speech) + 1e-9)) if len(speech) else 0.0
         return {"f0": f0_med, "f0_pyin": float(np.median(f0p[ok])) if n_voiced >= 3 else 0.0, "voiced_frames": n_voiced, "lead_pyin": lead_pyin, "tail_ratio": tail_ratio, "t_onset": t_onset}
 
-    def measure(self, wav, sr, ref_text):
-        """一個 take 的完整機器指標。ref_text = 已 prep_text 的送進 TTS 的文字。"""
+    def measure(self, wav, sr, ref_text, voice_id=None):
+        """一個 take 的完整機器指標。ref_text = 已 prep_text 的送進 TTS 的文字；voice_id 有錨點時另算 anchor_sim（與錨點音檔的說話人相似度）。"""
         w16 = self.to16k(wav, sr)
         dur = len(wav) / sr
         lang = self.detect_language(w16)
         hyp, first_tok, n_ts = self.transcribe(w16)
         sv_lang, sv_event, sv_emo, sv_text = self.sense_voice(w16)
         shape = self.pitch_and_shape(w16)
-        cer, applied, _ = cer_equiv(ref_text, hyp)
+        cer_char, applied, _ = cer_equiv(ref_text, hyp)
+        cer, _, _ = cer_pinyin(ref_text, hyp)
+        emb = self.embed(w16)
         lead_asr = None
         if first_tok is not None and shape["t_onset"] is not None:
             lead_asr = max(0.0, first_tok - shape["t_onset"])
@@ -365,6 +441,7 @@ class Evaluator:
             "chars_per_s": round(max(1, len(norm_text(ref_text))) / max(dur, 1e-3), 2),
             "asr_text": hyp,
             "cer": round(cer, 4),
+            "cer_char": round(cer_char, 4),
             "equiv_applied": applied,
             "lang_top": lang["top"],
             "yue_prob": round(lang["yue"], 4),
@@ -382,8 +459,9 @@ class Evaluator:
             "lead_pyin_s": None if shape["lead_pyin"] is None else round(shape["lead_pyin"], 2),
             "lead_s": None if lead is None else round(lead, 2),
             "tail_ratio": round(shape["tail_ratio"], 2),
+            "anchor_sim": self.anchor_sim(voice_id, emb) if voice_id else None,
             "_hyp_norm": norm_text(hyp),
-            "_emb": self.embed(w16),
+            "_emb": emb,
         }
 
 
@@ -400,7 +478,7 @@ def gate(m, gates, voice, nchar, catchphrase=False, must_have=()):
     """回傳 (通過, [失敗原因])。
 
     yue（Whisper 或 SenseVoice 判粵語）／sv_lang（SenseVoice 語種不是 zh，含解析失敗）／sv_event（Breath、Cough 等雜訊事件）／
-    cer／phrase（必須出現的口頭禪沒念對）／f0_none、f0_low、f0_high／long／lead／tail。
+    cer（無聲調拼音）／phrase（必須出現的口頭禪沒念對）／f0_none、f0_low、f0_high／long／lead／tail／speaker（與錨點的說話人相似度太低）。
     """
     fails = []
     if m["lang_top"] == "yue" or m["yue_prob"] > gates["yue_prob_max"] or m.get("sv_lang") == "yue":
@@ -414,7 +492,7 @@ def gate(m, gates, voice, nchar, catchphrase=False, must_have=()):
     if must_have:
         hyp_n = m.get("_hyp_norm") or norm_text(m["asr_text"])
         hyp_n, _ = apply_equiv(" ".join(norm_text(p) for p in must_have), hyp_n)
-        if any(norm_text(p) not in hyp_n for p in must_have):
+        if not all(phrase_present(p, hyp_n) for p in must_have):
             fails.append("phrase")
     lo, hi = voice["f0"]
     if m["f0_median_hz"] <= 0:
@@ -430,12 +508,16 @@ def gate(m, gates, voice, nchar, catchphrase=False, must_have=()):
         fails.append("lead")
     if m["tail_ratio"] > gates["tail_ratio_max"]:
         fails.append("tail")
+    smin = voice.get("anchor_sim_min", gates.get("anchor_sim_min"))
+    # 短於 0.5 秒的音檔（「嗯。」0.32 秒）x-vector 不可靠：驗證集實測相似度 0.01～0.46（同聲音的正常短句 0.83），所以不守這一關
+    if smin is not None and m.get("anchor_sim") is not None and m["duration_s"] >= gates.get("anchor_min_dur_s", 0.5) and m["anchor_sim"] < smin:
+        fails.append("speaker")  # 說話人與該聲音的錨點不像（例如 npc_woman_4 的大叔嗓）
     return (not fails), fails
 
 
 def penalty(m, fails):
     """失敗 take 的「有多糟」：用來在全部失敗時挑最接近通過的一個給人看。"""
-    w = {"yue": 100, "sv_lang": 50, "sv_event": 5, "phrase": 20, "cer": 10, "f0_none": 20, "long": 30, "tail": 10, "lead": 2, "f0_low": 3, "f0_high": 3}
+    w = {"yue": 100, "sv_lang": 50, "sv_event": 5, "phrase": 20, "cer": 10, "f0_none": 20, "long": 30, "tail": 10, "speaker": 15, "lead": 2, "f0_low": 3, "f0_high": 3}
     return sum(w.get(f, 5) for f in fails) + m["cer"] * 10
 
 

@@ -1,7 +1,7 @@
 """量產後處理（本機）：把 raw/wav 裡通過守門的 WAV 轉成 MP3、放進 public/audio/voice/<sceneId>/<key>.mp3，並更新 manifest.json。
 
-- 後處理沿用 r2/postprocess_r2.py 的 to_mp3：去頭尾靜音（−45 dB）→ loudnorm −16 LUFS、true peak −2 dBTP → 前後各 12 ms 淡入淡出 →
-  單聲道 24 kHz MP3 48 kbps；編碼後 true peak > −1 dBTP 才降增益重編。
+- 後處理用 postprocess_r4.to_mp3：去頭尾靜音（−45 dB）→ 短句／高峰值句先過溫和壓縮＋軟限幅 → 增益到 −16.7 LUFS（區間 −17.5～−16.0）→ 前後各 12 ms 淡入淡出 →
+  單聲道 24 kHz MP3 48 kbps；以編碼後實測為準，true peak 必須 ≤ −2 dBTP，否則降增益重編（第二輪的 −1 dBTP 門檻已收緊）。
 - key 以 src/audio/voiceKey.ts 的規則在這裡重算一次（SHA-1 前 12 碼，說話者部分 npc 為 `npc:<名牌>`）驗證，不一致就報錯。
 - 可重複執行：已轉過且 WAV 沒更新的 MP3 跳過；manifest 只增補／更新本次處理的條目，其餘保留；--prune 才會移除不在目前 voice-lines.json 內的條目。
 
@@ -16,8 +16,8 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE.parent / "r2"))
-from postprocess_r2 import duration, mp3_stats, to_mp3  # noqa: E402,F401
+sys.path.insert(0, str(HERE))
+from postprocess_r4 import BAND, TP_MAX, duration, mp3_stats, to_mp3  # noqa: E402,F401
 
 
 def voice_key(speaker, text, npc_name=None):
@@ -50,24 +50,26 @@ def main():
         wav = side.with_suffix(".wav")
         if not wav.exists() or meta.get("status") != "done":
             continue
-        ln = lines.get(lid)
+        ln = lines.get(lid.split("@")[0])  # "<id>@<variant>"：A/B 對照用的聲音描述變體（只轉 MP3、不進 manifest）
         if ln is None:
             stale_audio.append(lid)  # 劇本已改、這句不存在了
             continue
         k = voice_key(ln["speaker"], ln["text"], ln.get("name"))
-        if k != ln["key"] or lid != f"{ln['sceneId']}/{k}":
+        if k != ln["key"] or lid.split("@")[0] != f"{ln['sceneId']}/{k}":
             key_errors.append({"id": lid, "expected": k, "got": ln["key"]})
             continue
         dst = public / meta["scene"] / f"{meta['key']}.mp3"
         dst.parent.mkdir(parents=True, exist_ok=True)
         done += 1
-        if dst.exists() and not a.force and dst.stat().st_mtime >= wav.stat().st_mtime and lid in cache:
+        if dst.exists() and not a.force and dst.stat().st_mtime >= wav.stat().st_mtime and cache.get(lid, {}).get("pp") == 4:  # pp=4：舊版（第二輪）後處理的快取不算，會重轉
             skipped += 1
             st = cache[lid]
         else:
             st = to_mp3(wav, dst)
             cache[lid] = st
             converted += 1
+        if "@" in lid:
+            continue
         manifest[lid] = {"src": f"/audio/voice/{meta['scene']}/{meta['key']}.mp3", "duration": st["duration_s"]}
 
     pruned = []
@@ -86,7 +88,7 @@ def main():
     summary = {
         "mp3_total": len(manifest), "this_run_converted": converted, "this_run_skipped": skipped, "total_mb": round(size / 1e6, 2), "total_duration_s": round(sum(m["duration"] for m in manifest.values()), 1),
         "lufs_min": min((m["lufs"] for m in mine), default=None), "lufs_max": max((m["lufs"] for m in mine), default=None), "true_peak_max_dbtp": max((m["true_peak_dbtp"] for m in mine), default=None),
-        "reencoded": sum(1 for m in mine if m.get("reencode_gain_db")), "key_errors": key_errors, "stale_audio": stale_audio, "pruned": pruned,
+        "compressed": sum(1 for m in mine if m.get("compress")), "out_of_range": [i for i in cache if i in manifest and not (BAND[0] <= cache[i]["lufs"] <= BAND[1] and cache[i]["true_peak_dbtp"] <= TP_MAX)], "key_errors": key_errors, "stale_audio": stale_audio, "pruned": pruned,
         "gpu": a.hardware or None, "gpu_name": rep.get("gpu"), "precision": rep.get("precision"), "fp32_fallback": rep.get("fp32_fallback"), "batch": rep.get("batch"),
         "lines_in_script": len(lines), "lines_with_voice": sum(1 for i in lines if i in manifest),
     }

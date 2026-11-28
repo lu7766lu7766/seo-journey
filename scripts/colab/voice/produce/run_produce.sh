@@ -4,6 +4,7 @@
 # 用法：scripts/colab/voice/produce/run_produce.sh [輸出根目錄=/tmp/seo-journey-audio]
 # 環境變數：
 #   PRODUCE_SMOKE=1     煙霧測試：只做 smoke_ids.json 的 10 句；輸出到 <WORK>/public-voice（不動 repo 的 public/audio/voice）
+#   PRODUCE_VALIDATE=1  第四輪驗證集：只做 validate_ids.json 的句子（煙霧 10 句＋高風險句）；WORK＝<輸出根目錄>/voice-r4/work
 #   PUBLIC_VOICE_DIR    最終 MP3 與 manifest 位置（正式：<repo>/public/audio/voice）
 #   REFRESH_LINES=0     不重產 scripts/audio/voice-lines.json（預設會先跑 node scripts/list-voice-lines.mjs，以目前劇本為準）
 #   REUSE=1             重用已存在的 session（跳過 new 與 setup；用於同一個 VM 先跑別的再跑量產）
@@ -22,8 +23,9 @@ R3_DIR="${SCRIPT_DIR}/../r3"
 REPO="$(cd "${SCRIPT_DIR}/../../../.." && pwd)"
 OUT_BASE="${1:-/tmp/seo-journey-audio}"
 SMOKE="${PRODUCE_SMOKE:-0}"
-WORK="${OUT_BASE}/voice-produce$([ "${SMOKE}" = 1 ] && echo -smoke)"
-PUBLIC="${PUBLIC_VOICE_DIR:-$([ "${SMOKE}" = 1 ] && echo "${WORK}/public-voice" || echo "${REPO}/public/audio/voice")}"
+VALIDATE="${PRODUCE_VALIDATE:-0}"
+if [ "${VALIDATE}" = 1 ]; then WORK="${OUT_BASE}/voice-r4/work"; else WORK="${OUT_BASE}/voice-produce$([ "${SMOKE}" = 1 ] && echo -smoke)"; fi
+PUBLIC="${PUBLIC_VOICE_DIR:-$([ "${SMOKE}" = 1 -o "${VALIDATE}" = 1 ] && echo "${WORK}/public-voice" || echo "${REPO}/public/audio/voice")}"
 COLAB_CFG="${COLAB_CFG:-${OUT_BASE}/colab-voice-r3.json}"
 SESSION_NAME="${SESSION_NAME:-voice-r3}"
 POLL_S="${POLL_S:-$([ "${SMOKE}" = 1 ] && echo 30 || echo 60)}"
@@ -69,6 +71,7 @@ cat > "${RESET_PY}" <<'PYEOF'
 # 新一輪啟動前清掉舊的 progress／packs／ids（state.json 與 wav 保留，供同一個 VM 續跑；produce.py 會把「VM 有、本機沒有」的句子補打成 catch-up pack）
 import glob, os
 os.makedirs("/content/produce_out/packs", exist_ok=True)
+os.makedirs("/content/anchors", exist_ok=True)
 for p in glob.glob("/content/produce_out/packs/*") + ["/content/produce_out/progress.json", "/content/produce_out/report.json", "/content/ids.json"]:
     if os.path.exists(p): os.remove(p)
 print("reset ok")
@@ -79,7 +82,9 @@ for f in "${R3_DIR}/r3_common.py" "${R3_DIR}/voices_r3.json" "${R3_DIR}/asr_equi
 done
 C upload -s "${SESSION_NAME}" "${LINES_JSON}" /content/voice-lines.json
 C upload -s "${SESSION_NAME}" "${WORK}/meta/done.json" /content/done.json
+for f in "${SCRIPT_DIR}/../anchors/"*.mp3; do C upload -s "${SESSION_NAME}" "${f}" "/content/anchors/$(basename "${f}")"; done  # 說話人錨點（每個聲音一個，<200KB）
 if [ "${SMOKE}" = 1 ]; then C upload -s "${SESSION_NAME}" "${SCRIPT_DIR}/smoke_ids.json" /content/ids.json; fi
+if [ "${VALIDATE}" = 1 ]; then C upload -s "${SESSION_NAME}" "${SCRIPT_DIR}/validate_ids.json" /content/ids.json; fi
 extra=()
 for v in MAX_ATTEMPTS PRODUCE_CHUNK PRODUCE_LIMIT; do [ -n "${!v:-}" ] && extra+=("${v}=${!v}"); done
 vm_launch produce.py /content/produce.log "${extra[@]+"${extra[@]}"}"
