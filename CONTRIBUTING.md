@@ -71,18 +71,33 @@
 `src/audio/` 是播放引擎：`manifest.ts`（解析／dB 換算／備援選擇）、`engine.ts`（可注入後端的狀態機，單元測試見 `tests/audio.test.ts`）、`webBackend.ts`（Web Audio：載入解碼、無縫循環、交叉淡化）、`synth.ts`（合成聲備援）。呼叫點只用 `audio.sfx(id)`／`audio.bgm(id)`／`audio.stopBgm()`／`audio.currentBgm`。
 
 **音檔契約**
-- 檔案：`public/audio/bgm/<id>.mp3`、`public/audio/sfx/<id>.mp3`。
-- `public/audio/manifest.json`：鍵為 `bgm/<id>` 或 `sfx/<id>`；沒有的條目就是沒有音檔（目前內容為 `{}`）。
+- 檔案：`public/audio/bgm/<id>_c<N>.mp3`（每首 3 版）、`public/audio/sfx/<id>_c<N>.mp3`（每種 4 版）。**只放成品 MP3**（不放頻譜 PNG、接縫片段、原始 WAV）。
+- `public/audio/manifest.json`：鍵為 `bgm/<id>` 或 `sfx/<id>`；沒有的條目就是沒有音檔（走合成聲）。**這份檔案由腳本產生，不要手抄**（見下）。每個 id 可列多個版本與預設版本：
   ```json
   {
-    "bgm/title": { "src": "/audio/bgm/title.mp3", "loopStart": 8.2, "loopEnd": 104.6, "gainDb": 0 },
-    "sfx/choice": { "src": "/audio/sfx/choice.mp3", "gainDb": -2 }
+    "bgm/title": {
+      "default": "c2",
+      "variants": {
+        "c1": { "src": "/audio/bgm/title_c1.mp3", "loopStart": 14.013, "loopEnd": 114.474, "duration": 114.474 },
+        "c2": { "src": "/audio/bgm/title_c2.mp3", "loopStart": 20.027, "loopEnd": 110.713, "duration": 110.713 }
+      }
+    },
+    "sfx/click": {
+      "default": "c1",
+      "variants": { "c1": { "src": "/audio/sfx/click_c1.mp3" }, "c3": { "src": "/audio/sfx/click_c3.mp3", "synth": true } }
+    }
   }
   ```
-  `src` 必填；`loopStart`／`loopEnd`（秒，僅 BGM）省略時整首循環，兩者都給但 `loopEnd <= loopStart` 視為無效並整首循環；`gainDb` 省略＝0，限制在 −60～+12 dB。壞掉的條目會被忽略。
+  - 版本欄位：`src` 必填；`loopStart`／`loopEnd`（秒，僅 BGM）省略時整首循環，兩者都給但 `loopEnd <= loopStart` 視為無效並整首循環；`gainDb` 省略＝0，限制在 −60～+12 dB；`duration`（秒，選填）只供鑑賞畫面在下載前顯示總長；`synth: true` 表示程式合成（非 AI 生成），鑑賞畫面標註「合成」。版本 id 為英數、`_`、`-`（慣例 `c1`…`c4`，畫面顯示為版本 A…D）。壞掉的版本會被忽略，一個 id 沒有任何有效版本就整個忽略。
+  - `default`：玩家沒選過時用的版本（不存在時用第一個版本）。
+  - **舊的單一版本寫法仍可讀**：`{ "src": "...", "loopStart": 8.2, "loopEnd": 104.6, "gainDb": 0 }`，視為只有一個版本 `default`。
+- **產生 manifest**：`node scripts/build-audio-manifest.mjs`。資料來自 `scripts/audio/bgm-candidates.json`、`scripts/audio/sfx-candidates.json`（產製流程輸出的 `candidates.json`，含 loop 點與資料建議的首選），並檢查 `public/audio/` 的 MP3 都在、沒有多餘檔案；`--check` 只比對不寫檔。重產音檔後把新的 `candidates.json` 複製到 `scripts/audio/` 再執行。`tests/audioAssets.test.ts` 會檢查 manifest 與檔案一致。
+- **玩家選版本**：`useSettings.audioVariants`（`bgm/<id>`／`sfx/<id>` → 版本 id，經 `storage.ts` 持久化，「恢復預設」會清掉）。引擎每次播放都依它挑版本（`resolveVariant`：設定值 → manifest `default` → 第一個）；設定改變時（`audio/index.ts` 訂閱）預載新採用的音效，若該首 BGM 正在播就交叉淡化到新版本。SFX 只預載「採用中的那一版」，其他版本到鑑賞畫面試聽時才下載。
+- **音樂鑑賞畫面**：標題主選單「音樂鑑賞」（`overlay: 'music'`，`src/ui/MusicGallery.tsx`，在 `App.tsx` 以 `lazy` 載入，不增加首包）。曲名與用途、音效中文名寫在該檔案頂端的常數。試聽走引擎的預覽 API（`audioPreview`：`begin／end／playBgm／pause／stop／playSfx`，狀態用 `subscribe／getState` 給 `useSyncExternalStore`）：進入時遊戲 BGM（標題曲）淡出、離開時依採用的版本恢復；試聽同樣走 `loopStart`／`loopEnd` 無縫循環，**一次只播一首**，點播放才下載（載入中顯示轉圈），BGM 解碼緩衝最多保留 5 首（每首約 40MB）。新增 BGM／SFX id 時，記得同步更新該檔的名稱常數。
+- **授權標示**：背景音樂 ACE-Step（Apache 2.0）、音效 Stable Audio Open（Stability AI Community License，須標示「Powered by Stability AI」）。鑑賞畫面底部、標題畫面左下角、設定面板底部都有標示，不要移除。
 - **BGM 狀態與銜接**：劇本的 `bgm(id)` 指令會同時記進舞台狀態 `stage.bgm`（隨存檔保存）；讀檔不會重播指令，所以 `loadPersisted` 會依 `resumeBgm()`（`src/store/save.ts`：存檔記錄 → 否則依週次／階段預設 `daily`／`festival`／`warm`）呼叫 `audio.bgm()`。`TitleScreen` 掛載時播 `title`、卸載時**不**淡出，由下一次 `audio.bgm()` 交叉淡化接手（新遊戲的序章 `bgm`、讀檔的恢復曲），所以標題曲會一直播到下一首被要求為止。非劇本畫面（排程、公佈欄、週末、週報）沿用上一個劇本的 BGM。
 - BGM id：`title`（標題畫面）、`daily`、`warm`、`festival`、`tense`；SFX id：`click blip choice card grow bond fail win`。新增 id 時同步更新 `src/audio/synth.ts` 的型別與合成備援。
 
-**備援規則**：manifest 沒有該 id、manifest 載入失敗、音檔下載或解碼失敗（含尚未下載完成的 SFX），一律沿用 `src/audio/synth.ts` 的合成聲，行為與沒有音檔時完全相同。
+**備援規則**：manifest 沒有該 id、manifest 載入失敗、採用的版本音檔下載或解碼失敗（含尚未下載完成的 SFX），一律沿用 `src/audio/synth.ts` 的合成聲，行為與沒有音檔時完全相同。
 
-**播放行為**：瀏覽器在使用者互動前不允許出聲，第一次互動（點擊／按鍵）才建立並 resume AudioContext，之後補播目前應播的 BGM 並預載所有 `sfx/*`；BGM 按需下載、解碼後快取，切曲約 1 秒等功率交叉淡化（新曲還在下載時舊曲繼續播），同一首重複呼叫不重啟，`stopBgm()` 淡出；SFX 同一個 id 最多同時 4 個聲部，`blip` 保留 65ms 節流。音量＝設定的 `bgmVolume`／`sfxVolume`（即時反映）× 基準 0.8 × `gainDb`；建議音檔先正規化（峰值約 −1 dBFS），再用 `gainDb` 微調。本機試聽可暫時放檔案並改 manifest，但交件前確認沒把臨時檔 commit 進來。
+**播放行為**：瀏覽器在使用者互動前不允許出聲，第一次互動（點擊／按鍵）才建立並 resume AudioContext，之後補播目前應播的 BGM 並預載所有 `sfx/*`；BGM 按需下載、解碼後快取，切曲約 1 秒等功率交叉淡化（新曲還在下載時舊曲繼續播），同一首重複呼叫不重啟，`stopBgm()` 淡出；SFX 同一個 id 最多同時 4 個聲部，`blip` 保留 65ms 節流。音量＝設定的 `bgmVolume`／`sfxVolume`（即時反映）× 基準 0.8 × `gainDb`；建議音檔先正規化（峰值約 −1 dBFS），再用 `gainDb` 微調。

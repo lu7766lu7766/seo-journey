@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { KnowledgeId } from '@/content/knowledge'
 
-export type Overlay = null | 'menu' | 'backlog' | 'save' | 'load' | 'settings' | 'status' | 'gallery'
+export type Overlay = null | 'menu' | 'backlog' | 'save' | 'load' | 'settings' | 'status' | 'gallery' | 'music'
 export type GalleryTab = 'cards' | 'cg' | 'endings' | 'practice'
 
 interface UIStore {

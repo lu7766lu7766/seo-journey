@@ -1,0 +1,167 @@
+{
+  "project": "直到你找到我 ～青葉學園網站研究社～",
+  "model": {
+    "repo": "https://github.com/ace-step/ACE-Step",
+    "huggingface_id": "ACE-Step/ACE-Step-v1-3.5B",
+    "license": "Apache-2.0"
+  },
+  "generation_defaults": {
+    "lyrics": "[instrumental]",
+    "audio_duration": 150.0,
+    "infer_step": 60,
+    "guidance_scale": 15.0,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10.0,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0.0,
+    "min_guidance_scale": 3.0,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true
+  },
+  "postprocess_defaults": {
+    "target_sr": 44100,
+    "mp3_bitrate": "160k",
+    "target_lufs": -18.0,
+    "lufs_tolerance": 1.0,
+    "max_true_peak_dbtp": -1.0,
+    "pre_mp3_ceiling_dbtp": -1.5,
+    "loop_min_sec": 60.0,
+    "loop_max_sec": 120.0,
+    "min_loop_end_sec": 100.0,
+    "seam_preview_half_sec": 4.0,
+    "max_seam_jump_db": 3.5,
+    "bpm_tolerance_ratio": 0.15,
+    "silence_threshold_db": -45.0,
+    "max_silence_sec": 1.0,
+    "max_silence_ratio": 0.05
+  },
+  "tracks": [
+    {
+      "id": "title",
+      "title_zh": "標題曲（直到你找到我）",
+      "usage_zh": "標題畫面與開場：玩家進入遊戲聽到的第一首曲子，帶一點思念與期待的青春感。",
+      "style_zh": "抒情、柔和鋼琴＋弦樂，約 75–85 BPM，純器樂無人聲、適合襯底。",
+      "target_bpm": [75, 85],
+      "candidates": [
+        {
+          "slot": "c1",
+          "seed": 10101,
+          "prompt": "anime visual novel title theme, lyrical soft piano and warm strings, nostalgic youthful longing and gentle hope, delicate arpeggios, mellow emotional soundtrack, steady gentle tempo, 80 bpm, instrumental, no vocals, no singing, background music"
+        },
+        {
+          "slot": "c2",
+          "seed": 20202,
+          "prompt": "japanese anime soundtrack, heartfelt acoustic piano melody with lush chamber strings and subtle celesta, bittersweet spring youth, dreamy warm atmosphere, calm steady flow, 78 bpm, instrumental, no vocals, no singing, background music"
+        },
+        {
+          "slot": "c3",
+          "seed": 30303,
+          "prompt": "visual novel opening BGM, tender solo piano leading into gentle legato violin and cello strings, sentimental hopeful sunrise mood, smooth uncluttered arrangement, 82 bpm, instrumental, no vocals, no singing, background music"
+        }
+      ],
+      "backup_seeds": [40404, 50505, 60606, 70707, 80808, 90909]
+    },
+    {
+      "id": "daily",
+      "title_zh": "日常（校園與社辦）",
+      "usage_zh": "社辦、教室、商店街與日常育成排程對話襯底，輕快明亮而不搶戲。",
+      "style_zh": "輕快校園日常：木吉他、鐘琴、撥弦、輕打擊，約 105–115 BPM，純器樂無人聲。",
+      "target_bpm": [105, 115],
+      "candidates": [
+        {
+          "slot": "c1",
+          "seed": 11101,
+          "prompt": "anime slice of life school BGM, cheerful bright acoustic guitar, sparkling glockenspiel, playful pizzicato strings, soft shaker and light brushed drums, sunny afternoon clubroom atmosphere, 110 bpm, instrumental, no vocals, no singing, background music"
+        },
+        {
+          "slot": "c2",
+          "seed": 22202,
+          "prompt": "japanese visual novel daily theme, breezy fingerpicked acoustic guitar, delicate xylophone and glockenspiel, warm upright bass, light tambourine percussion, cozy campus classroom mood, steady groove, 108 bpm, instrumental, no vocals, no singing, background music"
+        },
+        {
+          "slot": "c3",
+          "seed": 33303,
+          "prompt": "upbeat pastel anime town soundtrack, strummed acoustic guitar, cute marimba and bells, plucked strings, gentle clap and light snare rhythm, lively shopping street daytime vibe, unobtrusive loopable background music, 112 bpm, instrumental, no vocals, no singing"
+        }
+      ],
+      "backup_seeds": [44404, 55505, 66606, 77707, 88808, 99909]
+    },
+    {
+      "id": "warm",
+      "title_zh": "溫馨（心動與約會）",
+      "usage_zh": "約會、告白前、夕陽天台等溫柔心動時刻，讓對白自然浮現。",
+      "style_zh": "溫柔心動：鋼琴＋柔和弦樂，約 70–80 BPM，純器樂無人聲、旋律留白。",
+      "target_bpm": [70, 80],
+      "candidates": [
+        {
+          "slot": "c1",
+          "seed": 12101,
+          "prompt": "anime romance visual novel BGM, tender warm felt piano and soft legato strings, golden hour sunset rooftop atmosphere, intimate gentle emotion, calm sparse melody for dialogue, 74 bpm, instrumental, no vocals, no singing, background music"
+        },
+        {
+          "slot": "c2",
+          "seed": 23202,
+          "prompt": "japanese anime heartfelt confession scene music, soothing acoustic piano chords with airy warm string pad and subtle acoustic guitar harmonics, affectionate peaceful mood, smooth sustained phrasing, 76 bpm, instrumental, no vocals, no singing, background music"
+        },
+        {
+          "slot": "c3",
+          "seed": 34303,
+          "prompt": "gentle visual novel date theme, delicate music-box-like piano with lush soft cello and warm violin swell, sweet nostalgic evening glow, serene steady flow, unobtrusive background music, 72 bpm, instrumental, no vocals, no singing"
+        }
+      ],
+      "backup_seeds": [45404, 56505, 67606, 78707, 89808, 91909]
+    },
+    {
+      "id": "tense",
+      "title_zh": "緊張（黑川登場與演算法危機）",
+      "usage_zh": "黑帽反派登場、演算法大雨、網站排名暴跌等危機事件；營造輕度緊張與懸疑感。",
+      "style_zh": "輕度緊張與不安（非恐怖片）：撥弦、合成器脈衝、低音，約 95–105 BPM，純器樂無人聲。",
+      "target_bpm": [95, 105],
+      "candidates": [
+        {
+          "slot": "c1",
+          "seed": 13101,
+          "prompt": "anime mystery visual novel tension BGM, crisp pizzicato strings, steady subtle analog synth pulse, taut deep bassline, light ticking percussion, mild suspense and intrigue, not horror, clean modern soundtrack, 100 bpm, instrumental, no vocals, no singing, background music"
+        },
+        {
+          "slot": "c2",
+          "seed": 24202,
+          "prompt": "japanese detective game thinking theme, rhythmic plucked cello and violin, soft pulsing arpeggiated synthesizer, muted electronic bass, cool focused uneasiness, steady moderate drive, non-scary suspense, 98 bpm, instrumental, no vocals, no singing, background music"
+        },
+        {
+          "slot": "c3",
+          "seed": 35303,
+          "prompt": "anime rival confrontation background music, driving staccato strings, understated dark synth pulse, tight low bass groove, gentle rimshot beat, serious dramatic tension without horror or jumpscares, dialogue-friendly, 102 bpm, instrumental, no vocals, no singing"
+        }
+      ],
+      "backup_seeds": [46404, 57505, 68606, 79707, 81808, 92909]
+    },
+    {
+      "id": "festival",
+      "title_zh": "搜尋祭（學園祭與頒獎）",
+      "usage_zh": "青葉學園祭典活動、SEO 成果發表與高潮頒獎時刻，氣氛熱鬧歡騰。",
+      "style_zh": "熱鬧歡騰：銅管、拍手、太鼓或打擊、明亮合成器，約 125–135 BPM，純器樂無人聲。",
+      "target_bpm": [125, 135],
+      "candidates": [
+        {
+          "slot": "c1",
+          "seed": 14101,
+          "prompt": "anime school festival celebration BGM, joyful bright brass section, lively hand claps, festive taiko drums and crisp snare percussion, sparkling bright synth melody, triumphant cheerful atmosphere, 130 bpm, instrumental, no vocals, no singing, background music"
+        },
+        {
+          "slot": "c2",
+          "seed": 25202,
+          "prompt": "japanese campus festival parade soundtrack, celebratory trumpets and horns, upbeat energetic taiko and tambourine rhythm, rhythmic handclaps, shiny synth chords, sunny awards ceremony excitement, 128 bpm, instrumental, no vocals, no singing, background music"
+        },
+        {
+          "slot": "c3",
+          "seed": 36303,
+          "prompt": "vibrant anime game event theme, jubilant brass fanfare motifs, bright cheerful synthesizer lead, bouncy bass, festive percussion with claps and taiko accents, energetic happy crowd celebration vibe without harshness, 132 bpm, instrumental, no vocals, no singing"
+        }
+      ],
+      "backup_seeds": [47404, 58505, 69606, 80808, 82808, 93909]
+    }
+  ]
+}

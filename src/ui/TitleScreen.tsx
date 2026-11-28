@@ -106,6 +106,9 @@ export function TitleScreen() {
             <button className="choice-btn rounded-full px-6 py-3 text-center text-xl font-bold tracking-wide" onClick={() => useUI.getState().openGallery('cards')}>
               圖鑑・相簿
             </button>
+            <button className="choice-btn rounded-full px-6 py-3 text-center text-xl font-bold tracking-wide" onClick={() => useUI.getState().setOverlay('music')}>
+              音樂鑑賞
+            </button>
             <button className="choice-btn rounded-full px-6 py-3 text-center text-xl font-bold tracking-wide" onClick={() => useUI.getState().setOverlay('settings')}>
               設定
             </button>
@@ -121,6 +124,10 @@ export function TitleScreen() {
           </form>
         )}
       </div>
+
+      <p className="absolute bottom-3 left-16 z-10 text-[11px] leading-snug tracking-wide text-white/55" data-testid="title-credits">
+        背景音樂：ACE-Step 生成（Apache 2.0）<br />音效：Stable Audio Open 生成 — Powered by Stability AI
+      </p>
     </div>
   )
 }

@@ -35,6 +35,9 @@ export function SettingsPanel() {
         <button className="btn-pastel" onClick={s.reset}>恢復預設</button>
         <button className="btn-pastel" onClick={back}>返回</button>
       </div>
+      <p className="mt-4 text-center text-xs text-ink/60" data-testid="settings-credits">
+        背景音樂：ACE-Step 生成（Apache 2.0）<br />音效：Stable Audio Open 生成 — Powered by Stability AI
+      </p>
     </Panel>
   )
 }

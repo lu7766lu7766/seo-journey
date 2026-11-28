@@ -1,0 +1,252 @@
+{
+  "model_id": "stabilityai/stable-audio-open-1.0",
+  "license": "Stability AI Community License",
+  "defaults": {
+    "negative_prompt": "background noise, ambient room tone, crowd, speech, voices, harsh, distorted, clipping, long reverb, echo, muddy, low quality, loop, continuous music, drums, bassline, static hiss",
+    "num_inference_steps": 100,
+    "guidance_scale": 7.0,
+    "audio_start_in_s": 0.0
+  },
+  "sounds": [
+    {
+      "id": "click",
+      "name": "對白推進／按鈕輕點聲",
+      "usage": "推進視覺小說對白、點擊介面與小遊戲按鈕（極高頻率觸發，必須柔和低調）",
+      "trigger": "src/ui/useVNInput.ts（點擊/Space/Enter 推進對白）、src/minigames/Spot.tsx・Serp.tsx・Quiz.tsx（一般點擊）",
+      "target_duration_ms": [45, 115],
+      "target_duration_label": "≤ 120 ms",
+      "loudness_tier": "quiet_click",
+      "audio_end_in_s": 1.5,
+      "prompts": [
+        {
+          "id": "p1",
+          "round": "r1",
+          "text": "Single soft wooden click sound effect, gentle warm woodblock tap, short dry tactile UI button press for cozy anime visual novel, clean isolated one-shot, no reverb",
+          "seeds": [1011, 1022, 1033, 1044]
+        },
+        {
+          "id": "p2",
+          "round": "r1",
+          "text": "Single gentle soft matte plastic button click, muted mechanical switch tap, subtle minimalist UI interface sound effect, very short dry studio recording",
+          "seeds": [1111, 1122, 1133, 1144]
+        },
+        {
+          "id": "p3",
+          "round": "r1",
+          "text": "Single soft muted marimba wood tap, delicate warm organic click sound effect, gentle UI dialogue advance sound, dry short clean one-shot",
+          "seeds": [1211, 1222, 1233, 1244]
+        }
+      ]
+    },
+    {
+      "id": "blip",
+      "name": "打字機逐字「嘀」聲",
+      "usage": "對白逐字顯示時的輕微打字音（每 3 個字觸發一次，冷卻 65ms，極頻繁）",
+      "trigger": "src/ui/DialogueBox.tsx（每顯示 3 字元觸發一次）",
+      "target_duration_ms": [35, 56],
+      "target_duration_label": "≤ 60 ms",
+      "loudness_tier": "quiet_blip",
+      "audio_end_in_s": 1.5,
+      "prompts": [
+        {
+          "id": "p1",
+          "round": "r1",
+          "text": "Single tiny soft pitched UI text blip sound effect, gentle short sine tone pop, cute anime visual novel dialogue typewriter tick, very brief clean dry one-shot",
+          "seeds": [2011, 2022, 2033, 2044]
+        },
+        {
+          "id": "p2",
+          "round": "r1",
+          "text": "Single ultra-short delicate soft kalimba pluck tick, tiny pitched wooden marimba pip, gentle visual novel text scroll sound effect, dry isolated clean",
+          "seeds": [2111, 2122, 2133, 2144]
+        },
+        {
+          "id": "p3",
+          "round": "r1",
+          "text": "Single very brief soft high pitched wooden pip, gentle quiet UI cursor blip, delicate anime game text sound, dry clean studio one-shot",
+          "seeds": [2211, 2222, 2233, 2244]
+        }
+      ]
+    },
+    {
+      "id": "choice",
+      "name": "劇情選項／確認小鈴聲",
+      "usage": "選擇劇情分歧選項、小遊戲送出或切換選擇時的清亮提示",
+      "trigger": "src/store/game.ts（選擇選項）、src/content/scenes/main/prologue.ts・festival.ts、src/minigames/Spot.tsx・Serp.tsx・Quiz.tsx",
+      "target_duration_ms": [200, 350],
+      "target_duration_label": "200–350 ms",
+      "loudness_tier": "standard",
+      "audio_end_in_s": 1.8,
+      "prompts": [
+        {
+          "id": "p1",
+          "round": "r1",
+          "text": "Bright clean two-note ascending glockenspiel chime, crisp cheerful anime visual novel menu select sound effect, clear bell tones, short dry decay, studio recording",
+          "seeds": [3011, 3022, 3033, 3044]
+        },
+        {
+          "id": "p2",
+          "round": "r1",
+          "text": "Sweet crisp two-note ascending music box bell chime, delicate Japanese school game choice confirmation sound effect, bright gentle sparkling, short clean one-shot",
+          "seeds": [3111, 3122, 3133, 3144]
+        },
+        {
+          "id": "p3",
+          "round": "r1",
+          "text": "Two-note ascending celesta chime, warm bright positive UI selection ding for anime visual novel, clear harmonic bells, concise clean decay",
+          "seeds": [3211, 3222, 3233, 3244]
+        }
+      ]
+    },
+    {
+      "id": "card",
+      "name": "知識卡解鎖魔法鐘琴聲",
+      "usage": "解鎖 SEO 知識卡或小遊戲過關獲得新卡片時的閃亮提示",
+      "trigger": "src/store/game.ts（unlockCard）、src/minigames/Spot.tsx・Serp.tsx・Quiz.tsx（過關頒卡）",
+      "target_duration_ms": [600, 1000],
+      "target_duration_label": "0.6–1.0 秒",
+      "loudness_tier": "standard",
+      "audio_end_in_s": 2.2,
+      "prompts": [
+        {
+          "id": "p1",
+          "round": "r1",
+          "text": "Sparkling ascending glockenspiel arpeggio chime, gentle magical card unlock sound effect for anime visual novel, bright crystalline bells, warm sweet shimmer, clean short tail",
+          "seeds": [4011, 4022, 4033, 4044]
+        },
+        {
+          "id": "p2",
+          "round": "r1",
+          "text": "Magical ascending celesta and fairy chime arpeggio, bright joyful discovery unlock jingle, cozy Japanese school anime game SFX, clean crisp studio sound",
+          "seeds": [4111, 4122, 4133, 4144]
+        },
+        {
+          "id": "p3",
+          "round": "r1",
+          "text": "Bright shimmering four-note ascending music box and wind chime arpeggio, enchanting reward unlock sound effect, gentle sparkling bells, concise clean decay",
+          "seeds": [4211, 4222, 4233, 4244]
+        }
+      ]
+    },
+    {
+      "id": "grow",
+      "name": "能力值上升愉快「叮」聲",
+      "usage": "平日排程訓練成功、網站或個人能力數值成長時的正面提示",
+      "trigger": "src/ui/sim/ScheduleScreen.tsx（訓練結果 status === 'ok'）",
+      "target_duration_ms": [400, 700],
+      "target_duration_label": "0.4–0.7 秒",
+      "loudness_tier": "standard",
+      "audio_end_in_s": 2.0,
+      "prompts": [
+        {
+          "id": "p1",
+          "round": "r1",
+          "text": "Cheerful ascending three-note xylophone and bell chime, upbeat stat level up ding for cozy Japanese school anime game, bright warm positive UI sound, clean short decay",
+          "seeds": [5011, 5022, 5033, 5044]
+        },
+        {
+          "id": "p2",
+          "round": "r1",
+          "text": "Happy upward marimba and glockenspiel chime, gentle skill improvement notification sound effect, sunny positive anime visual novel UI, crisp dry studio",
+          "seeds": [5111, 5122, 5133, 5144]
+        },
+        {
+          "id": "p3",
+          "round": "r1",
+          "text": "Pleasant ascending two-to-three note bright bell and celesta ding, encouraging progress chime, warm upbeat game UI sound effect, clean concise tail",
+          "seeds": [5211, 5222, 5233, 5244]
+        }
+      ]
+    },
+    {
+      "id": "bond",
+      "name": "好感度上升溫暖滑音",
+      "usage": "角色好感度提升、互動小對話或週報呈現溫馨羈絆時播放",
+      "trigger": "src/ui/sim/ScheduleScreen.tsx（角色互動對話）、src/ui/sim/WeeklyReport.tsx（週報）",
+      "target_duration_ms": [600, 1000],
+      "target_duration_label": "0.6–1.0 秒",
+      "loudness_tier": "standard",
+      "audio_end_in_s": 2.2,
+      "prompts": [
+        {
+          "id": "p1",
+          "round": "r1",
+          "text": "Warm tender ascending concert harp glissando, romantic heartwarming affection up sound effect for Japanese school romance visual novel, gentle sweet shimmer, clean studio",
+          "seeds": [6011, 6022, 6033, 6044]
+        },
+        {
+          "id": "p2",
+          "round": "r1",
+          "text": "Gentle upward harp arpeggio with soft warm bell chime, sweet heartwarming heart flutter SFX for cozy anime dating sim, delicate acoustic recording, short clean decay",
+          "seeds": [6111, 6122, 6133, 6144]
+        },
+        {
+          "id": "p3",
+          "round": "r1",
+          "text": "Soft warm ascending acoustic harp strum and delicate chime, touching friendship bond increase sound effect, cozy anime visual novel, clean dry decay",
+          "seeds": [6211, 6222, 6233, 6244]
+        }
+      ]
+    },
+    {
+      "id": "fail",
+      "name": "失誤／倒下輕喜感「噗咚」",
+      "usage": "排程訓練失敗、體力歸零送保健室或劇情突發失誤（輕鬆可愛不刺耳）",
+      "trigger": "src/ui/sim/ScheduleScreen.tsx（status === 'fail' / 'infirmary'）、src/content/scenes/main/w6.ts",
+      "target_duration_ms": [400, 800],
+      "target_duration_label": "0.4–0.8 秒",
+      "loudness_tier": "standard",
+      "audio_end_in_s": 2.0,
+      "prompts": [
+        {
+          "id": "p1",
+          "round": "r1",
+          "text": "Lighthearted comedic descending two-note muted marimba and soft cartoon boing plop, gentle cute anime fail sound effect, playful clumsy thud, not harsh or scary, dry studio",
+          "seeds": [7011, 7022, 7033, 7044]
+        },
+        {
+          "id": "p2",
+          "round": "r1",
+          "text": "Playful descending pizzicato string and soft muted woodblock plop, gentle cute mishap sound effect for cozy anime slice of life game, lighthearted comedic, clean short decay",
+          "seeds": [7111, 7122, 7133, 7144]
+        },
+        {
+          "id": "p3",
+          "round": "r1",
+          "text": "Gentle comedic downward muted tuba and soft wooden plop sound effect, lighthearted cute anime stumble blunder SFX, warm non-harsh funny sound, clean dry one-shot",
+          "seeds": [7211, 7222, 7233, 7244]
+        }
+      ]
+    },
+    {
+      "id": "win",
+      "name": "小遊戲過關歡樂小樂句",
+      "usage": "SEO 互動小遊戲或活動驗收通關時的歡快慶祝短樂句",
+      "trigger": "小遊戲過關 / 驗收勝利事件（保留給新版音效系統接線）",
+      "target_duration_ms": [1000, 1800],
+      "target_duration_label": "1.0–1.8 秒",
+      "loudness_tier": "standard",
+      "audio_end_in_s": 2.8,
+      "prompts": [
+        {
+          "id": "p1",
+          "round": "r1",
+          "text": "Short joyful victory fanfare jingle played on bright glockenspiel, warm piano, and light bells, cheerful upbeat school anime minigame clear sound effect, 1.5 seconds, clean finish",
+          "seeds": [8011, 8022, 8033, 8044]
+        },
+        {
+          "id": "p2",
+          "round": "r1",
+          "text": "Brief happy ascending celebration musical phrase on bright celesta, marimba, and sparkling chimes, cozy Japanese high school anime game stage clear jingle, cheerful uplifting, clean ending",
+          "seeds": [8111, 8122, 8133, 8144]
+        },
+        {
+          "id": "p3",
+          "round": "r1",
+          "text": "Short triumphant cute victory chime melody with glockenspiel, harp, and warm bright bells, cheerful puzzle clear jingle for anime visual novel, concise clean studio recording",
+          "seeds": [8211, 8222, 8233, 8244]
+        }
+      ]
+    }
+  ]
+}
