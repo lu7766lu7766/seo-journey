@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MINIGAMES, type MinigameId } from '@/content/minigames'
 import { MINIGAME_DATA } from '@/content/minigames/data'
 import { Quiz } from './Quiz'
 import { Serp } from './Serp'
 import { Spot } from './Spot'
+import { enterMinigameBgm } from './minigameBgm'
 import type { Attempt } from './stars'
 
 /**
@@ -20,6 +21,8 @@ export function MinigameHost({
   onResolve: (won: boolean, stars?: number) => void
 }) {
   const [attempt, setAttempt] = useState<Attempt>(1)
+  // 小遊戲專用配樂；卸載（結算或離開）時淡回原本的曲子
+  useEffect(() => enterMinigameBgm(), [])
   const registeredKind = MINIGAMES[id].kind
   const game = MINIGAME_DATA[id]
   // remounting on `key` resets every engine to a fresh run (and re-shuffles option order)

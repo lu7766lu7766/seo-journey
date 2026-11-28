@@ -3,11 +3,12 @@ import { motion } from 'motion/react'
 import { Background } from '@/art/backgrounds'
 import { CharacterAvatar } from '@/art/characters/Avatar'
 import { audio } from '@/audio'
+import { weeklyReportSfx } from '@/audio/cues'
 import { CHARACTERS } from '@/content/characters'
 import { WEEKLY_COMMENTS } from '@/content/flavor'
 import { HEROINES, type HeroineId } from '@/engine/types'
 import { useGame } from '@/store/game'
-import { scoreParts } from '@/systems/score'
+import { scoreParts, scores } from '@/systems/score'
 import { readStatSnapshot } from '@/systems/siteMetrics'
 import { SiteDashboard } from './SiteDashboard'
 
@@ -29,7 +30,9 @@ export function WeeklyReport() {
   const weekStart = readStatSnapshot(s.flags)
 
   useEffect(() => {
-    audio.sfx('bond')
+    // 只在進週報時依本週分數升降播一次
+    const sfx = weeklyReportSfx(s.prevScores, scores(s.stats, s.bond))
+    if (sfx) audio.sfx(sfx)
   }, [])
 
   return (

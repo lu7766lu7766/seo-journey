@@ -2,7 +2,7 @@ import { bg, bgm, cg, hide, say, scene, show, when } from '@/engine'
 import { flag, seen } from '@/engine/cond'
 
 export default scene('end-rin', [
-  bgm('warm'),
+  bgm('theme_rin'),
   bg('gate', 'dusk'),
   say('narr', undefined, '搜尋祭落幕，人潮散去。黃昏的櫻花校門，只剩我和凜兩個人。'),
   show('rin', 'center', 'smile'),
@@ -26,6 +26,7 @@ export default scene('end-rin', [
   show('rin', 'center', 'blush'),
   say('rin', 'blush', '……！笨蛋。這種話，要事先預告。'),
   say('narr', undefined, '風吹起她的藍色長髮。她從口袋掏出那個貓咪鑰匙圈，輕輕放進我手心。'),
+  bgm('warm'),
   cg('end-rin'),
   when(
     seen('sq-r3'),
@@ -53,6 +54,7 @@ export default scene('end-rin', [
   say('rin', 'blush', '不需要簽名。需要的是……明天你要準時。'),
   say('narr', undefined, '她走在前面半步，長髮隨風一晃一晃。那抹笑，早就超越了任何索引。'),
   hide('rin'),
+  bgm('theme_rin'),
   bg('clubroom', 'day', 'fade'),
   say('narr', undefined, '隔天，社辦電腦的桌面多了一個資料夾，上面貼著一張紙條：謝絕參觀。'),
   say('me', undefined, '（這張紙條的味道……是 robots.txt 吧。凜的筆跡。）'),

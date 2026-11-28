@@ -1,7 +1,7 @@
 import { bg, bgm, card, choice, flag, hide, minigame, opt, say, scene, show, when } from '@/engine'
 
 export default scene('sq-x1', [
-  bgm('tense'),
+  bgm('comedy'),
   bg('street', 'dusk'),
   say('narr', undefined, '商店街入口，一個攤位掛著手寫大旗：「流量保證第一名！」'),
   say('narr', undefined, '旗子下，戴黑色棒球帽的人正在吆喝。路人全都繞著走。'),
@@ -60,6 +60,7 @@ export default scene('sq-x1', [
   say('me', undefined, '保證排名，本身就是警訊。'),
   say('kuro', 'normal', '……旗子上，也寫了。'),
   card('spam-policies'),
+  bgm('melancholy'),
   show('kuro', 'center', 'sad'),
   say('kuro', 'sad', '這些招……上週，我學長剛用過。'),
   say('kuro', 'sad', '他的網站，一夜之間，從搜尋結果消失了。'),
@@ -84,6 +85,7 @@ export default scene('sq-x1', [
   say('kuro', 'sad', '這一題，我自己，答不出來。'),
   say('narr', undefined, '他摘下帽子，捏在手裡。沒了帽簷，只是個沒睡好的高中生。'),
   say('narr', undefined, '大旗被晚風吹得啪啪響。他又把帽子，戴了回去。'),
+  bgm('comedy'),
   show('kuro', 'center', 'smug'),
   say('kuro', 'smug', '今天收攤！……別誤會，是我自己想收，下次還要比！'),
   say('narr', undefined, '他收旗的動作，比平常慢。「保證第一名」那四個字，被折進最裡面。'),

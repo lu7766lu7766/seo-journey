@@ -411,6 +411,16 @@ describe('AudioEngine：BGM 狀態機', () => {
     expect(s.voices[0]).toMatchObject({ kind: 'synth', id: 'title' })
   })
 
+  it('新增的 BGM id（manifest 沒有條目）一律退回合成聲、不報錯', async () => {
+    const s = setup(MANIFEST)
+    await s.engine.unlock()
+    for (const id of ['sim', 'minigame', 'melancholy', 'comedy', 'theme_rin', 'theme_hare', 'theme_mirai']) {
+      s.engine.bgm(id)
+      await s.tick()
+      expect(s.voices.at(-1)).toMatchObject({ kind: 'synth', id })
+    }
+  })
+
   it('manifest 載入失敗或為 {} → 全部合成', async () => {
     const s = setup({})
     await s.engine.unlock()

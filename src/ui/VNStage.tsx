@@ -8,6 +8,8 @@ import { BOARD_ART, REPORT_ART, SCHEDULE_ART, WEEKEND_ART } from '@/art/specs'
 import { CgArt } from '@/art/cg'
 import type { CgId } from '@/content/cgs'
 import type { KnowledgeId } from '@/content/knowledge'
+import { audio } from '@/audio'
+import { isSimScreen, SIM_BGM } from '@/audio/cues'
 import { useGame } from '@/store/game'
 
 const MinigameHost = lazy(() => import('@/minigames').then((m) => ({ default: m.MinigameHost })))
@@ -57,6 +59,12 @@ export function VNStage() {
   useEffect(() => {
     if (betweenScenes && hidden) useUI.getState().set({ hidden: false })
   }, [betweenScenes, hidden])
+
+  // 養成畫面（排程／公佈欄／週末／週報）統一播 sim；不改寫 stage.bgm，下一段劇本的 bgm 指令會接手
+  const onSimScreen = isSimScreen(phase, !betweenScenes)
+  useEffect(() => {
+    if (onSimScreen) audio.bgm(SIM_BGM)
+  }, [onSimScreen, phase])
 
   // Simulation screens when between VN scenes. Every in-game screen shares the one SystemBar (top-right).
   if (betweenScenes) {

@@ -1,8 +1,12 @@
 /** 合成聲備援：沒有音檔的 id 沿用這裡（Web Audio 即時合成）。 */
 import type { BgmVoice } from './engine'
 
-export type SfxId = 'click' | 'blip' | 'choice' | 'card' | 'grow' | 'bond' | 'fail' | 'win'
-export type BgmId = 'title' | 'daily' | 'warm' | 'festival' | 'tense'
+/** 全部音效 id（劇本／介面只能用這些；沒有音檔的一律用下面的合成備援） */
+export const SFX_IDS = ['click', 'blip', 'choice', 'card', 'grow', 'bond', 'fail', 'win', 'shock'] as const
+export type SfxId = (typeof SFX_IDS)[number]
+/** 全部背景音樂 id（順序即音樂鑑賞畫面的順序；劇本 `bgm()` 只能用這些） */
+export const BGM_IDS = ['title', 'daily', 'sim', 'minigame', 'warm', 'melancholy', 'tense', 'comedy', 'festival', 'theme_rin', 'theme_hare', 'theme_mirai'] as const
+export type BgmId = (typeof BGM_IDS)[number]
 
 export function playNote(
   c: AudioContext,
@@ -65,20 +69,28 @@ export function playSynthSfx(c: AudioContext, id: string, vol: number) {
       playNote(c, d, 783.99, 0.14, 0.09, v, 'triangle')
       playNote(c, d, 1046.5, 0.21, 0.24, v, 'sine')
       break
+    case 'shock':
+      // 嚴肅警示：低沉的一擊加一個下行的減五度（不是喜劇感的 fail）
+      playNote(c, d, 110, 0, 0.45, v * 1.1, 'sine')
+      playNote(c, d, 329.63, 0, 0.14, v * 0.8, 'triangle')
+      playNote(c, d, 233.08, 0.12, 0.34, v * 0.85, 'triangle')
+      break
   }
 }
 
-interface Track {
+export interface Track {
   tempoMs: number
   wave: OscillatorType
   notes: number[]
   bass: number[]
   /** 整體音量倍率（預設 1） */
   level?: number
+  /** 旋律音長占一拍的比例（預設 0.9；小於 0.5 為跳音） */
+  gate?: number
 }
 
 /** Gentle pentatonic / major BGM motifs (notes in Hz, 0 = rest). */
-const BGM_TRACKS: Record<BgmId, Track> = {
+export const BGM_TRACKS: Record<BgmId, Track> = {
   // 標題曲：慢板、純正弦、音量放輕
   title: {
     tempoMs: 700,
@@ -111,6 +123,65 @@ const BGM_TRACKS: Record<BgmId, Track> = {
     notes: [440.0, 0, 415.3, 392.0, 349.23, 0, 329.63, 349.23, 392.0, 0, 349.23, 329.63, 293.66, 0, 329.63, 0],
     bass: [220.0, 0, 196.0, 0, 174.61, 0, 164.81, 0, 196.0, 0, 174.61, 0, 146.83, 0, 164.81, 0],
   },
+  // 養成畫面：輕爵士電鋼琴的悠閒 8 分音符，節奏穩定、久聽不膩
+  sim: {
+    tempoMs: 540,
+    wave: 'sine',
+    level: 0.85,
+    notes: [349.23, 440.0, 523.25, 440.0, 392.0, 466.16, 587.33, 0, 523.25, 440.0, 349.23, 392.0, 440.0, 0, 392.0, 0],
+    bass: [174.61, 0, 0, 0, 130.81, 0, 0, 0, 146.83, 0, 0, 0, 196.0, 0, 130.81, 0],
+  },
+  // 小遊戲：馬林巴式的跳動琶音，專注但不催促
+  minigame: {
+    tempoMs: 290,
+    wave: 'triangle',
+    level: 0.8,
+    gate: 0.55,
+    notes: [392.0, 587.33, 493.88, 587.33, 392.0, 659.25, 587.33, 493.88, 440.0, 659.25, 587.33, 659.25, 493.88, 587.33, 392.0, 0],
+    bass: [196.0, 0, 196.0, 0, 196.0, 0, 196.0, 0, 220.0, 0, 220.0, 0, 164.81, 0, 196.0, 0],
+  },
+  // 低落：極慢、極稀疏的小調獨奏鋼琴線條
+  melancholy: {
+    tempoMs: 860,
+    wave: 'sine',
+    level: 0.7,
+    notes: [440.0, 0, 0, 523.25, 493.88, 0, 440.0, 0, 392.0, 0, 0, 440.0, 349.23, 0, 329.63, 0],
+    bass: [110.0, 0, 0, 0, 0, 0, 0, 0, 87.31, 0, 0, 0, 0, 0, 82.41, 0],
+  },
+  // 搞笑：俏皮的跳音，低音走得有點得意
+  comedy: {
+    tempoMs: 330,
+    wave: 'triangle',
+    level: 0.85,
+    gate: 0.4,
+    notes: [392.0, 0, 392.0, 466.16, 523.25, 0, 466.16, 392.0, 349.23, 0, 349.23, 392.0, 440.0, 0, 392.0, 0],
+    bass: [130.81, 0, 196.0, 0, 130.81, 0, 196.0, 0, 174.61, 0, 261.63, 0, 196.0, 0, 130.81, 0],
+  },
+  // 凜：端莊清亮的 D 大調，琴音乾淨、留白多
+  theme_rin: {
+    tempoMs: 620,
+    wave: 'sine',
+    level: 0.85,
+    notes: [587.33, 739.99, 880.0, 739.99, 659.25, 0, 587.33, 0, 493.88, 587.33, 659.25, 739.99, 587.33, 0, 0, 0],
+    bass: [146.83, 0, 0, 0, 110.0, 0, 0, 0, 123.47, 0, 0, 0, 146.83, 0, 110.0, 0],
+  },
+  // 晴：陽光元氣的 C 大調，輕快跳動
+  theme_hare: {
+    tempoMs: 340,
+    wave: 'triangle',
+    level: 0.85,
+    gate: 0.7,
+    notes: [659.25, 783.99, 880.0, 783.99, 1046.5, 880.0, 783.99, 0, 587.33, 659.25, 783.99, 880.0, 783.99, 659.25, 523.25, 0],
+    bass: [261.63, 0, 196.0, 0, 220.0, 0, 164.81, 0, 174.61, 0, 196.0, 0, 261.63, 0, 196.0, 0],
+  },
+  // 未來：空靈的高音區五聲音階，像星光一顆一顆亮起
+  theme_mirai: {
+    tempoMs: 760,
+    wave: 'sine',
+    level: 0.65,
+    notes: [987.77, 0, 830.61, 0, 739.99, 0, 659.25, 830.61, 987.77, 0, 1108.73, 987.77, 830.61, 0, 659.25, 0],
+    bass: [164.81, 0, 0, 0, 0, 0, 0, 0, 138.59, 0, 0, 0, 0, 0, 123.47, 0],
+  },
 }
 
 /** 合成 BGM 的整體增益（與舊版 bgmVolume * 0.12 一致）。 */
@@ -137,7 +208,7 @@ export function startSynthBgm(c: AudioContext, bus: AudioNode, id: string, fadeI
       const n = track.notes[idx]
       const b = track.bass[idx]
       const sec = track.tempoMs / 1000
-      if (n > 0) playNote(c, out, n, 0, sec * 0.9, 0.55 * level, track.wave)
+      if (n > 0) playNote(c, out, n, 0, sec * (track.gate ?? 0.9), 0.55 * level, track.wave)
       if (b > 0) playNote(c, out, b, 0, sec * 1.4, 0.4 * level, 'sine')
       step++
     } catch {

@@ -1,0 +1,11 @@
+{
+  "_note": "階段 0 過渡預設（docs/audio-review.md 第 3、4 章）：蓋過 candidates.json 的 recommended，直到新曲／新音效重產完成。重產並更新 candidates.json 後請清空 picks。鍵為 `bgm/<id>` 或 `sfx/<id>`，值為版本 id（不存在就警告並沿用 candidates 的建議首選）。",
+  "picks": {
+    "bgm/title": "c3",
+    "sfx/click": "c3",
+    "sfx/blip": "c4",
+    "sfx/choice": "c3",
+    "sfx/fail": "c4",
+    "sfx/win": "c2"
+  }
+}

@@ -1,7 +1,7 @@
 import { bg, bgm, choice, hide, opt, say, scene, show } from '@/engine'
 
 export default scene('date-mirai-2', [
-  bgm('warm'),
+  bgm('theme_mirai'),
   bg('library', 'dusk'),
   say('narr', undefined, '圖書館裡，紙頁翻動的聲音，像細細的雨。'),
   show('mirai', 'center', 'surprised'),
