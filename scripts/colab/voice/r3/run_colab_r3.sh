@@ -20,10 +20,11 @@ mkdir -p "${R3_DIR}"
 # shellcheck source=colab_session.sh
 source "${SCRIPT_DIR}/colab_session.sh"
 [ "${KEEP_ON_FAIL:-0}" = "1" ] || trap session_cleanup EXIT
-[ -z "${PACK_ASR_CACHE:-}" ] && { [ -f "${ASR_CACHE_LOCAL}" ] && PACK_ASR_CACHE=0 || PACK_ASR_CACHE=1; }
+[ -z "${PACK_ASR_CACHE:-}" ] && PACK_ASR_CACHE=0
 
 if [ "${REUSE:-0}" != "1" ]; then
   session_up
+  echo "實際取得的卡型：${GPU_ACTUAL}"; echo "${GPU_ACTUAL}" > "${R3_DIR}/hardware.txt"
   weights_cache_upload
   echo "=== 環境準備 ==="
   C exec -s "${SESSION_NAME}" --timeout 2400 --env "PACK_ASR_CACHE=${PACK_ASR_CACHE}" -f "${SCRIPT_DIR}/setup_vm_r3.py"
@@ -45,7 +46,7 @@ print(subprocess.run("grep -E '== 第|DONE:|Traceback' /content/gen_r3.log | tai
 PYEOF
 while true; do
   sleep 60
-  STATUS="$(C exec -s "${SESSION_NAME}" -f "${POLL_PY}" 2>/dev/null || true)"
+  STATUS="$(Ct 90 exec -s "${SESSION_NAME}" --timeout 60 -f "${POLL_PY}" 2>/dev/null || true)"
   echo "$(date +%H:%M:%S) ${STATUS}" | tail -n 3
   if echo "${STATUS}" | grep -q "DONE:"; then break; fi
   if echo "${STATUS}" | grep -q "Traceback"; then echo "生成失敗，見 VM 的 /content/gen_r3.log"; C download -s "${SESSION_NAME}" /content/gen_r3.log "${R3_DIR}/gen_r3.log" || true; exit 1; fi

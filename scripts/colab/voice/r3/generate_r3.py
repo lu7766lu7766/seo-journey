@@ -20,7 +20,7 @@ import soundfile as sf
 import torch
 
 sys.path.insert(0, "/content")
-from r3_common import Evaluator, banned_hits, build_instruct, chunks, design_batch, dur_cap, gate, log, norm_text, penalty, prep_text  # noqa: E402
+from r3_common import TTS, Evaluator, banned_hits, build_instruct, chunks, dur_cap, gate, log, norm_text, penalty, pick_batch, prep_text  # noqa: E402
 
 OUT = os.environ.get("R3_OUT", "/content/r3_out")
 FIRST = int(os.environ.get("R3_FIRST_TAKES", "4"))
@@ -50,13 +50,14 @@ def main():
     for cp in cfg["r3_catchphrases"]:
         assert not banned_hits(cp["emotion_instruct"], cfg["banned_words"]), cp
 
-    from qwen_tts import Qwen3TTSModel
-
     t_start = time.time()
     log("載入 Qwen3-TTS VoiceDesign …")
-    model = Qwen3TTSModel.from_pretrained("Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign", device_map="cuda:0", dtype=torch.bfloat16, attn_implementation="sdpa")
+    tts = TTS()
     ev = Evaluator()
     t_loaded = time.time()
+    free_gb = torch.cuda.mem_get_info()[0] / 1e9
+    batch_n = int(os.environ.get("R3_BATCH") or pick_batch(free_gb, BATCH))
+    log(f"GPU {torch.cuda.get_device_name(0)}｜精度 {tts.precision}｜剩餘 VRAM {free_gb:.1f}GB → 一批 {batch_n} 句")
     log(f"模型與評測器載入完成 {t_loaded - t_start:.0f}s")
 
     # ------------------------------------------------------------ slots
@@ -87,7 +88,7 @@ def main():
     def run(items, rnd, bidx):
         seed = BASE_SEED + rnd * 1000 + bidx
         t0 = time.time()
-        outs = design_batch(model, items, cfg["language"], seed)
+        outs = tts.batch(items, cfg["language"], seed)
         gen_s = time.time() - t0
         gen_total[0] += gen_s
         gen_total[1] += len(items)
@@ -115,7 +116,7 @@ def main():
     while pending:
         pending.sort(key=lambda it: it["cap"])
         log(f"== 第 {rnd} 輪：{len(pending)} 個 take；已有 {WANT_PASS} 個通過的 slot {sum(sum(t['passed'] for t in s['takes']) >= WANT_PASS for s in slots)}/{len(slots)} ==")
-        for bidx, b in enumerate(chunks(pending, BATCH)):
+        for bidx, b in enumerate(chunks(pending, batch_n)):
             run(b, rnd, bidx)
         rnd += 1
         if rnd > gates["max_attempts"]:
@@ -123,7 +124,7 @@ def main():
         pending = [item(s) for s in slots if sum(t["passed"] for t in s["takes"]) < (1 if SMOKE else WANT_PASS)]
 
     # ------------------------------------------------------------ 彙整
-    out = {"round": 3, "gpu": torch.cuda.get_device_name(0), "gates": gates, "accent": accent, "voices": {}, "load_s": round(t_loaded - t_start, 1), "total_s": 0}
+    out = {"round": 3, "gpu": torch.cuda.get_device_name(0), "precision": tts.precision, "fp32_fallback": tts.fallback_fp32, "batch": batch_n, "gates": gates, "accent": accent, "voices": {}, "load_s": round(t_loaded - t_start, 1), "total_s": 0}
     keep = []
     for vid in sorted({s["voice"] for s in slots}):
         v = voices[vid]

@@ -40,7 +40,8 @@
   },
   "lead_s_max": 1.0,
   "tail_ratio_max": 0.7,
-  "max_attempts": 6
+  "max_attempts": 6,
+  "soften_after": 3
  },
  "voices": [
   {

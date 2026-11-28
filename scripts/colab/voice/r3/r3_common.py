@@ -178,12 +178,31 @@ def apply_equiv(ref_n, hyp_n):
     return hyp_n, applied
 
 
+def _substring_errors(seg, text):
+    """seg 在 text 中的最佳子字串編輯距離（Sellers：text 兩端免費）。"""
+    prev = [0] * (len(text) + 1)
+    for i, ca in enumerate(seg, 1):
+        cur = [i]
+        for j, cb in enumerate(text, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+    return min(prev)
+
+
 def cer_equiv(ref, hyp):
-    """(CER, 白名單替換清單, 正規化後的 hyp)。含拉丁字母的句子（SEO、FAQ、alt…）只比對非拉丁部分：ASR 對英文縮寫的寫法不穩定。"""
+    """(CER, 白名單替換清單, 正規化後的 hyp)。
+
+    含拉丁字母的句子（SEO、FAQ、Disallow…）：TTS 會用英文念這些詞，Paraformer 常把它轉成中文亂字（Disallow→「第四捞」）。
+    所以把參考文字在拉丁詞處切成中文片段，每個片段各自在 hyp 裡找最佳子字串對齊，錯字數加總 / 中文字數。
+    """
     r, h = norm_text(ref), norm_text(hyp)
     h, applied = apply_equiv(r, h)
     if re.search(r"[A-Z]", r):
-        r, h = re.sub(r"[A-Z]+", "", r), re.sub(r"[A-Z]+", "", h)
+        segs = [x for x in re.split(r"[A-Z0-9]+", r) if x]
+        total = sum(len(x) for x in segs)
+        if not total:
+            return 0.0, applied, h
+        return sum(_substring_errors(x, h) for x in segs) / total, applied, h
     if not r:
         return 0.0, applied, h
     return edit_distance(r, h) / len(r), applied, h
@@ -459,3 +478,68 @@ def design_batch(model, items, lang, seed):
 def chunks(seq, n):
     for i in range(0, len(seq), n):
         yield seq[i : i + n]
+
+
+# ---------------------------------------------------------------- 依卡型決定精度與批次（不寫死卡名）
+def pick_dtype(torch_mod=None):
+    """支援 bf16 的卡（A100／L4／H100…）用 bf16；不支援的（T4）用 fp16。包含模擬的 bf16 不算支援（T4 上模擬很慢）。"""
+    torch = torch_mod
+    if torch is None:
+        import torch  # noqa: PLC0415
+    try:
+        ok = torch.cuda.is_bf16_supported(including_emulation=False)
+    except TypeError:  # 舊版 torch 沒有這個參數
+        ok = torch.cuda.is_bf16_supported()
+    return torch.bfloat16 if ok else torch.float16
+
+
+def pick_batch(free_gb, default=12):
+    """依載入全部模型（TTS＋Whisper＋ASR＋WavLM）後剩餘的 VRAM 決定一批幾句。L4（24GB）剩 15GB 以上 → 12；T4（16GB）通常剩 6GB 上下 → 4。OOM 時 design_batch 仍會折半重試。"""
+    return default if free_gb >= 12 else 8 if free_gb >= 8 else 4
+
+
+def _bad_wav(w):
+    w = np.asarray(w)
+    return (not np.isfinite(w).all()) or float(np.max(np.abs(w))) == 0.0 or float(np.mean(np.abs(w) >= 0.999)) > 0.02
+
+
+class TTS:
+    """Qwen3-TTS VoiceDesign 的載入與批次生成。fp16 若出現 NaN／全零／大量削波（爆音），整批改用 fp32 重載重生，之後都用 fp32。"""
+
+    NAME = "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign"
+
+    def __init__(self, loader=None, torch_mod=None, gen=None):
+        torch = torch_mod
+        if torch is None:
+            import torch  # noqa: PLC0415
+        self.torch = torch
+        self.loader = loader or self._default_loader
+        self.gen = gen or design_batch
+        self.dtype = pick_dtype(torch)
+        self.fallback_fp32 = False
+        log(f"TTS 精度：{self.dtype}（is_bf16_supported(including_emulation=False) 決定）")
+        self.model = self.loader(self.dtype)
+
+    def _default_loader(self, dtype):
+        from qwen_tts import Qwen3TTSModel
+
+        return Qwen3TTSModel.from_pretrained(self.NAME, device_map="cuda:0", dtype=dtype, attn_implementation="sdpa")
+
+    @property
+    def precision(self):
+        return str(self.dtype).replace("torch.", "")
+
+    def batch(self, items, lang, seed):
+        outs = self.gen(self.model, items, lang, seed)
+        if self.dtype == self.torch.float16 and any(_bad_wav(w) for w, _ in outs):
+            log("fp16 出現 NaN／全零／削波 → 整批改用 fp32 重載重生，之後都用 fp32")
+            del self.model
+            try:
+                self.torch.cuda.empty_cache()
+            except Exception:  # noqa: BLE001
+                pass
+            self.dtype = self.torch.float32
+            self.fallback_fp32 = True
+            self.model = self.loader(self.dtype)
+            outs = self.gen(self.model, items, lang, seed)
+        return outs

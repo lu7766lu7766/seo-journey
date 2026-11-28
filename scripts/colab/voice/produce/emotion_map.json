@@ -1,6 +1,7 @@
 {
   "_note": "情緒指令對應表。每句的情緒指令 = ① 該說話者×表情（face）的基底句（沒有特定覆寫就用 _default）＋ ② 依台詞文字（上下文）符合的修飾片語（依 priority 取前 max_modifiers 個）。NPC 沒有 face，改用名牌的 default。口頭禪整句單獨出現時用 catchphrases 的專用句取代全部。所有字串不得含 voices_r3.json 的 banned_words（氣音／破音／極快／響亮…；「不…破音」這類否定用法放行），produce.py 與 tests_emotion.py 都會檢查。晴／翔的句子沿用第三輪製作人指定的穩定音高措辭。",
   "max_modifiers": 2,
+  "soften": "整體情緒收斂，音量適中，音高保持穩定的中低音域。",
   "faces": {
     "_default": {
       "normal": "平常自然的語氣，語速適中、咬字清楚。",

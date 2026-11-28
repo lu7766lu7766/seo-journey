@@ -68,7 +68,7 @@ def main():
             players = []
             for au in ln["audio"]:
                 t = next(t for t in ln["takes"] if t["file"] == au["file"])
-                tag = "" if au["passed"] else '<div class="fail">⚠ 未通過守門的「最接近」take（' + E("、".join(au["fails"])) + "），僅供參考，不會進量產。</div>'
+                tag = "" if au["passed"] else '<div class="fail">⚠ 未通過守門的「最接近」take（' + E("、".join(au["fails"])) + "），僅供參考，不會進量產。</div>"
                 players.append(f'<div>{tag}{gate_line(t, vc["f0"], lead_max, 0.0 if ln["catchphrase"] or ln["nchar"] <= G["short_chars"] else G["cer_max"])}<div class="meta">ASR：{E(t["asr_text"])}｜{au["lufs"]} LUFS / {au["true_peak_dbtp"]} dBTP</div><audio controls preload="none" src="{E(au["mp3"])}"></audio></div>')
             if not players:
                 players.append('<div class="fail">⚠ 這句沒有任何 take 通過守門。</div>')

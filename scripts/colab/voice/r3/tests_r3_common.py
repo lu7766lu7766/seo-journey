@@ -43,6 +43,10 @@ assert abs(c - 1 / 9) < 1e-6
 # 含拉丁字母只比 CJK 部分
 c, _, _ = cer_equiv(prep_text("SEO 評審白鷺凜講評"), "seo评审白鹭凛讲评")
 assert c == 0, c
+c, _, _ = cer_equiv(prep_text("我決定了！全擋！Disallow 到底！"), "我决定了全挡第四捞到底")
+assert c == 0, c  # 英文詞被轉成中文亂字，不算錯
+c, _, _ = cer_equiv(prep_text("我決定了！全擋！Disallow 到底！"), "我决定了全打第四捞到底")
+assert abs(c - 1 / 8) < 1e-6, c
 # 1985 轉寫成阿拉伯數字也算對
 c, _, _ = cer_equiv(prep_text("創校於 1985 年"), "创校于1985年")
 assert c == 0, c
@@ -81,5 +85,30 @@ ok, f = gate(take(asr_text="杰伦先说", _hyp_norm=norm_text("杰伦先说")),
 assert ok, f
 ok, f = gate(take(asr_text="别论先说", _hyp_norm=norm_text("别论先说")), G, V["hare_D"], 4, catchphrase=True, must_have=["結論先說"])
 assert "phrase" in f, f
+# ---- TTS：依卡型決定精度、fp16 出 NaN 時退回 fp32、依 VRAM 決定 batch（用假 torch，不需要 GPU）
+import types
+import numpy as np
+from r3_common import TTS, pick_batch, pick_dtype
+
+def fake_torch(bf16):
+    cuda = types.SimpleNamespace(is_bf16_supported=lambda including_emulation=True: bf16 and not including_emulation or bf16, empty_cache=lambda: None)
+    return types.SimpleNamespace(cuda=cuda, bfloat16="bf16", float16="fp16", float32="fp32")
+
+assert pick_dtype(fake_torch(True)) == "bf16" and pick_dtype(fake_torch(False)) == "fp16"
+assert (pick_batch(15), pick_batch(9), pick_batch(5)) == (12, 8, 4)
+calls = []
+def loader(dt):
+    calls.append(dt)
+    return dt
+def gen_fp16_nan(model, items, lang, seed):
+    w = np.full(100, 0.1, dtype=np.float32)
+    if model == "fp16":
+        w[3] = np.nan
+    return [(w, 24000) for _ in items]
+t = TTS(loader=loader, torch_mod=fake_torch(False), gen=gen_fp16_nan)
+outs = t.batch([{}, {}], "Chinese", 1)
+assert calls == ["fp16", "fp32"] and t.fallback_fp32 and t.precision == "fp32" and np.isfinite(outs[0][0]).all(), (calls, t.precision)
+t2 = TTS(loader=loader, torch_mod=fake_torch(True), gen=gen_fp16_nan)
+assert t2.precision == "bf16"  # bf16 卡不走 fp16 退回路徑
 print("OK" if not bad else f"{bad} 個文字預處理案例失敗")
 sys.exit(1 if bad else 0)

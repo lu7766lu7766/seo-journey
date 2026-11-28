@@ -30,8 +30,8 @@ import numpy as np
 import soundfile as sf
 
 sys.path.insert(0, "/content")
-from emotion import emotion_for, load_map  # noqa: E402
-from r3_common import Evaluator, banned_hits, build_instruct, chunks, design_batch, dur_cap, gate, load_json, log, norm_text, penalty, prep_text  # noqa: E402
+from emotion import emotion_for, load_map, soft_emotion  # noqa: E402
+from r3_common import TTS, Evaluator, banned_hits, build_instruct, chunks, dur_cap, gate, load_json, log, norm_text, penalty, pick_batch, prep_text  # noqa: E402
 
 OUT = os.environ.get("PRODUCE_OUT", "/content/produce_out")
 CHUNK = int(os.environ.get("PRODUCE_CHUNK", "72"))
@@ -87,7 +87,7 @@ def main():
         nc = len(norm_text(tts))
         flat = norm_text(ln["voiceText"])
         items.append({"id": lid, "scene": ln["sceneId"], "key": ln["key"], "speaker": sp, "npc": ln.get("name"), "voice": vid, "face": ln["face"], "text": ln["text"], "voice_text": ln["voiceText"], "text_tts": tts, "nchar": nc,
-                      "emotion_instruct": emo, "emotion_trace": trace, "instruct": build_instruct(v["design"], accent, emo), "cap": dur_cap(gates, nc),
+                      "emotion_instruct": emo, "emotion_trace": trace, "instruct": build_instruct(v["design"], accent, emo), "instruct_soft": build_instruct(v["design"], accent, soft_emotion(emap, sp, ln["voiceText"], ln.get("name"))), "soften": False, "cap": dur_cap(gates, nc),
                       "must": [p for p in must_phrases if p in ln["voiceText"]], "catch": any(flat == norm_text(p) for p in must_phrases),
                       "takes": [], "passed": False, "best": None})
     if os.environ.get("PRODUCE_LIMIT"):
@@ -124,14 +124,16 @@ def main():
         log("DONE: 沒有待做的句子")
         return
 
-    from qwen_tts import Qwen3TTSModel
     import torch
 
     t_boot = time.time()
     log("載入 Qwen3-TTS VoiceDesign …")
-    model = Qwen3TTSModel.from_pretrained("Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign", device_map="cuda:0", dtype=torch.bfloat16, attn_implementation="sdpa")
+    tts = TTS()
     ev = Evaluator()
-    prog.update(phase="generating", load_s=round(time.time() - t_boot, 1), gpu=torch.cuda.get_device_name(0))
+    free_gb = torch.cuda.mem_get_info()[0] / 1e9
+    batch_n = int(os.environ.get("PRODUCE_BATCH") or pick_batch(free_gb, BATCH))
+    prog.update(phase="generating", load_s=round(time.time() - t_boot, 1), gpu=torch.cuda.get_device_name(0), precision=tts.precision, batch=batch_n, free_vram_gb=round(free_gb, 1))
+    log(f"GPU {prog['gpu']}｜精度 {tts.precision}｜載入後剩餘 VRAM {free_gb:.1f}GB → 一批 {batch_n} 句")
     write_json(f"{OUT}/progress.json", prog)
     log(f"載入完成 {prog['load_s']}s")
 
@@ -147,7 +149,7 @@ def main():
     def run_batch(batch, chunk_i, rnd, bidx):
         seed = BASE_SEED + SALT * 10 + chunk_i * 1000 + rnd * 100 + bidx
         t0 = time.time()
-        outs = design_batch(model, [{"text_tts": it["text_tts"], "instruct": it["instruct"], "cap": it["cap"]} for it in batch], cfg["language"], seed)
+        outs = tts.batch([{"text_tts": it["text_tts"], "instruct": it["instruct_soft"] if it["soften"] else it["instruct"], "cap": it["cap"]} for it in batch], cfg["language"], seed)
         prog["gen_s"] += time.time() - t0
         for it, (wav, sr) in zip(batch, outs):
             t1 = time.time()
@@ -156,8 +158,8 @@ def main():
             emb = m.pop("_emb")
             ok, fails = gate(m, gates, voices[it["voice"]], it["nchar"], catchphrase=it["catch"], must_have=it["must"])
             m.pop("_hyp_norm", None)
-            m.update({"attempt": len(it["takes"]) + 1, "seed": seed, "passed": ok, "fails": fails, "penalty": round(penalty(m, fails), 2), "center_sim": center_sim(it["voice"], emb)})
-            it["takes"].append({"attempt": m["attempt"], "passed": ok, "fails": fails, "cer": m["cer"], "f0": m["f0_median_hz"], "dur": m["duration_s"]})
+            m.update({"attempt": len(it["takes"]) + 1, "softened": it["soften"], "seed": seed, "passed": ok, "fails": fails, "penalty": round(penalty(m, fails), 2), "center_sim": center_sim(it["voice"], emb)})
+            it["takes"].append({"attempt": m["attempt"], "softened": it["soften"], "passed": ok, "fails": fails, "cer": m["cer"], "f0": m["f0_median_hz"], "dur": m["duration_s"]})
             prog["takes"] += 1
             if ok:
                 it["passed"] = True
@@ -176,9 +178,12 @@ def main():
         rnd = 0
         while pend and rnd < max_att:
             pend.sort(key=lambda it: it["cap"])
-            for bidx, b in enumerate(chunks(pend, BATCH)):
+            for bidx, b in enumerate(chunks(pend, batch_n)):
                 run_batch(b, ci, rnd, bidx)
             pend = [it for it in chunk if not it["passed"]]
+            for it in pend:  # 連續失敗且其中有音高過高 → 之後改用收斂版情緒指令（仍套同一套守門；sidecar 與報告會標記 softened）
+                if len(it["takes"]) >= gates["soften_after"] and any("f0_high" in t["fails"] for t in it["takes"]):
+                    it["soften"] = True
             rnd += 1
         # ---- chunk 收尾：寫檔、更新 state、打包
         new_files = []
@@ -190,7 +195,7 @@ def main():
             os.makedirs(d, exist_ok=True)
             sf.write(f"{d}/{it['key']}.wav", wav, sr)
             side = {k: it[k] for k in ("id", "scene", "key", "speaker", "npc", "voice", "face", "text", "voice_text", "text_tts", "emotion_instruct", "emotion_trace", "must")}
-            side.update({"status": "done" if ok else "failed", "attempts": len(it["takes"]), "takes": it["takes"], "metrics": m, "sample_rate": sr, "instruct": it["instruct"]})
+            side.update({"softened": bool(it["best"][2].get("softened")), "status": "done" if ok else "failed", "attempts": len(it["takes"]), "takes": it["takes"], "metrics": m, "sample_rate": sr, "instruct": it["instruct"]})
             write_json(f"{d}/{it['key']}.json", side)
             new_files += [f"{sub}/{it['scene']}/{it['key']}.wav", f"{sub}/{it['scene']}/{it['key']}.json"]
             state["lines"][it["id"]] = {"status": "done" if ok else "failed", "attempts": len(it["takes"]), "voice": it["voice"], "fails": dict(Counter(f for t in it["takes"] for f in t["fails"]))}
@@ -226,9 +231,9 @@ def main():
     for b in by_voice.values():
         b["reasons"] = dict(b["reasons"])
     elapsed = time.time() - prog["started"]
-    report = {"requested": total_requested, "attempted": len(todo), "passed": prog["done_this_run"], "failed": failed, "by_voice": by_voice, "takes": prog["takes"],
+    report = {"requested": total_requested, "attempted": len(todo), "passed": prog["done_this_run"], "softened_passed": sum(1 for it in todo if it["passed"] and it["best"][2].get("softened")), "failed": failed, "by_voice": by_voice, "takes": prog["takes"],
               "gen_s_per_take": round(prog["gen_s"] / max(1, prog["takes"]), 2), "eval_s_per_take": round(prog["eval_s"] / max(1, prog["takes"]), 2), "takes_per_line": round(prog["takes"] / max(1, len(todo)), 2),
-              "elapsed_s": round(elapsed, 1), "load_s": prog.get("load_s"), "unmapped_npc": unmapped, "max_attempts": max_att, "chunk": CHUNK, "gpu": prog.get("gpu")}
+              "elapsed_s": round(elapsed, 1), "load_s": prog.get("load_s"), "unmapped_npc": unmapped, "max_attempts": max_att, "chunk": CHUNK, "gpu": prog.get("gpu"), "precision": tts.precision, "fp32_fallback": tts.fallback_fp32, "batch": batch_n, "free_vram_gb": prog.get("free_vram_gb")}
     write_json(f"{OUT}/report.json", report)
     prog.update(finished=True, phase="done", updated=time.time())
     write_json(f"{OUT}/progress.json", prog)

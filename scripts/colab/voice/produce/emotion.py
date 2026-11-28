@@ -51,3 +51,9 @@ def emotion_for(emap, speaker, face, voice_text, npc_name=None):
     hits.sort(key=lambda r: r["priority"])
     hits = hits[: emap["max_modifiers"]]
     return base + "".join(r["add"] for r in hits), {"base": base_id, "mods": [r["id"] for r in hits]}
+
+
+def soft_emotion(emap, speaker, voice_text, npc_name=None):
+    """收斂版情緒指令：該說話者的 normal 表情＋上下文修飾＋收斂片語。重抽數次仍因音高過高失敗時才用（見 produce.py 的 soften_after）。"""
+    base, _ = emotion_for(emap, speaker, "normal", voice_text, npc_name)
+    return base + emap["soften"]

@@ -31,6 +31,7 @@ def main():
     ap.add_argument("--public", required=True)
     ap.add_argument("--lines", default=str(HERE.parents[3] / "scripts/audio/voice-lines.json"))
     ap.add_argument("--summary")
+    ap.add_argument("--hardware", default="", help="Colab 實際取得的卡型（driver 傳入）；VM 端的 GPU 名稱與精度另從 report.json 讀")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--prune", action="store_true")
     a = ap.parse_args()
@@ -78,12 +79,15 @@ def main():
     manifest_path.write_text(json.dumps(dict(sorted(manifest.items())), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     cache_path.write_text(json.dumps(cache, ensure_ascii=False, indent=1), encoding="utf-8")
 
+    rep_path = raw.parent / "report.json"
+    rep = json.loads(rep_path.read_text(encoding="utf-8")) if rep_path.exists() else {}
     mine = [cache[i] for i in cache if i in manifest]
     size = sum((public / i.split("/")[0] / f"{i.split('/')[1]}.mp3").stat().st_size for i in manifest if (public / i.split("/")[0] / f"{i.split('/')[1]}.mp3").exists())
     summary = {
         "mp3_total": len(manifest), "this_run_converted": converted, "this_run_skipped": skipped, "total_mb": round(size / 1e6, 2), "total_duration_s": round(sum(m["duration"] for m in manifest.values()), 1),
         "lufs_min": min((m["lufs"] for m in mine), default=None), "lufs_max": max((m["lufs"] for m in mine), default=None), "true_peak_max_dbtp": max((m["true_peak_dbtp"] for m in mine), default=None),
         "reencoded": sum(1 for m in mine if m.get("reencode_gain_db")), "key_errors": key_errors, "stale_audio": stale_audio, "pruned": pruned,
+        "gpu": a.hardware or None, "gpu_name": rep.get("gpu"), "precision": rep.get("precision"), "fp32_fallback": rep.get("fp32_fallback"), "batch": rep.get("batch"),
         "lines_in_script": len(lines), "lines_with_voice": sum(1 for i in lines if i in manifest),
     }
     Path(a.summary or raw.parent / "finalize_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=1), encoding="utf-8")

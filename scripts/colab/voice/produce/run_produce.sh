@@ -32,7 +32,7 @@ mkdir -p "${WORK}/raw" "${WORK}/packs" "${WORK}/meta"
 # shellcheck source=../r3/colab_session.sh
 source "${R3_DIR}/colab_session.sh"
 trap session_cleanup EXIT
-[ -z "${PACK_ASR_CACHE:-}" ] && { [ -f "${ASR_CACHE_LOCAL}" ] && PACK_ASR_CACHE=0 || PACK_ASR_CACHE=1; }
+[ -z "${PACK_ASR_CACHE:-}" ] && PACK_ASR_CACHE=0
 
 if [ "${REFRESH_LINES:-1}" = "1" ]; then
   echo "=== 重產 voice-lines.json（以目前劇本為準）==="
@@ -55,6 +55,7 @@ PYEOF
 
 if [ "${REUSE:-0}" != "1" ]; then
   session_up
+  echo "實際取得的卡型：${GPU_ACTUAL}"; echo "${GPU_ACTUAL}" > "${WORK}/meta/hardware.txt"
   weights_cache_upload
   echo "=== 環境準備 ==="
   C upload -s "${SESSION_NAME}" "${R3_DIR}/setup_vm_r3.py" /content/setup_vm_r3.py
@@ -117,7 +118,7 @@ fetch_packs() {  # $1 = 輪詢輸出；下載尚未取得的 pack 並解壓到 r
   echo "$(date +%H:%M:%S) $(printf '%s\n' "${status}" | head -n 1)"
   printf '%s\n' "${status}" | tail -n +2 | while read -r pk; do
     [ -z "${pk}" ] && continue
-    C download -s "${SESSION_NAME}" "/content/produce_out/packs/${pk}" "${PACK_DIR}/${pk}"
+    Ct 600 download -s "${SESSION_NAME}" "/content/produce_out/packs/${pk}" "${PACK_DIR}/${pk}" || continue
     tar -xf "${PACK_DIR}/${pk}" -C "${WORK}/raw" && echo "${pk}" >> "${GOT}"
     echo "  已下載並解壓 ${pk}"
   done
@@ -128,7 +129,7 @@ echo "=== 輪詢並增量下載（每 ${POLL_S} 秒）==="
 FINAL=""
 while true; do
   sleep "${POLL_S}"
-  OUT_TXT="$(C exec -s "${SESSION_NAME}" -f "${POLL_PY}" 2>&1 || true)"
+  OUT_TXT="$(Ct 90 exec -s "${SESSION_NAME}" --timeout 60 -f "${POLL_PY}" 2>&1 || true)"
   state="$(fetch_packs "${OUT_TXT}" | tee /dev/stderr | tail -n 1)"
   case "${state}" in
     finished) FINAL=ok; break ;;
@@ -137,12 +138,12 @@ while true; do
 done
 
 echo "=== 取回報告與 log ==="
-C download -s "${SESSION_NAME}" /content/produce_out/report.json "${WORK}/report.json" || true
-C download -s "${SESSION_NAME}" /content/produce_out/progress.json "${WORK}/progress.json" || true
-C download -s "${SESSION_NAME}" /content/produce.log "${WORK}/produce.log" || true
-C download -s "${SESSION_NAME}" /content/setup_report.json "${WORK}/setup_report.json" || true
+Ct 300 download -s "${SESSION_NAME}" /content/produce_out/report.json "${WORK}/report.json" || true
+Ct 300 download -s "${SESSION_NAME}" /content/produce_out/progress.json "${WORK}/progress.json" || true
+Ct 300 download -s "${SESSION_NAME}" /content/produce.log "${WORK}/produce.log" || true
+Ct 300 download -s "${SESSION_NAME}" /content/setup_report.json "${WORK}/setup_report.json" || true
 # 失敗時再補抓一次 pack（可能剛好在最後寫入）
-OUT_TXT="$(C exec -s "${SESSION_NAME}" -f "${POLL_PY}" 2>&1 || true)"; fetch_packs "${OUT_TXT}" >/dev/null || true
+OUT_TXT="$(Ct 90 exec -s "${SESSION_NAME}" --timeout 60 -f "${POLL_PY}" 2>&1 || true)"; fetch_packs "${OUT_TXT}" >/dev/null || true
 rm -f "${POLL_PY}" "${PARSE_PY}"
 
 echo "=== 停止自己的 Colab VM ==="
@@ -152,6 +153,6 @@ colab sessions; colab usage
 if [ "${FINAL}" != "ok" ]; then echo "VM 端生成未正常結束（${FINAL}），見 ${WORK}/produce.log；已完成的句子已下載，修好後重跑即可續跑"; fi
 
 echo "=== 本機：MP3 後處理與 manifest ==="
-python3 "${SCRIPT_DIR}/finalize_produce.py" --raw "${WORK}/raw" --public "${PUBLIC}" --lines "${LINES_JSON}" --summary "${WORK}/finalize_summary.json"
+python3 "${SCRIPT_DIR}/finalize_produce.py" --hardware "$(cat "${WORK}/meta/hardware.txt" 2>/dev/null || true)" --raw "${WORK}/raw" --public "${PUBLIC}" --lines "${LINES_JSON}" --summary "${WORK}/finalize_summary.json"
 echo "完成：${PUBLIC}（報告 ${WORK}/report.json、${WORK}/finalize_summary.json）"
 [ "${FINAL}" = "ok" ]
