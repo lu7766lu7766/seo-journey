@@ -1,6 +1,7 @@
 import type { BgId } from '@/content/backgrounds'
 import type { TimeOfDay } from '@/engine/types'
-import { useArtManifest } from '../manifest'
+import { useArtImage } from '../hooks'
+import { useArtManifest, useArtManifestStatus } from '../manifest'
 import { resolveBgSrc } from '../resolve'
 import { OutingBackground } from './outing'
 import { SakuraParticles, StarParticles } from './Particles'
@@ -32,21 +33,18 @@ export interface BackgroundProps {
   time?: TimeOfDay
 }
 
-/**
- * PUBLIC ART INTERFACE. Fills its parent (1280x720 stage).
- * Uses /art/bg/<id>.webp|png when listed in public/art/manifest.json.
- */
-export function Background({ id, time: requestedTime = 'day' }: BackgroundProps) {
-  const manifest = useArtManifest()
-  const imgSrc = resolveBgSrc(manifest, id)
-  // Real artwork that is already dark keeps its own lighting; the SVG fallbacks still honour the requested time.
-  const time = imgSrc && PRE_TINTED_BGS.has(id) ? 'day' : requestedTime
+/** Same colour as the boot splash, shown while a background image is still downloading. */
+export const ART_PLACEHOLDER_BG = '#0b1430'
 
-  if (imgSrc) {
-    return (
-      <div className="absolute inset-0 overflow-hidden">
+function ImageBackground({ id, src, time }: { id: BgId; src: string; time: TimeOfDay }) {
+  const { loaded, failed, imgProps } = useArtImage(src)
+  if (failed) return <SvgBackground id={id} time={time} />
+  return (
+    <div className="absolute inset-0 overflow-hidden" style={{ background: ART_PLACEHOLDER_BG }}>
+      <div className="art-fade absolute inset-0" style={{ opacity: loaded ? 1 : 0 }}>
         <img
-          src={imgSrc}
+          {...imgProps}
+          src={src}
           alt=""
           draggable={false}
           className="h-full w-full object-cover"
@@ -69,9 +67,28 @@ export function Background({ id, time: requestedTime = 'day' }: BackgroundProps)
         )}
         {id === 'gate' && <SakuraParticles />}
       </div>
-    )
-  }
+    </div>
+  )
+}
 
+/**
+ * PUBLIC ART INTERFACE. Fills its parent (1280x720 stage).
+ * Uses /art/bg/<id>.webp|png when listed in public/art/manifest.json: a dark placeholder until the image has loaded,
+ * then a short fade-in. The programmatic SVG is only for ids without an image (or an image that fails to load).
+ */
+export function Background({ id, time: requestedTime = 'day' }: BackgroundProps) {
+  const manifest = useArtManifest()
+  const status = useArtManifestStatus()
+  const imgSrc = resolveBgSrc(manifest, id)
+  if (status === 'loading') return <div className="absolute inset-0" style={{ background: ART_PLACEHOLDER_BG }} />
+  if (imgSrc) {
+    // Real artwork that is already dark keeps its own lighting; the SVG fallbacks still honour the requested time.
+    return <ImageBackground id={id} src={imgSrc} time={PRE_TINTED_BGS.has(id) ? 'day' : requestedTime} />
+  }
+  return <SvgBackground id={id} time={requestedTime} />
+}
+
+function SvgBackground({ id, time }: { id: BgId; time: TimeOfDay }) {
   const [skyTop, skyBot] = SKY_GRAD[time]
   const night = time === 'night'
 

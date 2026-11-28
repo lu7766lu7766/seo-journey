@@ -1,5 +1,6 @@
 import type { CharId, Face } from '@/content/characters'
-import { useArtManifest } from '../manifest'
+import { useArtImage } from '../hooks'
+import { useArtManifest, useArtManifestStatus } from '../manifest'
 import { resolveSpriteSrc } from '../resolve'
 import { HareSprite } from './Hare'
 import { KuroSprite } from './Kuro'
@@ -100,27 +101,7 @@ function ExpressionEmote({ face }: { face: Face }) {
   }
 }
 
-/**
- * PUBLIC ART INTERFACE.
- * Renders in a 600x1000 box (aspect 0.6). Uses /art/<id>/<face>.webp|png when listed in public/art/manifest.json.
- */
-export function CharacterSprite({ id, face, speaking }: CharacterSpriteProps) {
-  const manifest = useArtManifest()
-  const resolved = resolveSpriteSrc(manifest, id, face)
-  if (resolved) {
-    return (
-      <div className="char-breath relative flex h-full w-full items-end justify-center" style={{ transformOrigin: '50% 95%' }}>
-        <img
-          src={resolved.src}
-          alt=""
-          draggable={false}
-          className="h-full w-auto select-none object-contain drop-shadow-[0_14px_28px_rgba(10,14,34,0.52)]"
-          style={{ filter: resolved.exact ? undefined : MOOD_FILTER[face] }}
-        />
-        {!resolved.exact && <ExpressionEmote face={face} />}
-      </div>
-    )
-  }
+function SvgSprite({ id, face, speaking }: CharacterSpriteProps) {
   switch (id) {
     case 'rin':
       return <RinSprite face={face} speaking={speaking} />
@@ -133,4 +114,37 @@ export function CharacterSprite({ id, face, speaking }: CharacterSpriteProps) {
     case 'kuro':
       return <KuroSprite face={face} speaking={speaking} />
   }
+}
+
+/** A real WebP sprite: transparent until its bytes are in, then a short fade; the SVG art only if the file errors. */
+function ImageSprite({ id, face, speaking, src, exact }: CharacterSpriteProps & { src: string; exact: boolean }) {
+  const { loaded, failed, imgProps } = useArtImage(src)
+  if (failed) return <SvgSprite id={id} face={face} speaking={speaking} />
+  return (
+    <div className="char-breath relative flex h-full w-full items-end justify-center" style={{ transformOrigin: '50% 95%' }}>
+      <img
+        {...imgProps}
+        src={src}
+        alt=""
+        draggable={false}
+        className="art-fade h-full w-auto select-none object-contain drop-shadow-[0_14px_28px_rgba(10,14,34,0.52)]"
+        style={{ filter: exact ? undefined : MOOD_FILTER[face], opacity: loaded ? 1 : 0 }}
+      />
+      {loaded && !exact && <ExpressionEmote face={face} />}
+    </div>
+  )
+}
+
+/**
+ * PUBLIC ART INTERFACE.
+ * Renders in a 600x1000 box (aspect 0.6). Uses /art/<id>/<face>.webp|png when listed in public/art/manifest.json.
+ * While the manifest is still loading nothing is drawn (never the SVG art, which used to flash before the real one).
+ */
+export function CharacterSprite({ id, face, speaking }: CharacterSpriteProps) {
+  const manifest = useArtManifest()
+  const status = useArtManifestStatus()
+  if (status === 'loading') return <div className="h-full w-full" />
+  const resolved = resolveSpriteSrc(manifest, id, face)
+  if (resolved) return <ImageSprite id={id} face={face} speaking={speaking} src={resolved.src} exact={resolved.exact} />
+  return <SvgSprite id={id} face={face} speaking={speaking} />
 }

@@ -26,10 +26,55 @@
     <meta name="twitter:image" content="%SITE_URL%/og-image.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <!-- non-render-blocking (media swap): a slow font CSS must not delay the boot splash below; display=swap shows system fonts meanwhile -->
+    <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" /></noscript>
+    <!--
+      Boot splash. Plain HTML + CSS so it is on screen before any JS runs; src/main.tsx lifts it out of #root,
+      mounts React underneath and fades it away. The same .boot-* classes style the in-game 「讀取中…」 overlay
+      (src/ui/LoadingOverlay.tsx), so keep this block light and dependency-free.
+    -->
+    <style>
+      html, body { background: #0b1430; }
+      .boot-splash {
+        position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 14px; background: radial-gradient(ellipse at 50% 42%, #14224a 0%, #0b1430 62%); color: #f4f7ff;
+        font-family: "LXGW WenKai TC", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, serif;
+        transition: opacity 0.45s ease-out;
+      }
+      .boot-splash.boot-out { opacity: 0; pointer-events: none; }
+      .boot-title { margin: 0; font-size: 56px; font-weight: 700; letter-spacing: 0.06em; text-shadow: 0 4px 28px rgba(159, 211, 240, 0.45); }
+      .boot-sub { margin: 0 0 18px; font-size: 18px; letter-spacing: 0.12em; color: #f7b8c8; }
+      .boot-search {
+        position: relative; display: flex; align-items: center; gap: 10px; box-sizing: border-box; width: min(360px, 78vw); height: 44px; padding: 0 16px;
+        border: 1.5px solid rgba(159, 211, 240, 0.6); border-radius: 999px; overflow: hidden; background: rgba(8, 14, 36, 0.55);
+      }
+      .boot-search svg { flex: none; width: 18px; height: 18px; opacity: 0.85; }
+      .boot-cursor { width: 2px; height: 20px; background: #9fd3f0; animation: boot-blink 1s steps(1) infinite; }
+      .boot-bar { position: absolute; left: 0; bottom: 0; height: 2px; width: 38%; background: linear-gradient(90deg, transparent, #9fd3f0, transparent); animation: boot-sweep 1.5s ease-in-out infinite; }
+      .boot-label { font-size: 15px; letter-spacing: 0.2em; color: #9fd3f0; }
+      @keyframes boot-blink { 50% { opacity: 0; } }
+      @keyframes boot-sweep { from { transform: translateX(-100%); } to { transform: translateX(270%); } }
+      @media (prefers-reduced-motion: reduce) {
+        .boot-splash { transition: none; }
+        .boot-cursor { animation: none; }
+        .boot-bar { animation: none; width: 100%; opacity: 0.5; }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="boot-splash" class="boot-splash" role="status" aria-live="polite" aria-label="讀取中">
+        <h1 class="boot-title">直到你找到我</h1>
+        <p class="boot-sub">～青葉學園網站研究社～</p>
+        <div class="boot-search" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#9fd3f0" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 21 21" /></svg>
+          <span class="boot-cursor"></span>
+          <span class="boot-bar"></span>
+        </div>
+        <div class="boot-label">讀取中…</div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

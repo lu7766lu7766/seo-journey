@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { audio } from '@/audio'
+import { preloadSceneArt, warmSimScreenArt } from '@/art/preload'
 import { applyEffects as applyCore } from '@/engine/effects'
 import { SceneRunner, type RunnerHost } from '@/engine/runner'
 import { initialStage, reduceStage } from '@/engine/stage'
@@ -98,6 +99,19 @@ export const useGame = create<GameStore>((set, get) => {
     if (get().active) writeSave('auto', get().toPersisted())
   }
 
+  /** load a scene's script and its artwork (capped at 4s; overlay if >200ms) without touching any game state */
+  const prepareScene = async (id: string) => {
+    const scene = await loadScene(id)
+    await preloadSceneArt(scene.cmds)
+    return scene
+  }
+  const beginScene = (scene: Awaited<ReturnType<typeof loadScene>>) => {
+    runner = new SceneRunner(scene, host)
+    set({ active: true })
+    sync(runner.start())
+    warmSimScreenArt()
+  }
+
   return {
     ...defaultPersisted(),
     active: false,
@@ -111,10 +125,7 @@ export const useGame = create<GameStore>((set, get) => {
     },
 
     startScene: async (id) => {
-      const scene = await loadScene(id)
-      runner = new SceneRunner(scene, host)
-      set({ active: true })
-      sync(runner.start())
+      beginScene(await prepareScene(id))
     },
 
     advance: () => {
@@ -207,10 +218,13 @@ export const useGame = create<GameStore>((set, get) => {
         if (s.week >= 7) {
           const eid = determineEnding(s)
           get().reachEnding(eid)
-          set({ phase: 'ending', scene: null })
           if (SCENE_IDS.includes(eid)) {
-            await get().startScene(eid)
+            // preload first: while `phase` is 'ending' with no scene running the result screen would show ahead of the ending scene
+            const endScene = await prepareScene(eid)
+            set({ phase: 'ending', scene: null })
+            beginScene(endScene)
           } else {
+            set({ phase: 'ending', scene: null })
             autosaveNow()
           }
           return
@@ -323,9 +337,11 @@ export const useGame = create<GameStore>((set, get) => {
     loadPersisted: async (raw) => {
       const data = normalizeData(raw)
       runner = null
+      const scene = data.scene ? await loadScene(data.scene.sceneId) : null
+      // a save resumes mid-scene: preload what is on stage now plus everything the rest of the scene can show
+      await preloadSceneArt(scene?.cmds ?? [], data.stage)
       set({ ...data, active: true, toastQueue: [], toast: null, pause: { kind: 'end' } })
-      if (data.scene) {
-        const scene = await loadScene(data.scene.sceneId)
+      if (data.scene && scene) {
         runner = new SceneRunner(scene, host, data.scene)
         sync(runner.start())
       }

@@ -171,7 +171,8 @@ async function main() {
     await page.getByRole('button', { name: '開始遊戲' }).click()
     await page.locator('#pname').fill('小測試')
     await page.locator('[data-testid="name-ok"]').click()
-    await page.locator('[data-testid="vnstage"]').waitFor({ state: 'visible', timeout: 5000 })
+    // the title stays up while the prologue's artwork is preloaded (up to 4s, longer on a busy machine), then the stage appears
+    await page.locator('[data-testid="vnstage"]').waitFor({ state: 'visible', timeout: 20000 })
 
     // 5. Full playthrough loop
     const captured = {
@@ -324,7 +325,8 @@ async function main() {
           await page.reload({ waitUntil: 'networkidle' })
           await page.getByRole('button', { name: '讀檔' }).click()
           await page.locator('[data-testid="slot-1"]').click()
-          await page.locator('[data-testid="vnstage"]').waitFor({ state: 'visible', timeout: 5000 })
+          // loading a save preloads the scene's artwork first (up to 4s) before leaving the title
+          await page.locator('[data-testid="vnstage"]').waitFor({ state: 'visible', timeout: 20000 })
           captured.saveTested = true
           continue
         }

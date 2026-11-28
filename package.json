@@ -11,7 +11,8 @@
     "test": "vitest run",
     "e2e": "npm run build && node e2e/playthrough.mjs --preview",
     "art": "node scripts/process-art.mjs",
-    "art:check": "node scripts/check-art.mjs"
+    "art:check": "node scripts/check-art.mjs",
+    "check:flash": "npm run build && node scripts/check-no-svg-flash.mjs"
   },
   "dependencies": {
     "motion": "^14.14.0",

@@ -4,6 +4,7 @@ import { Backlog } from '@/ui/Backlog'
 import { GameMenu } from '@/ui/GameMenu'
 import { SaveLoad } from '@/ui/SaveLoad'
 import { SettingsPanel } from '@/ui/SettingsPanel'
+import { LoadingOverlay } from '@/ui/LoadingOverlay'
 import { StatusPanel } from '@/ui/sim/StatusPanel'
 import { StageFrame } from '@/ui/StageFrame'
 import { TitleScreen } from '@/ui/TitleScreen'
@@ -29,6 +30,7 @@ export function App() {
           <Gallery />
         </Suspense>
       )}
+      <LoadingOverlay />
     </StageFrame>
   )
 }

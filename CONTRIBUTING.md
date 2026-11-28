@@ -15,6 +15,7 @@
 - `src/art/characters/index.tsx`：`<CharacterSprite id face speaking />`（600×1000 viewBox，高度撐滿父層）
 - `src/art/backgrounds/index.tsx`：`<Background id time />`（填滿 1280×720 父層）
 - 圖片覆蓋：以 WebP 為準（`public/art/<id>/<face>.webp`、`public/art/bg/<id>.webp`、`public/art/cg/<id>.webp`），由 `scripts/process-art.mjs` 處理並寫入 `public/art/manifest.json`（鍵 `"<id>/<face>"`、`"bg/<bgId>"`、`"cg/<cgId>"`，值為路徑字串）。製作規格與流程見 `docs/art-requests.md`；`npm run art:check` 檢查進度。
+- 圖片載入（避免「先閃 SVG 再換 WebP」）：`src/main.tsx` 先等 manifest ＋標題畫面圖（上限 6 秒，期間顯示 `index.html` 內的啟動畫面）；`startScene` 會先預載整個場景用到的 bg／立繪／CG（上限 4 秒，超過 200ms 顯示「讀取中…」覆蓋層）；非劇本畫面用 `<ArtGate>`。manifest 尚未載入完成或圖片尚在下載時，美術元件只畫透明／深色底，**不畫 SVG**；SVG 只在 manifest 確定沒有該條目或 `<img>` 載入失敗時才用。新增非劇本畫面或新的圖片用途時，把用到的圖加進 `src/art/specs.ts`。改動後用 `npm run check:flash`（Fast 3G 節流）驗證從未渲染 SVG。
 - `src/minigames/index.tsx`：`<MinigameHost id onResolve(won) />`
 - `src/audio/index.ts`：`audio.sfx(id)`、`audio.bgm(id)`
 

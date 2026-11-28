@@ -1,6 +1,10 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { lazy, Suspense, useEffect } from 'react'
 import { Background } from '@/art/backgrounds'
+import { useAfterPreload } from '@/art/hooks'
+import { useArtManifest } from '@/art/manifest'
+import { specUrls } from '@/art/sceneAssets'
+import { BOARD_ART, REPORT_ART, SCHEDULE_ART, WEEKEND_ART } from '@/art/specs'
 import { CgArt } from '@/art/cg'
 import type { CgId } from '@/content/cgs'
 import type { KnowledgeId } from '@/content/knowledge'
@@ -11,6 +15,7 @@ import { useUI } from '@/store/ui'
 import { ChoiceMenu } from './ChoiceMenu'
 import { CharacterLayer } from './CharacterLayer'
 import { DialogueBox } from './DialogueBox'
+import { ArtGate } from './ArtGate'
 import { EndingScreen } from './sim/EndingScreen'
 import { NoticeBoard } from './sim/NoticeBoard'
 import { ScheduleScreen } from './sim/ScheduleScreen'
@@ -52,6 +57,13 @@ export function VNStage() {
   const toast = useGame((s) => s.toast)
   const hidden = useUI((s) => s.hidden)
   useVNInput()
+  const manifest = useArtManifest()
+  // a new background only replaces the old one once its image is in (no dark flash if it is slow)
+  const bg = useAfterPreload(
+    stage.bg,
+    (b) => b.id + b.time,
+    (b) => specUrls(manifest, { bg: [b.id] }),
+  )
 
   useEffect(() => {
     if (!toast) return
@@ -67,18 +79,18 @@ export function VNStage() {
 
   // Simulation screens when between VN scenes
   if (!scene || pause.kind === 'end') {
-    if (phase === 'schedule') return <ScheduleScreen />
-    if (phase === 'board') return <NoticeBoard />
-    if (phase === 'weekend') return <WeekendMenu />
-    if (phase === 'report') return <WeeklyReport />
+    if (phase === 'schedule') return <ArtGate key="schedule" spec={SCHEDULE_ART}><ScheduleScreen /></ArtGate>
+    if (phase === 'board') return <ArtGate key="board" spec={BOARD_ART}><NoticeBoard /></ArtGate>
+    if (phase === 'weekend') return <ArtGate key="weekend" spec={WEEKEND_ART}><WeekendMenu /></ArtGate>
+    if (phase === 'report') return <ArtGate key="report" spec={REPORT_ART}><WeeklyReport /></ArtGate>
     if (phase === 'ending') return <EndingScreen />
   }
 
   return (
     <div className="absolute inset-0" onClick={requestAdvance} data-testid="vnstage">
       <AnimatePresence initial={false}>
-        <motion.div key={stage.bg.id + stage.bg.time} className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-          <Background id={stage.bg.id} time={stage.bg.time} />
+        <motion.div key={bg.id + bg.time} className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
+          <Background id={bg.id} time={bg.time} />
         </motion.div>
       </AnimatePresence>
       {stage.rain && <div className="rain-layer pointer-events-none absolute inset-0 z-[5]" />}
