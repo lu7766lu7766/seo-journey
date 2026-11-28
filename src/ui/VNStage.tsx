@@ -21,33 +21,8 @@ import { NoticeBoard } from './sim/NoticeBoard'
 import { ScheduleScreen } from './sim/ScheduleScreen'
 import { WeekendMenu } from './sim/WeekendMenu'
 import { WeeklyReport } from './sim/WeeklyReport'
+import { SystemBar, type SystemBarMode } from './SystemBar'
 import { requestAdvance, useVNInput } from './useVNInput'
-
-function QuickBar() {
-  const { auto, skipping } = useUI()
-  const set = useUI((s) => s.set)
-  const setOverlay = useUI((s) => s.setOverlay)
-  const stop = (fn: () => void) => (e: React.MouseEvent) => {
-    e.stopPropagation()
-    fn()
-  }
-  return (
-    <div className="absolute right-6 top-4 z-30 flex gap-2 text-sm">
-      <button className="hud-pill" onClick={stop(() => setOverlay('status'))}>狀態</button>
-      <button className="hud-pill" aria-pressed={auto} onClick={stop(() => set({ auto: !auto }))}>自動 (A){auto ? ' ●' : ''}</button>
-      <button
-        className="hud-pill"
-        aria-pressed={skipping}
-        onClick={stop(() => set({ skipping: !skipping }))}
-      >
-        快轉 (Ctrl){skipping ? ' ●' : ''}
-      </button>
-      <button className="hud-pill" onClick={stop(() => setOverlay('backlog'))}>紀錄 (L)</button>
-      <button className="hud-pill" onClick={stop(() => set({ hidden: true }))}>隱藏 (H)</button>
-      <button className="hud-pill" onClick={stop(() => setOverlay('menu'))}>選單 (Esc)</button>
-    </div>
-  )
-}
 
 export function VNStage() {
   const stage = useGame((s) => s.stage)
@@ -77,14 +52,32 @@ export function VNStage() {
     void useGame.getState().completeCurrentScene()
   }, [scene, pause.kind])
 
-  // Simulation screens when between VN scenes
-  if (!scene || pause.kind === 'end') {
-    if (phase === 'schedule') return <ArtGate key="schedule" spec={SCHEDULE_ART}><ScheduleScreen /></ArtGate>
-    if (phase === 'board') return <ArtGate key="board" spec={BOARD_ART}><NoticeBoard /></ArtGate>
-    if (phase === 'weekend') return <ArtGate key="weekend" spec={WEEKEND_ART}><WeekendMenu /></ArtGate>
-    if (phase === 'report') return <ArtGate key="report" spec={REPORT_ART}><WeeklyReport /></ArtGate>
-    if (phase === 'ending') return <EndingScreen />
+  // 「隱藏 (H)」 only means something on script screens; never carry it into a sim screen
+  const betweenScenes = !scene || pause.kind === 'end'
+  useEffect(() => {
+    if (betweenScenes && hidden) useUI.getState().set({ hidden: false })
+  }, [betweenScenes, hidden])
+
+  // Simulation screens when between VN scenes. Every in-game screen shares the one SystemBar (top-right).
+  if (betweenScenes) {
+    const sim =
+      phase === 'schedule' ? <ArtGate key="schedule" spec={SCHEDULE_ART}><ScheduleScreen /></ArtGate>
+      : phase === 'board' ? <ArtGate key="board" spec={BOARD_ART}><NoticeBoard /></ArtGate>
+      : phase === 'weekend' ? <ArtGate key="weekend" spec={WEEKEND_ART}><WeekendMenu /></ArtGate>
+      : phase === 'report' ? <ArtGate key="report" spec={REPORT_ART}><WeeklyReport /></ArtGate>
+      : phase === 'ending' ? <EndingScreen />
+      : null
+    if (sim) {
+      return (
+        <>
+          {sim}
+          <SystemBar mode="sim" />
+        </>
+      )
+    }
   }
+
+  const barMode: SystemBarMode = pause.kind === 'minigame' ? 'minigame' : 'script'
 
   return (
     <div className="absolute inset-0" onClick={requestAdvance} data-testid="vnstage">
@@ -104,9 +97,9 @@ export function VNStage() {
       </AnimatePresence>
       {stage.flash > 0 && <motion.div key={stage.flash} className="pointer-events-none absolute inset-0 z-50 bg-white" initial={{ opacity: 0.9 }} animate={{ opacity: 0 }} transition={{ duration: 0.6 }} />}
 
+      <SystemBar mode={barMode} />
       {!hidden && (
         <>
-          <QuickBar />
           {pause.kind === 'say' && <DialogueBox line={pause} />}
           {pause.kind === 'choice' && <ChoiceMenu pause={pause} />}
           {pause.kind === 'minigame' && (

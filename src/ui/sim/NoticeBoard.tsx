@@ -3,7 +3,6 @@ import { CharacterAvatar } from '@/art/characters/Avatar'
 import { QUEST_BLURBS } from '@/content/flavor'
 import { SCENE_IDS } from '@/content/scenes'
 import { useGame } from '@/store/game'
-import { useUI } from '@/store/ui'
 import { availableQuests, MAX_QUESTS_PER_WEEK } from '@/systems/quests'
 
 function questSeriesLabel(id: string): string | null {
@@ -13,16 +12,15 @@ function questSeriesLabel(id: string): string | null {
 
 export function NoticeBoard() {
   const { week, flags, questsDoneThisWeek, startSideQuest, skipBoardToWeekend } = useGame()
-  const setOverlay = useUI((s) => s.setOverlay)
   const quests = availableQuests(week, flags).filter((q) => SCENE_IDS.includes(q.id))
   const remaining = Math.max(0, MAX_QUESTS_PER_WEEK - questsDoneThisWeek)
 
   return (
-    <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-8" data-testid="notice-board">
+    <div className="relative flex h-full w-full items-center justify-center overflow-hidden px-8 pb-6 pt-14" data-testid="notice-board">
       <Background id="corridor" time="dusk" />
       <div className="pointer-events-none absolute inset-0 bg-[#0c1228]/50 backdrop-blur-[2px]" />
-      <div className="relative z-10 flex max-h-[640px] w-[920px] flex-col gap-5">
-        <div className="vn-box flex items-center justify-between gap-4 rounded-2xl px-6 py-4 text-white">
+      <div className="relative z-10 flex max-h-full w-[920px] flex-col gap-4">
+        <div className="vn-box rounded-2xl px-6 py-4 text-white">
           <div>
             <div className="flex items-center gap-3">
               <h2 className="font-title text-3xl font-bold text-white">放學後 · 委託公佈欄</h2>
@@ -31,13 +29,6 @@ export function NoticeBoard() {
               </span>
             </div>
             <p className="mt-1 text-sm text-[#d5e3ff]">不佔平日排程，完成支線可獲得屬性、好感度與知識卡</p>
-          </div>
-          <div className="flex shrink-0 items-center gap-2">
-            <button type="button" className="hud-pill" onClick={() => setOverlay('status')}>狀態</button>
-            <button type="button" className="hud-pill" onClick={() => setOverlay('menu')}>選單 (Esc)</button>
-            <button className="btn-pastel px-6 py-2.5 text-lg" data-testid="skip-board" onClick={skipBoardToWeekend}>
-              前往週末 →
-            </button>
           </div>
         </div>
 
@@ -97,6 +88,12 @@ export function NoticeBoard() {
             })}
           </div>
         )}
+
+        <div className="flex shrink-0 justify-end">
+          <button className="btn-pastel px-8 py-3 text-xl" data-testid="skip-board" onClick={skipBoardToWeekend}>
+            前往週末 →
+          </button>
+        </div>
       </div>
     </div>
   )

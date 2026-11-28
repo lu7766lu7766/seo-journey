@@ -15,6 +15,18 @@ async function shot(page, name) {
   await page.screenshot({ path: join(SHOTS_DIR, name) })
 }
 
+
+// The one SystemBar must be present on every in-game screen, and no screen may keep its own system buttons.
+async function assertSystemBar(page, screenTestId, label) {
+  const bar = page.locator('[data-testid="system-bar"]')
+  if ((await bar.count()) !== 1) throw new Error(`${label}: expected exactly one system bar, got ${await bar.count()}`)
+  for (const id of ['sys-status', 'sys-gallery', 'sys-menu']) {
+    if (!(await page.locator(`[data-testid="${id}"]`).isVisible())) throw new Error(`${label}: ${id} missing from the system bar`)
+  }
+  const stray = screenTestId ? await page.locator(`[data-testid="${screenTestId}"] button`, { hasText: /^(狀態|選單|圖鑑)/ }).count() : 0
+  if (stray > 0) throw new Error(`${label}: ${stray} system button(s) left inside the screen content`)
+}
+
 async function waitForServer(url, timeoutMs = 20000) {
   const start = Date.now()
   while (Date.now() - start < timeoutMs) {
@@ -220,6 +232,7 @@ async function main() {
       if (await page.locator('[data-testid="schedule-screen"]').isVisible().catch(() => false)) {
         const snapFilled = !captured.schedule
         if (!captured.schedule) {
+          await assertSystemBar(page, 'schedule-screen', '排程')
           await shot(page, 'schedule-ui.png')
           captured.schedule = true
         }
@@ -251,6 +264,7 @@ async function main() {
       if (await page.locator('[data-testid="notice-board"]').isVisible().catch(() => false)) {
         if (!captured.board) {
           await page.waitForTimeout(160)
+          await assertSystemBar(page, 'notice-board', '公佈欄')
           await shot(page, 'notice-board.png')
           captured.board = true
         }
@@ -262,6 +276,7 @@ async function main() {
       if (await page.locator('[data-testid="weekend-menu"]').isVisible().catch(() => false)) {
         if (!captured.weekend) {
           await page.waitForTimeout(200)
+          await assertSystemBar(page, 'weekend-menu', '週末')
           await shot(page, 'weekend-menu.png')
           captured.weekend = true
         }
@@ -278,6 +293,7 @@ async function main() {
       if (await page.locator('[data-testid="weekly-report"]').isVisible().catch(() => false)) {
         if (!captured.report) {
           await page.waitForTimeout(450)
+          await assertSystemBar(page, 'weekly-report', '週報')
           await shot(page, 'weekly-report.png')
           captured.report = true
         }
@@ -306,12 +322,13 @@ async function main() {
             await page.keyboard.press(' ')
             await page.waitForTimeout(30)
           }
+          await assertSystemBar(page, null, '劇本')
           await shot(page, 'prologue-dialogue.png')
           captured.prologue = true
         }
 
         if (!captured.status) {
-          await page.getByRole('button', { name: '狀態' }).click()
+          await page.locator('[data-testid="sys-status"]').click()
           await page.waitForTimeout(150)
           await shot(page, 'status-radar.png')
           await page.getByRole('button', { name: '關閉' }).click()

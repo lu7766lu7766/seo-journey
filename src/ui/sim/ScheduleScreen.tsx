@@ -25,7 +25,6 @@ const STAT_SHORT: Record<StatKey, string> = {
 export function ScheduleScreen() {
   const s = useGame()
   const overlay = useUI((u) => u.overlay)
-  const setOverlay = useUI((u) => u.setOverlay)
   const [slots, setSlots] = useState<(ActivityId | null)[]>([null, null, null, null])
   const [result, setResult] = useState<WeekScheduleResult | null>(null)
   const [stepIdx, setStepIdx] = useState(0)
@@ -92,7 +91,7 @@ export function ScheduleScreen() {
     const chatterChar = out.chatter && CHARACTERS[out.chatter.who].hasSprite ? (out.chatter.who as CharId) : null
     const chatterBondTotal = out.chatter ? Object.values(out.bondDelta).reduce((a, b) => a + (b ?? 0), 0) : 0
     return (
-      <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-6" data-testid="schedule-playback">
+      <div className="relative flex h-full w-full items-center justify-center overflow-hidden px-6 pb-6 pt-14" data-testid="schedule-playback">
         {/* collapsing at 0 stamina (and the slots cancelled after it) plays out in the infirmary */}
         <Background id={out.status === 'infirmary' || out.status === 'skipped' ? 'infirmary' : 'clubroom'} time="day" />
         <div className="pointer-events-none absolute inset-0 bg-[#0c1228]/52 backdrop-blur-[2px]" />
@@ -256,7 +255,7 @@ export function ScheduleScreen() {
   }
 
   return (
-    <div className="relative flex h-full w-full gap-5 overflow-hidden p-6" data-testid="schedule-screen">
+    <div className="relative flex h-full w-full gap-5 overflow-hidden px-6 pb-6 pt-14" data-testid="schedule-screen">
       <Background id="clubroom" time="day" />
       <div className="pointer-events-none absolute inset-0 bg-[#0c1228]/45 backdrop-blur-[2px]" />
       {/* Left: Activity picker & 4 slots */}
@@ -268,7 +267,6 @@ export function ScheduleScreen() {
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <button type="button" className="btn-pastel text-sm" onClick={autoFill}>推薦排程</button>
-            <button type="button" className="btn-pastel text-sm" onClick={() => setOverlay('menu')}>選單</button>
           </div>
         </div>
 

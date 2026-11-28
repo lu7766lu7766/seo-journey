@@ -19,6 +19,9 @@
 - `src/minigames/index.tsx`：`<MinigameHost id onResolve(won) />`
 - `src/audio/index.ts`：`audio.sfx(id)`、`audio.bgm(id)`、`audio.stopBgm()`、`audio.currentBgm`（簽名不變，見下方「音訊」）
 
+## 系統列（右上角）
+遊戲中所有畫面（劇本、排程、公佈欄、週末、週報、結局、小遊戲）的「狀態／圖鑑／選單 (Esc)」都由 `src/ui/SystemBar.tsx` 統一渲染（掛在 `VNStage`，舞台座標右上角）；劇本畫面另有「自動／快轉／紀錄／隱藏」，小遊戲只顯示「選單」。**各畫面不要再自己放系統按鈕**；非劇本畫面的內容面板上緣保留 56px（`pt-14`）給系統列。Esc 快捷鍵由 `useVNInput`（在 `VNStage` 掛載）處理，所有遊戲中畫面都有效。e2e 的 `assertSystemBar` 會檢查每個畫面只有一條系統列、內容區沒有殘留系統按鈕。
+
 ## 劇本寫法
 - 一個檔案一個場景：`export default scene('<id>', [...])`，**檔名（不含 .ts）必須等於 scene id**，且全專案不可重名。
 - 檔案放 `main/ dates/ side/ endings/`，會被 `import.meta.glob` 自動註冊——**不要手動編輯 `src/content/scenes/index.ts`**。

@@ -4,14 +4,31 @@ import { CharacterSprite } from '@/art/characters'
 import { CHARACTERS } from '@/content/characters'
 import { HEROINES } from '@/engine/types'
 import { useGame } from '@/store/game'
-import { useUI } from '@/store/ui'
 import { getDateCount, pickDateScene } from '@/systems/ending'
 import { INFIRMARY_WEEK_FLAG, WEEKEND } from '@/systems/schedule'
 import { scoreParts } from '@/systems/score'
 
+/** a cozy house + moon, standing in for a character sprite on the 「在家休息」 card */
+function RestIllustration() {
+  return (
+    <svg viewBox="0 0 200 200" className="h-full" aria-hidden="true">
+      <circle cx="150" cy="48" r="22" fill="#fff3c4" />
+      <g fill="#fff" opacity="0.9">
+        <circle cx="38" cy="40" r="2.5" /><circle cx="70" cy="24" r="2" /><circle cx="108" cy="52" r="2.5" /><circle cx="22" cy="78" r="2" />
+      </g>
+      <path d="M32 112 L100 56 L168 112 Z" fill="#e8a4ba" stroke="#b9708a" strokeWidth="3" strokeLinejoin="round" />
+      <rect x="46" y="110" width="108" height="64" rx="4" fill="#fff7ee" stroke="#c9a98a" strokeWidth="3" />
+      <rect x="86" y="132" width="28" height="42" rx="3" fill="#b98a62" />
+      <rect x="58" y="124" width="22" height="22" rx="2" fill="#ffe599" stroke="#c9a98a" strokeWidth="2" />
+      <rect x="120" y="124" width="22" height="22" rx="2" fill="#ffe599" stroke="#c9a98a" strokeWidth="2" />
+      <text x="146" y="104" fontSize="20" fontWeight="700" fill="#9fd3f0" fontFamily="sans-serif">z</text>
+      <text x="160" y="88" fontSize="14" fontWeight="700" fill="#9fd3f0" fontFamily="sans-serif">z</text>
+    </svg>
+  )
+}
+
 export function WeekendMenu() {
   const s = useGame()
-  const setOverlay = useUI((u) => u.setOverlay)
   const [busy, setBusy] = useState(false)
   // collapsing in the infirmary this week costs the weekend: only resting at home is possible
   const locked = s.flags[INFIRMARY_WEEK_FLAG] === true
@@ -37,10 +54,10 @@ export function WeekendMenu() {
   }
 
   return (
-    <div className="relative flex h-full w-full flex-col justify-between overflow-hidden p-8" data-testid="weekend-menu">
+    <div className="relative flex h-full w-full flex-col overflow-hidden px-8 pb-6 pt-14" data-testid="weekend-menu">
       <Background id="street" time="day" />
       <div className="pointer-events-none absolute inset-0 bg-[#0d1430]/45 backdrop-blur-[2px]" />
-      <div className="vn-box relative z-10 flex items-center justify-between gap-4 rounded-2xl px-6 py-4 text-white">
+      <div className="vn-box relative z-10 rounded-2xl px-6 py-4 text-white">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="font-title text-3xl font-bold text-white">第 {s.week} 週 · 週末自由行動</h2>
@@ -58,20 +75,10 @@ export function WeekendMenu() {
           ) : (
             <p className="text-base text-[#d5e3ff]">邀請一位夥伴出門（不耗體力、壓力 {WEEKEND.dateStress}），或留在家裡好好休息</p>
           )}
-          <p className="text-sm text-[#b9cdf2]">
-            在家休息：體力 +{WEEKEND.rest.stamina}、壓力 {WEEKEND.rest.stress}
-          </p>
-        </div>
-        <div className="flex shrink-0 items-center gap-2">
-          <button type="button" className="hud-pill" onClick={() => setOverlay('status')}>狀態</button>
-          <button type="button" className="hud-pill" onClick={() => setOverlay('menu')}>選單 (Esc)</button>
-          <button disabled={busy} className="btn-pastel px-6 py-2.5 text-lg disabled:opacity-50" data-testid="weekend-rest" onClick={() => void pickRest()}>
-            在家休息
-          </button>
         </div>
       </div>
 
-      <div className="relative z-10 grid flex-1 grid-cols-3 gap-6 py-6">
+      <div className="relative z-10 grid min-h-0 flex-1 grid-cols-4 gap-4 pt-4">
         {HEROINES.map((h) => {
           const c = CHARACTERS[h]
           const count = getDateCount(h, s)
@@ -89,7 +96,7 @@ export function WeekendMenu() {
               onClick={() => void pickDate(h)}
               className={`glass group relative flex flex-col items-center justify-end overflow-hidden rounded-3xl p-5 text-center transition hover:ring-2 hover:ring-sakura disabled:opacity-60 ${locked ? 'grayscale' : ''}`}
             >
-              <div className="pointer-events-none absolute inset-x-0 top-2 flex h-[340px] justify-center opacity-95 transition group-hover:scale-105">
+              <div className="pointer-events-none absolute inset-x-0 top-2 flex h-[300px] justify-center opacity-95 transition group-hover:scale-105">
                 <CharacterSprite id={h} face="smile" />
               </div>
               <div className="relative z-10 w-full rounded-2xl bg-white/92 p-4 shadow-md">
@@ -117,6 +124,26 @@ export function WeekendMenu() {
             </button>
           )
         })}
+
+        <button
+          type="button"
+          disabled={busy}
+          data-testid="weekend-rest"
+          onClick={() => void pickRest()}
+          className={`glass group relative flex flex-col items-center justify-end overflow-hidden rounded-3xl p-5 text-center transition hover:ring-2 hover:ring-sakura disabled:opacity-60 ${locked ? 'ring-2 ring-[#9fd3f0]' : ''}`}
+        >
+          <div className="pointer-events-none absolute inset-x-0 top-2 flex h-[300px] items-center justify-center transition group-hover:scale-105">
+            <RestIllustration />
+          </div>
+          <div className="relative z-10 w-full rounded-2xl bg-white/92 p-4 shadow-md">
+            <p className="font-title text-2xl font-bold text-[#3b5a8a]">在家休息</p>
+            <p className="mt-1 text-sm font-bold text-ink/80" data-testid="weekend-rest-effect">
+              體力 +{WEEKEND.rest.stamina}、壓力 {WEEKEND.rest.stress < 0 ? '−' : '+'}{Math.abs(WEEKEND.rest.stress)}
+            </p>
+            <p className="mt-0.5 text-xs font-bold text-ink/70">不出門，好好充電</p>
+            <p className="mt-1 text-xs text-ink/65">{locked ? '這週只能選這個' : '留在家裡補充體力、舒緩壓力'}</p>
+          </div>
+        </button>
       </div>
     </div>
   )
