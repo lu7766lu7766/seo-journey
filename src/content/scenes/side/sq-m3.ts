@@ -66,7 +66,7 @@ export default scene('sq-m3', [
   minigame('sq-m3', { stats: { con: 6, tru: 4 }, bond: { mirai: 4 } }, { stats: { con: 3, tru: 2 }, bond: { mirai: 4 } }),
 
   show('mirai', 'center', 'think'),
-  say('mirai', 'think', '我想補一段：和{name}在天台，實測的一夜。'),
+  say('mirai', 'think', '我想補一段：和你一起在天台，實測的一夜。'),
   say('mirai', 'think', '署名……要用「星野未來」嗎？'),
   choice([
     opt('當然，那是妳寫的', { bond: { mirai: 1 } }, [

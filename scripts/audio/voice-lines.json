@@ -6,7 +6,7 @@
     "noVoiceSpeakerSayCommands": 407,
     "uniqueLines": 798,
     "skippedLines": 1,
-    "nameInlineLines": 1,
+    "nameInlineLines": 0,
     "bySpeaker": {
       "rin": {
         "lines": 246,
@@ -20,7 +20,7 @@
       },
       "mirai": {
         "lines": 218,
-        "withName": 6,
+        "withName": 5,
         "skipped": 0
       },
       "sensei": {
@@ -1411,11 +1411,11 @@
     },
     {
       "sceneId": "end-blackhat",
-      "key": "f099e82902ee",
+      "key": "837c0a11bd42",
       "speaker": "rin",
       "face": "angry",
-      "text": "兩位，罰坐。",
-      "voiceText": "兩位，罰坐。",
+      "text": "兩位，罰站。",
+      "voiceText": "兩位，罰站。",
       "hasName": false,
       "lineIds": [
         "end-blackhat#10"
@@ -2647,11 +2647,11 @@
     },
     {
       "sceneId": "end-true",
-      "key": "975dfa7dad40",
+      "key": "4c83d15db4f0",
       "speaker": "rin",
       "face": "normal",
-      "text": "全部要審。規則是，不能偷懶。……尤其是對可愛的後輩們。",
-      "voiceText": "全部要審。規則是，不能偷懶。……尤其是對可愛的後輩們。",
+      "text": "全部要審。規則是，不能偷懶。……尤其是對可愛的學弟妹們。",
+      "voiceText": "全部要審。規則是，不能偷懶。……尤其是對可愛的學弟妹們。",
       "hasName": false,
       "lineIds": [
         "end-true#34"
@@ -2863,11 +2863,11 @@
     },
     {
       "sceneId": "festival",
-      "key": "76e6033533da",
+      "key": "de5778e57ece",
       "speaker": "hare",
       "face": "blush",
-      "text": "廣播社的文字問答和 FAQ 正確期待全記住了！這句結論，超棒！",
-      "voiceText": "廣播社的文字問答和 FAQ 正確期待全記住了！這句結論，超棒！",
+      "text": "廣播社的文字問答，連 FAQ 的真相都記住了！這句結論，超棒！",
+      "voiceText": "廣播社的文字問答，連 FAQ 的真相都記住了！這句結論，超棒！",
       "hasName": false,
       "lineIds": [
         "festival#20.1.1"
@@ -3938,11 +3938,11 @@
     },
     {
       "sceneId": "sq-h2",
-      "key": "c808e600b64b",
+      "key": "727b237ac3e6",
       "speaker": "hare",
       "face": "angry",
-      "text": "那是情緒價值！",
-      "voiceText": "那是情緒價值！",
+      "text": "那是熱情加成啦！",
+      "voiceText": "那是熱情加成啦！",
       "hasName": false,
       "lineIds": [
         "sq-h2#20"
@@ -4972,12 +4972,12 @@
     },
     {
       "sceneId": "sq-m1",
-      "key": "4333d0a14738",
+      "key": "94f5ea052995",
       "speaker": "npc",
       "name": "圖書館員",
       "face": null,
-      "text": "標準答案：青葉學園、1982、青葉區四丁目 12 號。",
-      "voiceText": "標準答案：青葉學園、1982、青葉區四丁目 12 號。",
+      "text": "標準答案：青葉學園、1982、青葉區青葉路四段 12 號。",
+      "voiceText": "標準答案：青葉學園、1982、青葉區青葉路四段 12 號。",
       "hasName": false,
       "lineIds": [
         "sq-m1#37"
@@ -6008,13 +6008,12 @@
     },
     {
       "sceneId": "sq-m3",
-      "key": "ea7e08c3c950",
+      "key": "cf18cdd90d69",
       "speaker": "mirai",
       "face": "think",
-      "text": "我想補一段：和{name}在天台，實測的一夜。",
-      "voiceText": "我想補一段：和在天台，實測的一夜。",
-      "hasName": true,
-      "nameInline": true,
+      "text": "我想補一段：和你一起在天台，實測的一夜。",
+      "voiceText": "我想補一段：和你一起在天台，實測的一夜。",
+      "hasName": false,
       "lineIds": [
         "sq-m3#54"
       ]
@@ -6873,11 +6872,11 @@
     },
     {
       "sceneId": "sq-r2",
-      "key": "1639222560e0",
+      "key": "0774498b9609",
       "speaker": "rin",
       "face": "blush",
-      "text": "及格。……我坐近一點，是為了共看螢幕。",
-      "voiceText": "及格。……我坐近一點，是為了共看螢幕。",
+      "text": "及格。……我坐近一點，是為了方便看螢幕。",
+      "voiceText": "及格。……我坐近一點，是為了方便看螢幕。",
       "hasName": false,
       "lineIds": [
         "sq-r2#50"
@@ -7569,11 +7568,11 @@
     },
     {
       "sceneId": "sq-x1",
-      "key": "bc5d9aa82985",
+      "key": "e5f62931f7c4",
       "speaker": "kuro",
       "face": "normal",
-      "text": "少貧嘴！先看今日套餐！",
-      "voiceText": "少貧嘴！先看今日套餐！",
+      "text": "少耍嘴皮子！先看今日套餐！",
+      "voiceText": "少耍嘴皮子！先看今日套餐！",
       "hasName": false,
       "lineIds": [
         "sq-x1#26"
@@ -7593,11 +7592,11 @@
     },
     {
       "sceneId": "sq-x1",
-      "key": "8f65c9c90971",
+      "key": "d04c42b75ed0",
       "speaker": "kuro",
       "face": "smug",
-      "text": "三號餐，AI 一天產出五百頁！再送借知名大站子目錄掛廣告！",
-      "voiceText": "三號餐，AI 一天產出五百頁！再送借知名大站子目錄掛廣告！",
+      "text": "三號餐，AI 一天產出五百頁！再送「借知名大站的子目錄掛廣告」！",
+      "voiceText": "三號餐，AI 一天產出五百頁！再送「借知名大站的子目錄掛廣告」！",
       "hasName": false,
       "lineIds": [
         "sq-x1#28"
@@ -7605,11 +7604,11 @@
     },
     {
       "sceneId": "sq-x1",
-      "key": "59840adaf123",
+      "key": "5df25c686880",
       "speaker": "kuro",
       "face": "normal",
-      "text": "少貧嘴！搜尋引擎有份垃圾內容政策，聽過吧？",
-      "voiceText": "少貧嘴！搜尋引擎有份垃圾內容政策，聽過吧？",
+      "text": "少耍嘴皮子！搜尋引擎有份垃圾內容政策，聽過吧？",
+      "voiceText": "少耍嘴皮子！搜尋引擎有份垃圾內容政策，聽過吧？",
       "hasName": false,
       "lineIds": [
         "sq-x1#30"
