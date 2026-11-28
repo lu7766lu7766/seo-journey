@@ -8,7 +8,7 @@ export default scene('end-mirai', [
   show('mirai', 'center', 'smile'),
   say('me', undefined, '為什麼約在天文館？'),
   say('mirai', 'think', '星象儀的星星，剛好夠我說一件事。我預演了四十七次。'),
-  say('mirai', 'smile', '不過先報告：有學弟妹把我們的調查寫進報告，並標註了出處。'),
+  say('mirai', 'smile', '不過先報告：有其他班的同學把我們的調查寫進報告，並標註了出處。'),
   say('me', undefined, '被引用了耶！而且是被真人。'),
   say('mirai', 'happy', '我保存了這個紀錄。這是第一次，我為「別人的引用」而高興。'),
   say('me', undefined, '我也是。看到妳的名字被標註，我比自己被引用還開心。'),

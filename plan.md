@@ -59,7 +59,7 @@
 | `con` | 內容力 | 原創、有用、以人為本、第一手經驗 |
 | `tec` | 技術力 | 爬取、索引、速度（Core Web Vitals）、行動版、HTTPS |
 | `str` | 結構力 | 標題層級、內部連結、結構化資料、網址結構 |
-| `ans` | 可答力 | 直接回答、問題型標題、精簡段落、清楚的定義 |
+| `ans` | 解答力 | 直接回答、問題型標題、精簡段落、清楚的定義 |
 | `tru` | 信任力 | 作者資訊、來源引用、實體一致、外部提及、E-E-A-T |
 
 另有**體力** `stamina`（0–100，初始 80）與**壓力** `stress`（0–100，初始 10）。
@@ -273,7 +273,7 @@ score_h = clamp( Σ_s ( w[h][s] × stat_s ) + bond_h , 0, 100 )
 - 301 是永久轉址、302 是暫時轉址；`rel=canonical` 是提示，不是指令。
 
 ### 3.7 知識卡清單（ID → 標題）
-`what-is-seo-aeo-geo` 三種搜尋優化｜`robots-vs-noindex` robots.txt 與 noindex｜`sitemap` Sitemap｜`search-console` 站長工具｜`search-intent` 搜尋意圖｜`title-and-meta` 標題與描述｜`answer-first` 結論先說｜`question-headings` 問題型標題｜`json-ld` JSON-LD｜`schema-visible-match` 標記要與內容一致｜`entity-consistency` 實體一致性｜`core-web-vitals` 網站體驗核心指標｜`mobile-first` 行動版優先｜`image-optimization` 圖片最佳化｜`alt-text` 替代文字｜`redirects` 301 與 302｜`canonical` 標準網址｜`duplicate-content` 重複內容｜`internal-links` 內部連結｜`spam-policies` 垃圾內容政策｜`link-schemes` 連結計畫｜`eeat` E-E-A-T｜`helpful-content` 有幫助的內容｜`core-update` 核心更新｜`geo-citations` 生成式引用｜`original-data` 原創資料｜`ai-crawlers` AI 爬蟲｜`llms-txt-truth` llms.txt 的真相｜`faq-reality` FAQ 的正確期待｜`freshness` 內容時效性｜`author-pages` 作者頁
+`what-is-seo-aeo-geo` 三種搜尋優化｜`robots-vs-noindex` robots.txt 與 noindex｜`sitemap` Sitemap｜`search-console` Search Console（站長工具）｜`search-intent` 搜尋意圖｜`title-and-meta` 標題與描述｜`answer-first` 結論先說｜`question-headings` 問題型標題｜`json-ld` JSON-LD｜`schema-visible-match` 標記要與內容一致｜`entity-consistency` 實體一致性｜`core-web-vitals` 網站使用體驗核心指標｜`mobile-first` 行動版優先｜`image-optimization` 圖片最佳化｜`alt-text` 替代文字｜`redirects` 301 與 302｜`canonical` 標準網址｜`duplicate-content` 重複內容｜`internal-links` 內部連結｜`spam-policies` 垃圾內容政策｜`link-schemes` 連結計畫｜`eeat` E-E-A-T｜`helpful-content` 有幫助的內容｜`core-update` 核心更新｜`geo-citations` 生成式引用｜`original-data` 原創資料｜`ai-crawlers` AI 爬蟲｜`llms-txt-truth` llms.txt 的真相｜`faq-reality` FAQ 的正確期待｜`freshness` 內容時效性｜`author-pages` 作者頁
 
 ---
 

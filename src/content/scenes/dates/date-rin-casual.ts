@@ -17,7 +17,7 @@ export default scene('date-rin-casual', [
     ],
     [
       bg('street', 'dusk'),
-      say('narr', undefined, '傍晚的商店街，你和凜剛好在文具店碰上。'),
+      say('narr', undefined, '傍晚的商店街，我和凜剛好在文具店碰上。'),
       show('rin', 'center', 'normal'),
       say('rin', 'normal', '巧合。我只是來買便利貼。'),
       say('me', undefined, '（她的籃子裡全是貓咪圖案。）'),

@@ -17,7 +17,7 @@ export default scene('date-mirai-casual', [
     ],
     [
       bg('library', 'day'),
-      say('narr', undefined, '週末的圖書館，你在書架間碰見了未來。'),
+      say('narr', undefined, '週末的圖書館，我在書架間碰見了未來。'),
       show('mirai', 'center', 'normal'),
       say('mirai', 'normal', '已讀取。你出現的機率，今天特別高。'),
       say('me', undefined, '（她手上抱著三本書，標題都是「貓」。）'),

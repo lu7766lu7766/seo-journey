@@ -14,7 +14,7 @@ export default scene('date-mirai-3', [
       say('mirai', 'blush', '……這句話，沒有任何來源。只屬於你。'),
     ]),
     opt('我會一直引用妳', { bond: { mirai: 10 } }, [
-      say('mirai', 'surprised', '！這是……標準的告白格式嗎？'),
+      say('mirai', 'surprised', '！這是……非常高規格的引用承諾。'),
       say('mirai', 'blush', '不，不對。這不是格式，是心意。'),
     ]),
   ]),
@@ -22,7 +22,7 @@ export default scene('date-mirai-3', [
   cg('date-mirai-3'),
   say('narr', undefined, '星空下，她轉過身，髮夾像一顆小小的星。'),
   say('mirai', 'blush', '我想成為被引用的來源，而不是被複製的內容。'),
-  say('mirai', 'happy', '而第一個引用我的人，是你。謝謝，{name}。'),
-  say('narr', undefined, '她的手指，輕輕勾住你的袖口。'),
+  say('mirai', 'happy', '第一個引用我的人，是你。還有一句話，校對中，下次發佈。'),
+  say('narr', undefined, '她的手指，輕輕勾住我的袖口。'),
   cg('none'),
 ])

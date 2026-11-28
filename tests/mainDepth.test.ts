@@ -12,18 +12,22 @@ import { countCmds, countScene, estimateMinutes } from '@/systems/estimate'
  * lessons, Hare's extra beats and the relationship-reactive variants were paid for by trimming the
  * prologue / week 6 / end-true, so the floors sit just under the current writing (sizes are the
  * longest branch of every choice / `when`).
+ *
+ * Floors for prologue / w1 / w4 / w5 / end-true were lowered when the week 5 and 6 minigames (+2 minutes)
+ * were added: the 30-minute ceiling is fixed, so repeated explanation lines were cut (w1 also gave up the
+ * canonical / duplicate-content segment, which moved to w3 / w6).
  */
 const FLOORS: Record<string, number> = {
-  prologue: 650,
-  w1: 630,
+  prologue: 540,
+  w1: 560,
   w2: 430,
   w3: 520,
-  w4: 560,
-  w5: 560,
+  w4: 540,
+  w5: 550,
   w6: 640,
   festival: 470,
   'end-blackhat': 500,
-  'end-true': 440,
+  'end-true': 390,
   'end-rin': 500,
   'end-hare': 500,
   'end-mirai': 500,

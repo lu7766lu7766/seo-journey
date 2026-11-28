@@ -3,7 +3,7 @@ export const KNOWLEDGE_TITLES = {
   'what-is-seo-aeo-geo': '三種搜尋優化',
   'robots-vs-noindex': 'robots.txt 與 noindex',
   'sitemap': 'Sitemap',
-  'search-console': '站長工具',
+  'search-console': 'Search Console（站長工具）',
   'search-intent': '搜尋意圖',
   'title-and-meta': '標題與描述',
   'answer-first': '結論先說',
@@ -11,7 +11,7 @@ export const KNOWLEDGE_TITLES = {
   'json-ld': 'JSON-LD',
   'schema-visible-match': '標記要與內容一致',
   'entity-consistency': '實體一致性',
-  'core-web-vitals': '網站體驗核心指標',
+  'core-web-vitals': '網站使用體驗核心指標',
   'mobile-first': '行動版優先',
   'image-optimization': '圖片最佳化',
   'alt-text': '替代文字',
@@ -50,28 +50,28 @@ export interface KnowledgeCard {
 // Card text (plan §3.6 fact sheet). Limits: summary ≤30, detail ≤150, misconception ≤60 characters.
 const BODY: Partial<Record<KnowledgeId, Pick<KnowledgeCard, 'summary' | 'detail' | 'misconception'>>> = {
   'what-is-seo-aeo-geo': {
-    summary: 'SEO讓人搜得到，AEO讓答案被取用，GEO讓AI願意引用。',
+    summary: 'SEO 被找到，AEO 被採用，GEO 被引用。',
     detail:
-      'SEO是讓搜尋引擎找到並理解你的網站；AEO是讓精選摘要、語音助理、AI摘要等答案引擎能直接取用你的清楚答案；GEO是讓生成式搜尋在整理答案時，有機會把你列為引用來源。三者共通的核心，都是有幫助、可信、讀得懂的內容。依2026年實務，規則會持續變動，沒有任何做法能保證排名或被引用。',
-    misconception: '常見誤解：做了SEO就一定會被AI引用，或排名第一。',
+      'SEO 是讓搜尋引擎找到並理解你的網站；AEO 是讓精選摘要、語音助理、AI 摘要等答案引擎能直接取用你的清楚答案；GEO 是讓生成式搜尋在整理答案時，有機會把你列為引用來源。三者共通的核心，都是有幫助、可信、讀得懂的內容。依 2026 年實務，規則會持續變動，沒有任何做法能保證排名或被引用。',
+    misconception: '常見誤解：做了 SEO 就一定會被 AI 引用，或排名第一。',
   },
   'robots-vs-noindex': {
-    summary: 'robots.txt管能不能爬，noindex管能不能收錄。',
+    summary: 'robots.txt 管能不能爬，noindex 管收錄。',
     detail:
-      'robots.txt告訴爬蟲哪些路徑不要抓取，但不保證頁面不被收錄，網址仍可能因外部連結出現。想讓頁面不出現在搜尋結果，要用noindex（meta標籤或X-Robots-Tag）。而且該頁不能被robots.txt擋住，否則爬蟲看不到noindex。',
-    misconception: '常見誤解：在robots.txt擋住，頁面就一定不會被收錄。',
+      'robots.txt 告訴爬蟲哪些路徑不要抓取，但不保證頁面不被收錄，網址仍可能因外部連結出現。想讓頁面不出現在搜尋結果，要用 noindex（meta 標籤或 X-Robots-Tag）。而且該頁不能被 robots.txt 擋住，否則爬蟲看不到 noindex。',
+    misconception: '常見誤解：在 robots.txt 擋住，頁面就一定不會被收錄。',
   },
   sitemap: {
-    summary: 'Sitemap幫助搜尋引擎探索網址，但不保證收錄。',
+    summary: 'Sitemap 幫助搜尋引擎探索網址，但不保證收錄。',
     detail:
-      'Sitemap是列出你希望被探索的網址清單，對新網站、大型網站、更新頻繁的網站特別有用。可以在Search Console或Bing Webmaster Tools提交。它只是幫助發現頁面，是否收錄，仍取決於內容品質與其他因素。',
-    misconception: '常見誤解：提交sitemap，網址就會立刻被收錄。',
+      'Sitemap 是列出你希望被探索的網址清單，對新網站、大型網站、更新頻繁的網站特別有用。可以在 Search Console 或 Bing Webmaster Tools 提交。它只是幫助發現頁面，是否收錄，仍取決於內容品質與其他因素。',
+    misconception: '常見誤解：提交 sitemap，網址就會立刻被收錄。',
   },
   'search-console': {
-    summary: '站長工具是網站與搜尋引擎之間的健康檢查窗口。',
+    summary: 'Search Console 是網站與搜尋引擎的檢查窗口。',
     detail:
-      'Google Search Console與Bing Webmaster Tools能查看哪些頁面已被收錄、哪些有錯誤、使用者用哪些查詢找到你，也能提交sitemap、檢查單一網址。它提供的是診斷資料，不會直接提升排名，但能幫你看到問題在哪裡。',
-    misconception: '常見誤解：裝了站長工具，排名就會自動變好。',
+      'Google Search Console 與 Bing Webmaster Tools 能查看哪些頁面已被收錄、哪些有錯誤、使用者用哪些查詢找到你，也能提交 sitemap、檢查單一網址。它提供的是診斷資料，不會直接提升排名，但能幫你看到問題在哪裡。',
+    misconception: '常見誤解：裝了 Search Console，排名就會自動變好。',
   },
   'search-intent': {
     summary: '先想搜尋的人真正想要什麼，再決定寫什麼。',
@@ -82,8 +82,8 @@ const BODY: Partial<Record<KnowledgeId, Pick<KnowledgeCard, 'summary' | 'detail'
   'title-and-meta': {
     summary: '標題與描述前段放重點，搜尋引擎可能自行改寫。',
     detail:
-      'title是搜尋結果上的標題，meta description常被用作摘要，兩者都該清楚說明頁面內容、吸引對的人點進來。兩者沒有固定的正確字數，過長可能被截斷，所以重點放在前段。搜尋引擎也可能依查詢改寫顯示內容，不必為此焦慮。',
-    misconception: '常見誤解：title一定要剛好60字，否則就會扣分。',
+      'title 是搜尋結果上的標題，meta description 常被用作摘要，兩者都該清楚說明頁面內容、吸引對的人點進來。兩者沒有固定的正確字數，過長可能被截斷，所以重點放在前段。搜尋引擎也可能依查詢改寫顯示內容，不必為此焦慮。',
+    misconception: '常見誤解：title 一定要剛好 60 字，否則就會扣分。',
   },
   'answer-first': {
     summary: '先給結論，再補細節，像倒金字塔。',
@@ -98,10 +98,10 @@ const BODY: Partial<Record<KnowledgeId, Pick<KnowledgeCard, 'summary' | 'detail'
     misconception: '常見誤解：所有標題都改成問句，成效就會變好。',
   },
   'json-ld': {
-    summary: 'JSON-LD是用標準格式，把頁面意思說給機器聽。',
+    summary: 'JSON-LD 是用標準格式，把頁面意思說給機器聽。',
     detail:
-      'JSON-LD是目前主流的結構化資料寫法，以Schema.org詞彙描述頁面上的組織、活動、文章等實體，放在script標籤中。它能幫機器更準確理解內容，但不保證搜尋結果出現特殊樣式。語法錯誤或類型用錯，都會讓標記失效。',
-    misconception: '常見誤解：加了JSON-LD就一定會出現複合式搜尋結果。',
+      'JSON-LD 是目前主流的結構化資料寫法，以 Schema.org 詞彙描述頁面上的組織、活動、文章等實體，放在 script 標籤中。它能幫機器更準確理解內容，但不保證搜尋結果出現特殊樣式。語法錯誤或類型用錯，都會讓標記失效。',
+    misconception: '常見誤解：加了 JSON-LD 就一定會出現複合式搜尋結果。',
   },
   'schema-visible-match': {
     summary: '標記的內容，必須是使用者在頁面上看得到的。',
@@ -116,45 +116,45 @@ const BODY: Partial<Record<KnowledgeId, Pick<KnowledgeCard, 'summary' | 'detail'
     misconception: '常見誤解：名稱寫法不同只是小事，機器都看得懂。',
   },
   'core-web-vitals': {
-    summary: '核心指標是LCP、INP、CLS，衡量載入、互動、穩定。',
+    summary: '核心指標是 LCP、INP、CLS，衡量載入、互動、穩定。',
     detail:
-      'LCP看主要內容多快出現，INP看操作後多快有回應（2024年3月取代FID），CLS看畫面有沒有亂跳。改善方式包括壓縮圖片、延遲載入非首屏內容、替圖片預留版位。它是頁面體驗訊號之一，不是排名的萬靈丹。',
+      'LCP 看主要內容多快出現，INP 看操作後多快有回應（2024 年 3 月取代 FID），CLS 看畫面有沒有亂跳。改善方式包括壓縮圖片、延遲載入非首屏內容、替圖片預留版位。它是頁面體驗訊號之一，不是排名的萬靈丹。',
     misconception: '常見誤解：指標全綠，排名就會大幅提升。',
   },
   'mobile-first': {
-    summary: 'Google以行動版內容為主來收錄與評估網頁。',
+    summary: 'Google 以行動版內容為主來收錄與評估網頁。',
     detail:
-      'Google採行動版優先索引，主要用手機版頁面的內容來索引與排名。若手機版內容比桌機版少、被隱藏或難以操作，就可能吃虧。確保兩個版本內容與結構化資料一致，並讓按鈕、文字在小螢幕上也好用。',
+      'Google 採行動版優先索引，主要用手機版頁面的內容來索引與排名。若手機版內容比桌機版少、被隱藏或難以操作，就可能吃虧。確保兩個版本內容與結構化資料一致，並讓按鈕、文字在小螢幕上也好用。',
     misconception: '常見誤解：只要桌機版做得漂亮，手機版隨便就好。',
   },
   'image-optimization': {
     summary: '圖片要夠清楚也要夠輕，才不拖慢載入。',
     detail:
-      '依實際顯示尺寸提供圖片，選用適合的現代格式如WebP或AVIF，並設定寬高以避免版面跳動。首屏以外的圖片可延遲載入，但最大的首屏主圖不要延遲，否則LCP會變差。好用的圖片還能被圖片搜尋找到。',
+      '依實際顯示尺寸提供圖片，選用適合的現代格式如 WebP 或 AVIF，並設定寬高以避免版面跳動。首屏以外的圖片可延遲載入，但最大的首屏主圖不要延遲，否則 LCP 會變差。好用的圖片還能被圖片搜尋找到。',
     misconception: '常見誤解：所有圖片都加上延遲載入，速度一定最快。',
   },
   'alt-text': {
     summary: '替代文字，是圖片的文字說明。',
     detail:
-      'alt文字讓看不到圖片的人（如使用螢幕閱讀器）與搜尋引擎理解圖片內容。請用自然的一句話描述圖片的重點與用途，裝飾性圖片可留空。不要在alt裡堆砌關鍵字，那既不好讀，也可能被視為濫用。',
-    misconception: '常見誤解：在alt塞滿關鍵字，圖片排名就會變好。',
+      'alt 文字讓看不到圖片的人（如使用螢幕閱讀器）與搜尋引擎理解圖片內容。請用自然的一句話描述圖片的重點與用途，裝飾性圖片可留空。不要在 alt 裡堆砌關鍵字，那既不好讀，也可能被視為濫用。',
+    misconception: '常見誤解：在 alt 塞滿關鍵字，圖片排名就會變好。',
   },
   redirects: {
-    summary: '301是永久搬家，302是暫時借道。',
+    summary: '301 是永久搬家，302 是暫時借道。',
     detail:
-      '網址永久搬家時用301，把舊網址指向新網址，讓使用者與搜尋引擎知道以新位置為準；暫時性的調整才用302。頁面真的刪除了，且沒有替代頁，回傳404或410即可，不必一律轉到首頁。轉址鏈越短越好。',
-    misconception: '常見誤解：所有失效頁面都該301到首頁。',
+      '網址永久搬家時用 301，把舊網址指向新網址，讓使用者與搜尋引擎知道以新位置為準；暫時性的調整才用 302。頁面真的刪除了，且沒有替代頁，回傳 404 或 410 即可，不必一律轉到首頁。轉址鏈越短越好。',
+    misconception: '常見誤解：所有失效頁面都該 301 到首頁。',
   },
   canonical: {
-    summary: 'canonical是告訴搜尋引擎，哪一個網址是代表。',
+    summary: 'canonical 是告訴搜尋引擎，哪一個網址是代表。',
     detail:
-      '當多個網址內容相同或高度相似時，可用rel=canonical標示你希望作為代表的網址，幫助整合訊號。它是提示而非指令，搜尋引擎可能選擇不同網址。搭配一致的內部連結與sitemap，效果會更穩定。',
-    misconception: '常見誤解：設了canonical，搜尋引擎就一定照辦。',
+      '當多個網址內容相同或高度相似時，可用 rel=canonical 標示你希望作為代表的網址，幫助整合訊號。它是提示而非指令，搜尋引擎可能選擇不同網址。搭配一致的內部連結與 sitemap，效果會更穩定。',
+    misconception: '常見誤解：設了 canonical，搜尋引擎就一定照辦。',
   },
   'duplicate-content': {
     summary: '重複內容多半是整理問題，不是被處罰。',
     detail:
-      '網址參數、列印版、有無www等，會讓同一內容出現在多個網址。搜尋引擎通常會挑一個代表顯示，但可能不是你想要的，也會分散訊號與爬取資源。用301、canonical與一致的內部連結整理即可。',
+      '網址參數、列印版、有無 www 等，會讓同一內容出現在多個網址。搜尋引擎通常會挑一個代表顯示，但可能不是你想要的，也會分散訊號與爬取資源。用 301、canonical 與一致的內部連結整理即可。',
     misconception: '常見誤解：網站有重複內容，就一定會被處罰。',
   },
   'internal-links': {
@@ -166,20 +166,20 @@ const BODY: Partial<Record<KnowledgeId, Pick<KnowledgeCard, 'summary' | 'detail'
   'spam-policies': {
     summary: '違反垃圾內容政策，可能遭降權或人工處罰。',
     detail:
-      '常見違規手法有連結計畫、關鍵字堆砌、隱藏文字、cloaking（對爬蟲與使用者展示不同內容）、大規模濫用內容、網站聲譽濫用與過期網域濫用。違規可能由演算法壓低，或被人工處罰，嚴重時從搜尋結果消失。',
+      '常見違規手法有連結計畫、關鍵字堆砌、隱藏文字、cloaking（對爬蟲與使用者展示不同內容）、大規模濫用內容、網站聲譽濫用與過期網域濫用。違規可能由演算法壓低，或被人工處罰（官方用語「專人介入處理」，Manual actions），嚴重時從搜尋結果消失。',
     misconception: '常見誤解：只要不被發現，黑帽手法就很安全。',
   },
   'link-schemes': {
     summary: '買賣連結、互換連結，是為了操縱排名的手段。',
     detail:
-      '以操縱排名為目的的連結，例如購買連結、大量交換連結、自動產生的連結，屬於連結計畫，違反垃圾內容政策。正當的做法是做出值得被引用的內容，讓他人自然連結。付費或贊助的連結，應標示rel=sponsored或nofollow。',
+      '以操縱排名為目的的連結，例如購買連結、大量交換連結、自動產生的連結，屬於連結計畫，違反垃圾內容政策。正當的做法是做出值得被引用的內容，讓他人自然連結。付費或贊助的連結，應標示 rel=sponsored 或 nofollow。',
     misconception: '常見誤解：反向連結買越多，排名就越穩。',
   },
   eeat: {
-    summary: 'E-E-A-T是經驗、專業、權威與信任的品質概念。',
+    summary: 'E-E-A-T 是經驗、專業、權威與信任的品質概念。',
     detail:
-      'E-E-A-T出現在Google的品質評分員指南，用來評估內容是否可靠，其中以「信任」最重要。具體做法包括標示作者、說明專業或第一手經驗、註明來源、公開聯絡方式。它是評估概念，不是單一的排名分數。',
-    misconception: '常見誤解：E-E-A-T是一個可以量測的排名分數。',
+      'E-E-A-T 出現在 Google 的品質評分員指南，用來評估內容是否可靠，其中以「信任」最重要。具體做法包括標示作者、說明專業或第一手經驗、註明來源、公開聯絡方式。它是評估概念，不是單一的排名分數。',
+    misconception: '常見誤解：E-E-A-T 是一個可以量測的排名分數。',
   },
   'helpful-content': {
     summary: '寫給人看、真正解決問題的內容，才長久。',
@@ -196,8 +196,8 @@ const BODY: Partial<Record<KnowledgeId, Pick<KnowledgeCard, 'summary' | 'detail'
   'geo-citations': {
     summary: '生成式搜尋會綜合多個來源，並附上引用。',
     detail:
-      'Google AI摘要與AI模式、ChatGPT搜尋、Perplexity、Copilot等，會綜合來源寫出答案並附上引用。提高被引用機會的做法：原創資料、可查證的主張、標明來源、清楚作者與實體資訊，以及讓爬蟲讀得到重要內容（別只靠JS才出現）。沒有方法保證被引用。',
-    misconception: '常見誤解：只要照著做，就能保證被AI引用。',
+      'Google AI 摘要與 AI 模式、ChatGPT 搜尋、Perplexity、Copilot 等，會綜合來源寫出答案並附上引用。提高被引用機會的做法：原創資料、可查證的主張、標明來源、清楚作者與實體資訊，以及讓爬蟲讀得到重要內容（別只靠 JS 才出現）。沒有方法保證被引用。',
+    misconception: '常見誤解：只要照著做，就能保證被 AI 引用。',
   },
   'original-data': {
     summary: '自己調查的數據，是別人複製不來的資訊增益。',
@@ -206,22 +206,22 @@ const BODY: Partial<Record<KnowledgeId, Pick<KnowledgeCard, 'summary' | 'detail'
     misconception: '常見誤解：圖表做得漂亮，就算是原創資料。',
   },
   'ai-crawlers': {
-    summary: 'AI爬蟲有搜尋用與訓練用，要分開看。',
+    summary: 'AI 爬蟲有搜尋用與訓練用，要分開看。',
     detail:
-      'GPTBot用於OpenAI訓練，OAI-SearchBot用於ChatGPT搜尋，另有PerplexityBot等。Google-Extended只控管Gemini訓練與grounding，不影響Google搜尋與AI摘要（仍受Googlebot控制）。擋掉搜尋爬蟲可能不出現在該服務結果。',
-    misconception: '常見誤解：擋掉Google-Extended，就會從Google搜尋消失。',
+      'GPTBot 用於 OpenAI 訓練，OAI-SearchBot 用於 ChatGPT 搜尋，另有 PerplexityBot 等。Google-Extended 只控管 Gemini 訓練與 grounding，不影響 Google 搜尋排名與收錄。擋掉搜尋用爬蟲，可能不出現在該服務的結果。',
+    misconception: '常見誤解：擋掉 Google-Extended，就會從 Google 搜尋消失。',
   },
   'llms-txt-truth': {
-    summary: 'llms.txt只是社群提案，主要引擎尚未確認採用。',
+    summary: 'llms.txt 只是社群提案，主要引擎尚未確認採用。',
     detail:
-      'llms.txt是社群提出的構想，希望提供一份給大型語言模型看的網站摘要。截至目前，主要搜尋引擎並未確認會採用它，因此不要期待它帶來排名或引用。把心力放在清楚的內容、良好結構與可被爬取，仍然更實在。',
-    misconception: '常見誤解：放了llms.txt，AI就會優先引用你。',
+      'llms.txt 是社群提出的構想，希望提供一份給大型語言模型看的網站摘要。截至目前，主要搜尋引擎並未確認會採用它，因此不要期待它帶來排名或引用。把心力放在清楚的內容、良好結構與可被爬取，仍然更實在。',
+    misconception: '常見誤解：放了 llms.txt，AI 就會優先引用你。',
   },
   'faq-reality': {
-    summary: 'FAQ的價值是結構清楚，不是特殊搜尋樣式。',
+    summary: 'FAQ 的價值是結構清楚，不是特殊搜尋樣式。',
     detail:
-      'Google自2023年起，把FAQ複合式搜尋結果大幅限縮給知名的政府與醫療網站，HowTo複合式結果也已停止顯示。但整理成問答的內容，結構清楚、方便回答，對讀者與答案引擎仍有幫助。請為人而寫，別為特效而加。',
-    misconception: '常見誤解：加了FAQ schema，搜尋結果就會出現FAQ。',
+      'Google 自 2023 年起，把 FAQ 複合式搜尋結果大幅限縮給知名的政府與醫療網站，HowTo 複合式結果也已停止顯示。但整理成問答的內容，結構清楚、方便回答，對讀者與答案引擎仍有幫助。請為人而寫，別為特效而加。',
+    misconception: '常見誤解：加了 FAQ schema，搜尋結果就會出現 FAQ。',
   },
   freshness: {
     summary: '時效性，是指讓資訊保持正確，而不是亂改日期。',

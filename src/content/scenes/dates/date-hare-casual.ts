@@ -6,7 +6,7 @@ export default scene('date-hare-casual', [
     flag('dateCount.hare', 'gte', 3),
     [
       bg('street', 'day'),
-      say('narr', undefined, '週末的公園長椅，晴戴著一邊耳機朝你招手。'),
+      say('narr', undefined, '週末的公園長椅，晴戴著一邊耳機朝我招手。'),
       show('hare', 'center', 'happy'),
       say('hare', 'happy', '結論先說：另一邊耳機是留給你的！一起聽我練的新開場白！'),
       choice([
@@ -17,7 +17,7 @@ export default scene('date-hare-casual', [
     ],
     [
       bg('street', 'day'),
-      say('narr', undefined, '週末的商店街，晴舉著兩支冰棒朝你揮手。'),
+      say('narr', undefined, '週末的商店街，晴舉著兩支冰棒朝我揮手。'),
       show('hare', 'center', 'happy'),
       say('hare', 'happy', '結論先說！這支請你，因為我多買了！'),
       say('me', undefined, '（理由很晴式。）'),

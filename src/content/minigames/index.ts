@@ -10,6 +10,8 @@ export const MINIGAMES = {
   'w2-serp': { kind: 'serp' },
   'w3-jsonld': { kind: 'spot' },
   'w4-cwv': { kind: 'quiz' },
+  'w5-cite': { kind: 'quiz' },
+  'w6-update': { kind: 'quiz' },
   'sq-r1': { kind: 'quiz' },
   'sq-r2': { kind: 'spot' },
   'sq-r3': { kind: 'spot' },

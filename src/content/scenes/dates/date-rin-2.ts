@@ -6,8 +6,6 @@ export default scene('date-rin-2', [
   say('narr', undefined, '週末加班的學生會室，夕陽把文件堆染成橘色。'),
   show('rin', 'center', 'normal'),
   say('rin', 'normal', '你來得正好。公告要在明天前全部更新。'),
-  say('me', undefined, '（桌上的文件，比我的身高還高……）'),
-  say('narr', undefined, '筆尖沙沙作響。她寫完一張，又拉過下一張。'),
   say('me', undefined, '學姊，妳是不是一個人扛太多了？'),
   show('rin', 'center', 'sad'),
   say('rin', 'sad', '會長不能出錯。一個錯字，大家就不再相信公告。'),

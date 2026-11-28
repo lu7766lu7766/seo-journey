@@ -7,7 +7,6 @@ export default scene('w4', [
   show('rin', 'left', 'think'),
   show('hare', 'right', 'surprised'),
   say('hare', 'surprised', '圖片還沒載完，按鈕又跳走！我想按「報名」，卻寄了空白信給索老師！'),
-  say('me', undefined, '難怪老師今天回我一個問號。'),
   say('rin', 'normal', 'Google 採行動版優先索引。手機體驗差，就是在拖累整個網站。'),
   card('mobile-first'),
   say('rin', 'think', '把網站想成餐廳：菜多久上桌，是 LCP；按服務鈴後有沒有人理你，是 INP。'),
@@ -15,7 +14,7 @@ export default scene('w4', [
   say('hare', 'happy', 'CLS 我懂！就是桌子突然移位，害你打翻整碗湯！'),
   say('rin', 'normal', '大圖要壓縮並寫寬高才不亂跳；首屏主圖別延遲載入，才不拖慢 LCP。'),
   minigame('w4-cwv', { stats: { tec: 4 }, bond: { rin: 1, hare: 1 } }, { stats: { tec: 1 } }),
-  say('rin', 'normal', 'LCP、INP、CLS，就是網站體驗核心指標。它是訊號之一，不是排名的萬靈丹。'),
+  say('rin', 'normal', 'LCP、INP、CLS，就是網站使用體驗核心指標。它是訊號之一，不是排名的萬靈丹。'),
   card('core-web-vitals'),
 
   say('hare', 'happy', '最大的那張圖，是我昨天上傳的社團合照！4.8MB，超可愛！'),
@@ -24,7 +23,6 @@ export default scene('w4', [
   card('image-optimization'),
   show('hare', 'right', 'blush'),
   say('hare', 'blush', '我還替它寫了圖片說明：「社團 社辦 網站 SEO 最強」！'),
-  say('me', undefined, '念給看不到圖的人聽，他會以為我們在喊口號。'),
   say('rin', 'think', 'alt 要用自然的一句話描述圖片，給人讀，不是塞關鍵字。'),
   card('alt-text'),
   say('rin', 'normal', '時間只夠先修一處。{name}，你決定。'),
@@ -38,7 +36,6 @@ export default scene('w4', [
       say('hare', 'happy', '太好了！我再也不會寄空白信了！'),
     ]),
   ]),
-  say('hare', 'normal', '對了，我們明天就照計畫發起「青葉學生社團大調查」，下週公布結果！'),
   hide('all'),
 
   bgm('tense'),
@@ -47,7 +44,6 @@ export default scene('w4', [
   show('kuro', 'center', 'smug'),
   say('kuro', 'smug', '喂，青葉的小弟！鄰校流量學院，黑川翔！'),
   say('kuro', 'smug', '流量就是正義！萬能流量包：千條外連加五百頁 AI 文，保證第一！'),
-  say('me', undefined, '（這個人的氣場，像一個關不掉的彈出視窗。）'),
   show('rin', 'left', 'angry'),
   say('rin', 'angry', '{name}，別理他。沒有任何人能「保證」排名。'),
   choice([
