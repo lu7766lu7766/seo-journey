@@ -40,6 +40,7 @@ export default scene('w5', [
   say('mirai', 'normal', '還有，原創、可查證、有署名。數據一旦造假，信任歸零。'),
   card('original-data'),
   minigame('w5-cite', { stats: { tru: 4 } }, { stats: { tru: 1 } }),
+  say('mirai', 'smile', '答案先行，人類好讀，機器也更容易讀對。這是 AEO 與 GEO 的交集。'),
   hide('all'),
 
   bg('rooftop', 'dusk', 'fade'),

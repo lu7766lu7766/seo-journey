@@ -7,6 +7,7 @@ export default scene('date-rin-1', [
   say('me', undefined, '（那個藍黑長直的背影……是凜學姊？）'),
   show('rin', 'center', 'think'),
   say('rin', 'think', '《寫作風格指南》……作者的語氣，值得參考。'),
+  say('me', undefined, '學姊也會逛書店啊。'),
   show('rin', 'center', 'surprised'),
   say('rin', 'surprised', '！{name}！這是……調查。對，市場調查。'),
   say('narr', undefined, '她把書往身後藏，封面卻露出了一隻貓咪貼紙。'),
@@ -22,6 +23,7 @@ export default scene('date-rin-1', [
     ]),
   ]),
   say('rin', 'smile', '好的文章，是替讀的人省力氣。搜尋也是同樣道理。'),
+  say('narr', undefined, '風鈴又響了。她把那本書買下，小心地抱在胸前。'),
   say('rin', 'blush', '今天的事，不要告訴晴。……謝謝你，{name}。'),
   hide('rin'),
 ])

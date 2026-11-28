@@ -14,6 +14,7 @@ export default scene('w6', [
   show('mirai', 'right', 'normal'),
   say('rin', 'normal', '冷靜。步驟一，確認網站沒壞。步驟二，看官方公告。步驟三，先別亂改。'),
   say('hare', 'surprised', '完蛋了完蛋了！是標題太吵？還是重複內容被罰了？！'),
+  say('rin', 'normal', '夏川同學。'),
   show('hare', 'center', 'think'),
   say('hare', 'think', '……呼。結論先說：我們慌了，但網站還沒壞。'),
   say('rin', 'think', '重複內容多半是整理問題，不是處罰。用 301、canonical 收斂。'),
@@ -29,6 +30,7 @@ export default scene('w6', [
   card('helpful-content'),
   say('rin', 'think', 'E-E-A-T 是經驗、專業、權威、信任，不是單一排名分數。最後一個，最重要。'),
   card('eeat'),
+  say('rin', 'smile', '作者頁的格式，我來整理。'),
   hide('sensei'),
   show('hare', 'center', 'happy'),
   say('hare', 'happy', '作者簡介我來寫！三十字，結論先說！'),
@@ -81,6 +83,7 @@ export default scene('w6', [
       say('rin', 'think', '這麼大的雨還跑來。……給，毛巾。淋濕會感冒。'),
       show('rin', 'center', 'blush'),
       say('rin', 'blush', '規則不能保證結果。但這六週，你每一步都照規則走，我都看見了。'),
+      say('me', undefined, '學姊也會怕嗎？'),
       when(
         flag('askedRules'),
         [say('rin', 'blush', '其實我也會怕。……所以才需要一個會問「規則能先看一下嗎」的人。')],
@@ -106,11 +109,13 @@ export default scene('w6', [
       say('hare', 'normal', '哇，你濕答答的！結論先說：快喝這杯熱可可，別感冒了！'),
       show('hare', 'center', 'blush'),
       say('hare', 'blush', '我剛剛超怕的。排名一掉，就覺得之前講的全都白講了。'),
-      say('narr', undefined, '她把可可塞進我手心，杯子燙燙的，她的指尖卻微微發抖。'),
+      say('narr', undefined, '她把可可塞進我手心，杯子燙燙的，她的指尖卻有點涼。'),
+      say('me', undefined, '手這麼涼，妳在發抖嗎？'),
+      say('hare', 'surprised', '才沒有！是……麥克風的後座力！'),
       when(
         bondIs('hare', 'gte', 28),
         [
-          say('hare', 'blush', '可是你來了，所以，我現在不抖了。'),
+          say('hare', 'blush', '騙你的。……是因為你來了。所以，我現在不抖了。'),
           say('hare', 'happy', '結論先說：搜尋祭那天，我要用一句話讓全場聽見我們！'),
         ],
         [
@@ -125,6 +130,7 @@ export default scene('w6', [
       show('mirai', 'center', 'normal'),
       say('mirai', 'normal', '雨聲的頻率，讓人平靜。你也是來吹風的嗎？還是……來找我？'),
       show('mirai', 'center', 'smile'),
+      say('narr', undefined, '雨滴打在透明傘面上，每一滴，都有不同的音高。'),
       say('mirai', 'smile', '根據我的紀錄，這六週你好多次選了比較慢、但真實的做法。'),
       say('me', undefined, '因為，我想讓妳讀到的，是真的我。'),
       show('mirai', 'center', 'blush'),

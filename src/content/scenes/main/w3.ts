@@ -8,6 +8,7 @@ export default scene('w3', [
   show('mirai', 'center', 'normal'),
   say('me', undefined, '嚇！妳什麼時候進來的？'),
   say('mirai', 'normal', '十七分鐘前。門口沒掛「謝絕參觀」，視為允許進入。'),
+  say('mirai', 'smile', '根據我的資料，你沒發現我，是因為專注。……這是讚美。'),
   say('mirai', 'think', '貴社網站有語意混亂：校名寫成「青葉學園」「青葉高中」「Aoba HS」。'),
   say('me', undefined, '都是我們學校啊，人類看得懂吧？'),
   say('mirai', 'normal', '就像班上有人叫小明、明明、Ming。點名系統會以為是三個人。'),
@@ -18,8 +19,10 @@ export default scene('w3', [
   card('entity-consistency'),
 
   say('mirai', 'normal', 'JSON-LD 是寫給機器看的電子名片。像填表單：身分對不對、名字一不一致、逗號漏了沒。'),
+  say('me', undefined, '一堆大括號和英文，我光看就想睡……'),
   minigame('w3-jsonld', { stats: { str: 4, tru: 2 }, bond: { mirai: 1 } }, { stats: { str: 1 } }),
 
+  say('me', undefined, '大括號不可怕，可怕的是漏掉的那顆逗號。'),
   show('mirai', 'center', 'think'),
   say('mirai', 'think', '名片寫「社員一百人」，頁面上卻只有你一人，就是不一致。'),
   card('schema-visible-match'),
@@ -27,7 +30,7 @@ export default scene('w3', [
   card('json-ld'),
   say('mirai', 'think', '結構的另一半，是內部連結。網站是校園，連結是指路牌。'),
   say('me', undefined, '寫「點這裡」的指路牌，誰知道要去哪？'),
-  say('mirai', 'smile', '連結文字要說明目的地。沒有連入的頁，爬蟲很難發現。'),
+  say('mirai', 'smile', '連結文字要說明目的地。沒有任何頁面連到的頁，爬蟲很難發現。'),
   card('internal-links'),
   say('hare', 'think', '可是活動頁有好幾個網址，連結到底要指哪一個？'),
   say('mirai', 'normal', '指向標準網址。內容相同的多個網址，用 canonical 標出代表。'),

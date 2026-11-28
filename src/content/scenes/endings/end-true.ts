@@ -13,6 +13,7 @@ export default scene('end-true', [
   say('rin', 'blush', '我、我是學生會長，公開場合不適合——……三秒。只准三秒。'),
   say('mirai', 'smile', '已讀取。……不，是我自己看見的。我們，贏了。'),
   say('me', undefined, '（接過晴遞來的麥克風）我們讓「404」，變成了一個找得到的地方。'),
+  say('rin', 'smile', '……文句通順，語意清楚。採用。'),
 
   bg('festival', 'dusk', 'fade'),
   say('narr', undefined, '黃昏的廣場，燈籠剛亮起來。三個人在攤位前並肩站好，我舉起手機。'),
@@ -27,6 +28,7 @@ export default scene('end-true', [
   ], [when(flag('w6Choice', 'eq', 3), [
     say('mirai', 'blush', '那晚天台的雨聲，我存成了音檔。現在，加上掌聲的音軌。'),
   ])])]),
+  say('me', undefined, '我想說的話有一大串，但結論只有一句：謝謝大家。'),
   say('narr', undefined, '燈籠的光在她們的眼裡閃著，三個人的笑聲疊在一起，比任何排名都亮。'),
   cg('none'),
 
@@ -39,6 +41,9 @@ export default scene('end-true', [
   show('rin', 'left', 'normal'),
   show('hare', 'center', 'happy'),
   show('mirai', 'right', 'smile'),
+  say('mirai', 'smile', '新社員申請表，已讀取。……三十七份。'),
+  say('hare', 'happy', '結論先說：今天起，404 社辦要吵翻天啦！'),
   say('rin', 'normal', '全部要審。規則是，不能偷懶。……尤其是對可愛的後輩們。'),
+  say('narr', undefined, '夕陽穿過百葉窗，把四個人的影子，疊成了同一個形狀。'),
   hide('all'),
 ])
