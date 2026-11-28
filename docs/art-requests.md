@@ -1,4 +1,4 @@
-# 搜尋戀曲：美術製作單（art-requests）
+# 直到你找到我：美術製作單（art-requests）
 
 > 給「用 AI 影像工具出圖」的人使用。照這份文件出圖、跑一次指令，新圖就會自動被遊戲採用，**不需要改任何程式碼**。
 > 所有路徑、尺寸、指令都已對照程式碼與現有檔案驗證（`scripts/process-art.mjs`、`src/art/**`、`public/art/manifest.json`）。
@@ -849,47 +849,44 @@ the protagonist lying in an infirmary bed with an ice pack on his forehead and a
 
 ### 7.2 標題 Logo（1 張）
 
-**用在哪裡**：標題畫面左上方，**取代**現在的文字「搜尋戀曲」與副標「～青葉學園網站研究社～」。原本上方的小標籤「SEO · AEO · GEO 青春校園戀愛養成」會保留，所以**Logo 不用包含這句**。背景是深藍色調的櫻花校門，Logo 需要在深色底上清楚可讀。
+**用在哪裡**：標題畫面左上方，取代文字主標**「直到你找到我」**與副標**「～青葉學園網站研究社～」**。原本上方的小標籤「SEO · AEO · GEO 青春校園戀愛養成」會保留，所以 **Logo 不用包含這句**。背景是深藍色調遮罩下的櫻花校門（`public/art/bg/gate.webp`），Logo 需在深色底上清楚可讀。
 
-| Key | 輸出檔 | 
-|---|---|
-| `ui/logo` | `public/art/ui/logo.webp`（含透明） |
+| Key | 輸出檔 | 產製方式 |
+|---|---|---|
+| `ui/logo` | `public/art/ui/logo.webp`（1200×310，透明 WebP） | 程式向量與字型排版：`node scripts/make-title-art.mjs` |
 
-**規格（已對照程式驗證）**
-- **綠幕**：Logo 周圍請用單一純綠 `#00FF00` 背景（與立繪相同，腳本會去背），Logo 本身**不可以含綠色**。
-- **保留原比例**：腳本不會改變長寬比，只會裁掉多餘的綠邊（四周留 8px）、必要時等比縮小到 **1200×400 以內**。建議來源約 **3:1～4:1 的橫式**、寬 ≥ 1800px。
-- 遊戲內顯示：**最大 500px 寬 × 190px 高**（等比縮放、靠左），所以細節要夠粗，縮小後仍清楚。
-- 內容：**「搜尋戀曲」**為主標（大）、**「～青葉學園網站研究社～」**為副標（小）。圖案點綴：放大鏡（搜尋）＋愛心（戀愛）＋櫻花花瓣＋星光；主色可用櫻花粉 `#f7b8c8`、天空藍 `#9fd3f0`、奶油白 `#fffaf0`，加深藍描邊或外光暈讓它在深色底上跳出來。
+**新設計方向（2026-11-28 改名重新設計定稿）**
+- **抒情調性**：呼應新片名「直到你找到我」（社團網站從 404 到被看見、三位女主角被主角找到），捨棄早期粗黑描邊放大鏡愛心徽章與粉彩漸層手遊字體，改走與遊戲日系動漫立繪一致的細膩青春視覺小說風格。
+- **主標「直到你找到我」**：使用與遊戲介面標題／名牌一致的 **LXGW WenKai TC（霞鶩文楷 TC）**，單行排列、字距略寬以留出餘韻；純白／暖白填色搭配柔和淡天藍與淡櫻粉外光暈、細緻深藍投影與極細邊緣分離（不使用厚描邊與彩色漸層）。
+- **搜尋框副標**：主標下方配置細線圓角半透明白框搜尋列（內襯極淡深藍玻璃感底色提升對比），左側為同色細線放大鏡向量圖示（非 emoji），框內以同字型排入「～青葉學園網站研究社～」，句尾加上細細的發光文字游標 `|`，以「正在搜尋」的意象自然呼應主題。
+- **克制點綴**：主標右上方點綴一顆青／淡天藍四芒星光（呼應星野未來的青色星形髮夾）與右側兩片無粗描邊的柔和櫻花瓣。
+- **規格與對齊**：**1200×310 透明 WebP**，內容整體靠左對齊（遊戲標題畫面以 `max-w-[500px] max-h-[190px]`、`object-left` 顯示，縮至 500px 寬時主副標與搜尋框線條仍清晰銳利）。
 
-⚠️ **文字風險**：AI 影像工具常把中文寫錯字或畫成亂碼。建議做法：**先出「不含文字」的裝飾圖樣（放大鏡＋愛心＋櫻花的標誌），再用設計軟體把「搜尋戀曲」排上去**；若直接讓 AI 出字，**逐字檢查「搜／尋／戀／曲／青／葉／學／園／網／站／研／究／社」**。
+**產圖腳本與字型來源（禁止 AI 生成文字）**
+- **腳本路徑**：`scripts/make-title-art.mjs`（重複使用 repo 內建的 `scripts/lib/browser.mjs` 與 Playwright 2× 超採樣輸出，不需新增 npm 套件，也不經綠幕去背）。
+- **執行指令**（同時產出 `public/art/ui/logo.webp` 與 `public/og-image.jpg`）：
 
-```text
-a game title logo lockup for a Japanese-style school romance simulation, a bold rounded hand-lettered Traditional Chinese title "搜尋戀曲" in cream white with a soft pink and sky-blue gradient outline and a subtle deep-navy outer glow, a magnifying glass with a small heart inside its lens sitting tightly beside the title, cherry blossom petals and tiny sparkles around, a smaller subtitle line "～青葉學園網站研究社～" in soft pink below the title, clean vector-like game logo, centered, on a flat pure chroma green #00FF00 background, no green in the logo, wide 3:1 composition, 2400x800
-```
+  ```bash
+  node scripts/make-title-art.mjs
+  ```
 
-負面提示詞：
-
-```text
-green colored elements, garbled characters, wrong Chinese characters, extra text, watermark, photo background, gradient background, shadows on the ground, low quality
-```
+- **日後修改文案**：直接編輯 `scripts/make-title-art.mjs` 頂端的 `MAIN_TITLE`、`SUBTITLE`、`OG_BADGE` 常數並重跑即可，搜尋框寬度、游標位置與右側星光花瓣會依字體實際量測自動對齊。
+- **字型來源與授權**：
+  - 字型：**LXGW WenKai TC（霞鶩文楷 TC）** `LXGWWenKaiTC-Bold.ttf`、`LXGWWenKaiTC-Regular.ttf`
+  - 來源：Google Fonts 官方倉庫（`google/fonts` `ofl/lxgwwenkaitc`；上游專案 `lxgw/LxgwWenkaiTC`）
+  - 授權：**SIL Open Font License 1.1（OFL-1.1）**，允許免費使用與再散布；字型檔與完整授權書放置於 `scripts/assets/fonts/`（含 `scripts/assets/fonts/OFL.txt`）。
 
 ### 7.3 網站圖（3 個檔案，直接放進 `public/`）
 
-這三個**不經過腳本也不寫入 manifest**：直接用同名檔案覆蓋 `public/` 內現有檔案即可。**目前是用現有標題畫面自動產生的暫代版**，上線前建議換成正式圖。
+這三個**不經過 `process-art.mjs` 也不寫入 manifest**。其中 `og-image.jpg` 已改由 `scripts/make-title-art.mjs` 以既有高解析素材與新 Logo 程式合成（不再手動塗改舊圖，也絕不讓 AI 生成文字）；`favicon.png` 與 `apple-touch-icon.png` 維持既有檔案。
 
 | 檔案 | 尺寸 | 格式 | 用途 | 設計重點 |
 |---|---|---|---|---|
-| `public/og-image.jpg` | **1200×630** | JPEG，建議 ≤ 300KB（目前約 150KB） | 在 LINE、Facebook、X（Twitter）、Discord、Slack 貼遊戲連結時的**預覽圖** | 主視覺：三位女主角＋遊戲名稱。各平台會裁切邊緣，**重要內容放中央約 1000×500 內**；縮成手機縮圖也要看得懂，字要大。 |
-| `public/favicon.png` | **512×512** | PNG，可透明 | 瀏覽器分頁圖示 | 只會縮成 16～32px 顯示：**不要放字、輪廓要粗**。建議單一符號：星形髮夾、放大鏡＋愛心、或某位女主角的臉部特寫。 |
-| `public/apple-touch-icon.png` | **180×180** | PNG，**不透明** | iPhone／iPad 加到主畫面 | 滿版方形，**不要透明、不要自己畫圓角**（iOS 會自動裁圓角，透明處會變黑）。 |
+| `public/og-image.jpg` | **1200×630** | JPEG，建議 ≤ 300KB（目前約 195KB） | 在 LINE、Facebook、X（Twitter）、Discord、Slack 貼遊戲連結時的**預覽圖** | 由 `node scripts/make-title-art.mjs` 以 `bg/gate.webp`、`mirai/smile.webp`（左）、`rin/smile.webp`（中）、`hare/happy.webp`（右）重新合成，保留右側「青葉學園」校門銘牌與三位女主角完整臉部；下方疊深藍漸層、膠囊標籤「SEO・AEO・GEO 青春校園戀愛養成」與新版 `logo.webp`，縮至 400×210 小縮圖片名依然清晰。 |
+| `public/favicon.png` | **512×512** | PNG，可透明 | 瀏覽器分頁圖示 | 只會縮成 16～32px 顯示：**不要放字、輪廓要粗**。沿用既有檔案。 |
+| `public/apple-touch-icon.png` | **180×180** | PNG，**不透明** | iPhone／iPad 加到主畫面 | 滿版方形，**不要透明、不要自己畫圓角**（iOS 會自動裁圓角，透明處會變黑）。沿用既有檔案。 |
 
-提示詞（分享預覽圖）：
-
-```text
-a promotional key visual for a Japanese school romance simulation game, three high-school girls standing close together in a cherry blossom school gate scene at golden hour — a tall girl with long dark blue hair, a red hairband and a red student-council armband; a cheerful girl with short orange hair, a side ponytail and headphones around her neck; a gentle girl with long silver-lilac hair and a star-shaped cyan hairclip in a lilac cardigan — warm cinematic lighting, falling petals, Japanese anime illustration, leave the lower center calm for a title, wide 1.91:1 composition, 2400x1260, no text
-```
-
-做完 `og-image.jpg` 後：在設計軟體把遊戲名稱「搜尋戀曲」排進去更保險（避免 AI 亂碼）。
+**重新產出 `og-image.jpg`**：與標題 Logo 共用同一支腳本，執行 `node scripts/make-title-art.mjs` 即可先產生 `public/art/ui/logo.webp`，再自動將新 Logo 與背景、三位女主角立繪合成輸出 `public/og-image.jpg`。
 
 **關於分享預覽的小細節**
 - 預覽圖網址必須是**完整的網址**。部署到 Vercel 時系統會自動帶入網域；如果你用**自訂網域**，請到 Vercel 專案的 Settings → Environment Variables 新增 `SITE_URL`（例如 `https://your-game.com`，不要結尾斜線）後重新部署。
@@ -1075,3 +1072,26 @@ smiling, smirk, upturned mouth corners, happy expression, cheerful face, looking
 - **最終採用參數與 Seed**：
   - `public/art/sensei/sad.webp`：保留初版 `seed = 304`、`strength = 0.76`、`guidance_scale = 6.5`、`num_inference_steps = 30` 之表情結果（八字眉、垂眼瞼、嘴角下垂），二版改以 `frame_lock` 排除眼鏡框遮罩重新合成還原 `normal` 原版粗黑鏡框與鼻樑，並將嘴下（`x=295..311, y=354..364`）深色色塊平滑化為自然下唇陰影。
   - `public/art/sensei/think.webp`：二版重繪定稿（Batch 1 `C4`），`seed = 3044`、`strength = 0.84`、`guidance_scale = 7.0`、`num_inference_steps = 32`、排除眼鏡框遮罩 `mask_think_1024` + `comp_mask_clean`；正向提示詞強調 `thinking, pondering, looking to the side, glancing up and sideways, relaxed curious eyebrows, one eyebrow slightly higher, short straight closed mouth, neutral expression`，負向提示詞明確排除 `frown, downturned mouth, sad, depressed, gloomy, worried, worried eyebrows, troubled eyebrows, smile, smiling, smirk, happy, upturned mouth, open mouth, teeth, looking at viewer, cross-eyed, angry, extra glasses, deformed eyes`。
+
+---
+
+### 8.2 2026-11-28：遊戲改名《直到你找到我》——標題 Logo 與分享預覽圖重新設計
+
+- **日期**：2026-11-28
+- **狀態**：✅ **已完成**（以可重複執行腳本 `scripts/make-title-art.mjs` 產出新版 `public/art/ui/logo.webp` 與 `public/og-image.jpg`，已通過三組自我審查預覽圖、`npm run art:check`、`npm run typecheck` 與 `npm test`）。
+- **改名與重設計原因**：
+  - 遊戲正式改名為主標**「直到你找到我」**、副標**「～青葉學園網站研究社～」**，調性轉為抒情、帶點思念的青春視覺小說氣息。
+  - 舊版 `logo.webp` 左側的粗黑描邊放大鏡愛心圖示過於扁平、像 App 圖示，且粗圓體＋粉彩漸層＋厚描邊偏向休閒手遊，與動漫立繪畫風及新片名調性不協調。
+- **產出規格與設計重點**：
+  - `public/art/ui/logo.webp`（1200×310 透明 WebP，約 162 KB）：
+    - 主標「直到你找到我」以 **LXGW WenKai TC（Bold）** 單行寬字距排字，暖白填色搭配淡天藍與淡櫻粉柔和外光暈及細緻深藍投影，取消厚描邊與粉彩漸層。
+    - 副標放入細線圓角半透明白框搜尋列，內含同色細線放大鏡圖示、「～青葉學園網站研究社～」與發光細直線文字游標 `|`，取代舊版放大鏡愛心徽章。
+    - 右側以一顆呼應星野未來髮夾的青／淡天藍四芒星光與兩片無粗框柔和櫻花瓣點綴，保持克制與呼吸感。
+  - `public/og-image.jpg`（1200×630 JPEG，約 198 KB）：
+    - 不在舊圖上塗改，改以 `public/art/bg/gate.webp` 搭配 `public/art/mirai/smile.webp`（左）、`public/art/rin/smile.webp`（中）、`public/art/hare/happy.webp`（右）重新合成，保留右側「青葉學園」門牌且不遮擋任何角色臉部。
+    - 下方加深色漸層，置中疊放膠囊標籤「SEO・AEO・GEO 青春校園戀愛養成」與新版 `logo.webp`，縮至 400×210 小縮圖仍清晰可讀。
+    - **退回修正紀錄（2026-11-28）**：上一版 `og-image.jpg` 中凜的紅色學生會臂章高度與膠囊標籤重疊且緊貼晴的立繪而被遮蔽；本次微調三位女主角的站位、間距、縮放、圖層順序（凜置於最前）與下方漸層起點，使凜的紅色臂章完整清楚可見，同時維持三人臉部、右側「青葉學園」門牌、膠囊標籤與 Logo 位置不變（`logo.webp` 內容不變）。
+  - `public/favicon.png` 與 `public/apple-touch-icon.png` 維持不變；未使用 Colab（純本機腳本向量／字型排版與素材合成）。
+- **腳本與字型授權**：
+  - 腳本：`scripts/make-title-art.mjs`（執行 `node scripts/make-title-art.mjs` 即可重產兩張圖）。
+  - 字型：`scripts/assets/fonts/LXGWWenKaiTC-Bold.ttf`、`LXGWWenKaiTC-Regular.ttf`（來源：Google Fonts `ofl/lxgwwenkaitc`，授權：SIL Open Font License 1.1，完整授權見 `scripts/assets/fonts/OFL.txt`）。
