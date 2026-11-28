@@ -55,9 +55,14 @@ def main():
     print(f"GPU {p.name} VRAM {p.total_memory / 1024**3:.1f} GiB", flush=True)
     REPORT["gpu"] = p.name
 
-    timed("pip_install_s", lambda: pip_install(["qwen-tts", "opencc-python-reimplemented", "sox", "funasr", "librosa"]))
+    timed("pip_install_s", lambda: pip_install(["qwen-tts", "opencc-python-reimplemented", "sox", "funasr", "librosa", "pypinyin"]))
     if shutil.which("sox") is None:
         run(["apt-get", "install", "-y", "-qq", "sox"], check=False)
+    if shutil.which("ffmpeg") is None:  # produce.py 用 ffmpeg 把保留的失敗 take 與錨點轉成／讀成 mp3
+        run(["apt-get", "install", "-y", "-qq", "ffmpeg"], check=False)
+    import pypinyin  # noqa: F401  第四輪：守門改用無聲調拼音 CER；缺了這個套件守門會直接出錯，所以環境準備就檢查
+
+    REPORT["pypinyin"] = pypinyin.__version__
 
     if os.path.exists("/content/asr-weights.tar"):
         def extract():
