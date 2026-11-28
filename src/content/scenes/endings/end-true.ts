@@ -35,6 +35,7 @@ export default scene('end-true', [
   hide('all'),
   bg('clubroom', 'dusk', 'fade'),
   say('narr', undefined, '隔天傍晚，「404」的門牌旁多了張手寫字條：歡迎新社員。'),
+  say('narr', undefined, '字條最底下還有一行小字：「我在這裡。謝謝你，終於找到我了。——社辦」'),
   show('sensei', 'center', 'smile'),
   say('sensei', 'smile', '門外排了十幾個人。我的咖啡，今天終於可以放心喝完了。'),
   hide('sensei'),

@@ -55,13 +55,13 @@ export function TitleScreen() {
         </span>
         {logoSrc ? (
           <>
-            <h1 className="sr-only">搜尋戀曲 ～青葉學園網站研究社～</h1>
+            <h1 className="sr-only">直到你找到我 ～青葉學園網站研究社～</h1>
             <img src={logoSrc} alt="" draggable={false} className="mb-8 mt-1 h-auto max-h-[190px] w-auto max-w-[500px] select-none object-contain object-left drop-shadow-[0_6px_24px_rgba(0,0,0,0.45)]" data-testid="title-logo" />
           </>
         ) : (
           <>
             <h1 className="font-title text-7xl font-bold tracking-tight text-white drop-shadow-[0_4px_24px_rgba(159,211,240,0.45)]">
-              搜尋戀曲
+              直到你找到我
             </h1>
             <p className="mb-10 mt-3 font-title text-2xl font-bold tracking-wide text-[#f7b8c8] drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
               ～青葉學園網站研究社～
