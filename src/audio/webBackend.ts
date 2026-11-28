@@ -1,5 +1,6 @@
 /** 真正的 Web Audio 後端：載入／解碼、BufferSource 無縫循環、等功率交叉淡化，沒有檔案時走 synth。 */
 import type { AudioBackend, BgmFileOptions, BgmVoice } from './engine'
+import { loopPosition } from './manifest'
 import { playSynthSfx, startSynthBgm } from './synth'
 
 const MANIFEST_URL = '/audio/manifest.json'
@@ -45,7 +46,8 @@ export function createWebBackend(): AudioBackend {
     g.gain.setValueAtTime(0, t0)
     g.gain.setValueCurveAtTime(curve('in', o.gain), t0 + 0.001, Math.max(0.05, o.fadeInSec))
     src.connect(g).connect(bus!)
-    src.start(t0)
+    const offset = Math.min(Math.max(0, o.offset ?? 0), Math.max(0, buffer.duration - 0.01))
+    src.start(t0, offset)
     let done = false
     const halt = () => {
       if (done) return
@@ -64,6 +66,8 @@ export function createWebBackend(): AudioBackend {
     }
     src.onended = halt
     return {
+      duration: buffer.duration,
+      position: () => loopPosition(offset + (c.currentTime - t0), buffer.duration, src.loopStart, src.loopEnd || undefined),
       fadeOut(sec) {
         if (done) return
         const t = c.currentTime

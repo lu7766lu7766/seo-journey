@@ -1,12 +1,12 @@
 # 遊戲音效（SFX）生成與後處理
 
-用 **Stable Audio Open 1.0** 在 Colab GPU 上生成 8 種音效的候選原始檔，再於本機後處理、依客觀指標挑選、輸出 MP3 與試聽頁。本目錄只放腳本與提示詞；**音檔不進 repo**（試聽頁成品在 `/tmp/seo-journey-audio/sfx/`）。
+用 **Stable Audio Open 1.0** 在 Colab GPU 上生成 8 種音效的候選原始檔，再於本機後處理、依客觀指標挑選、輸出 MP3 與試聽頁。本目錄只放腳本與提示詞；產製輸出（試聽頁、PNG、原始 WAV）在 `/tmp/seo-journey-audio/sfx/`，不進 repo；挑出的成品 MP3 已放進 `public/audio/sfx/`，玩家可在「音樂鑑賞」選版本（見 [`docs/audio-requests.md`](../../../docs/audio-requests.md)）。
 
 ## 模型與授權
 
 - 模型：`stabilityai/stable-audio-open-1.0`（gated，需於 Hugging Face 同意條款後才能下載）。
 - 授權：**Stability AI Community License**。非商業用途，或組織年營收 ≤ 100 萬美元可免費使用；超過需另洽 Stability AI。
-- 標示義務：產品／網站／製作人員名單需註明 **「Powered by Stability AI」**。試聽頁頁首已標「音效由 Stable Audio Open 生成 — Powered by Stability AI」；正式採用時請同步放進遊戲的製作人員名單。
+- 標示義務：產品／網站／製作人員名單需註明 **「Powered by Stability AI」**。試聽頁頁首已標「音效由 Stable Audio Open 生成 — Powered by Stability AI」；遊戲內已在音樂鑑賞、標題畫面與設定面板標示。
 - 「Python 合成」候選（`click`、`blip`）由 `postprocess.py` 內的數學合成產生，非 AI 生成，不受上述授權約束。
 
 ## 8 個音效

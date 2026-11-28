@@ -151,6 +151,22 @@ async function main() {
     page.on('response', (res) => {
       if (res.status() >= 400) badResponses.push(`${res.status()} ${res.url()}`)
     })
+    // music gallery check: which audio files get requested, and how many looping BGM sources are alive at once
+    const audioRequests = []
+    page.on('request', (req) => {
+      if (req.url().includes('/audio/') && req.url().endsWith('.mp3')) audioRequests.push(new URL(req.url()).pathname)
+    })
+    await context.addInitScript(() => {
+      window.__bgmSources = new Set()
+      const start = AudioBufferSourceNode.prototype.start
+      AudioBufferSourceNode.prototype.start = function (...a) {
+        if (this.loop) {
+          window.__bgmSources.add(this)
+          this.addEventListener('ended', () => window.__bgmSources.delete(this))
+        }
+        return start.apply(this, a)
+      }
+    })
 
     // 1. Desktop gate check (< 1024px)
     await page.setViewportSize({ width: 900, height: 700 })
@@ -178,6 +194,51 @@ async function main() {
     await page.locator('[data-testid="tab-endings"]').click()
     await page.locator('[data-testid="tab-practice"]').click()
     await page.locator('[data-testid="gallery-close"]').click()
+
+    // 3b. Music gallery: open from the title, play one track, switch the adopted version, come back
+    await page.getByRole('button', { name: '音樂鑑賞' }).click()
+    await page.locator('[data-testid="music-gallery"]').waitFor({ state: 'visible', timeout: 5000 })
+    await page.locator('[data-testid="bgm-row-title"]').waitFor({ timeout: 5000 })
+    await shot(page, 'music-bgm.png')
+    const playing = (id, v) => page.locator(`[data-testid="bgm-card-${id}-${v}"][data-status="playing"]`)
+    await page.locator('[data-testid="bgm-play-title-c1"]').click()
+    await playing('title', 'c1').waitFor({ timeout: 20000 })
+    if (!audioRequests.includes('/audio/bgm/title_c1.mp3')) throw new Error('Music gallery did not request title_c1.mp3 on play')
+    await page.waitForTimeout(1500)
+    const timeText = await page.locator('[data-testid="bgm-card-title-c1"] [data-testid="music-time"]').textContent()
+    if (timeText?.startsWith('0:00')) throw new Error(`Music gallery progress did not advance: ${timeText}`)
+    // only one track at a time
+    await page.locator('[data-testid="bgm-play-daily-c2"]').click()
+    await playing('daily', 'c2').waitFor({ timeout: 20000 })
+    await page.waitForTimeout(1500) // let the previous voice finish fading out
+    if ((await page.locator('[data-status="playing"]').count()) !== 1) throw new Error('More than one track shows as playing in the music gallery')
+    const alive = await page.evaluate(() => window.__bgmSources.size)
+    if (alive !== 1) throw new Error(`Expected exactly 1 looping BGM source while previewing, got ${alive}`)
+    await shot(page, 'music-bgm-playing.png')
+    // pause and resume keep it to one source too
+    await page.locator('[data-testid="bgm-play-daily-c2"]').click()
+    await page.locator('[data-testid="bgm-card-daily-c2"][data-status="paused"]').waitFor({ timeout: 5000 })
+    await page.locator('[data-testid="bgm-play-daily-c2"]').click()
+    await playing('daily', 'c2').waitFor({ timeout: 5000 })
+    // adopt a different version of the title song
+    await page.locator('[data-testid="bgm-adopt-title-c1"]').click()
+    if ((await page.locator('[data-testid="bgm-card-title-c1"]').getAttribute('data-adopted')) !== 'true') throw new Error('title c1 not marked as adopted')
+    if ((await page.locator('[data-testid="bgm-card-title-c2"]').getAttribute('data-adopted')) !== 'false') throw new Error('title c2 still marked as adopted')
+    await page.locator('[data-testid="music-tab-sfx"]').click()
+    await page.locator('[data-testid="sfx-play-click-c2"]').click()
+    await page.locator('[data-testid="sfx-adopt-click-c2"]').click()
+    await shot(page, 'music-sfx.png')
+    await page.keyboard.press('Escape')
+    await page.locator('[data-testid="music-gallery"]').waitFor({ state: 'detached', timeout: 5000 })
+    await page.locator('[data-testid="title"]').waitFor({ state: 'visible', timeout: 5000 })
+    // the choice survives a reload and the engine uses it: the title song is now title_c1.mp3 (the default is c2)
+    await page.reload({ waitUntil: 'networkidle' })
+    await page.locator('[data-testid="title"]').waitFor({ state: 'visible', timeout: 5000 })
+    audioRequests.length = 0
+    await page.mouse.click(640, 40) // any gesture unlocks audio and starts the title song
+    await page.waitForFunction(() => window.__bgmSources.size === 1, null, { timeout: 20000 })
+    if (!audioRequests.includes('/audio/bgm/title_c1.mp3')) throw new Error(`After adopting c1 the title song should be title_c1.mp3, requested: ${audioRequests.join(', ')}`)
+    if (audioRequests.includes('/audio/bgm/title_c2.mp3')) throw new Error('title_c2.mp3 was requested although c1 is adopted')
 
     // 4. Start new game
     await page.getByRole('button', { name: '開始遊戲' }).click()
@@ -374,7 +435,7 @@ async function main() {
     if (consoleErrors.length > 0) throw new Error(`Console errors: ${consoleErrors.join(' | ')}`)
     if (pageErrors.length > 0) throw new Error(`Page errors: ${pageErrors.join(' | ')}`)
 
-    console.log('E2E PLAYTHROUGH PASSED: desktop-gate, 1920x1080, 1280x720, gallery, save/reload, full W0-W6 -> festival -> ending, 0 console/page/HTTP errors.')
+    console.log('E2E PLAYTHROUGH PASSED: desktop-gate, 1920x1080, 1280x720, gallery, music gallery (play/switch/adopt), save/reload, full W0-W6 -> festival -> ending, 0 console/page/HTTP errors.')
   } finally {
     await browser.close()
     stopViteServer(server?.child)

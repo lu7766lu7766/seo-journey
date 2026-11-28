@@ -1,8 +1,23 @@
 # 音訊產製紀錄與重產流程
 
-本文件記錄遊戲背景音樂（BGM）候選的產製方式。音檔本身**不進版控**，輸出在 `/tmp/seo-journey-audio/bgm/`（MP3、波形＋頻譜 PNG、`candidates.json`、`index.html` 試聽頁）。腳本在 [`scripts/colab/bgm/`](../scripts/colab/bgm/)。
+本文件記錄遊戲背景音樂（BGM）與音效（SFX）候選的產製方式。腳本在 [`scripts/colab/bgm/`](../scripts/colab/bgm/)、[`scripts/colab/sfx/`](../scripts/colab/sfx/)；產製輸出（含試聽頁、波形／頻譜 PNG、原始 WAV）放在 `/tmp/seo-journey-audio/{bgm,sfx}/`，**不進版控**。
 
-> 本輪只產生候選並提供試聽頁，尚未放進遊戲；由製作人試聽後挑選，再另開工作接入音訊引擎。
+> **已放入遊戲，玩家可在「音樂鑑賞」選版本。** 5 首 BGM × 3 個候選、8 種 SFX × 4 個候選的**成品 MP3 全部**放在 `public/audio/{bgm,sfx}/<id>_c<N>.mp3`，不事先替玩家決定只用哪一版：標題主選單的「音樂鑑賞」可逐一試聽，按「採用這版」後遊戲就改用那一版（記在玩家瀏覽器的設定裡；沒選過的用 manifest 的 `default`，也就是產製時資料建議的首選，未經人耳確認）。`public/audio/manifest.json` 由 [`scripts/build-audio-manifest.mjs`](../scripts/build-audio-manifest.mjs) 依 `scripts/audio/{bgm,sfx}-candidates.json` 產生；格式與引擎行為見 [`CONTRIBUTING.md`](../CONTRIBUTING.md) 的「音訊」。
+
+## 授權標示（必須保留）
+
+| 類別 | 模型 | 授權 | 標示 |
+| --- | --- | --- | --- |
+| 背景音樂 | ACE-Step v1 3.5B | Apache License 2.0 | 「背景音樂：ACE-Step 生成（Apache 2.0）」 |
+| 音效 | Stable Audio Open 1.0 | Stability AI Community License | 「音效：Stable Audio Open 生成 — **Powered by Stability AI**」（授權要求的標示） |
+
+標示出現在：音樂鑑賞畫面底部、標題畫面左下角、設定面板底部。**改版面時不要拿掉**；若之後商用規模超出 Stability AI Community License 的年營收門檻，需另行取得授權。音效候選中標「合成」的是程式合成（非 AI 生成），不受該授權限制。
+
+## 重產後怎麼放進遊戲
+
+1. 把新的 MP3 放進 `public/audio/bgm/`、`public/audio/sfx/`（只放成品 MP3，檔名 `<id>_c<N>.mp3`），並刪掉不再使用的舊檔。
+2. 把新的 `candidates.json` 複製成 `scripts/audio/bgm-candidates.json`、`scripts/audio/sfx-candidates.json`。
+3. `node scripts/build-audio-manifest.mjs`（會檢查檔案齊全、沒有多餘檔案），再跑 `npm test`。
 
 ## 模型與授權
 

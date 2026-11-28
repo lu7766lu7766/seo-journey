@@ -11,6 +11,7 @@ import { TitleScreen } from '@/ui/TitleScreen'
 import { VNStage } from '@/ui/VNStage'
 
 const Gallery = lazy(() => import('@/ui/Gallery'))
+const MusicGallery = lazy(() => import('@/ui/MusicGallery'))
 
 export function App() {
   const screen = useUI((s) => s.screen)
@@ -28,6 +29,11 @@ export function App() {
       {overlay === 'gallery' && (
         <Suspense fallback={null}>
           <Gallery />
+        </Suspense>
+      )}
+      {overlay === 'music' && screen === 'title' && (
+        <Suspense fallback={null}>
+          <MusicGallery />
         </Suspense>
       )}
       <LoadingOverlay />
