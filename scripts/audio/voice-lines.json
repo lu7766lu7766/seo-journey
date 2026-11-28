@@ -242,7 +242,7 @@
       "voiceText": "今晚的節目，只播給你一個人聽。",
       "hasName": false,
       "lineIds": [
-        "date-hare-2#14"
+        "date-hare-2#15"
       ]
     },
     {
@@ -314,7 +314,7 @@
       "voiceText": "結論先說。我想說的是……我……",
       "hasName": false,
       "lineIds": [
-        "date-hare-3#13"
+        "date-hare-3#14"
       ]
     },
     {
@@ -326,7 +326,7 @@
       "voiceText": "不行！稿子明明背好了，一看到你全忘了！",
       "hasName": false,
       "lineIds": [
-        "date-hare-3#14"
+        "date-hare-3#15"
       ]
     },
     {
@@ -338,7 +338,7 @@
       "voiceText": "結論先欠著。細節……可以用接下來的每一天，慢慢補。",
       "hasName": false,
       "lineIds": [
-        "date-hare-3#15"
+        "date-hare-3#16"
       ]
     },
     {
@@ -698,7 +698,7 @@
       "voiceText": "我想成為被引用的來源，而不是被複製的內容。",
       "hasName": false,
       "lineIds": [
-        "date-mirai-3#12"
+        "date-mirai-3#13"
       ]
     },
     {
@@ -710,7 +710,7 @@
       "voiceText": "第一個引用我的人，是你。還有一句話，校對中，下次發佈。",
       "hasName": false,
       "lineIds": [
-        "date-mirai-3#13"
+        "date-mirai-3#14"
       ]
     },
     {
@@ -1034,7 +1034,7 @@
       "voiceText": "被看見……原來是這種感覺。",
       "hasName": false,
       "lineIds": [
-        "date-rin-3#14"
+        "date-rin-3#15"
       ]
     },
     {
@@ -1046,7 +1046,7 @@
       "voiceText": "謝謝你，看見了我。",
       "hasName": true,
       "lineIds": [
-        "date-rin-3#15"
+        "date-rin-3#16"
       ]
     },
     {
@@ -1346,7 +1346,7 @@
       "voiceText": "表格，我已經幫你填好了。只差你的簽名。",
       "hasName": false,
       "lineIds": [
-        "end-bad#39"
+        "end-bad#40"
       ]
     },
     {
@@ -1358,7 +1358,7 @@
       "voiceText": "另外要附上「改善計畫」。……這是你最擅長的部分吧。",
       "hasName": false,
       "lineIds": [
-        "end-bad#40"
+        "end-bad#41"
       ]
     },
     {
@@ -1370,7 +1370,7 @@
       "voiceText": "結論先說：再來一次！",
       "hasName": false,
       "lineIds": [
-        "end-bad#41"
+        "end-bad#42"
       ]
     },
     {
@@ -1382,7 +1382,7 @@
       "voiceText": "舊網址，也已經幫你轉址過來了。",
       "hasName": false,
       "lineIds": [
-        "end-bad#42"
+        "end-bad#43"
       ]
     },
     {
@@ -1574,7 +1574,7 @@
       "voiceText": "人工處罰會寫明原因。先刪掉垃圾頁、修好問題，才能送出重新審查。",
       "hasName": false,
       "lineIds": [
-        "end-blackhat#31"
+        "end-blackhat#32"
       ]
     },
     {
@@ -1586,7 +1586,7 @@
       "voiceText": "能不能恢復，要看審查結果。沒有任何人能保證。",
       "hasName": false,
       "lineIds": [
-        "end-blackhat#32"
+        "end-blackhat#33"
       ]
     },
     {
@@ -1598,7 +1598,7 @@
       "voiceText": "不過，願意承認錯誤這一點……合格。",
       "hasName": false,
       "lineIds": [
-        "end-blackhat#33"
+        "end-blackhat#34"
       ]
     },
     {
@@ -1610,7 +1610,7 @@
       "voiceText": "這個抄一百遍……算原創內容嗎？",
       "hasName": false,
       "lineIds": [
-        "end-blackhat#37"
+        "end-blackhat#39"
       ]
     },
     {
@@ -1622,7 +1622,7 @@
       "voiceText": "抄寫，不算。重寫。",
       "hasName": false,
       "lineIds": [
-        "end-blackhat#38"
+        "end-blackhat#40"
       ]
     },
     {
@@ -1718,7 +1718,7 @@
       "voiceText": "這段不播出去。只給你一個人聽。",
       "hasName": false,
       "lineIds": [
-        "end-hare#17"
+        "end-hare#18"
       ]
     },
     {
@@ -1730,7 +1730,7 @@
       "voiceText": "其實我一直在想，你是不是覺得我很吵……",
       "hasName": false,
       "lineIds": [
-        "end-hare#18"
+        "end-hare#19"
       ]
     },
     {
@@ -1742,7 +1742,7 @@
       "voiceText": "……！那、那個，結論先說，等一下，我先喝口水！",
       "hasName": false,
       "lineIds": [
-        "end-hare#20"
+        "end-hare#21"
       ]
     },
     {
@@ -1754,7 +1754,7 @@
       "voiceText": "我本來準備了三分鐘的開場白……算了，全部刪掉。",
       "hasName": false,
       "lineIds": [
-        "end-hare#22"
+        "end-hare#23"
       ]
     },
     {
@@ -1766,7 +1766,7 @@
       "voiceText": "那晚下雨，你濕淋淋跑來。熱可可的杯子，其實是我自己的！",
       "hasName": false,
       "lineIds": [
-        "end-hare#23.0.0"
+        "end-hare#24.0.0"
       ]
     },
     {
@@ -1778,7 +1778,7 @@
       "voiceText": "從那一刻起，我的結論就只有一個。",
       "hasName": false,
       "lineIds": [
-        "end-hare#23.0.1"
+        "end-hare#24.0.1"
       ]
     },
     {
@@ -1790,7 +1790,7 @@
       "voiceText": "雨夜你去找凜學姊了吧？我有看到你的傘。……但結論是，現在你在這裡！",
       "hasName": false,
       "lineIds": [
-        "end-hare#23.1.0.0.0"
+        "end-hare#24.1.0.0.0"
       ]
     },
     {
@@ -1802,7 +1802,7 @@
       "voiceText": "雨夜你去了天台吧？我一直開著麥克風等你。……但結論是，現在你在這裡！",
       "hasName": false,
       "lineIds": [
-        "end-hare#23.1.0.1.0.0.0"
+        "end-hare#24.1.0.1.0.0.0"
       ]
     },
     {
@@ -1814,7 +1814,7 @@
       "voiceText": "結論先說：我喜歡你。以上，報告完畢！",
       "hasName": true,
       "lineIds": [
-        "end-hare#24"
+        "end-hare#25"
       ]
     },
     {
@@ -1826,7 +1826,7 @@
       "voiceText": "咦、咦咦？！突然講這種話，太犯規了吧！！",
       "hasName": false,
       "lineIds": [
-        "end-hare#27"
+        "end-hare#28"
       ]
     },
     {
@@ -1838,7 +1838,7 @@
       "voiceText": "剛、剛剛那段，請忘記！我要重新錄音！",
       "hasName": false,
       "lineIds": [
-        "end-hare#28"
+        "end-hare#29"
       ]
     },
     {
@@ -1850,7 +1850,7 @@
       "voiceText": "答案是——秘密！詳細內容，放學後當面說！",
       "hasName": false,
       "lineIds": [
-        "end-hare#38"
+        "end-hare#40"
       ]
     },
     {
@@ -2042,7 +2042,7 @@
       "voiceText": "從今天起，我不是任何資料庫的回聲。我想用自己的名字，站在你身邊。",
       "hasName": false,
       "lineIds": [
-        "end-mirai#25"
+        "end-mirai#26"
       ]
     },
     {
@@ -2054,7 +2054,7 @@
       "voiceText": "而你，是第一個願意署上我名字的人。",
       "hasName": false,
       "lineIds": [
-        "end-mirai#26"
+        "end-mirai#27"
       ]
     },
     {
@@ -2066,7 +2066,7 @@
       "voiceText": "所以這句，不是從資料庫抄來的。……我喜歡你。",
       "hasName": true,
       "lineIds": [
-        "end-mirai#27"
+        "end-mirai#28"
       ]
     },
     {
@@ -2078,7 +2078,7 @@
       "voiceText": "已讀取。……不對。這不是讀取。是……收到了。",
       "hasName": false,
       "lineIds": [
-        "end-mirai#29"
+        "end-mirai#30"
       ]
     },
     {
@@ -2090,7 +2090,7 @@
       "voiceText": "下一篇，我想寫我們。引用來源：你。",
       "hasName": false,
       "lineIds": [
-        "end-mirai#37"
+        "end-mirai#39"
       ]
     },
     {
@@ -2342,7 +2342,7 @@
       "voiceText": "……還有街角那本貓咪日記，除了你，誰都不准告訴。",
       "hasName": false,
       "lineIds": [
-        "end-rin#15.0.0"
+        "end-rin#16.0.0"
       ]
     },
     {
@@ -2354,7 +2354,7 @@
       "voiceText": "這個不是學生會備品。是我的。……還有更丟臉的祕密，下次再說。",
       "hasName": false,
       "lineIds": [
-        "end-rin#15.1.0"
+        "end-rin#16.1.0"
       ]
     },
     {
@@ -2366,7 +2366,7 @@
       "voiceText": "那晚下雨，你濕淋淋地跑來學生會室。……我其實，高興得不得了。",
       "hasName": false,
       "lineIds": [
-        "end-rin#16.0.0"
+        "end-rin#17.0.0"
       ]
     },
     {
@@ -2378,7 +2378,7 @@
       "voiceText": "毛巾是學生會備品。但想替你擦頭髮，是我自己的心意。",
       "hasName": false,
       "lineIds": [
-        "end-rin#16.0.1"
+        "end-rin#17.0.1"
       ]
     },
     {
@@ -2390,7 +2390,7 @@
       "voiceText": "聽說雨夜你去了廣播室。……我只是確認社員行蹤！沒有在意！",
       "hasName": false,
       "lineIds": [
-        "end-rin#16.1.0.0.0"
+        "end-rin#17.1.0.0.0"
       ]
     },
     {
@@ -2402,7 +2402,7 @@
       "voiceText": "聽說雨夜你去了天台。……星野同學的傘，比較大嗎？我沒有在意！",
       "hasName": false,
       "lineIds": [
-        "end-rin#16.1.0.1.0.0.0"
+        "end-rin#17.1.0.1.0.0.0"
       ]
     },
     {
@@ -2414,7 +2414,7 @@
       "voiceText": "被你看見，我不討厭。以後也請你……繼續看著我。",
       "hasName": true,
       "lineIds": [
-        "end-rin#17"
+        "end-rin#18"
       ]
     },
     {
@@ -2426,7 +2426,7 @@
       "voiceText": "我、我沒有臉紅！是夕陽！夕陽的問題！",
       "hasName": false,
       "lineIds": [
-        "end-rin#19"
+        "end-rin#20"
       ]
     },
     {
@@ -2438,7 +2438,7 @@
       "voiceText": "社辦電腦的桌布，下週要換成貓咪。……不准問為什麼。",
       "hasName": false,
       "lineIds": [
-        "end-rin#21"
+        "end-rin#22"
       ]
     },
     {
@@ -2450,7 +2450,7 @@
       "voiceText": "你剛剛不是說，會一直看著我嗎？前後矛盾！",
       "hasName": false,
       "lineIds": [
-        "end-rin#23"
+        "end-rin#24"
       ]
     },
     {
@@ -2462,7 +2462,7 @@
       "voiceText": "規則第一條：回家的路，一起走。……這是新增條款。",
       "hasName": false,
       "lineIds": [
-        "end-rin#25"
+        "end-rin#26"
       ]
     },
     {
@@ -2474,7 +2474,7 @@
       "voiceText": "不需要簽名。需要的是……明天你要準時。",
       "hasName": false,
       "lineIds": [
-        "end-rin#27"
+        "end-rin#28"
       ]
     },
     {
@@ -2546,7 +2546,7 @@
       "voiceText": "規則，是為了讓好東西被看見。現在被看見的，是我們。",
       "hasName": false,
       "lineIds": [
-        "end-true#15"
+        "end-true#16"
       ]
     },
     {
@@ -2558,7 +2558,7 @@
       "voiceText": "一句話結論：謝謝你，最棒的社長！",
       "hasName": true,
       "lineIds": [
-        "end-true#16"
+        "end-true#17"
       ]
     },
     {
@@ -2570,7 +2570,7 @@
       "voiceText": "我不是複製品。我是和你們一起寫下來的原創。",
       "hasName": false,
       "lineIds": [
-        "end-true#17"
+        "end-true#18"
       ]
     },
     {
@@ -2582,7 +2582,7 @@
       "voiceText": "那晚學生會室的毛巾，我還留著。……下次，我親手還你。",
       "hasName": false,
       "lineIds": [
-        "end-true#18.0.0"
+        "end-true#19.0.0"
       ]
     },
     {
@@ -2594,7 +2594,7 @@
       "voiceText": "那晚廣播室的熱可可，今天我請全場！結論先說：慶功！",
       "hasName": false,
       "lineIds": [
-        "end-true#18.1.0.0.0"
+        "end-true#19.1.0.0.0"
       ]
     },
     {
@@ -2606,7 +2606,7 @@
       "voiceText": "那晚天台的雨聲，我存成了音檔。現在，加上掌聲的音軌。",
       "hasName": false,
       "lineIds": [
-        "end-true#18.1.0.1.0.0.0"
+        "end-true#19.1.0.1.0.0.0"
       ]
     },
     {
@@ -2618,7 +2618,7 @@
       "voiceText": "門外排了十幾個人。我的咖啡，今天終於可以放心喝完了。",
       "hasName": false,
       "lineIds": [
-        "end-true#27"
+        "end-true#28"
       ]
     },
     {
@@ -2630,7 +2630,7 @@
       "voiceText": "新社員申請表，已讀取。……三十七份。",
       "hasName": false,
       "lineIds": [
-        "end-true#32"
+        "end-true#33"
       ]
     },
     {
@@ -2642,7 +2642,7 @@
       "voiceText": "結論先說：今天起，404 社辦要吵翻天啦！",
       "hasName": false,
       "lineIds": [
-        "end-true#33"
+        "end-true#34"
       ]
     },
     {
@@ -2654,7 +2654,7 @@
       "voiceText": "全部要審。規則是，不能偷懶。……尤其是對可愛的學弟妹們。",
       "hasName": false,
       "lineIds": [
-        "end-true#34"
+        "end-true#35"
       ]
     },
     {
@@ -2678,7 +2678,7 @@
       "voiceText": "社長加油——！",
       "hasName": false,
       "lineIds": [
-        "festival#11"
+        "festival#10"
       ]
     },
     {
@@ -2690,7 +2690,7 @@
       "voiceText": "夏川同學，評審席禁止應援。",
       "hasName": false,
       "lineIds": [
-        "festival#12"
+        "festival#11"
       ]
     },
     {
@@ -2702,7 +2702,7 @@
       "voiceText": "對不起！但是社長加油——！",
       "hasName": false,
       "lineIds": [
-        "festival#13"
+        "festival#12"
       ]
     },
     {
@@ -2714,7 +2714,7 @@
       "voiceText": "先由我。你們的網站，搜尋引擎找得到、讀得快嗎？",
       "hasName": false,
       "lineIds": [
-        "festival#16"
+        "festival#15"
       ]
     },
     {
@@ -2726,7 +2726,7 @@
       "voiceText": "……資料很有價值。但，不是我問的。",
       "hasName": false,
       "lineIds": [
-        "festival#17.0.0"
+        "festival#16.0.0"
       ]
     },
     {
@@ -2738,7 +2738,7 @@
       "voiceText": "爬取、收錄與速度都顧到了，正確。……這份細心，我記下了。",
       "hasName": false,
       "lineIds": [
-        "festival#17.1.1"
+        "festival#16.1.1"
       ]
     },
     {
@@ -2750,7 +2750,7 @@
       "voiceText": "……貓咪部落格那套圖片最佳化與 LCP，用得真好。滿分。",
       "hasName": false,
       "lineIds": [
-        "festival#17.2.1"
+        "festival#16.2.1"
       ]
     },
     {
@@ -2762,7 +2762,7 @@
       "voiceText": "努力，我看見了。具體內容，下次請補上。",
       "hasName": false,
       "lineIds": [
-        "festival#17.3.0"
+        "festival#16.3.0"
       ]
     },
     {
@@ -2774,7 +2774,7 @@
       "voiceText": "SEO 評審白鷺凜講評：爬取順暢、速度優秀、結構嚴謹。",
       "hasName": false,
       "lineIds": [
-        "festival#18.0.1"
+        "festival#17.0.1"
       ]
     },
     {
@@ -2786,7 +2786,7 @@
       "voiceText": "……規則，確實讓好東西被看見了。我找不到能扣分的地方。",
       "hasName": false,
       "lineIds": [
-        "festival#18.0.3"
+        "festival#17.0.3"
       ]
     },
     {
@@ -2798,7 +2798,7 @@
       "voiceText": "SEO 評審白鷺凜講評：索引與標題規範皆已達標。",
       "hasName": false,
       "lineIds": [
-        "festival#18.1.0.0.1"
+        "festival#17.1.0.0.1"
       ]
     },
     {
@@ -2810,7 +2810,7 @@
       "voiceText": "行動版的互動回應與內部連結，還有進步空間。繼續。",
       "hasName": false,
       "lineIds": [
-        "festival#18.1.0.0.2"
+        "festival#17.1.0.0.2"
       ]
     },
     {
@@ -2822,7 +2822,7 @@
       "voiceText": "SEO 評審白鷺凜講評：基礎技術與規則，尚未紮穩。",
       "hasName": false,
       "lineIds": [
-        "festival#18.1.0.1.1"
+        "festival#17.1.0.1.1"
       ]
     },
     {
@@ -2834,7 +2834,7 @@
       "voiceText": "……但我看見你每一步都在努力。請從第一步重來。",
       "hasName": false,
       "lineIds": [
-        "festival#18.1.0.1.3"
+        "festival#17.1.0.1.3"
       ]
     },
     {
@@ -2846,7 +2846,7 @@
       "voiceText": "換我！結論先說——你們最想讓讀者帶走的答案是什麼？",
       "hasName": false,
       "lineIds": [
-        "festival#19"
+        "festival#18"
       ]
     },
     {
@@ -2858,7 +2858,7 @@
       "voiceText": "就是這個！先講答案再補細節，超帥的！",
       "hasName": false,
       "lineIds": [
-        "festival#20.0.1"
+        "festival#19.0.1"
       ]
     },
     {
@@ -2870,7 +2870,7 @@
       "voiceText": "廣播社的文字問答，連 FAQ 的真相都記住了！這句結論，超棒！",
       "hasName": false,
       "lineIds": [
-        "festival#20.1.1"
+        "festival#19.1.1"
       ]
     },
     {
@@ -2882,7 +2882,7 @@
       "voiceText": "好厲害！可是……答案在哪？下次請一句話講完！",
       "hasName": false,
       "lineIds": [
-        "festival#20.2.0"
+        "festival#19.2.0"
       ]
     },
     {
@@ -2894,7 +2894,7 @@
       "voiceText": "好感動！可是……可以更短嗎？一句話！",
       "hasName": false,
       "lineIds": [
-        "festival#20.3.0"
+        "festival#19.3.0"
       ]
     },
     {
@@ -2906,7 +2906,7 @@
       "voiceText": "AEO 評審夏川晴講評：結論先說，超級清楚！",
       "hasName": false,
       "lineIds": [
-        "festival#21.0.1"
+        "festival#20.0.1"
       ]
     },
     {
@@ -2918,7 +2918,7 @@
       "voiceText": "一眼就能直接唸出答案，我現在就想念給全校聽！",
       "hasName": false,
       "lineIds": [
-        "festival#21.0.2"
+        "festival#20.0.2"
       ]
     },
     {
@@ -2930,7 +2930,7 @@
       "voiceText": "AEO 評審夏川晴講評：不少段落都抓到重點了！",
       "hasName": false,
       "lineIds": [
-        "festival#21.1.0.0.1"
+        "festival#20.1.0.0.1"
       ]
     },
     {
@@ -2942,7 +2942,7 @@
       "voiceText": "問題型標題再明確一點，就能一句話答完，加油！",
       "hasName": false,
       "lineIds": [
-        "festival#21.1.0.0.2"
+        "festival#20.1.0.0.2"
       ]
     },
     {
@@ -2954,7 +2954,7 @@
       "voiceText": "AEO 評審夏川晴講評：讀者要的結論，藏得有點深。",
       "hasName": false,
       "lineIds": [
-        "festival#21.1.0.1.1"
+        "festival#20.1.0.1.1"
       ]
     },
     {
@@ -2966,7 +2966,7 @@
       "voiceText": "不過沒關係，我們一起練！先從第一句開始！",
       "hasName": false,
       "lineIds": [
-        "festival#21.1.0.1.3"
+        "festival#20.1.0.1.3"
       ]
     },
     {
@@ -2978,7 +2978,7 @@
       "voiceText": "最後。請提出一項，只有你們擁有的證據。",
       "hasName": false,
       "lineIds": [
-        "festival#22"
+        "festival#21"
       ]
     },
     {
@@ -2990,7 +2990,7 @@
       "voiceText": "已讀取。改善屬實，但這是多數網站都有的證據。",
       "hasName": false,
       "lineIds": [
-        "festival#23.0.0"
+        "festival#22.0.0"
       ]
     },
     {
@@ -3002,7 +3002,7 @@
       "voiceText": "主張已記錄。證據欄位，目前為空白。",
       "hasName": false,
       "lineIds": [
-        "festival#23.1.0"
+        "festival#22.1.0"
       ]
     },
     {
@@ -3014,7 +3014,7 @@
       "voiceText": "原創、可查證、有署名。……我會引用它。",
       "hasName": false,
       "lineIds": [
-        "festival#23.2.1"
+        "festival#22.2.1"
       ]
     },
     {
@@ -3026,7 +3026,7 @@
       "voiceText": "原創性與資訊增益，不是複製的總和。……這份證據，我會引用。",
       "hasName": false,
       "lineIds": [
-        "festival#23.3.1"
+        "festival#22.3.1"
       ]
     },
     {
@@ -3038,7 +3038,7 @@
       "voiceText": "GEO 評審星野未來講評：原創資料、來源可信、實體明確。",
       "hasName": false,
       "lineIds": [
-        "festival#24.0.1"
+        "festival#23.0.1"
       ]
     },
     {
@@ -3050,7 +3050,7 @@
       "voiceText": "我無法保證任何引擎會引用。但這份內容，我會。",
       "hasName": false,
       "lineIds": [
-        "festival#24.0.2"
+        "festival#23.0.2"
       ]
     },
     {
@@ -3062,7 +3062,7 @@
       "voiceText": "GEO 評審星野未來講評：可信度合格。",
       "hasName": false,
       "lineIds": [
-        "festival#24.1.0.0.1"
+        "festival#23.1.0.0.1"
       ]
     },
     {
@@ -3074,7 +3074,7 @@
       "voiceText": "若多一點只有你們寫得出來的第一手觀察，會更亮眼。",
       "hasName": false,
       "lineIds": [
-        "festival#24.1.0.0.2"
+        "festival#23.1.0.0.2"
       ]
     },
     {
@@ -3086,7 +3086,7 @@
       "voiceText": "GEO 評審星野未來講評：作者與原創依據不足，尚難被引用。",
       "hasName": false,
       "lineIds": [
-        "festival#24.1.0.1.1"
+        "festival#23.1.0.1.1"
       ]
     },
     {
@@ -3098,7 +3098,7 @@
       "voiceText": "……但我預測，下一次的資料會不一樣。",
       "hasName": false,
       "lineIds": [
-        "festival#24.1.0.1.3"
+        "festival#23.1.0.1.3"
       ]
     },
     {
@@ -3302,7 +3302,7 @@
       "voiceText": "……已讀取。星野未來，搜尋祭的特邀評審。",
       "hasName": false,
       "lineIds": [
-        "prologue#39"
+        "prologue#40"
       ]
     },
     {
@@ -3314,7 +3314,7 @@
       "voiceText": "你的社團網站，目前在網路上並不存在。",
       "hasName": false,
       "lineIds": [
-        "prologue#40"
+        "prologue#41"
       ]
     },
     {
@@ -3326,7 +3326,7 @@
       "voiceText": "規則很簡單：平日排程養成網站，放學接委託，週末約人出門。",
       "hasName": false,
       "lineIds": [
-        "prologue#46"
+        "prologue#48"
       ]
     },
     {
@@ -3338,7 +3338,7 @@
       "voiceText": "體力和壓力要顧好。咖啡可以續杯，人不行。",
       "hasName": false,
       "lineIds": [
-        "prologue#47"
+        "prologue#49"
       ]
     },
     {
@@ -4588,7 +4588,7 @@
       "voiceText": "懂了！來練習：社團經費怎麼申請！",
       "hasName": false,
       "lineIds": [
-        "sq-h3#51"
+        "sq-h3#52"
       ]
     },
     {
@@ -4600,7 +4600,7 @@
       "voiceText": "十一秒！我居然……沒有一句廢話！",
       "hasName": false,
       "lineIds": [
-        "sq-h3#57"
+        "sq-h3#58"
       ]
     },
     {
@@ -4612,7 +4612,7 @@
       "voiceText": "可是重點講完，還剩二十秒。要不要補點閒聊？",
       "hasName": false,
       "lineIds": [
-        "sq-h3#58"
+        "sq-h3#59"
       ]
     },
     {
@@ -4624,7 +4624,7 @@
       "voiceText": "好！我把二十秒，還給午休！",
       "hasName": false,
       "lineIds": [
-        "sq-h3#59.0.1"
+        "sq-h3#60.0.1"
       ]
     },
     {
@@ -4636,7 +4636,7 @@
       "voiceText": "……謝謝。但這句，是私下限定！",
       "hasName": false,
       "lineIds": [
-        "sq-h3#59.1.1"
+        "sq-h3#60.1.1"
       ]
     },
     {
@@ -4648,7 +4648,7 @@
       "voiceText": "三十秒……他們把時間，還給自己的社團活動了。",
       "hasName": false,
       "lineIds": [
-        "sq-h3#62"
+        "sq-h3#63"
       ]
     },
     {
@@ -4660,7 +4660,7 @@
       "voiceText": "問題當標題，一兩句直接的答案放第一段，細節往後補。",
       "hasName": false,
       "lineIds": [
-        "sq-h3#65"
+        "sq-h3#66"
       ]
     },
     {
@@ -4672,7 +4672,7 @@
       "voiceText": "那……我也先說結論。今天最想感謝的人，是你。",
       "hasName": false,
       "lineIds": [
-        "sq-h3#66"
+        "sq-h3#67"
       ]
     },
     {
@@ -4684,7 +4684,7 @@
       "voiceText": "這句，夠短嗎？",
       "hasName": false,
       "lineIds": [
-        "sq-h3#67"
+        "sq-h3#68"
       ]
     },
     {
@@ -6003,7 +6003,7 @@
       "voiceText": "請出題。我想知道，自己能不能被引用。",
       "hasName": false,
       "lineIds": [
-        "sq-m3#51"
+        "sq-m3#52"
       ]
     },
     {
@@ -6015,7 +6015,7 @@
       "voiceText": "我想補一段：和你一起在天台，實測的一夜。",
       "hasName": false,
       "lineIds": [
-        "sq-m3#54"
+        "sq-m3#55"
       ]
     },
     {
@@ -6027,7 +6027,7 @@
       "voiceText": "署名……要用「星野未來」嗎？",
       "hasName": false,
       "lineIds": [
-        "sq-m3#55"
+        "sq-m3#56"
       ]
     },
     {
@@ -6039,7 +6039,7 @@
       "voiceText": "署名，等於負責。……我願意。",
       "hasName": false,
       "lineIds": [
-        "sq-m3#56.0.1"
+        "sq-m3#57.0.1"
       ]
     },
     {
@@ -6051,7 +6051,7 @@
       "voiceText": "……不。我想要，自己的名字。",
       "hasName": false,
       "lineIds": [
-        "sq-m3#56.1.1"
+        "sq-m3#57.1.1"
       ]
     },
     {
@@ -6063,7 +6063,7 @@
       "voiceText": "文末，我想附上觀測時間與器材。讓讀者能查證。",
       "hasName": false,
       "lineIds": [
-        "sq-m3#57"
+        "sq-m3#58"
       ]
     },
     {
@@ -6075,7 +6075,7 @@
       "voiceText": "像……我的足跡。",
       "hasName": false,
       "lineIds": [
-        "sq-m3#59"
+        "sq-m3#60"
       ]
     },
     {
@@ -6087,7 +6087,7 @@
       "voiceText": "「今晚的星空，比資料裡溫暖。」",
       "hasName": false,
       "lineIds": [
-        "sq-m3#61"
+        "sq-m3#62"
       ]
     },
     {
@@ -6099,7 +6099,7 @@
       "voiceText": "被引用的理由，是讀完能多知道一件別處沒有的事。",
       "hasName": false,
       "lineIds": [
-        "sq-m3#63"
+        "sq-m3#64"
       ]
     },
     {
@@ -6111,7 +6111,7 @@
       "voiceText": "已讀取……不。我「讀到了」。是我自己的。",
       "hasName": false,
       "lineIds": [
-        "sq-m3#64"
+        "sq-m3#65"
       ]
     },
     {
@@ -6123,7 +6123,7 @@
       "voiceText": "第一位讀者，請由你擔任。",
       "hasName": false,
       "lineIds": [
-        "sq-m3#65"
+        "sq-m3#66"
       ]
     },
     {
@@ -6135,7 +6135,7 @@
       "voiceText": "根據我的資料，這是第一次，有人專程讀我寫的字。",
       "hasName": false,
       "lineIds": [
-        "sq-m3#67"
+        "sq-m3#68"
       ]
     },
     {
@@ -7719,7 +7719,7 @@
       "voiceText": "這些招……上週，我學長剛用過。",
       "hasName": false,
       "lineIds": [
-        "sq-x1#47"
+        "sq-x1#48"
       ]
     },
     {
@@ -7731,7 +7731,7 @@
       "voiceText": "他的網站，一夜之間，從搜尋結果消失了。",
       "hasName": false,
       "lineIds": [
-        "sq-x1#48"
+        "sq-x1#49"
       ]
     },
     {
@@ -7743,7 +7743,7 @@
       "voiceText": "學院沒人敢提。我是偷看到訊息才知道的。",
       "hasName": false,
       "lineIds": [
-        "sq-x1#49"
+        "sq-x1#50"
       ]
     },
     {
@@ -7755,7 +7755,7 @@
       "voiceText": "他說，只是手法「有點灰」。",
       "hasName": false,
       "lineIds": [
-        "sq-x1#51"
+        "sq-x1#52"
       ]
     },
     {
@@ -7767,7 +7767,7 @@
       "voiceText": "我作文從沒及格過。捷徑，是我唯一的路。",
       "hasName": false,
       "lineIds": [
-        "sq-x1#52"
+        "sq-x1#53"
       ]
     },
     {
@@ -7779,7 +7779,7 @@
       "voiceText": "欸，你們白帽賺不到快錢，圖什麼？",
       "hasName": false,
       "lineIds": [
-        "sq-x1#53"
+        "sq-x1#54"
       ]
     },
     {
@@ -7791,7 +7791,7 @@
       "voiceText": "……累積，要多久？我等不及。",
       "hasName": false,
       "lineIds": [
-        "sq-x1#54.0.0"
+        "sq-x1#55.0.0"
       ]
     },
     {
@@ -7803,7 +7803,7 @@
       "voiceText": "哈！這個我最近，確實常做惡夢。",
       "hasName": false,
       "lineIds": [
-        "sq-x1#54.1.1"
+        "sq-x1#55.1.1"
       ]
     },
     {
@@ -7815,7 +7815,7 @@
       "voiceText": "……為了讀者，還是為了騙機器。",
       "hasName": false,
       "lineIds": [
-        "sq-x1#57"
+        "sq-x1#58"
       ]
     },
     {
@@ -7827,7 +7827,7 @@
       "voiceText": "這一題，我自己，答不出來。",
       "hasName": false,
       "lineIds": [
-        "sq-x1#58"
+        "sq-x1#59"
       ]
     },
     {
@@ -7839,7 +7839,7 @@
       "voiceText": "今天收攤！……別誤會，是我自己想收，下次還要比！",
       "hasName": false,
       "lineIds": [
-        "sq-x1#62"
+        "sq-x1#64"
       ]
     },
     {
@@ -7851,7 +7851,7 @@
       "voiceText": "傳單，給你。當反面教材吧。",
       "hasName": false,
       "lineIds": [
-        "sq-x1#64"
+        "sq-x1#66"
       ]
     },
     {
@@ -7863,7 +7863,7 @@
       "voiceText": "喂！別寫我的名字啊！",
       "hasName": false,
       "lineIds": [
-        "sq-x1#66"
+        "sq-x1#68"
       ]
     },
     {
@@ -8319,7 +8319,7 @@
       "voiceText": "我想當能用一句話打動聽眾的主播……但我是不是總是很吵？",
       "hasName": false,
       "lineIds": [
-        "w2#36"
+        "w2#37"
       ]
     },
     {
@@ -8331,7 +8331,7 @@
       "voiceText": "真的嗎？！好，結論先說：謝謝你，我超開心的！",
       "hasName": false,
       "lineIds": [
-        "w2#37.0.1"
+        "w2#38.0.1"
       ]
     },
     {
@@ -8343,7 +8343,7 @@
       "voiceText": "咦、咦咦？！突然講這種話太犯規了吧！！",
       "hasName": false,
       "lineIds": [
-        "w2#37.1.1"
+        "w2#38.1.1"
       ]
     },
     {
@@ -8355,7 +8355,7 @@
       "voiceText": "每天一句……好！有社長監督，我不敢偷懶！",
       "hasName": false,
       "lineIds": [
-        "w2#37.2.1"
+        "w2#38.2.1"
       ]
     },
     {
@@ -8367,7 +8367,7 @@
       "voiceText": "今天的結論是：和你聊天，十分鐘根本不夠用。",
       "hasName": false,
       "lineIds": [
-        "w2#38.0.2"
+        "w2#39.0.2"
       ]
     },
     {
@@ -8379,7 +8379,7 @@
       "voiceText": "謝謝你的建議，社長！我會努力的！",
       "hasName": false,
       "lineIds": [
-        "w2#38.1.0.0.1"
+        "w2#39.1.0.0.1"
       ]
     },
     {
@@ -8607,7 +8607,7 @@
       "voiceText": "疑問。AI 一鍵就能產生一百頁文章，為什麼不用？",
       "hasName": false,
       "lineIds": [
-        "w3#35"
+        "w3#36"
       ]
     },
     {
@@ -8619,7 +8619,7 @@
       "voiceText": "……資料庫中，沒有這個答案。「溫度」，無法批量生成。",
       "hasName": false,
       "lineIds": [
-        "w3#36.0.1"
+        "w3#37.0.1"
       ]
     },
     {
@@ -8631,7 +8631,7 @@
       "voiceText": "合理。工具不是問題，沒人負責才是。",
       "hasName": false,
       "lineIds": [
-        "w3#36.1.1"
+        "w3#37.1.1"
       ]
     },
     {
@@ -8643,7 +8643,7 @@
       "voiceText": "已記錄。重複無意義的頁面，只會製造網路垃圾。",
       "hasName": false,
       "lineIds": [
-        "w3#36.2.1"
+        "w3#37.2.1"
       ]
     },
     {
@@ -8655,7 +8655,7 @@
       "voiceText": "……今天的資料，我想加上標籤：重要。明天，我也會來。",
       "hasName": false,
       "lineIds": [
-        "w3#37.0.2"
+        "w3#38.0.2"
       ]
     },
     {
@@ -8667,7 +8667,7 @@
       "voiceText": "本日資料已歸檔。感謝配合。",
       "hasName": false,
       "lineIds": [
-        "w3#37.1.0.0.1"
+        "w3#38.1.0.0.1"
       ]
     },
     {
@@ -8679,7 +8679,7 @@
       "voiceText": "……已儲存。今天的資料，很有價值。",
       "hasName": false,
       "lineIds": [
-        "w3#37.1.0.1.1"
+        "w3#38.1.0.1.1"
       ]
     },
     {
@@ -9147,7 +9147,7 @@
       "voiceText": "我所有的知識，都來自網路上別人寫的東西。",
       "hasName": true,
       "lineIds": [
-        "w5#29"
+        "w5#30"
       ]
     },
     {
@@ -9159,7 +9159,7 @@
       "voiceText": "有時候我會想，我是不是也只是一個「複製品」？",
       "hasName": false,
       "lineIds": [
-        "w5#30"
+        "w5#31"
       ]
     },
     {
@@ -9171,7 +9171,7 @@
       "voiceText": "……可以，再多存一會兒嗎？這片晚霞，我不想只存成截圖。",
       "hasName": false,
       "lineIds": [
-        "w5#34.0.2"
+        "w5#36.0.2"
       ]
     },
     {
@@ -9183,7 +9183,7 @@
       "voiceText": "……謝謝。這句話，已記錄。",
       "hasName": false,
       "lineIds": [
-        "w5#34.1.0.0.1"
+        "w5#36.1.0.0.1"
       ]
     },
     {
@@ -9195,7 +9195,7 @@
       "voiceText": "……這句話，我會存進最重要的記憶裡。",
       "hasName": false,
       "lineIds": [
-        "w5#34.1.0.1.1"
+        "w5#36.1.0.1.1"
       ]
     },
     {
@@ -9387,7 +9387,7 @@
       "voiceText": "哈……我的網站全軍覆沒。人工處罰，整個從搜尋消失。",
       "hasName": false,
       "lineIds": [
-        "w6#39"
+        "w6#40"
       ]
     },
     {
@@ -9399,7 +9399,7 @@
       "voiceText": "最後問一次，我還有備用網域，要不要一起衝？",
       "hasName": false,
       "lineIds": [
-        "w6#40.0.0"
+        "w6#41.0.0"
       ]
     },
     {
@@ -9411,7 +9411,7 @@
       "voiceText": "重來嗎……原來，流量並不是正義啊。",
       "hasName": false,
       "lineIds": [
-        "w6#40.0.1.0.0"
+        "w6#41.0.1.0.0"
       ]
     },
     {
@@ -9423,8 +9423,8 @@
       "voiceText": "一直騙演算法，最後被淘汰的，是自己。",
       "hasName": false,
       "lineIds": [
-        "w6#40.0.1.0.1",
-        "w6#40.1.1"
+        "w6#41.0.1.0.1",
+        "w6#41.1.1"
       ]
     },
     {
@@ -9436,7 +9436,7 @@
       "voiceText": "哈哈，夠種！……不過，為什麼我的手一直在抖？",
       "hasName": false,
       "lineIds": [
-        "w6#40.0.1.1.0"
+        "w6#41.0.1.1.0"
       ]
     },
     {
@@ -9448,7 +9448,7 @@
       "voiceText": "這麼大的雨還跑來。……給，毛巾。淋濕會感冒。",
       "hasName": false,
       "lineIds": [
-        "w6#45.0.3"
+        "w6#45.0.4"
       ]
     },
     {
@@ -9460,7 +9460,7 @@
       "voiceText": "規則不能保證結果。但這六週，你每一步都照規則走，我都看見了。",
       "hasName": false,
       "lineIds": [
-        "w6#45.0.5"
+        "w6#45.0.6"
       ]
     },
     {
@@ -9472,7 +9472,7 @@
       "voiceText": "其實我也會怕。……所以才需要一個會問「規則能先看一下嗎」的人。",
       "hasName": false,
       "lineIds": [
-        "w6#45.0.7.0.0"
+        "w6#45.0.8.0.0"
       ]
     },
     {
@@ -9484,7 +9484,7 @@
       "voiceText": "其實我也會怕。……所以才需要一個陪我把規則走到最後的人。",
       "hasName": false,
       "lineIds": [
-        "w6#45.0.7.1.0"
+        "w6#45.0.8.1.0"
       ]
     },
     {
@@ -9496,7 +9496,7 @@
       "voiceText": "剛剛那個，不是在確認毛巾的材質。……是想多碰你一秒。",
       "hasName": false,
       "lineIds": [
-        "w6#45.0.9.0.0"
+        "w6#45.0.10.0.0"
       ]
     },
     {
@@ -9508,8 +9508,8 @@
       "voiceText": "搜尋祭那天，我在評審席等你的簡報。",
       "hasName": false,
       "lineIds": [
-        "w6#45.0.9.0.1",
-        "w6#45.0.9.1.1"
+        "w6#45.0.10.0.1",
+        "w6#45.0.10.1.1"
       ]
     },
     {
@@ -9521,7 +9521,7 @@
       "voiceText": "剛、剛剛只是在確認毛巾的材質！不准說出去！",
       "hasName": false,
       "lineIds": [
-        "w6#45.0.9.1.0"
+        "w6#45.0.10.1.0"
       ]
     },
     {
@@ -9533,7 +9533,7 @@
       "voiceText": "哇，你濕答答的！結論先說：快喝這杯熱可可，別感冒了！",
       "hasName": false,
       "lineIds": [
-        "w6#45.1.3"
+        "w6#45.1.4"
       ]
     },
     {
@@ -9545,7 +9545,7 @@
       "voiceText": "我剛剛超怕的。排名一掉，就覺得之前講的全都白講了。",
       "hasName": false,
       "lineIds": [
-        "w6#45.1.5"
+        "w6#45.1.6"
       ]
     },
     {
@@ -9557,7 +9557,7 @@
       "voiceText": "才沒有！是……麥克風的後座力！",
       "hasName": false,
       "lineIds": [
-        "w6#45.1.8"
+        "w6#45.1.9"
       ]
     },
     {
@@ -9569,7 +9569,7 @@
       "voiceText": "騙你的。……是因為你來了。所以，我現在不抖了。",
       "hasName": false,
       "lineIds": [
-        "w6#45.1.9.0.0"
+        "w6#45.1.10.0.0"
       ]
     },
     {
@@ -9581,7 +9581,7 @@
       "voiceText": "結論先說：搜尋祭那天，我要用一句話讓全場聽見我們！",
       "hasName": false,
       "lineIds": [
-        "w6#45.1.9.0.1"
+        "w6#45.1.10.0.1"
       ]
     },
     {
@@ -9593,7 +9593,7 @@
       "voiceText": "可是我想起來，這六週你每次都把我的話聽完。",
       "hasName": false,
       "lineIds": [
-        "w6#45.1.9.1.0"
+        "w6#45.1.10.1.0"
       ]
     },
     {
@@ -9605,7 +9605,7 @@
       "voiceText": "所以結論先說：搜尋祭那天，我要用一句話讓全場聽見我們！",
       "hasName": false,
       "lineIds": [
-        "w6#45.1.9.1.1"
+        "w6#45.1.10.1.1"
       ]
     },
     {
@@ -9617,7 +9617,7 @@
       "voiceText": "雨聲的頻率，讓人平靜。你也是來吹風的嗎？還是……來找我？",
       "hasName": false,
       "lineIds": [
-        "w6#45.2.3"
+        "w6#45.2.4"
       ]
     },
     {
@@ -9629,7 +9629,7 @@
       "voiceText": "根據我的紀錄，這六週你好多次選了比較慢、但真實的做法。",
       "hasName": false,
       "lineIds": [
-        "w6#45.2.6"
+        "w6#45.2.7"
       ]
     },
     {
@@ -9641,7 +9641,7 @@
       "voiceText": "資料庫沒教過我這種感覺。……我想把它存成：原創，只屬於我。",
       "hasName": false,
       "lineIds": [
-        "w6#45.2.9"
+        "w6#45.2.10"
       ]
     },
     {
@@ -9653,7 +9653,7 @@
       "voiceText": "搜尋祭，我會用自己的意志評分。……還有，傘，可以靠近一點。",
       "hasName": false,
       "lineIds": [
-        "w6#45.2.10.0.0"
+        "w6#45.2.11.0.0"
       ]
     },
     {
@@ -9665,7 +9665,7 @@
       "voiceText": "搜尋祭，我會用自己的意志評分。……你的未來，我也想參與。",
       "hasName": false,
       "lineIds": [
-        "w6#45.2.10.1.0"
+        "w6#45.2.11.1.0"
       ]
     }
   ],

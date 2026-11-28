@@ -1,0 +1,233 @@
+{
+ "_note": "第三輪聲音設定（量產也用這份）。口音一律用 A（Gemini 實聽第二輪：A 最好、B≈C）、一律設計模式。base 描述只寫聲音本身，情緒放每句的情緒指令；所有情緒指令不得含「帶氣音／破音／極快／聲音響亮」這類字眼（produce 與 generate_r3 載入時會檢查 banned_words）。晴 hare_D 的基底描述與第二輪相同；翔 kuro_A 基底相同；npc_woman_A 基底改為五十歲左右中年女性。f0 為 yin 中位數允許區間（Hz）。",
+ "language": "Chinese",
+ "accent_id": "A",
+ "accent": "使用標準國語自然發音，語調偏向台灣日常輕柔口語，咬字清楚但不過度捲舌，尾音柔和自然。",
+ "banned_words": [
+  "氣音",
+  "氣聲",
+  "破音",
+  "極快",
+  "響亮",
+  "尖叫",
+  "大叫",
+  "喘",
+  "顫抖",
+  "哽咽",
+  "哭腔"
+ ],
+ "must_have_phrases": [
+  "結論先說",
+  "已讀取"
+ ],
+ "gates": {
+  "yue_prob_max": 0.1,
+  "sv_lang_ok": [
+   "zh"
+  ],
+  "sv_event_reject": [
+   "Breath",
+   "Cough",
+   "Sneeze",
+   "BGM",
+   "Applause"
+  ],
+  "cer_max": 0.08,
+  "short_chars": 4,
+  "dur_cap": {
+   "base_s": 1.5,
+   "per_char_s": 0.8
+  },
+  "lead_s_max": 1.0,
+  "tail_ratio_max": 0.7,
+  "max_attempts": 6
+ },
+ "voices": [
+  {
+   "id": "rin_A",
+   "character": "rin",
+   "label": "凜",
+   "status": "final",
+   "seed": 1100,
+   "f0": [
+    170,
+    270
+   ],
+   "design": "十八歲高中女生的女中音，音域偏低而厚實，音色清亮乾淨、冷靜自持，像嚴謹有條理的學生會長；語速中等偏穩，停頓分明，咬字俐落有力，句尾收得乾脆，不撒嬌、不甜膩。"
+  },
+  {
+   "id": "hare_D",
+   "character": "hare",
+   "label": "晴",
+   "status": "r3",
+   "seed": 2400,
+   "f0": [
+    200,
+    320
+   ],
+   "design": "十七八歲的少女，聲音偏中低而溫潤飽滿，像聲線穩定的活潑班長；講話爽朗有勁、節奏明快，咬字清楚，帶著笑意。"
+  },
+  {
+   "id": "mirai_A",
+   "character": "mirai",
+   "label": "未來",
+   "status": "final",
+   "seed": 3100,
+   "f0": [
+    190,
+    290
+   ],
+   "design": "十五六歲少女的輕柔女聲，音色清澈偏薄、語調平直、音高起伏很小，帶著冷靜理性的距離感，像說話精準的語音助理；語速平穩適中不過慢，咬字清晰、音量偏輕，不帶過重喘氣聲。"
+  },
+  {
+   "id": "sensei_A",
+   "character": "sensei",
+   "label": "千尋",
+   "status": "final",
+   "seed": 4100,
+   "f0": [
+    140,
+    235
+   ],
+   "design": "三十歲左右的成熟女性聲，偏低沉溫暖的女中音，略帶微沙啞的磁性與放鬆慵懶感，像親切可靠、愛喝咖啡的社團顧問老師；語速從容平緩，吐字柔和清楚，語氣自然不刻意嘆氣。"
+  },
+  {
+   "id": "kuro_A",
+   "character": "kuro",
+   "label": "翔",
+   "status": "r3",
+   "seed": 5100,
+   "f0": [
+    105,
+    235
+   ],
+   "design": "十七八歲的年輕男性少年聲，音域中等偏亮的青年男中音，帶一點微沙啞與輕佻自信的街頭推銷感，語速偏快、節奏靈活有朝氣，吐字清楚，聲線保持青春少年感而不低沉老成。"
+  },
+  {
+   "id": "npc_girl_A",
+   "character": "npc_girl",
+   "label": "NPC 沉穩少女",
+   "status": "final",
+   "seed": 6100,
+   "f0": [
+    170,
+    270
+   ],
+   "design": "十七歲左右的少女中音，音色溫潤樸實、平靜穩重，語速中等偏慢，說話簡短直接、不冷漠也不花俏，像耐心沉穩的社團學姊。"
+  },
+  {
+   "id": "npc_boy_A",
+   "character": "npc_boy",
+   "label": "NPC 少年",
+   "status": "final",
+   "seed": 6200,
+   "f0": [
+    105,
+    225
+   ],
+   "design": "十七八歲的年輕男性聲音，乾淨偏低的少年男聲，音色爽朗直率、乾脆俐落，像不愛廢話的運動社團男隊長，吐字清楚有力。"
+  },
+  {
+   "id": "npc_woman_A",
+   "character": "npc_woman",
+   "label": "NPC 成年女性",
+   "status": "r3",
+   "seed": 6300,
+   "f0": [
+    140,
+    235
+   ],
+   "lead_s_max": 1.2,
+   "design": "五十歲左右的中年女性聲音，音色偏低沉溫潤、親切慈祥，語速從容平穩，吐字清楚，帶著溫暖的長輩口吻，說話自然不刻意嘆氣。"
+  }
+ ],
+ "r3_lines": {
+  "hare_D": [
+   {
+    "id": "hare_1",
+    "face": "happy",
+    "text": "結論先說：今天要吃遍整條街！",
+    "emotion_instruct": "開心有活力，語速明快、咬字清楚，音高維持在穩定的中音域不上飆。"
+   },
+   {
+    "id": "hare_2",
+    "face": "surprised",
+    "text": "打擾了！結論先說：我帶了炸雞排，還有，舊公告頁搬家了！",
+    "emotion_instruct": "剛進門的急切與驚訝，語速偏快但不慌亂尖叫，句間停頓簡短自然。"
+   },
+   {
+    "id": "hare_3",
+    "face": "blush",
+    "text": "別、別突然講這麼溫柔的話啦！",
+    "emotion_instruct": "害羞略帶不好意思，語速微快、聲音稍輕，自然口語不結巴破音。"
+   },
+   {
+    "id": "hare_4",
+    "face": "sad",
+    "text": "其實我一直在想，你是不是覺得我很吵……",
+    "emotion_instruct": "低落坦誠，語速放慢、音量稍小，平靜說完不刻意嘆氣。"
+   }
+  ],
+  "kuro_A": [
+   {
+    "id": "kuro_1",
+    "face": "smug",
+    "text": "流量就是正義！萬能流量包：千條外連加五百頁 AI 文，保證第一！",
+    "emotion_instruct": "得意自信的推銷語氣，節奏明快有朝氣，音高保持青春男中音不尖銳。"
+   },
+   {
+    "id": "kuro_2",
+    "face": "shock",
+    "text": "連我的備用網域也被一起拔掉了！我錯了啦！",
+    "emotion_instruct": "驚慌失措地急喊，語速急促、音量提高但不破音不尖叫。"
+   },
+   {
+    "id": "kuro_3",
+    "face": "normal",
+    "text": "我作文從沒及格過。捷徑，是我唯一的路。",
+    "emotion_instruct": "難得認真、略帶自嘲的低聲，語速放慢。"
+   },
+   {
+    "id": "kuro_4",
+    "face": "sad",
+    "text": "一直騙演算法，最後被淘汰的，是自己。",
+    "emotion_instruct": "失落低沉、真誠反省，聲音很小、語速很慢。"
+   }
+  ],
+  "npc_woman_A": [
+   {
+    "id": "npc_woman_1",
+    "face": "surprised",
+    "text": "哎呀，來了來了。這位是……機器人嗎？",
+    "emotion_instruct": "慈祥中帶一點意外的驚呼，語氣好奇。"
+   },
+   {
+    "id": "npc_woman_2",
+    "face": "normal",
+    "text": "第一屆畢業生，現在都當阿公了呢。",
+    "emotion_instruct": "笑呵呵地懷舊，語速緩慢。"
+   },
+   {
+    "id": "npc_woman_3",
+    "face": "normal",
+    "text": "哎呀……英文頁那個，是我翻的。",
+    "emotion_instruct": "不好意思、略微害羞地承認，聲音變輕。"
+   },
+   {
+    "id": "npc_woman_4",
+    "face": "smile",
+    "text": "哎呀，這下我敢抬頭見老同事了。",
+    "emotion_instruct": "釋懷安心，帶著笑意與輕鬆，不刻意長嘆氣。"
+   }
+  ]
+ },
+ "r3_catchphrases": [
+  {
+   "id": "cp_hare_jielun",
+   "voice_id": "hare_D",
+   "text": "結論先說！",
+   "emotion_instruct": "爽朗俐落、咬字紮實清楚，語速適中不過快，四個字念得清晰有力。",
+   "takes": 8
+  }
+ ]
+}
