@@ -140,7 +140,7 @@ score_h = clamp( Σ_s ( w[h][s] × stat_s ) + bond_h , 0, 100 )
 輸了照樣推進劇情，只是獎勵較少；可在「圖鑑 → 練習」重玩。
 
 ### 2.8 收集要素
-- **知識卡圖鑑**（約 30 張）：每張含「一句話重點」「詳細說明（≤150 字）」「常見誤解」；在劇情與支線中解鎖。
+- **知識卡圖鑑**（38 張：31 張核心卡＋7 張只能從支線取得的進階卡）：每張含「一句話重點」「詳細說明（≤150 字）」「常見誤解」；在劇情與支線中解鎖。
 - **回憶相簿**：結局 CG＋約會場景截圖（SVG 合成）。
 - **結局列表**：顯示已達成或未達成（未達成時顯示提示）。
 
@@ -245,15 +245,15 @@ score_h = clamp( Σ_s ( w[h][s] × stat_s ) + bond_h , 0, 100 )
 
 | ID | 名稱 | 出現週 | 委託人 | 知識點 | 小遊戲 | 獎勵 |
 |---|---|---|---|---|---|---|
-| `sq-r1` | 舊公告頁搬家 | W1–3 | 凜（學生會） | 301 vs 302、刪除與 404、canonical | quiz | tec+8, 凜+5 |
-| `sq-r2` | 重複內容的幽靈 | W2–5（需 r1） | 凜 | 參數網址、重複內容、canonical、內部連結 | spot | str+6, tec+4, 凜+5 |
-| `sq-r3` | 凜的秘密部落格 | W4–6（需 r2） | 凜（私事） | 圖片最佳化、LCP、延遲載入；她偷偷寫喵咪部落格 | spot | tec+6, con+4, 凜+8 |
-| `sq-h1` | 料理社的食譜頁 | W1–3 | 料理社（晴牽線） | 圖片 alt、Recipe schema、步驟清單 | spot | str+6, ans+4, 晴+5 |
+| `sq-r1` | 舊公告頁搬家 | W1–3 | 凜（學生會） | 301 vs 302、刪除與 404、canonical；進階卡 `gone-410`（404／410 與轉址鏈） | quiz | tec+8, 凜+5 |
+| `sq-r2` | 重複內容的幽靈 | W2–5（需 r1） | 凜 | 參數網址、重複內容、canonical、內部連結；進階卡 `url-parameters`（網址參數管理） | spot | str+6, tec+4, 凜+5 |
+| `sq-r3` | 凜的秘密部落格 | W4–6（需 r2） | 凜（私事） | 圖片最佳化、LCP、延遲載入；她偷偷寫喵咪部落格；進階卡 `responsive-images`（srcset／sizes、fetchpriority、width／height） | spot | tec+6, con+4, 凜+8 |
+| `sq-h1` | 料理社的食譜頁 | W1–3 | 料理社（晴牽線） | 圖片 alt、Recipe schema、步驟清單；進階卡 `recipe-schema`（食譜結構化資料） | spot | str+6, ans+4, 晴+5 |
 | `sq-h2` | 籃球社的比賽頁 | W2–5（需 h1） | 籃球社 | title／description、搜尋意圖、時效性 | serp | con+5, ans+5, 晴+5 |
 | `sq-h3` | 廣播社的語音問答 | W4–6（需 h2） | 晴（私事） | 問題型標題、一兩句的簡短直接答案（沒有官方規定的字數）、FAQ 的正確期待 | quiz | ans+8, 晴+8 |
-| `sq-m1` | 圖書館消失的校史 | W3–5 | 圖書館員 | 實體一致性（校名、創校年、地址） | spot（多目標） | tru+8, 未來+5 |
-| `sq-m2` | AI 爬蟲來敲門 | W3–6（需 m1） | 天文社 | robots.txt 中的 AI user-agent，搜尋用與訓練用的差別 | quiz | tec+4, tru+4, 未來+5 |
-| `sq-m3` | 未來的真面目 | W5–6（需 m2） | 未來（私事） | 原創性、資訊增益、引用他人與被引用 | quiz | con+6, tru+4, 未來+8 |
+| `sq-m1` | 圖書館消失的校史 | W3–5 | 圖書館員 | 實體一致性（校名、創校年、地址）；進階卡 `same-as`（官方帳號與 sameAs） | spot（多目標） | tru+8, 未來+5 |
+| `sq-m2` | AI 爬蟲來敲門 | W3–6（需 m1） | 天文社 | robots.txt 中的 AI user-agent，搜尋用與訓練用的差別；進階卡 `verify-crawlers`（如何確認真正的爬蟲） | quiz | tec+4, tru+4, 未來+5 |
+| `sq-m3` | 未來的真面目 | W5–6（需 m2） | 未來（私事） | 原創性、資訊增益、引用他人與被引用；進階卡 `information-gain`（資訊增益） | quiz | con+6, tru+4, 未來+8 |
 | `sq-x1` | 流量學院的挑戰 | W4–6 | 黑川 | 辨識黑帽手法（連結計畫、隱藏文字、cloaking、大規模濫用內容、網站聲譽濫用） | quiz | tru+6、三人各+2 |
 
 ### 3.6 知識事實表（劇本與知識卡必須遵守）
@@ -271,9 +271,18 @@ score_h = clamp( Σ_s ( w[h][s] × stat_s ) + bond_h , 0, 100 )
 - AI 爬蟲：`GPTBot`（OpenAI 訓練用）、`OAI-SearchBot`（ChatGPT 搜尋用）、`PerplexityBot`、`Google-Extended`（控制內容是否用於 Gemini 的訓練與 grounding，**不影響** Google 搜尋排名與收錄）。擋掉搜尋用爬蟲可能讓你不出現在該服務的搜尋結果中。
 - `llms.txt` 只是社群提案，主要搜尋引擎並未確認採用——遊戲中要用「未來半開玩笑地澄清迷思」的方式呈現。
 - 301 是永久轉址、302 是暫時轉址；`rel=canonical` 是提示，不是指令。
+- 404／410：確定永久刪除時回 410 或 404 皆可，長期效果相近（410 可能稍快被移除）。轉址鏈越短越好（A→B→C 改成 A→C），Googlebot 對轉址跳數有上限（約 10 跳）。
+- 網址參數：排序、追蹤、篩選參數會產生大量同內容網址；Search Console 的「網址參數」工具已於 2022 年停用。做法是內部連結用乾淨的標準網址、canonical 指向本尊、避免用參數做追蹤，必要時用 robots.txt 限制會無限組合的篩選網址以節省爬取。
+- 響應式圖片：用 `srcset`／`sizes` 提供合適尺寸；首屏 LCP 主圖可加 `fetchpriority="high"` 且不要 `loading="lazy"`；寫上 width／height 避免 CLS。
+- Recipe 是 Google 支援的複合式搜尋結果類型之一；必填 `name`、`image`，建議填 `recipeIngredient`、`recipeInstructions`、時間等；標記要與可見內容一致，且不保證出現食譜卡片。
+- `sameAs`：Organization 結構化資料可列出官方社群帳號、維基等可信頁面網址，幫助機器把各處資訊連到同一實體；前提是各處名稱、地址等資訊一致；不保證出現知識面板。
+- 確認真正的爬蟲：User-agent 可以偽造；Googlebot 要做反向 DNS 查詢（網域應為 googlebot.com 或 google.com 等）再正向確認，或比對 Google 公布的 IP 範圍；OpenAI 等也公布了爬蟲 IP 範圍。日誌裡出現「GPTBot」字樣不等於真的是 OpenAI。
+- 資訊增益：內容提供其他來源沒有的新資訊（第一手實測、原創數據、獨特經驗）。這是業界常用的概念，**不是** Google 公布的單一排名指標，不得寫成「官方排名因素」；可與「有幫助的內容」指引中提供原創資訊、超越顯而易見內容的精神連結。
 
 ### 3.7 知識卡清單（ID → 標題）
 `what-is-seo-aeo-geo` 三種搜尋優化｜`robots-vs-noindex` robots.txt 與 noindex｜`sitemap` Sitemap｜`search-console` Search Console（站長工具）｜`search-intent` 搜尋意圖｜`title-and-meta` 標題與描述｜`answer-first` 結論先說｜`question-headings` 問題型標題｜`json-ld` JSON-LD｜`schema-visible-match` 標記要與內容一致｜`entity-consistency` 實體一致性｜`core-web-vitals` 網站使用體驗核心指標｜`mobile-first` 行動版優先｜`image-optimization` 圖片最佳化｜`alt-text` 替代文字｜`redirects` 301 與 302｜`canonical` 標準網址｜`duplicate-content` 重複內容｜`internal-links` 內部連結｜`spam-policies` 垃圾內容政策｜`link-schemes` 連結計畫｜`eeat` E-E-A-T｜`helpful-content` 有幫助的內容｜`core-update` 核心更新｜`geo-citations` 生成式引用｜`original-data` 原創資料｜`ai-crawlers` AI 爬蟲｜`llms-txt-truth` llms.txt 的真相｜`faq-reality` FAQ 的正確期待｜`freshness` 內容時效性｜`author-pages` 作者頁
+
+**進階卡（只在支線取得，主線不發；圖鑑標示「進階」）**：`gone-410` 404、410 與轉址鏈（sq-r1）｜`url-parameters` 網址參數管理（sq-r2）｜`responsive-images` 響應式圖片與載入優先（sq-r3）｜`recipe-schema` 食譜結構化資料（sq-h1）｜`same-as` 官方帳號與 sameAs（sq-m1）｜`verify-crawlers` 如何確認真正的爬蟲（sq-m2）｜`information-gain` 資訊增益（sq-m3）
 
 ---
 

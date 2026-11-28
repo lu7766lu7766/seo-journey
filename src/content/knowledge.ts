@@ -31,10 +31,29 @@ export const KNOWLEDGE_TITLES = {
   'faq-reality': 'FAQ 的正確期待',
   'freshness': '內容時效性',
   'author-pages': '作者頁',
+  // 進階卡：只在支線取得（主線不發），給想深入的玩家
+  'gone-410': '404、410 與轉址鏈',
+  'url-parameters': '網址參數管理',
+  'responsive-images': '響應式圖片與載入優先',
+  'recipe-schema': '食譜結構化資料',
+  'same-as': '官方帳號與 sameAs',
+  'verify-crawlers': '如何確認真正的爬蟲',
+  'information-gain': '資訊增益',
 } as const
 
 export type KnowledgeId = keyof typeof KNOWLEDGE_TITLES
 export const KNOWLEDGE_IDS = Object.keys(KNOWLEDGE_TITLES) as KnowledgeId[]
+
+/** 進階卡：只能從支線取得，主線不發（圖鑑會標示「進階」）。 */
+export const ADVANCED_KNOWLEDGE_IDS: readonly KnowledgeId[] = [
+  'gone-410',
+  'url-parameters',
+  'responsive-images',
+  'recipe-schema',
+  'same-as',
+  'verify-crawlers',
+  'information-gain',
+]
 
 export interface KnowledgeCard {
   id: KnowledgeId
@@ -234,6 +253,48 @@ const BODY: Partial<Record<KnowledgeId, Pick<KnowledgeCard, 'summary' | 'detail'
     detail:
       '作者頁可介紹作者的背景、專長與相關經驗，並連到其代表作品與聯絡方式，讓人判斷可信度。文章頁面也要標示作者，與作者頁互相連結。內容必須真實，虛構的頭銜與經歷，反而會破壞信任。',
     misconception: '常見誤解：放一張大頭貼與頭銜，信任度就自動提升。',
+  },
+  'gone-410': {
+    summary: '確定刪除回 404 或 410 都行，轉址鏈要縮短。',
+    detail:
+      '頁面確定永久刪除、也沒有替代頁時，回 410 或 404 都可以，長期效果相近，410 可能稍快被移除。轉址鏈則越短越好：A→B→C 應直接改成 A→C。Googlebot 對轉址跳數有上限（約 10 跳），繞太遠就可能放棄。',
+    misconception: '常見誤解：刪除頁面只有回 410 才對，回 404 會被處罰。',
+  },
+  'url-parameters': {
+    summary: '參數會生出同內容網址，要收斂回乾淨本尊。',
+    detail:
+      '排序、追蹤、篩選參數會產生大量同內容網址。Search Console 的「網址參數」工具已於 2022 年停用，改靠做法：內部連結一律用乾淨的標準網址，canonical 指向本尊，別用參數做追蹤；會無限組合的篩選網址，必要時用 robots.txt 限制以節省爬取。',
+    misconception: '常見誤解：網址參數可以在 Search Console 設定處理方式。',
+  },
+  'responsive-images': {
+    summary: '依螢幕給對尺寸，首屏主圖優先載入。',
+    detail:
+      '用 srcset 與 sizes 讓不同螢幕拿到合適尺寸的圖，省流量也加快載入。首屏的 LCP 主圖可加 fetchpriority="high"，且不要 loading="lazy"。每張圖都寫上 width 與 height，預留版位，才不會因版面跳動拉高 CLS。',
+    misconception: '常見誤解：只要用了 srcset，首屏主圖的載入順序就不用管。',
+  },
+  'recipe-schema': {
+    summary: 'Recipe 標記要與頁面可見的食譜內容一致。',
+    detail:
+      'Recipe 是 Google 支援的複合式搜尋結果類型之一。必填 name 與 image，建議補上 recipeIngredient、recipeInstructions、烹調時間等。標記必須與頁面可見的食譜一致，並用驗證工具檢查；即使標記正確，也不保證一定出現食譜卡片。',
+    misconception: '常見誤解：加了 Recipe 標記，就一定會出現食譜卡片。',
+  },
+  'same-as': {
+    summary: 'sameAs 列出官方帳號，幫機器串起同一個實體。',
+    detail:
+      'Organization 結構化資料的 sameAs，可列出官方社群帳號、維基等可信頁面的網址，幫助機器把各處資訊連到同一個實體。前提是各處的名稱、地址等資訊本身要一致，否則只是把矛盾串在一起。它是輔助，不保證出現知識面板。',
+    misconception: '常見誤解：填了 sameAs，就會出現知識面板。',
+  },
+  'verify-crawlers': {
+    summary: 'User-agent 能偽造，要用 DNS 或 IP 驗證。',
+    detail:
+      '日誌裡的 User-agent 字串可以被偽造。要確認是否真是 Googlebot，可做反向 DNS 查詢（網域應為 googlebot.com 或 google.com 等），再正向查詢確認，或比對 Google 公布的 IP 範圍。OpenAI 等業者也公布了爬蟲的 IP 範圍。',
+    misconception: '常見誤解：日誌寫著 GPTBot，就一定是 OpenAI 的爬蟲。',
+  },
+  'information-gain': {
+    summary: '提供別處沒有的新資訊，內容才有被讀的理由。',
+    detail:
+      '資訊增益指內容提供其他來源沒有的新資訊，例如第一手實測、原創數據、獨特經驗。這是業界常用的概念，不是 Google 公布的單一排名指標；但它呼應「有幫助的內容」指引中，提供原創資訊、超越顯而易見內容的精神。',
+    misconception: '常見誤解：資訊增益是 Google 官方公布的排名因素。',
   },
 }
 

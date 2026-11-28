@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { CgArt } from '@/art/cg'
 import { CG_IDS, type CgId } from '@/content/cgs'
 import { CHECKLIST, CHECKLIST_AREAS, type ChecklistArea } from '@/content/checklist'
-import { KNOWLEDGE, KNOWLEDGE_IDS, type KnowledgeId } from '@/content/knowledge'
+import { ADVANCED_KNOWLEDGE_IDS, KNOWLEDGE, KNOWLEDGE_IDS, type KnowledgeId } from '@/content/knowledge'
 import { MINIGAMES, MINIGAME_IDS, type MinigameId, type MinigameKind } from '@/content/minigames'
 import { MinigameHost } from '@/minigames'
 import { BestStars } from '@/minigames/StarRating'
@@ -78,7 +78,16 @@ const CARD_SOURCES: Partial<Record<KnowledgeId, string>> = {
   'faq-reality': '晴支線 3「廣播社的語音問答」（需先完成晴支線 1、2）',
   freshness: '晴支線 2「籃球社的比賽頁」（需先完成晴支線 1）',
   'author-pages': '第 6 週主線「演算法的大雨」',
+  'gone-410': '凜支線 1「舊公告頁搬家」',
+  'url-parameters': '凜支線 2「重複內容的幽靈」',
+  'responsive-images': '凜支線 3「凜的秘密部落格」',
+  'recipe-schema': '晴支線 1「料理社的食譜頁」',
+  'same-as': '未來支線 1「圖書館消失的校史」',
+  'verify-crawlers': '未來支線 2「AI 爬蟲來敲門」',
+  'information-gain': '未來支線 3「未來的真面目」',
 }
+
+const ADVANCED_SET = new Set<KnowledgeId>(ADVANCED_KNOWLEDGE_IDS)
 
 const CG_SOURCES: Record<CgId, string> = {
   'date-rin-3': '凜第 3 階段約會（好感度 ≥ 55）',
@@ -118,6 +127,9 @@ function CardsTab({
               <div className="flex items-center gap-2">
                 <span className="rounded-full bg-sakura/50 px-3 py-0.5 text-xs font-bold text-[#73233b]">知識卡</span>
                 <span className="rounded-full bg-sky/40 px-2.5 py-0.5 text-xs font-bold text-[#1d4e6b]">{check.area}</span>
+                {ADVANCED_SET.has(selected) && (
+                  <span className="rounded-full bg-[#ffe599]/80 px-2.5 py-0.5 text-xs font-bold text-[#6b4e00]" data-testid="card-advanced-badge">進階</span>
+                )}
               </div>
               <h3 className="mt-1 font-title text-3xl font-bold text-ink">{card.title}</h3>
             </div>
@@ -206,7 +218,10 @@ function CardsTab({
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-bold text-[#b83b5e]">#{String(idx + 1).padStart(2, '0')}</span>
-                <span className="rounded-full bg-sky/35 px-2 py-0.5 text-[10px] font-bold text-[#1d4e6b]">{itemArea}</span>
+                <span className="flex items-center gap-1">
+                  {ADVANCED_SET.has(id) && <span className="rounded-full bg-[#ffe599]/80 px-2 py-0.5 text-[10px] font-bold text-[#6b4e00]">進階</span>}
+                  <span className="rounded-full bg-sky/35 px-2 py-0.5 text-[10px] font-bold text-[#1d4e6b]">{itemArea}</span>
+                </span>
               </div>
               <span className="mt-0.5 font-title text-lg font-bold text-ink">{card.title}</span>
               <span className="mt-1 line-clamp-2 text-xs leading-relaxed text-ink/75">{card.summary}</span>
@@ -219,7 +234,10 @@ function CardsTab({
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-bold text-ink/45">#{String(idx + 1).padStart(2, '0')}</span>
-                <span className="rounded-full bg-ink/10 px-2 py-0.5 text-[10px] font-bold text-ink/50">{itemArea}</span>
+                <span className="flex items-center gap-1">
+                  {ADVANCED_SET.has(id) && <span className="rounded-full bg-ink/10 px-2 py-0.5 text-[10px] font-bold text-ink/50">進階</span>}
+                  <span className="rounded-full bg-ink/10 px-2 py-0.5 text-[10px] font-bold text-ink/50">{itemArea}</span>
+                </span>
               </div>
               <span className="mt-0.5 font-title text-lg font-bold text-ink/50">？？？</span>
               <span className="mt-1 text-xs text-ink/55">{CARD_SOURCES[id] ?? '在劇情或支線中解鎖'}</span>

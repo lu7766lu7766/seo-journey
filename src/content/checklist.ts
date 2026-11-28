@@ -45,6 +45,13 @@ export const CHECKLIST: Record<KnowledgeId, ChecklistItem> = {
   'faq-reality': { area: 'AEO', action: '用問答區塊讓內容結構清楚，但別期待一定出現 FAQ 特效' },
   freshness: { area: '通用', action: '有實質更新時才改日期，定期檢查舊資訊是否過時' },
   'author-pages': { area: 'GEO', action: '建立作者頁：寫明姓名、經歷與聯絡方式，文章都連過去' },
+  'gone-410': { area: 'SEO', action: '確定刪除的頁面回 404 或 410，並把轉址鏈縮成一步到位' },
+  'url-parameters': { area: 'SEO', action: '內部連結只用乾淨網址，canonical 指向本尊，別用參數追蹤' },
+  'responsive-images': { area: 'SEO', action: '圖片用 srcset 並寫寬高；首屏主圖設高優先、別 lazy' },
+  'recipe-schema': { area: 'SEO', action: '食譜頁加 Recipe 標記（name、image 必填），並與內容一致' },
+  'same-as': { area: 'GEO', action: '在 Organization 標記用 sameAs 列出官方社群與維基頁網址' },
+  'verify-crawlers': { area: 'GEO', action: '用反向 DNS 或官方 IP 範圍確認爬蟲身分，別只看 User-agent' },
+  'information-gain': { area: '通用', action: '每篇文章加入別處沒有的第一手實測、數據或個人經驗' },
 }
 
 const AREA_ORDER: ChecklistArea[] = CHECKLIST_AREAS

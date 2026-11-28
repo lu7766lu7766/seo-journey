@@ -3,8 +3,8 @@ import { buildChecklistMarkdown, CHECKLIST, CHECKLIST_AREAS } from '@/content/ch
 import { KNOWLEDGE_IDS, KNOWLEDGE_TITLES } from '@/content/knowledge'
 
 describe('take-away checklist', () => {
-  it('covers all 31 knowledge cards, no more, no less', () => {
-    expect(KNOWLEDGE_IDS).toHaveLength(31)
+  it('covers all 38 knowledge cards, no more, no less', () => {
+    expect(KNOWLEDGE_IDS).toHaveLength(38)
     expect(Object.keys(CHECKLIST).sort()).toEqual([...KNOWLEDGE_IDS].sort())
   })
 
@@ -43,15 +43,15 @@ describe('take-away checklist', () => {
     expect(missingSection).toContain(`- ${KNOWLEDGE_TITLES['robots-vs-noindex']}`)
     expect(missingSection).not.toContain(KNOWLEDGE_TITLES.canonical)
     expect((md.match(/- \[ \]/g) ?? []).length).toBe(4)
-    expect(md).toContain('已學 4 / 31')
+    expect(md).toContain('已學 4 / 38')
   })
 
   it('markdown: all cards learned -> no missing section; none learned -> only the missing list', () => {
     const all = buildChecklistMarkdown(KNOWLEDGE_IDS, KNOWLEDGE_TITLES)
     expect(all).not.toContain('還沒學到的項目')
-    expect((all.match(/- \[ \]/g) ?? []).length).toBe(31)
+    expect((all.match(/- \[ \]/g) ?? []).length).toBe(38)
     const none = buildChecklistMarkdown([], KNOWLEDGE_TITLES)
     expect(none).not.toContain('- [ ]')
-    expect((none.match(/^- /gm) ?? []).length).toBe(31)
+    expect((none.match(/^- /gm) ?? []).length).toBe(38)
   })
 })
